@@ -7,7 +7,6 @@ using namespace std;
 
 int main()
 {
-    int assface = 0;
     Display* display = new Display();
     if(!display->InitDisplay(800, 600, "First OpenGL Project"))
     {
