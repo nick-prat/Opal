@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1463362364 source:/home/nick/Documents/Programming/C++/OpenGL/First OpenGL Program/Display/Display.cpp
+	<iostream>
+	<GL/glew.h>
+	"Display.h"
+
+1463362314 /home/nick/Documents/Programming/C++/OpenGL/First OpenGL Program/Display/Display.h
+	<string>
+	<SDL2/SDL.h>
+
+1463349314 source:/home/nick/Documents/Programming/C++/OpenGL/First OpenGL Program/main.cpp
+	<GL/gl.h>
+	<iostream>
+	"Display/Display.h"
+
