@@ -2,5 +2,20 @@
 
 Shader::Shader()
 {
-    //ctor
+
+}
+
+Shader::~Shader()
+{
+
+}
+
+bool Shader::InitShader()
+{
+    return true;
+}
+
+void Shader::Destroy()
+{
+
 }

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <GL/glew.h>
-#include "Display.h"
+#include "display.h"
 
 using std::cout;
 using std::cerr;
