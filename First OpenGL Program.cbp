@@ -14,6 +14,8 @@
 				<Compiler>
 					<Add option="-g" />
 					<Add directory="Shader" />
+					<Add directory="Sprite" />
+					<Add directory="Model" />
 				</Compiler>
 				<Linker>
 					<Add library="GL" />
@@ -29,6 +31,8 @@
 				<Compiler>
 					<Add option="-O2" />
 					<Add directory="Shader" />
+					<Add directory="Sprite" />
+					<Add directory="Model" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
@@ -41,8 +45,14 @@
 		</Compiler>
 		<Unit filename="Display/display.cpp" />
 		<Unit filename="Display/display.h" />
-		<Unit filename="Shader/shader.cpp" />
-		<Unit filename="Shader/shader.h" />
+		<Unit filename="Model/Shader/shader.cpp" />
+		<Unit filename="Model/Shader/shader.h" />
+		<Unit filename="Model/Sprite/sprite.cpp" />
+		<Unit filename="Model/Sprite/sprite.h" />
+		<Unit filename="Model/renderchain.cpp" />
+		<Unit filename="Model/renderchain.h" />
+		<Unit filename="Model/renderobject.cpp" />
+		<Unit filename="Model/renderobject.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<envvars />

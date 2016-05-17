@@ -3,7 +3,9 @@
 #include <string>
 
 #include "Display/display.h"
-#include "Shader/shader.h"
+#include "Model/renderchain.h"
+#include "Model/Shader/shader.h"
+#include "Model/Sprite/sprite.h"
 
 using namespace std;
 

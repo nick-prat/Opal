@@ -31,11 +31,12 @@ bool Display::InitDisplay(int width, int height, std::string title)
     m_window = SDL_CreateWindow(title.c_str(), 0, 0, width, height, SDL_WINDOW_OPENGL);
     m_glcontext = SDL_GL_CreateContext(m_window);
 
+    glewExperimental = true;
     GLenum status = glewInit();
 
     if(status != GLEW_OK)
     {
-        cerr << "Glew failed to initialize" << endl;
+        cerr << "Glew failed to initialize: " << status << endl;
         return false;
     }
 
