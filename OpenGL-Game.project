@@ -133,4 +133,7 @@
       </Completion>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="Utilities">
+    <File Name="include/utilities.hpp"/>
+  </VirtualDirectory>
 </CodeLite_Project>

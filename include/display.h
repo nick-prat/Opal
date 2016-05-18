@@ -17,7 +17,7 @@ public:
     void Update();
     bool IsClosed();
 
-private:
+public:
     SDL_Window* m_window;
     SDL_GLContext m_glcontext;
     bool m_isClosed;

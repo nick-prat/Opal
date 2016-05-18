@@ -3,6 +3,9 @@
 #include <string>
 
 #include "display.h"
+#include "renderchain.h"
+#include "sprite.h"
+#include "utilities.hpp"
 
 int main(int argc, char **argv)
 {
@@ -10,6 +13,10 @@ int main(int argc, char **argv)
 	display->InitDisplay(500, 500, "OpenGL Game");
 	
 	RenderChain* renderChain = new RenderChain();
+	renderChain->InitRenderChain(10);
+	
+	std::cout << "Display Address: " << display << std::endl;
+	std::cout << "Render Chain Address: " << renderChain << std::endl;
 	
 	while(!display->IsClosed())
     {
@@ -18,6 +25,7 @@ int main(int argc, char **argv)
         display->Update();
     }
 	
-	display->Destroy();
+	renderChain->Destroy();
+	SafeDelete(renderChain);
 	return 0;
 }

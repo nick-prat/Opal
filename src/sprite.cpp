@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "sprite.h"
 
 Sprite::Sprite()
@@ -27,5 +29,5 @@ bool Sprite::AttachShader(Shader* shader)
 
 void Sprite::Render()
 {
-
+	std::cout << "Render!" << std::endl;
 }

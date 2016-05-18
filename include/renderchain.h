@@ -8,23 +8,19 @@ class RenderChain
     public:
         RenderChain();
         ~RenderChain();
+		
+		bool InitRenderChain(int numObjects);
+		void Destroy();
 
-        void AttachRenderObject(RenderObject* object);
+        bool AttachRenderObject(RenderObject* object);
         void RenderObjectChain();
 
     protected:
 
     private:
-        struct RenderObjectContainer
-        {
-            RenderObjectContainer();
-            ~RenderObjectContainer();
-
-            RenderObjectContainer* next;
-            RenderObject* object;
-        };
-
-        RenderObjectContainer* m_renderQueue;
+		int m_objCount;
+		int m_objLimit;
+		RenderObject** m_memPool;
 };
 
 #endif // _RENDERCHAIN_H

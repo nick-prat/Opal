@@ -1,43 +1,51 @@
+#include <iostream>
+#include <stdlib.h>
+
 #include "renderchain.h"
+#include "utilities.hpp"
 
 RenderChain::RenderChain()
 {
-    m_renderQueue = nullptr;
+	m_memPool = nullptr;
 }
 
 RenderChain::~RenderChain()
 {
-    m_renderQueue = nullptr;
+    m_memPool = nullptr;
 }
 
-void RenderChain::AttachRenderObject(RenderObject* object)
+bool RenderChain::InitRenderChain(int num)
 {
-    RenderObjectContainer* container = new RenderObjectContainer();
-    container->object = object;
-    container->next = m_renderQueue;
+	m_memPool = (RenderObject**)malloc(sizeof(RenderObject*) * num);
+	m_objCount = 0;
+	m_objLimit = num;
+	return true;
+}
 
-    m_renderQueue = container;
+void RenderChain::Destroy()
+{
+	SafeDelete(m_memPool);
+	m_objCount = 0;
+}
+
+bool RenderChain::AttachRenderObject(RenderObject* object)
+{
+	if(m_objCount < m_objLimit)
+	{
+		m_memPool[m_objCount] = object;
+		m_objCount++;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 void RenderChain::RenderObjectChain()
 {
-    RenderObjectContainer* item;
-    while(m_renderQueue != nullptr)
-    {
-        item = m_renderQueue;
-        item->object->Render();
-        delete m_renderQueue;
-        m_renderQueue = item->next;
-
-    }
+    for(int i = 0; i < m_objCount; i++)
+	{
+		m_memPool[i]->Render();
+	}
 }
-
-RenderChain::RenderObjectContainer::RenderObjectContainer()
-{
-    this->next = nullptr;
-    this->object = nullptr;
-}
-
-RenderChain::RenderObjectContainer::~RenderObjectContainer()
-{}
-
