@@ -2,8 +2,9 @@
 #define _SPRITE_H
 
 #include <string>
-#include "../renderobject.h"
-#include "../Shader/shader.h"
+
+#include "renderobject.h"
+#include "shader.h"
 
 class Sprite : public RenderObject
 {
