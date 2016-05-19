@@ -15,8 +15,9 @@ int main(int argc, char **argv)
 	RenderChain* renderChain = new RenderChain();
 	renderChain->InitRenderChain(10);
 	
-	std::cout << "Display Address: " << display << std::endl;
-	std::cout << "Render Chain Address: " << renderChain << std::endl;
+	std::cout << "Devices: " << std::endl;
+	std::cout << "\tDisplay Address: " << display << std::endl;
+	std::cout << "\tRender C`hain Address: " << renderChain << std::endl;
 	
 	while(!display->IsClosed())
     {

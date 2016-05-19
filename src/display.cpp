@@ -29,6 +29,7 @@ bool Display::InitDisplay(int width, int height, std::string title)
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
     m_window = SDL_CreateWindow(title.c_str(), 0, 0, width, height, SDL_WINDOW_OPENGL);
+	
     m_glcontext = SDL_GL_CreateContext(m_window);
 
     glewExperimental = true;
