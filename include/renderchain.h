@@ -9,6 +9,7 @@ class RenderChain
         RenderChain();
         ~RenderChain();
 		
+		bool InitRenderChain(int numObjects, bool vol)
 		bool InitRenderChain(int numObjects);
 		void Destroy();
 
@@ -20,6 +21,7 @@ class RenderChain
     private:
 		int m_objCount;
 		int m_objLimit;
+		bool m_volatile;
 		RenderObject** m_memPool;
 };
 

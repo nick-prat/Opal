@@ -4,6 +4,7 @@
 #include <string>
 
 #include "display.h"
+#include "renderobject.h"
 #include "renderchain.h"
 #include "sprite.h"
 #include "utilities.hpp"
@@ -12,6 +13,28 @@ void dosomething()
 {
 	std::cout << "shit" << std::endl;
 }
+
+class shittyObject : public RenderObject
+{
+	void Render()
+	{
+		Vector3f* verts = new Vector3f[3];
+		verts[0] = Vector3f(-1.0f, -1.0f, 0.0f);
+		verts[1] = Vector3f(1.0f, -1.0f, 0.0f);
+		verts[2] = Vector3f(0.0f, 1.0f, 0.0f);
+		
+		GLuint VBO;
+		
+		glGenBuffers(1, &VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3f) * 3, verts, GL_STATIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDisableVertexAttribArray(0);
+	}
+};
 
 int main(int argc, char **argv)
 {
@@ -26,31 +49,15 @@ int main(int argc, char **argv)
 	std::cout << "\tDisplay Address: " << display << std::endl;
 	std::cout << "\tRender C`hain Address: " << renderChain << std::endl;
 	
+	renderChain->AttachRenderObject(obj);
+	
 	while(!display->IsClosed())
     {
-		/*float verts[3];
-		verts[0] = 0.0f;
-		verts[1] = 0.0f;
-		verts[2] = 0.0f;*/
-		
-		Vector3f* verts = new Vector3f[3];
-		verts[0] = Vector3f(-1.0f, -1.0f, 0.0f);
-		verts[1] = Vector3f(1.0f, -1.0f, 0.0f);
-		verts[2] = Vector3f(0.0f, 1.0f, 0.0f);
-		
-		GLuint VBO;
-		
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 		
-		glGenBuffers(1, &VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3f) * 3, verts, GL_STATIC_DRAW);
-		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-		glDisableVertexAttribArray(0);
+		shittyObject* obj = new shittyObject();
+		renderChain->RenderObjectChain();
 	
         display->Update();
     }
