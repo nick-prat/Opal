@@ -16,15 +16,16 @@ void dosomething()
 
 class shittyObject : public RenderObject
 {
-	void Render()
-	{
-		Vector3f* verts = new Vector3f[3];
+    shittyObject()
+    {
+        verts = new Vector3f[3];
 		verts[0] = Vector3f(-1.0f, -1.0f, 0.0f);
 		verts[1] = Vector3f(1.0f, -1.0f, 0.0f);
 		verts[2] = Vector3f(0.0f, 1.0f, 0.0f);
-		
-		GLuint VBO;
-		
+    }
+    
+	void Render()
+	{
 		glGenBuffers(1, &VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3f) * 3, verts, GL_STATIC_DRAW);
@@ -34,6 +35,10 @@ class shittyObject : public RenderObject
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDisableVertexAttribArray(0);
 	}
+	
+private:
+    GLuint VBO;
+    Vector3f* verts;
 };
 
 int main(int argc, char **argv)
