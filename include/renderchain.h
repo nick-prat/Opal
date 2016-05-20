@@ -9,7 +9,7 @@ class RenderChain
         RenderChain();
         ~RenderChain();
 		
-		bool InitRenderChain(int numObjects, bool vol)
+		bool InitRenderChain(int numObjects, bool vol);
 		bool InitRenderChain(int numObjects);
 		void Destroy();
 

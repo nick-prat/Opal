@@ -19,7 +19,7 @@ bool RenderChain::InitRenderChain(int num)
 	return InitRenderChain(num, true);
 }
 
-bool RenderChain::InitRenderChain(int num)
+bool RenderChain::InitRenderChain(int num, bool vol)
 {
 	m_memPool = (RenderObject**)malloc(sizeof(RenderObject*) * num);
 	m_objCount = 0;
