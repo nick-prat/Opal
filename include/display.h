@@ -3,6 +3,8 @@
 
 #include <string>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_video.h>
+#include <SDL2/SDL_render.h>
 
 class Display
 {
@@ -10,7 +12,7 @@ class Display
 public:
     Display();
     ~Display();
-
+	
     bool InitDisplay(int width, int height, std::string title);
     void Destroy();
 

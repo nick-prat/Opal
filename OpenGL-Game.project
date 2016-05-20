@@ -42,6 +42,7 @@
   </VirtualDirectory>
   <VirtualDirectory Name="Utilities">
     <File Name="include/utilities.hpp"/>
+    <File Name="src/utilities.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>
@@ -89,7 +90,7 @@
         <CustomPostBuild/>
         <CustomPreBuild/>
       </AdditionalRules>
-      <Completion EnableCpp11="no" EnableCpp14="no">
+      <Completion EnableCpp11="no" EnableCpp14="yes">
         <ClangCmpFlagsC/>
         <ClangCmpFlags/>
         <ClangPP/>
