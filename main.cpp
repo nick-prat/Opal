@@ -14,49 +14,78 @@ void dosomething()
 	std::cout << "shit" << std::endl;
 }
 
-class shittyObject : public RenderObject
+class ShittyObject : public RenderObject
 {
 public:
-    shittyObject()
+    ShittyObject()
     {
-        verts = new Vector3f[3];
-		verts[0] = Vector3f(-1.0f, -1.0f, 0.0f);
-		verts[1] = Vector3f(1.0f, -1.0f, 0.0f);
-		verts[2] = Vector3f(0.0f, 1.0f, 0.0f);
-		
-		glGenBuffers(1, &VBO);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3f) * 3, verts, GL_STATIC_DRAW);
+        m_VBO = 0;
+		m_verts = nullptr;
     }
+	
+	~ShittyObject()
+	{}
+	
+	bool InitObject()
+		m_verts = new Vector3f[3];
+	{
+		m_verts[0] = Vector3f(-1.0f, -1.0f, 0.0f);
+		m_verts[1] = Vector3f(1.0f, -1.0f, 0.0f);
+		m_verts[2] = Vector3f(0.0f, 1.0f, 0.0f);
+		
+		glGenBuffers(1, &m_VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3f) * 3, m_verts, GL_STATIC_DRAW);
+		
+		return true;
+	}
+	
+	void Destroy()
+	{
+		glDeleteBuffers(1, &m_VBO);
+	}
     
 	void Render()
 	{
 		glEnableVertexAttribArray(0);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 		glDisableVertexAttribArray(0);
 	}
 	
 private:
-    GLuint VBO;
-    Vector3f* verts;
+    GLuint m_VBO;
+    Vector3f* m_verts;
 };
 
 int main(int argc, char **argv)
 {
 	Display* display = new Display();
-	display->InitDisplay(1280, 720, "OpenGL Game");
+	if(!display->InitDisplay(1280, 720, "OpenGL Game"))
+	{
+		std::cout << "Couldn't init display" << std::endl;
+		return 1;
+	}
 	
 	RenderChain* renderChain = new RenderChain();
-	renderChain->InitRenderChain(10);
+	if(!renderChain->InitRenderChain(10))
+	{
+		std::cout << "Couldn't init render chain" << std::endl;
+		return 1;
+	}
+	
+	ShittyObject* obj = new ShittyObject();
+	if(!obj->InitObject())
+	{
+		std::cout << "Couldn't init shitty object" << std::endl;
+		return 1;
+	}
 	
 	std::cout << "Information: " << std::endl;
 	std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "\tDisplay Address: " << display << std::endl;
 	std::cout << "\tRender C`hain Address: " << renderChain << std::endl;
-	
-	shittyObject* obj = new shittyObject();
 	
 	while(!display->IsClosed())
     {
@@ -69,7 +98,11 @@ int main(int argc, char **argv)
         display->Update();
     }
 	
+	obj->Destroy();
+	SafeDelete(obj);
 	renderChain->Destroy();
 	SafeDelete(renderChain);
+	display->Destroy();
+	SafeDelete(display);
 	return 0;
 }

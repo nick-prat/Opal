@@ -4,3 +4,8 @@ RenderObject::RenderObject()
 {
 
 }
+
+RenderObject::~RenderObject()
+{
+	
+}

@@ -6,7 +6,10 @@ class RenderObject
 {
     public:
         RenderObject();
+		virtual ~RenderObject();
         virtual void Render() = 0;
+		virtual bool InitObject() = 0;
+		virtual void Destroy() = 0;
 
     protected:
 
