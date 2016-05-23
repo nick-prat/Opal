@@ -10,11 +10,18 @@ using std::endl;
 Display::Display()
 {
     m_window = nullptr;
+	m_isClosed = false;
+	m_projMatrix = glm::mat4(1.0f);
 }
 
 Display::~Display()
 {
 
+}
+
+glm::mat4 Display::GetProjectionMatrix()
+{
+	return m_projMatrix;
 }
 
 bool Display::InitDisplay(int width, int height, std::string title)
@@ -44,7 +51,7 @@ bool Display::InitDisplay(int width, int height, std::string title)
         return false;
     }
 
-    m_isClosed = false;
+    m_projMatrix = glm::perspective(glm::radians(75.0f), (float) width / (float) height, 0.1f, 100.0f);
 
     return true;
 }

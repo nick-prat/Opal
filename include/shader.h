@@ -16,6 +16,7 @@ public:
     void Destroy();
 	
 	void UseShader();
+	GLuint GetProgram();
 
 private:
 	GLuint m_shaderProgram;

@@ -9,6 +9,7 @@
 #include "renderchain.h"
 #include "sprite.h"
 #include "utilities.hpp"
+#include "camera.h"
 
 class ShittyObject : public RenderObject
 {
@@ -22,13 +23,15 @@ public:
 	~ShittyObject()
 	{}
 	
-	bool InitObject()
+	bool InitObject(Display* display, Camera* camera)
 	{
-		m_verts = new Vector3f[3];
+		m_display = display;
+		m_camera = camera;
+		m_verts = new glm::vec3[3];
 		
-		m_verts[0] = Vector3f(-1.0f, -1.0f, 0.0f);
-		m_verts[1] = Vector3f(1.0f, -1.0f, 0.0f);
-		m_verts[2] = Vector3f(0.0f, 1.0f, 0.0f);
+		m_verts[0] = glm::vec3(-1.0f, -1.0f, 0.0f);
+		m_verts[1] = glm::vec3(1.0f, -1.0f, 0.0f);
+		m_verts[2] = glm::vec3(0.0f, 1.0f, 0.0f);
 		
 		glGenBuffers(1, &m_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -49,11 +52,25 @@ public:
 	void Destroy()
 	{
 		glDeleteBuffers(1, &m_VBO);
+		m_VBO = 0;
+		m_shader->Destroy();
+		SafeDelete(m_shader);
 	}
     
 	void Render()
 	{
 		m_shader->UseShader();
+		
+		//glm::mat4 world = m_translate * m_rotate * m_scale;
+		glm::mat4 model = m_scale * m_rotate * m_translate;
+		glm::mat4 mvp = m_display->GetProjectionMatrix() * m_camera->GetViewMatrix() * model;
+		
+		GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
+		if(worldLocation == -1)
+		{
+			std::cout << "Couldn't get uniform loaction" << std::endl;
+		}
+		glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 		
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
@@ -64,7 +81,7 @@ public:
 	
 private:
     GLuint m_VBO;
-    Vector3f* m_verts;
+	glm::vec3* m_verts;
 	Shader* m_shader;
 };
 
@@ -77,6 +94,13 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	
+	Camera* camera = new Camera();
+	if(!camera->InitCamera())
+	{
+		std::cout << "Couldn't init camera" << std::endl;
+		return 1;
+	}
+	
 	RenderChain* renderChain = new RenderChain();
 	if(!renderChain->InitRenderChain(10))
 	{
@@ -85,11 +109,14 @@ int main(int argc, char **argv)
 	}
 	
 	ShittyObject* obj = new ShittyObject();
-	if(!obj->InitObject())
+	if(!obj->InitObject(display, camera))
 	{
 		std::cout << "Couldn't init shitty object" << std::endl;
 		return 1;
 	}
+	
+	//obj->Rotate(glm::rotate(360.0f, glm::vec3(0.0f, 0.0f, 1.0f)));
+	obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	
 	std::cout << "Information: " << std::endl;
 	std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;

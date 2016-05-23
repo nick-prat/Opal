@@ -39,6 +39,10 @@
     <File Name="include/renderobject.h"/>
     <File Name="src/renderchain.cpp"/>
     <File Name="src/renderobject.cpp"/>
+    <VirtualDirectory Name="Camera">
+      <File Name="src/camera.cpp"/>
+      <File Name="include/camera.h"/>
+    </VirtualDirectory>
   </VirtualDirectory>
   <VirtualDirectory Name="Utilities">
     <File Name="include/utilities.hpp"/>
@@ -137,4 +141,8 @@
       </Completion>
     </Configuration>
   </Settings>
+  <VirtualDirectory Name="Shaders">
+    <File Name="Debug/shader.fs"/>
+    <File Name="Debug/shader.vs"/>
+  </VirtualDirectory>
 </CodeLite_Project>

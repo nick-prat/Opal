@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_display.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_renderchain.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_renderobject.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_utilities.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_display.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_renderchain.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_renderobject.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_utilities.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_camera.cpp$(ObjectSuffix) 
 
 
 
@@ -146,6 +146,14 @@ $(IntermediateDirectory)/src_shader.cpp$(DependSuffix): src/shader.cpp
 
 $(IntermediateDirectory)/src_shader.cpp$(PreprocessSuffix): src/shader.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_shader.cpp$(PreprocessSuffix) "src/shader.cpp"
+
+$(IntermediateDirectory)/src_camera.cpp$(ObjectSuffix): src/camera.cpp $(IntermediateDirectory)/src_camera.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/nick/Documents/CodeLiteC++/OpenGL-Game/src/camera.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_camera.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_camera.cpp$(DependSuffix): src/camera.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_camera.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_camera.cpp$(DependSuffix) -MM "src/camera.cpp"
+
+$(IntermediateDirectory)/src_camera.cpp$(PreprocessSuffix): src/camera.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_camera.cpp$(PreprocessSuffix) "src/camera.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)

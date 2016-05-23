@@ -88,9 +88,10 @@ bool Shader::InitShader(std::vector<std::string> fileNames, std::vector<GLenum> 
 
 void Shader::Destroy()
 {
-	for(unsigned int i = 0; i < m_shaderObj.size(); i++)
-	{
-		glDeleteShader(m_shaderObj[i]);
-	}
 	glDeleteProgram(m_shaderProgram);
+}
+
+GLuint Shader::GetProgram()
+{
+	return m_shaderProgram;
 }
