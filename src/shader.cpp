@@ -10,8 +10,13 @@ Shader::~Shader()
 
 }
 
-bool Shader::InitShader()
+bool Shader::InitShader(GLenum shaderType)
 {
+	m_shaderProgram = glCreateProgram();
+	m_shaderObj = glCreateShader(shaderType);
+	
+	
+	
     return true;
 }
 
