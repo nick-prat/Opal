@@ -22,8 +22,9 @@ public:
 	{}
 	
 	bool InitObject()
-		m_verts = new Vector3f[3];
 	{
+		m_verts = new Vector3f[3];
+		
 		m_verts[0] = Vector3f(-1.0f, -1.0f, 0.0f);
 		m_verts[1] = Vector3f(1.0f, -1.0f, 0.0f);
 		m_verts[2] = Vector3f(0.0f, 1.0f, 0.0f);
@@ -80,7 +81,7 @@ int main(int argc, char **argv)
 	std::cout << "Information: " << std::endl;
 	std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
 	std::cout << "\tDisplay Address: " << display << std::endl;
-	std::cout << "\tRender C`hain Address: " << renderChain << std::endl;
+	std::cout << "\tRender Chain Address: " << renderChain << std::endl;
 	
 	while(!display->IsClosed())
     {
