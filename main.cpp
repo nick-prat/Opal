@@ -2,6 +2,7 @@
 #include <GL/gl.h>
 #include <iostream>
 #include <string>
+#include <limits>
 
 #include "display.h"
 #include "renderobject.h"
@@ -33,6 +34,15 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3f) * 3, m_verts, GL_STATIC_DRAW);
 		
+		m_shader = new Shader();
+		std::vector<std::string> files = {"shader.vs", "shader.fs"};
+		std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
+		if(!m_shader->InitShader(files, types))
+		{
+			std::cout << "Couldn't initialize shader" << std::endl;
+			return 1;
+		}
+		
 		return true;
 	}
 	
@@ -43,6 +53,8 @@ public:
     
 	void Render()
 	{
+		m_shader->UseShader();
+		
 		glEnableVertexAttribArray(0);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
@@ -53,6 +65,7 @@ public:
 private:
     GLuint m_VBO;
     Vector3f* m_verts;
+	Shader* m_shader;
 };
 
 int main(int argc, char **argv)

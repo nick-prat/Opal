@@ -21,7 +21,7 @@ bool Display::InitDisplay(int width, int height, std::string title)
 {
     if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
 	{
-		std::cout << "Couldn't initialize SDL" << std::endl;
+		std::cout << "Couldn't initialize SDL: " << SDL_GetError() << std::endl;
 	}
 
     SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);

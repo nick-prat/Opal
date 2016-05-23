@@ -3,6 +3,8 @@
 
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <vector>
+#include <string>
 
 class Shader
 {
@@ -10,12 +12,14 @@ public:
     Shader();
     ~Shader();
 
-    bool InitShader(GLenum shaderType);
+    bool InitShader(std::vector<std::string> filesNames, std::vector<GLenum> types);
     void Destroy();
+	
+	void UseShader();
 
 private:
 	GLuint m_shaderProgram;
-	GLuint m_shaderObj;
+	std::vector<GLuint> m_shaderObj;
 };
 
 #endif // _SHADER_H
