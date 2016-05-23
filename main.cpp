@@ -9,11 +9,6 @@
 #include "sprite.h"
 #include "utilities.hpp"
 
-void dosomething()
-{
-	std::cout << "shit" << std::endl;
-}
-
 class ShittyObject : public RenderObject
 {
 public:
