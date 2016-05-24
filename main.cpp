@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <glm/gtc/constants.hpp>
 #include <iostream>
 #include <string>
 #include <limits>
@@ -62,7 +63,7 @@ public:
 		m_shader->UseShader();
 		
 		//glm::mat4 world = m_translate * m_rotate * m_scale;
-		glm::mat4 model = m_scale * m_rotate * m_translate;
+		glm::mat4 model =  m_translate * m_rotate * m_scale;
 		glm::mat4 mvp = m_display->GetProjectionMatrix() * m_camera->GetViewMatrix() * model;
 		
 		GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
@@ -115,7 +116,8 @@ int main(int argc, char **argv)
 		return 1;
 	}
 	
-	//obj->Rotate(glm::rotate(360.0f, glm::vec3(0.0f, 0.0f, 1.0f)));
+	obj->Scale(glm::scale(glm::vec3(0.5f, 1.0f, 1.0f)));
+	obj->Rotate(glm::rotate(glm::pi<float>(), glm::vec3(0.0f, 0.0f, 1.0f)));
 	obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
 	
 	std::cout << "Information: " << std::endl;
@@ -123,10 +125,12 @@ int main(int argc, char **argv)
 	std::cout << "\tDisplay Address: " << display << std::endl;
 	std::cout << "\tRender Chain Address: " << renderChain << std::endl;
 	
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
 	while(!display->IsClosed())
     {
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		renderChain->AttachRenderObject(obj);
 		renderChain->RenderObjectChain();
