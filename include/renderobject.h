@@ -25,6 +25,7 @@ protected:
 	glm::mat4 m_translate;
 	glm::mat4 m_scale;
 	glm::mat4 m_rotate;
+	glm::mat4 m_world;
 	Display* m_display;
 	Camera* m_camera;
 	

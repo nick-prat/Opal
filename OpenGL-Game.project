@@ -144,5 +144,6 @@
   <VirtualDirectory Name="Shaders">
     <File Name="Debug/shader.fs"/>
     <File Name="Debug/shader.vs"/>
+    <File Name="Debug/shader.gs"/>
   </VirtualDirectory>
 </CodeLite_Project>
