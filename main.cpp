@@ -18,7 +18,10 @@ public:
     ShittyObject()
     {
         m_VBO = 0;
+		m_IBO = 0;
 		m_verts = nullptr;
+		m_shader = nullptr;
+		m_indices = nullptr;
     }
 	
 	~ShittyObject()
@@ -37,7 +40,7 @@ public:
 		
 		glGenBuffers(1, &m_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(Vector3f) * 4, m_verts, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts, GL_STATIC_DRAW);
 		
 		m_indices = new uint[6];
 		
@@ -53,10 +56,10 @@ public:
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, m_indices, GL_STATIC_DRAW);
 		
 		m_shader = new Shader();
-		//std::vector<std::string> files = {"shader.vs", "shader.fs"};
-		//std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
-		std::vector<std::string> files = {"shader.vs", "shader.fs", "shader.gs"};
-		std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
+		std::vector<std::string> files = {"shader.vs", "shader.fs"};
+		std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
+		//std::vector<std::string> files = {"shader.vs", "shader.fs", "shader.gs"};
+		//std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
 		if(!m_shader->InitShader(files, types))
 		{
 			std::cout << "Couldn't initialize shader" << std::endl;
@@ -70,6 +73,8 @@ public:
 	{
 		glDeleteBuffers(1, &m_VBO);
 		m_VBO = 0;
+		glDeleteBuffers(1, &m_IBO);
+		m_IBO = 0;
 		m_shader->Destroy();
 		SafeDelete(m_shader);
 	}
@@ -78,12 +83,12 @@ public:
 	{
 		m_shader->UseShader();
 		
-		glm::mat4 mvp = m_display->GetProjectionMatrix() * m_camera->GetViewMatrix() * m_world;
+		glm::mat4 mvp = m_display->GetProjectionMatrix() * m_camera->GetViewMatrix() * GetWorld();
 		
 		GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
 		if(worldLocation == -1)
 		{
-			//std::cout << "Couldn't get uniform loaction" << std::endl;
+			std::cout << "Couldn't get uniform loaction" << std::endl;
 		}
 		glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 		

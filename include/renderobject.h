@@ -21,15 +21,17 @@ public:
 	void Rotate(glm::mat4 rotate);
 	void Scale(glm::mat4 scale);
 	
+	glm::mat4 GetWorld();
+	
 protected:
-	glm::mat4 m_translate;
-	glm::mat4 m_scale;
-	glm::mat4 m_rotate;
-	glm::mat4 m_world;
 	Display* m_display;
 	Camera* m_camera;
 	
 private:	
+	glm::mat4 m_translate;
+	glm::mat4 m_scale;
+	glm::mat4 m_rotate;
+	glm::mat4 m_world;
 	
 };
 

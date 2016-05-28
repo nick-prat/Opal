@@ -20,7 +20,7 @@ void Shader::UseShader()
 	glUseProgram(m_shaderProgram);
 }
 
-bool Shader::InitShader(std::vector<std::string> fileNames, std::vector<GLenum> types)
+bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::vector<GLenum>& types)
 {
 	if(fileNames.size() != types.size() && fileNames.size() != 0 && types.size() != 0)
 	{

@@ -27,7 +27,14 @@ void Camera::Destroy()
 	
 glm::mat4 Camera::GetViewMatrix()
 {
+	//glm::mat4 view = m_viewMatrix * 
+	
 	return m_viewMatrix;
+}
+
+void Camera::RotateCamera(glm::mat4 rotation)
+{
+	
 }
 
 void Camera::MoveCamera(glm::vec3 delta)

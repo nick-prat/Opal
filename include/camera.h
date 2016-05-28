@@ -17,6 +17,7 @@ public:
 	
 	glm::mat4 GetViewMatrix();
 	void MoveCamera(glm::vec3 delta);
+	void RotateCamera(glm::mat4 rotation);
 	
 protected:
 	

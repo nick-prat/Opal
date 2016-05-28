@@ -12,7 +12,7 @@ public:
     Shader();
     ~Shader();
 
-    bool InitShader(std::vector<std::string> filesNames, std::vector<GLenum> types);
+    bool InitShader(const std::vector<std::string>& filesNames, const std::vector<GLenum>& types);
     void Destroy();
 	
 	void UseShader();

@@ -12,6 +12,11 @@ RenderObject::~RenderObject()
 	
 }
 
+glm::mat4 RenderObject::GetWorld()
+{
+	return m_world;
+}
+
 void RenderObject::Translate(glm::mat4 trans)
 {
 	m_translate = trans;
