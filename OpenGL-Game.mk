@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=
-Date                   :=05/28/16
+Date                   :=05/31/16
 CodeLitePath           :="/home/nick/.codelite"
 LinkerName             :=/usr/bin/g++
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -60,7 +60,7 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_display.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_renderchain.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_renderobject.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_utilities.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_camera.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/main.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_display.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_inputmodule.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_renderchain.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_renderobject.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_utilities.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_sprite.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_shader.cpp$(ObjectSuffix) $(IntermediateDirectory)/src_camera.cpp$(ObjectSuffix) 
 
 
 
@@ -106,6 +106,14 @@ $(IntermediateDirectory)/src_display.cpp$(DependSuffix): src/display.cpp
 
 $(IntermediateDirectory)/src_display.cpp$(PreprocessSuffix): src/display.cpp
 	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_display.cpp$(PreprocessSuffix) "src/display.cpp"
+
+$(IntermediateDirectory)/src_inputmodule.cpp$(ObjectSuffix): src/inputmodule.cpp $(IntermediateDirectory)/src_inputmodule.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/nick/Documents/CodeLiteC++/OpenGL-Game/src/inputmodule.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_inputmodule.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/src_inputmodule.cpp$(DependSuffix): src/inputmodule.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/src_inputmodule.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/src_inputmodule.cpp$(DependSuffix) -MM "src/inputmodule.cpp"
+
+$(IntermediateDirectory)/src_inputmodule.cpp$(PreprocessSuffix): src/inputmodule.cpp
+	$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/src_inputmodule.cpp$(PreprocessSuffix) "src/inputmodule.cpp"
 
 $(IntermediateDirectory)/src_renderchain.cpp$(ObjectSuffix): src/renderchain.cpp $(IntermediateDirectory)/src_renderchain.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/nick/Documents/CodeLiteC++/OpenGL-Game/src/renderchain.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/src_renderchain.cpp$(ObjectSuffix) $(IncludePath)

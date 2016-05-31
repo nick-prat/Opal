@@ -1,5 +1,8 @@
 #include <GL/glew.h>
 #include <GL/gl.h>
+#include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/constants.hpp>
 #include <iostream>
 #include <string>
@@ -31,8 +34,8 @@ public:
 	{
 		m_display = display;
 		m_camera = camera;
-		m_verts = new glm::vec3[4];
 		
+		m_verts = new glm::vec3[4];
 		m_verts[0] = glm::vec3(-1.0f, -1.0f, 0.0f);
 		m_verts[1] = glm::vec3(1.0f, -1.0f, 0.0f);
 		m_verts[2] = glm::vec3(-1.0f, 1.0f, 0.0f);
@@ -42,8 +45,9 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts, GL_STATIC_DRAW);
 		
-		m_indices = new uint[6];
+		delete [] m_verts;
 		
+		m_indices = new uint[6];
 		m_indices[0] = 0;
 		m_indices[1] = 1;
 		m_indices[2] = 2;
@@ -54,6 +58,8 @@ public:
 		glGenBuffers(1, &m_IBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, m_indices, GL_STATIC_DRAW);
+		
+		delete [] m_indices;
 		
 		m_shader = new Shader();
 		std::vector<std::string> files = {"shader.vs", "shader.fs"};
@@ -162,6 +168,8 @@ int main(int argc, char **argv)
         display->Update();
     }
 	
+	camera->Destroy();
+	SafeDelete(camera);
 	obj->Destroy();
 	SafeDelete(obj);
 	renderChain->Destroy();

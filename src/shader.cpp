@@ -8,7 +8,7 @@
 
 Shader::Shader()
 {
-		m_shaderProgram = 0;
+	m_shaderProgram = 0;
 }
 
 Shader::~Shader()

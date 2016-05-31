@@ -17,6 +17,20 @@ public:
     Display();
     ~Display();
 	
+	class InputModule
+	{
+	public:
+		
+		InputModule();
+		~InputModule();
+		
+		bool IsKeyPressed(unsigned char key);
+		glm::vec2 GetMouseLocation();
+		
+	private:
+		bool m_keys[256];
+	};
+	
     bool InitDisplay(int width, int height, std::string title);
     void Destroy();
 
@@ -25,7 +39,8 @@ public:
 	
 	glm::mat4 GetProjectionMatrix();
 
-public:
+private:
+	InputModule* m_inputModule;
     SDL_Window* m_window;
     SDL_GLContext m_glcontext;
 	glm::mat4 m_projMatrix;

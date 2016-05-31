@@ -52,7 +52,6 @@ bool Display::InitDisplay(int width, int height, std::string title)
     }
 
     m_projMatrix = glm::perspective(glm::radians(75.0f), (float) width / (float) height, 0.1f, 100.0f);
-
     return true;
 }
 
@@ -71,10 +70,18 @@ void Display::Update()
 
     while(SDL_PollEvent(&event))
     {
-        if(event.type == SDL_QUIT)
-        {
-            m_isClosed = true;
-        }
+		switch(event.type)
+		{
+		case SDL_QUIT:
+			m_isClosed = true;
+			break;
+		case SDL_KEYDOWN:
+			
+			break;
+		case SDL_KEYUP:
+		
+			break;
+		}
     }
 }
 

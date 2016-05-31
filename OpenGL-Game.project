@@ -25,6 +25,7 @@
   <VirtualDirectory Name="Display">
     <File Name="include/display.h"/>
     <File Name="src/display.cpp"/>
+    <File Name="src/inputmodule.cpp"/>
   </VirtualDirectory>
   <VirtualDirectory Name="Model">
     <VirtualDirectory Name="Sprite">
