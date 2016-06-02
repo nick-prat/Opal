@@ -3,11 +3,11 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp> 
+#include <glm/gtc/type_ptr.hpp>
 
-#include "camera.h"
-#include "shader.h"
-#include "display.h"
+#include "Camera/camera.h"
+#include "Model/Shader/shader.h"
+#include "Display/display.h"
 
 class RenderObject
 {

@@ -10,6 +10,15 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+enum InputKey
+{
+	Key_W = 119,
+	Key_A = 97,
+	Key_S = 115,
+	Key_D = 100,
+	Key_Space = 32
+};
+
 class Display
 {
 
@@ -24,8 +33,9 @@ public:
 		InputModule();
 		~InputModule();
 		
-		bool IsKeyPressed(unsigned char key);
-		glm::vec2 GetMouseLocation();
+		bool IsKeyPressed(InputKey key) const;
+		glm::vec2 GetMouseLocation() const;
+		void UpdateKey(int key, bool pressed);
 		
 	private:
 		bool m_keys[256];
@@ -36,7 +46,9 @@ public:
 
     void Update();
     bool IsClosed();
-	
+
+	InputModule* GetInputModule();
+
 	glm::mat4 GetProjectionMatrix();
 
 private:

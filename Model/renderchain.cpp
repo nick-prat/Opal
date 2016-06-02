@@ -1,8 +1,11 @@
 #include <iostream>
 #include <stdlib.h>
+#include <malloc.h>
 
-#include "renderchain.h"
-#include "utilities.hpp"
+#include "Model/renderchain.h"
+#include "Utilities/utilities.hpp"
+
+using Utilities::SafeDelete;
 
 RenderChain::RenderChain()
 {

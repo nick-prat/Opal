@@ -1,15 +1,17 @@
 #include <iostream>
 #include <GL/glew.h>
 #include <GL/gl.h>
-#include "display.h"
 
-using std::cout;
-using std::cerr;
-using std::endl;
+#include "Utilities/utilities.hpp"
+#include "Display/display.h"
+
+using Utilities::SafeDelete;
 
 Display::Display()
 {
     m_window = nullptr;
+    m_glcontext = nullptr;
+    m_inputModule = nullptr;
 	m_isClosed = false;
 	m_projMatrix = glm::mat4(1.0f);
 }
@@ -47,16 +49,21 @@ bool Display::InitDisplay(int width, int height, std::string title)
 
     if(status != GLEW_OK)
     {
-        cerr << "Glew failed to initialize: " << status << endl;
+        std::cout << "Glew failed to initialize: " << status << std::endl;
         return false;
     }
 
     m_projMatrix = glm::perspective(glm::radians(75.0f), (float) width / (float) height, 0.1f, 100.0f);
+
+    m_inputModule = new InputModule();
+
     return true;
 }
 
 void Display::Destroy()
 {
+    SafeDelete(m_inputModule);
+    m_inputModule = nullptr;
     SDL_GL_DeleteContext(m_glcontext);
     SDL_DestroyWindow(m_window);
     SDL_Quit();
@@ -76,13 +83,18 @@ void Display::Update()
 			m_isClosed = true;
 			break;
 		case SDL_KEYDOWN:
-			
+            m_inputModule->UpdateKey(event.key.keysym.sym, true);
 			break;
 		case SDL_KEYUP:
-		
+            m_inputModule->UpdateKey(event.key.keysym.sym, false);
 			break;
 		}
     }
+}
+
+Display::InputModule* Display::GetInputModule()
+{
+    return m_inputModule;
 }
 
 bool Display::IsClosed()
