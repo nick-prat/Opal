@@ -40,6 +40,26 @@ public:
 	private:
 		bool m_keys[256];
 	};
+
+	class CameraModule
+	{
+	public:
+
+		CameraModule();
+		~CameraModule();
+
+		bool InitCamera();
+		void Destroy();
+
+		glm::mat4 GetViewMatrix();
+		void MoveCamera(glm::vec3 delta);
+		void RotateCamera(glm::mat4 rotation);
+
+	protected:
+
+	private:
+		glm::mat4 m_viewMatrix;
+	};
 	
     bool InitDisplay(int width, int height, std::string title);
     void Destroy();
@@ -48,11 +68,13 @@ public:
     bool IsClosed();
 
 	InputModule* GetInputModule();
+	CameraModule* GetCameraModule();
 
 	glm::mat4 GetProjectionMatrix();
 
 private:
 	InputModule* m_inputModule;
+	CameraModule* m_cameraModule;
     SDL_Window* m_window;
     SDL_GLContext m_glcontext;
 	glm::mat4 m_projMatrix;

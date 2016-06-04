@@ -5,7 +5,6 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Camera/camera.h"
 #include "Model/Shader/shader.h"
 #include "Display/display.h"
 
@@ -25,7 +24,6 @@ public:
 	
 protected:
 	Display* m_display;
-	Camera* m_camera;
 	
 private:	
 	glm::mat4 m_translate;

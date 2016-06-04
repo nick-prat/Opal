@@ -57,11 +57,21 @@ bool Display::InitDisplay(int width, int height, std::string title)
 
     m_inputModule = new InputModule();
 
+    m_cameraModule = new CameraModule();
+    if(!m_cameraModule->InitCamera())
+    {
+        std::cout << "Couldn't init camera" << std::endl;
+        return false;
+    }
+
     return true;
 }
 
 void Display::Destroy()
 {
+    m_cameraModule->Destroy();
+    SafeDelete(m_cameraModule);
+    m_cameraModule = nullptr;
     SafeDelete(m_inputModule);
     m_inputModule = nullptr;
     SDL_GL_DeleteContext(m_glcontext);
@@ -88,6 +98,8 @@ void Display::Update()
 		case SDL_KEYUP:
             m_inputModule->UpdateKey(event.key.keysym.sym, false);
 			break;
+        default:
+            break;
 		}
     }
 }
@@ -95,6 +107,11 @@ void Display::Update()
 Display::InputModule* Display::GetInputModule()
 {
     return m_inputModule;
+}
+
+Display::CameraModule* Display::GetCameraModule()
+{
+    return m_cameraModule;
 }
 
 bool Display::IsClosed()

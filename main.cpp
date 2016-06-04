@@ -6,7 +6,6 @@
 
 #include "Utilities/utilities.hpp"
 #include "Display/display.h"
-#include "Camera/camera.h"
 #include "Model/Shader/shader.h"
 #include "Model/renderchain.h"
 
@@ -27,11 +26,9 @@ public:
 	~ShittyObject()
 	{}
 
-	bool InitObject(Display* display, Camera* camera, Display::InputModule* input)
+	bool InitObject(Display* display)
 	{
 		m_display = display;
-		m_camera = camera;
-		m_input = input;
 
 		m_verts = new glm::vec3[4];
 		m_verts[0] = glm::vec3(-1.0f, -1.0f, 0.0f);
@@ -87,7 +84,7 @@ public:
 	{
 		m_shader->UseShader();
 
-		glm::mat4 mvp = m_display->GetProjectionMatrix() * m_camera->GetViewMatrix() * GetWorld();
+		glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * GetWorld();
 
 		GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
 		if(worldLocation == -1)
@@ -100,7 +97,7 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-		if(m_input->IsKeyPressed(Key_Space))
+		if(m_display->GetInputModule()->IsKeyPressed(Key_Space))
 		{
 			glDrawArrays(GL_POINTS, 0, 4);
 		}
@@ -116,7 +113,6 @@ private:
 	glm::vec3* m_verts;
 	uint* m_indices;
 	Shader* m_shader;
-	Display::InputModule* m_input;
 };
 
 int main(int argc, char **argv)
@@ -128,13 +124,6 @@ int main(int argc, char **argv)
 		return 1;
 	}
 
-	Camera* camera = new Camera();
-	if(!camera->InitCamera())
-	{
-		std::cout << "Couldn't init camera" << std::endl;
-		return 1;
-	}
-
 	RenderChain* renderChain = new RenderChain();
 	if(!renderChain->InitRenderChain(10))
 	{
@@ -143,7 +132,7 @@ int main(int argc, char **argv)
 	}
 
 	ShittyObject* obj = new ShittyObject();
-	if(!obj->InitObject(display, camera, display->GetInputModule()))
+	if(!obj->InitObject(display))
 	{
 		std::cout << "Couldn't init shitty object" << std::endl;
 		return 1;
@@ -171,8 +160,6 @@ int main(int argc, char **argv)
         display->Update();
     }
 
-	camera->Destroy();
-	SafeDelete(camera);
 	obj->Destroy();
 	SafeDelete(obj);
 	renderChain->Destroy();
