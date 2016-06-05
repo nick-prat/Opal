@@ -53,12 +53,15 @@ public:
 
 		glm::mat4 GetViewMatrix();
 		void MoveCamera(glm::vec3 delta);
-		void RotateCamera(glm::mat4 rotation);
+		void RotateCamera(glm::vec3 rotation);
 
 	protected:
 
 	private:
 		glm::mat4 m_viewMatrix;
+
+		glm::vec3 m_translation;
+		glm::vec3 m_rotation;
 	};
 	
     bool InitDisplay(int width, int height, std::string title);

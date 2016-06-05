@@ -3,6 +3,8 @@
 Display::CameraModule::CameraModule()
 {
     m_viewMatrix = glm::mat4(1.0f);
+    m_translation = glm::vec3(0.0f, 0.0f, 0.0f);
+    m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 }
 
 Display::CameraModule::~CameraModule()
@@ -29,15 +31,15 @@ glm::mat4 Display::CameraModule::GetViewMatrix()
 {
     //glm::mat4 view = m_viewMatrix *
 
-    return m_viewMatrix;
+    return m_viewMatrix * glm::translate(m_translation);
 }
 
-void Display::CameraModule::RotateCamera(glm::mat4 rotation)
+void Display::CameraModule::RotateCamera(glm::vec rotation)
 {
-
+    m_rotation = m_rotation + rotation;
 }
 
 void Display::CameraModule::MoveCamera(glm::vec3 delta)
 {
-
+    m_translation = m_translation + delta;
 }

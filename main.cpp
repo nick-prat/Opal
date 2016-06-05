@@ -154,6 +154,19 @@ int main(int argc, char **argv)
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		if(display->GetInputModule()->IsKeyPressed(Key_W)) {
+			display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
+		}
+		if(display->GetInputModule()->IsKeyPressed(Key_S)) {
+			display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
+		}
+		if(display->GetInputModule()->IsKeyPressed(Key_A)) {
+			display->GetCameraModule()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
+		}
+		if(display->GetInputModule()->IsKeyPressed(Key_D)) {
+			display->GetCameraModule()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
+		}
+
 		renderChain->AttachRenderObject(obj);
 		renderChain->RenderObjectChain();
 
