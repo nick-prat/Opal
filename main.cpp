@@ -97,10 +97,7 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-		if(m_display->GetInputModule()->IsKeyPressed(Key_Space))
-		{
-			glDrawArrays(GL_POINTS, 0, 4);
-		}
+		glDrawArrays(GL_POINTS, 0, 4);
 
 		//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
 		//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);

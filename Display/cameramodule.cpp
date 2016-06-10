@@ -34,7 +34,7 @@ glm::mat4 Display::CameraModule::GetViewMatrix()
     return m_viewMatrix * glm::translate(m_translation);
 }
 
-void Display::CameraModule::RotateCamera(glm::vec rotation)
+void Display::CameraModule::RotateCamera(glm::vec3 rotation)
 {
     m_rotation = m_rotation + rotation;
 }
