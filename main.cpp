@@ -24,8 +24,19 @@ public:
 		m_indices = nullptr;
     }
 
+	ShittyObject(std::shared_ptr<Display> display)
+	{
+		if(!InitObject(display))
+		{
+			std::cout << "Couldn't init shitty model" << std::endl;
+			throw;
+		}
+	}
+
 	~ShittyObject()
-	{}
+	{
+		Destroy();
+	}
 
 	bool InitObject(std::shared_ptr<Display> display)
 	{
@@ -116,20 +127,8 @@ private:
 int main(int argc, char **argv)
 {
 	auto display = std::make_shared<Display>(1280, 720, "OpenGL Game");
-
-	auto renderChain = std::make_shared<RenderChain>();
-	if(!renderChain->InitRenderChain(10))
-	{
-		std::cout << "Couldn't init render chain" << std::endl;
-		return 1;
-	}
-
-	auto obj = std::make_shared<ShittyObject>();
-	if(!obj->InitObject(display))
-	{
-		std::cout << "Couldn't init shitty object" << std::endl;
-		return 1;
-	}
+	auto renderChain = std::make_shared<RenderChain>(10);
+	auto obj = std::make_shared<ShittyObject>(display);
 
 	//obj->Scale(glm::scale(glm::vec3(0.5f, 1.0f, 1.0f)));
 	//obj->Rotate(glm::rotate(glm::pi<float>(), glm::vec3(0.0f, 0.0f, 1.0f)));
@@ -166,9 +165,5 @@ int main(int argc, char **argv)
         display->Update();
     }
 
-	obj->Destroy();
-	//SafeDelete(obj);
-	renderChain->Destroy();
-	//SafeDelete(renderChain);
 	return 0;
 }

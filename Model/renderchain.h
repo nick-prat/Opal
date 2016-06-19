@@ -5,24 +5,26 @@
 
 class RenderChain
 {
-    public:
-        RenderChain();
-        ~RenderChain();
+public:
+    RenderChain();
+	RenderChain(int num);
+	RenderChain(int num, bool vol);
+    ~RenderChain();
 		
-		bool InitRenderChain(int numObjects, bool vol);
-		bool InitRenderChain(int numObjects);
-		void Destroy();
+	bool InitRenderChain(int numObjects, bool vol);
+	bool InitRenderChain(int numObjects);
+	void Destroy();
 
-        bool AttachRenderObject(RenderObject* object);
-        void RenderObjectChain();
+    bool AttachRenderObject(RenderObject* object);
+    void RenderObjectChain();
 
-    protected:
+protected:
 
-    private:
-		int m_objCount;
-		int m_objLimit;
-		bool m_volatile;
-		RenderObject** m_memPool;
+private:
+	int m_objCount;
+	int m_objLimit;
+	bool m_volatile;
+	RenderObject** m_memPool;
 };
 
 #endif // _RENDERCHAIN_H
