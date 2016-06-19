@@ -1,3 +1,4 @@
+#include <iostream>
 #include "display.h"
 
 Display::CameraModule::CameraModule()
@@ -5,11 +6,17 @@ Display::CameraModule::CameraModule()
     m_viewMatrix = glm::mat4(1.0f);
     m_translation = glm::vec3(0.0f, 0.0f, 0.0f);
     m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+
+    if(!InitCamera())
+    {
+        std::cout << "Couldn't initialize camera!" << std::endl;
+        throw;
+    }
 }
 
 Display::CameraModule::~CameraModule()
 {
-
+    Destroy();
 }
 
 bool Display::CameraModule::InitCamera()

@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <iostream>
 #include <vector>
+#include <memory>
 
 #include "Utilities/utilities.hpp"
 #include "Display/display.h"
@@ -26,7 +27,7 @@ public:
 	~ShittyObject()
 	{}
 
-	bool InitObject(Display* display)
+	bool InitObject(std::shared_ptr<Display> display)
 	{
 		m_display = display;
 
@@ -114,21 +115,16 @@ private:
 
 int main(int argc, char **argv)
 {
-	Display* display = new Display();
-	if(!display->InitDisplay(1280, 720, "OpenGL Game"))
-	{
-		std::cout << "Couldn't init display" << std::endl;
-		return 1;
-	}
+	auto display = std::make_shared<Display>(1280, 720, "OpenGL Game");
 
-	RenderChain* renderChain = new RenderChain();
+	auto renderChain = std::make_shared<RenderChain>();
 	if(!renderChain->InitRenderChain(10))
 	{
 		std::cout << "Couldn't init render chain" << std::endl;
 		return 1;
 	}
 
-	ShittyObject* obj = new ShittyObject();
+	auto obj = std::make_shared<ShittyObject>();
 	if(!obj->InitObject(display))
 	{
 		std::cout << "Couldn't init shitty object" << std::endl;
@@ -164,17 +160,15 @@ int main(int argc, char **argv)
 			display->GetCameraModule()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
 		}
 
-		renderChain->AttachRenderObject(obj);
+		renderChain->AttachRenderObject(obj.get());
 		renderChain->RenderObjectChain();
 
         display->Update();
     }
 
 	obj->Destroy();
-	SafeDelete(obj);
+	//SafeDelete(obj);
 	renderChain->Destroy();
-	SafeDelete(renderChain);
-	display->Destroy();
-	SafeDelete(display);
+	//SafeDelete(renderChain);
 	return 0;
 }

@@ -4,6 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <memory>
 
 #include "Model/Shader/shader.h"
 #include "Display/display.h"
@@ -23,7 +24,7 @@ public:
 	glm::mat4 GetWorld();
 	
 protected:
-	Display* m_display;
+	std::shared_ptr<Display> m_display;
 	
 private:	
 	glm::mat4 m_translate;

@@ -16,9 +16,22 @@ Display::Display()
 	m_projMatrix = glm::mat4(1.0f);
 }
 
+Display::Display(int width, int height, std::string title)
+{
+    m_isClosed = false;
+    m_projMatrix = glm::mat4(1.0f);
+
+    if(!InitDisplay(width, height, title))
+    {
+        std::cout << "Couldn't init display" << std::endl;
+        throw;
+    }
+
+}
+
 Display::~Display()
 {
-
+    Destroy();
 }
 
 glm::mat4 Display::GetProjectionMatrix()
@@ -44,7 +57,7 @@ bool Display::InitDisplay(int width, int height, std::string title)
 	
     m_glcontext = SDL_GL_CreateContext(m_window);
 
-    glewExperimental = true;
+    glewExperimental = (GLboolean) true;
     GLenum status = glewInit();
 
     if(status != GLEW_OK)
@@ -55,14 +68,8 @@ bool Display::InitDisplay(int width, int height, std::string title)
 
     m_projMatrix = glm::perspective(glm::radians(75.0f), (float) width / (float) height, 0.1f, 100.0f);
 
-    m_inputModule = new InputModule();
-
-    m_cameraModule = new CameraModule();
-    if(!m_cameraModule->InitCamera())
-    {
-        std::cout << "Couldn't init camera" << std::endl;
-        return false;
-    }
+    m_inputModule = std::make_shared<InputModule>();
+    m_cameraModule = std::make_shared<CameraModule>();
 
     return true;
 }
@@ -70,9 +77,7 @@ bool Display::InitDisplay(int width, int height, std::string title)
 void Display::Destroy()
 {
     m_cameraModule->Destroy();
-    SafeDelete(m_cameraModule);
     m_cameraModule = nullptr;
-    SafeDelete(m_inputModule);
     m_inputModule = nullptr;
     SDL_GL_DeleteContext(m_glcontext);
     SDL_DestroyWindow(m_window);
@@ -104,12 +109,12 @@ void Display::Update()
     }
 }
 
-Display::InputModule* Display::GetInputModule()
+std::shared_ptr<Display::InputModule> Display::GetInputModule()
 {
     return m_inputModule;
 }
 
-Display::CameraModule* Display::GetCameraModule()
+std::shared_ptr<Display::CameraModule> Display::GetCameraModule()
 {
     return m_cameraModule;
 }
@@ -118,4 +123,6 @@ bool Display::IsClosed()
 {
     return m_isClosed;
 }
+
+
 

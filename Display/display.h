@@ -5,6 +5,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 #include <SDL2/SDL_render.h>
+#include <memory>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
@@ -24,6 +25,7 @@ class Display
 
 public:
     Display();
+	Display(int width, int height, std::string title);
     ~Display();
 	
 	class InputModule
@@ -70,14 +72,14 @@ public:
     void Update();
     bool IsClosed();
 
-	InputModule* GetInputModule();
-	CameraModule* GetCameraModule();
+	std::shared_ptr<InputModule> GetInputModule();
+	std::shared_ptr<CameraModule> GetCameraModule();
 
 	glm::mat4 GetProjectionMatrix();
 
 private:
-	InputModule* m_inputModule;
-	CameraModule* m_cameraModule;
+	std::shared_ptr<InputModule> m_inputModule;
+	std::shared_ptr<CameraModule> m_cameraModule;
     SDL_Window* m_window;
     SDL_GLContext m_glcontext;
 	glm::mat4 m_projMatrix;
