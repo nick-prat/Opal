@@ -30,7 +30,7 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
 	
 	GLint success;
 	GLchar info[1024];
-	unsigned int size = types.size();
+	unsigned long size = types.size();
 	m_shaderObj.reserve(size);
 	
 	m_shaderProgram = glCreateProgram();
@@ -51,9 +51,9 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
 		text[0] = new GLchar[buffer.str().length() + 1];
 		strcpy(text[0], buffer.str().c_str());
 		GLint length[1];
-		length[0]= buffer.str().length();
+		length[0]= (GLint)buffer.str().length();
 		
-		glShaderSource(m_shaderObj[i], 1, text, length);
+		glShaderSource(m_shaderObj[i], 1, (const GLchar *const *) text, length);
 		glCompileShader(m_shaderObj[i]);
 		
 		glGetShaderiv(m_shaderObj[i], GL_COMPILE_STATUS, &success);
@@ -65,6 +65,7 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
 		}
 		
 		glAttachShader(m_shaderProgram, m_shaderObj[i]);
+		delete[] text[0];
 	}
 	
 	glLinkProgram(m_shaderProgram);

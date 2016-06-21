@@ -19,9 +19,6 @@ public:
     {
         m_VBO = 0;
 		m_IBO = 0;
-		m_verts = nullptr;
-		m_shader = nullptr;
-		m_indices = nullptr;
     }
 
 	ShittyObject(std::shared_ptr<Display> display)
@@ -42,7 +39,7 @@ public:
 	{
 		m_display = display;
 
-		m_verts = new glm::vec3[4];
+		m_verts.reserve(4);
 		m_verts[0] = glm::vec3(-1.0f, -1.0f, 0.0f);
 		m_verts[1] = glm::vec3(1.0f, -1.0f, 0.0f);
 		m_verts[2] = glm::vec3(-1.0f, 1.0f, 0.0f);
@@ -50,11 +47,9 @@ public:
 
 		glGenBuffers(1, &m_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts.data(), GL_STATIC_DRAW);
 
-		delete [] m_verts;
-
-		m_indices = new uint[6];
+		m_indices.reserve(6);
 		m_indices[0] = 0;
 		m_indices[1] = 1;
 		m_indices[2] = 2;
@@ -64,11 +59,9 @@ public:
 
 		glGenBuffers(1, &m_IBO);
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, m_indices, GL_STATIC_DRAW);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, m_indices.data(), GL_STATIC_DRAW);
 
-		delete [] m_indices;
-
-		m_shader = new Shader();
+		m_shader = std::make_unique<Shader>();
 		//std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
 		//std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
 		std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs", "Shaders/shader.gs"};
@@ -88,8 +81,6 @@ public:
 		m_VBO = 0;
 		glDeleteBuffers(1, &m_IBO);
 		m_IBO = 0;
-		m_shader->Destroy();
-		SafeDelete(m_shader);
 	}
 
 	void Render()
@@ -119,9 +110,9 @@ public:
 private:
     GLuint m_VBO;
 	GLuint m_IBO;
-	glm::vec3* m_verts;
-	uint* m_indices;
-	Shader* m_shader;
+	std::vector<glm::vec3> m_verts;
+	std::vector<uint> m_indices;
+	std::unique_ptr<Shader> m_shader;
 };
 
 int main(int argc, char **argv)
