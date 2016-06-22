@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <chrono>
 
 #include "Utilities/utilities.hpp"
 #include "Display/display.h"
@@ -134,6 +135,8 @@ int main(int argc, char **argv)
 	glDepthFunc(GL_LESS);
 	while(!display->IsClosed())
     {
+		auto start = std::chrono::high_resolution_clock::now();
+
 		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -154,6 +157,10 @@ int main(int argc, char **argv)
 		renderChain->RenderObjectChain();
 
         display->Update();
+
+		auto finish = std::chrono::high_resolution_clock::now();
+
+		std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
 
 	return 0;
