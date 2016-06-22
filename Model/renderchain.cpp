@@ -15,18 +15,20 @@ RenderChain::RenderChain()
 RenderChain::RenderChain(int num)
 {
 	m_memPool = nullptr;
-	if(InitRenderChain(num))
+	if(!InitRenderChain(num))
 	{
 		std::cout << "Couldn't initialize render chain!" << std::endl;
+		throw;
 	}
 }
 
 RenderChain::RenderChain(int num, bool vol)
 {
 	m_memPool = nullptr;
-	if(InitRenderChain(num, vol))
+	if(!InitRenderChain(num, vol))
 	{
 		std::cout << "Couldn't initialize render chain!" << std::endl;
+		throw;
 	}
 }
 
@@ -51,7 +53,8 @@ bool RenderChain::InitRenderChain(int num, bool vol)
 
 void RenderChain::Destroy()
 {
-	SafeDelete(m_memPool);
+	//SafeDelete(m_memPool);
+	delete [] m_memPool;
 	m_memPool = nullptr;
 	m_objCount = 0;
 }

@@ -76,9 +76,6 @@ bool Display::InitDisplay(int width, int height, std::string title)
 
 void Display::Destroy()
 {
-    m_cameraModule->Destroy();
-    m_cameraModule = nullptr;
-    m_inputModule = nullptr;
     SDL_GL_DeleteContext(m_glcontext);
     SDL_DestroyWindow(m_window);
     SDL_Quit();
