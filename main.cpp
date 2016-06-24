@@ -163,6 +163,7 @@ int main(int argc, char **argv)
 		{
 			display->GetCameraModule()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
 		}
+		
 		if(display->GetInputModule()->IsKeyPressed(Key_Space))
 		{
 			std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
