@@ -64,10 +64,10 @@ public:
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, m_indices.data(), GL_STATIC_DRAW);
 
         m_shader = std::make_unique<Shader>();
-        //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
-        //std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
-        std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs", "Shaders/shader.gs"};
-        std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
+        std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
+        std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
+        //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs", "Shaders/shader.gs"};
+        //std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
         if(!m_shader->InitShader(files, types))
         {
             std::cout << "Couldn't initialize shader" << std::endl;
