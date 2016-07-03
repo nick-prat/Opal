@@ -1,6 +1,5 @@
 #include <iostream>
 #include <GL/glew.h>
-#include <GL/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -77,7 +76,6 @@ bool Display::InitDisplay(int width, int height, std::string title)
 
     glewExperimental = (GLboolean) true;
     GLenum status = glewInit();
-
     if(status != GLEW_OK)
     {
         std::cout << "Glew failed to initialize: " << status << std::endl;

@@ -1,5 +1,4 @@
 #include <GL/glew.h>
-#include <GL/gl.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <iostream>
@@ -50,6 +49,7 @@ public:
         glGenBuffers(1, &m_VBO);
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts.data(), GL_STATIC_DRAW);
+
         m_indices.reserve(6);
         m_indices[0] = 0;
         m_indices[1] = 1;
@@ -72,7 +72,6 @@ public:
             std::cout << "Couldn't initialize shader" << std::endl;
             return false;
         }
-
         return true;
     }
 
@@ -120,6 +119,7 @@ int main(int argc, char **argv)
 {
     auto display = std::make_shared<Display>(1280, 720, "OpenGL Game");
     auto renderChain = std::make_shared<RenderChain>(10);
+    std::cout << "Error " << gluErrorString(glGetError()) << std::endl;
 
     //TODO figure out why this won't render on OGL 3.3
     auto obj = std::make_shared<ShittyObject>(display);
@@ -170,7 +170,6 @@ int main(int argc, char **argv)
         {
             std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
         }
-
     }
 
     return 0;
