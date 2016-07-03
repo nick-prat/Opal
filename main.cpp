@@ -50,7 +50,6 @@ public:
         glGenBuffers(1, &m_VBO);
         glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts.data(), GL_STATIC_DRAW);
-
         m_indices.reserve(6);
         m_indices[0] = 0;
         m_indices[1] = 1;
@@ -121,6 +120,8 @@ int main(int argc, char **argv)
 {
     auto display = std::make_shared<Display>(1280, 720, "OpenGL Game");
     auto renderChain = std::make_shared<RenderChain>(10);
+
+    //TODO figure out why this won't render on OGL 3.3
     auto obj = std::make_shared<ShittyObject>(display);
 
     //obj->Scale(glm::scale(glm::vec3(0.5f, 1.0f, 1.0f)));

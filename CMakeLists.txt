@@ -4,7 +4,7 @@ add_definitions(-DVERSION_MIN)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories("./")
 set(SOURCE_FILES main.cpp Model/renderchain.cpp Model/renderobject.cpp Display/display.cpp Display/inputmodule.cpp
-        Model/Shader/shader.cpp Model/Sprite/sprite.cpp Utilities/utilities.hpp Display/cameramodule.cpp)
+        Model/Shader/shader.cpp Model/Sprite/sprite.cpp Utilities/utilities.hpp Display/cameramodule.cpp Utilities/sadf.cpp)
 add_executable(OpenGL ${SOURCE_FILES})
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
