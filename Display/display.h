@@ -13,11 +13,11 @@
 
 enum InputKey
 {
-	Key_W = 119,
-	Key_A = 97,
-	Key_S = 115,
-	Key_D = 100,
-	Key_Space = 32
+    Key_W = 119,
+    Key_A = 97,
+    Key_S = 115,
+    Key_D = 100,
+    Key_Space = 32
 };
 
 class Display
@@ -25,64 +25,64 @@ class Display
 
 public:
     Display();
-	Display(int width, int height, std::string title);
+    Display(int width, int height, std::string title);
     ~Display();
-	
-	class InputModule
-	{
-	public:
-		
-		InputModule();
-		~InputModule();
-		
-		bool IsKeyPressed(InputKey key) const;
-		glm::vec2 GetMouseLocation() const;
-		void UpdateKey(int key, bool pressed);
-		
-	private:
-		bool m_keys[256];
-	};
 
-	class CameraModule
-	{
-	public:
+    class InputModule
+    {
+    public:
 
-		CameraModule();
-		~CameraModule();
+        InputModule();
+        ~InputModule();
 
-		bool InitCamera();
-		void Destroy();
+        bool IsKeyPressed(InputKey key) const;
+        glm::vec2 GetMouseLocation() const;
+        void UpdateKey(int key, bool pressed);
 
-		glm::mat4 GetViewMatrix();
-		void MoveCamera(glm::vec3 delta);
-		void RotateCamera(glm::vec3 rotation);
+    private:
+        bool m_keys[256];
+    };
 
-	protected:
+    class CameraModule
+    {
+    public:
 
-	private:
-		glm::mat4 m_viewMatrix;
+        CameraModule();
+        ~CameraModule();
 
-		glm::vec3 m_translation;
-		glm::vec3 m_rotation;
-	};
-	
+        bool InitCamera();
+        void Destroy();
+
+        glm::mat4 GetViewMatrix();
+        void MoveCamera(glm::vec3 delta);
+        void RotateCamera(glm::vec3 rotation);
+
+    protected:
+
+    private:
+        glm::mat4 m_viewMatrix;
+
+        glm::vec3 m_translation;
+        glm::vec3 m_rotation;
+    };
+
     bool InitDisplay(int width, int height, std::string title);
     void Destroy();
 
     void Update();
     bool IsClosed();
 
-	std::shared_ptr<InputModule> GetInputModule();
-	std::shared_ptr<CameraModule> GetCameraModule();
+    std::shared_ptr<InputModule> GetInputModule();
+    std::shared_ptr<CameraModule> GetCameraModule();
 
-	glm::mat4 GetProjectionMatrix();
+    glm::mat4 GetProjectionMatrix();
 
 private:
-	std::shared_ptr<InputModule> m_inputModule;
-	std::shared_ptr<CameraModule> m_cameraModule;
+    std::shared_ptr<InputModule> m_inputModule;
+    std::shared_ptr<CameraModule> m_cameraModule;
     SDL_Window* m_window;
-    SDL_GLContext m_glcontext;
-	glm::mat4 m_projMatrix;
+    SDL_GLContext m_glContext;
+    glm::mat4 m_projMatrix;
     bool m_isClosed;
 };
 

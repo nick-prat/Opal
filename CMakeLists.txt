@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 project(OpenGL)
-
+add_definitions(-DVERSION_MIN)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories("./")
 set(SOURCE_FILES main.cpp Model/renderchain.cpp Model/renderobject.cpp Display/display.cpp Display/inputmodule.cpp
