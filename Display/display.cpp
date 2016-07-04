@@ -50,10 +50,10 @@ bool Display::InitDisplay(int width, int height, std::string title, int argc, ch
     glutInitWindowPosition(100, 100);
     glutCreateWindow(title.c_str());
     glutDisplayFunc(callback);
-
+    
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    std::cout << "Entering main loop" << std::endl;
+    // TODO fill callback with render information
     glutMainLoop();
     std::cout << "Exiting main loop" << std::endl;
 
