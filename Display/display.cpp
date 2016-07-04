@@ -10,19 +10,17 @@ using Utilities::SafeDelete;
 
 Display::Display()
 {
-    m_window = nullptr;
-    m_glContext = nullptr;
     m_inputModule = nullptr;
     m_isClosed = false;
     m_projMatrix = glm::mat4(1.0f);
 }
 
-Display::Display(int width, int height, std::string title)
+Display::Display(int width, int height, std::string title, int argc, char** args)
 {
     m_isClosed = false;
     m_projMatrix = glm::mat4(1.0f);
 
-    if(!InitDisplay(width, height, title))
+    if(!InitDisplay(width, height, title, argc, args))
     {
         std::cout << "Couldn't init display" << std::endl;
         throw;
@@ -39,41 +37,25 @@ glm::mat4 Display::GetProjectionMatrix()
     return m_projMatrix;
 }
 
-bool Display::InitDisplay(int width, int height, std::string title)
+void callback()
 {
-    if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
-    {
-        std::cout << "Couldn't initialize SDL: " << SDL_GetError() << std::endl;
-        return false;
-    }
 
-    SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-    SDL_GL_SetAttribute(SDL_GL_BUFFER_SIZE, 32);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+}
 
-#ifdef VERSION_MIN
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
-#endif
+bool Display::InitDisplay(int width, int height, std::string title, int argc, char** args)
+{
+    glutInit(&argc, args);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
+    glutInitWindowSize(width, height);
+    glutInitWindowPosition(100, 100);
+    glutCreateWindow(title.c_str());
+    glutDisplayFunc(callback);
 
-    m_window = SDL_CreateWindow(title.c_str(), 0, 0, width, height, SDL_WINDOW_OPENGL);
-    if(m_window == nullptr)
-    {
-        std::cout << "Couldn't create SDL window" << std::endl;
-        return false;
-    }
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    m_glContext = SDL_GL_CreateContext(m_window);
-    if(m_glContext == nullptr)
-    {
-        std::cout << "Couldn't create gl context" << std::endl;
-        return false;
-    }
+    std::cout << "Entering main loop" << std::endl;
+    glutMainLoop();
+    std::cout << "Exiting main loop" << std::endl;
 
     glewExperimental = GL_TRUE;
     GLenum status = glewInit();
@@ -92,34 +74,12 @@ bool Display::InitDisplay(int width, int height, std::string title)
 
 void Display::Destroy()
 {
-    SDL_GL_DeleteContext(m_glContext);
-    SDL_DestroyWindow(m_window);
-    SDL_Quit();
+
 }
 
 void Display::Update()
 {
-    SDL_GL_SwapWindow(m_window);
 
-    SDL_Event event;
-
-    while(SDL_PollEvent(&event))
-    {
-        switch(event.type)
-        {
-        case SDL_QUIT:
-            m_isClosed = true;
-            break;
-        case SDL_KEYDOWN:
-            m_inputModule->UpdateKey(event.key.keysym.sym, true);
-            break;
-        case SDL_KEYUP:
-            m_inputModule->UpdateKey(event.key.keysym.sym, false);
-            break;
-        default:
-            break;
-        }
-    }
 }
 
 std::shared_ptr<Display::InputModule> Display::GetInputModule()

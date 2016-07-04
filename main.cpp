@@ -117,7 +117,7 @@ private:
 
 int main(int argc, char **argv)
 {
-    auto display = std::make_shared<Display>(1280, 720, "OpenGL Game");
+    auto display = std::make_shared<Display>(1280, 720, "OpenGL Project", argc, argv);
     auto renderChain = std::make_shared<RenderChain>(10);
     std::cout << "Error main() : " << gluErrorString(glGetError()) << std::endl;
 

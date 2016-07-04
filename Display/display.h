@@ -2,9 +2,7 @@
 #define _DISPLAY_H
 
 #include <string>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
-#include <SDL2/SDL_render.h>
+#include <GL/freeglut.h>
 #include <memory>
 
 #include <glm/glm.hpp>
@@ -25,7 +23,7 @@ class Display
 
 public:
     Display();
-    Display(int width, int height, std::string title);
+    Display(int width, int height, std::string title, int argc, char** args);
     ~Display();
 
     class InputModule
@@ -66,7 +64,7 @@ public:
         glm::vec3 m_rotation;
     };
 
-    bool InitDisplay(int width, int height, std::string title);
+    bool InitDisplay(int width, int height, std::string title, int argc, char** args);
     void Destroy();
 
     void Update();
@@ -80,8 +78,6 @@ public:
 private:
     std::shared_ptr<InputModule> m_inputModule;
     std::shared_ptr<CameraModule> m_cameraModule;
-    SDL_Window* m_window;
-    SDL_GLContext m_glContext;
     glm::mat4 m_projMatrix;
     bool m_isClosed;
 };
