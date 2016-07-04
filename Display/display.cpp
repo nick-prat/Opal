@@ -58,7 +58,7 @@ bool Display::InitDisplay(int width, int height, std::string title)
 #ifdef VERSION_MIN
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY );
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE );
 #endif
 
     m_window = SDL_CreateWindow(title.c_str(), 0, 0, width, height, SDL_WINDOW_OPENGL);
@@ -75,7 +75,7 @@ bool Display::InitDisplay(int width, int height, std::string title)
         return false;
     }
 
-    glewExperimental = (GLboolean) true;
+    glewExperimental = GL_TRUE;
     GLenum status = glewInit();
     if(status != GLEW_OK)
     {
