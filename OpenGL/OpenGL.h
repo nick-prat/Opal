@@ -10,7 +10,7 @@
 
 #include <Model/renderchain.h>
 #include <Display/display.h>
-#include <Model/ShittyObject.h>
+#include <Model/shittyObject.h>
 
 class OpenGL
 {
@@ -18,14 +18,15 @@ public:
     OpenGL();
     ~OpenGL();
 
-    bool InitOpenGL();
-    void Destroy();
-
     void DisplayFunc();
 
-    static bool CreateInstance();
+    static bool CreateInstance(int width, int height, std::string title);
     static void DestroyInstance();
     static std::shared_ptr<OpenGL> getInstance();
+
+private:
+    bool InitOpenGL(int width, int height, std::string title);
+    void Destroy();
 
 private:
     static std::shared_ptr<OpenGL> m_openGL;

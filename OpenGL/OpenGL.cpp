@@ -21,25 +21,26 @@ OpenGL::OpenGL()
 OpenGL::~OpenGL()
 {}
 
-bool OpenGL::InitOpenGL()
+bool OpenGL::InitOpenGL(int width, int height, std::string title)
 {
-    try
-    {
-        m_display = std::make_shared<Display>();
-        m_renderChain = std::make_shared<RenderChain>();
-    }
-    catch (const char* error)
-    {
-        std::cout << "Error: " << error << std::endl;
-        return false;
-    }
-
     // TODO replace GLEW with gl function look ups
     glewExperimental = GL_TRUE;
     GLenum status = glewInit();
     if(status != GLEW_OK)
     {
         std::cout << "Glew failed to initialize: " << status << std::endl;
+        return false;
+    }
+
+    try
+    {
+        m_display = std::make_shared<Display>(width, height, title);
+        m_renderChain = std::make_shared<RenderChain>();
+        m_shittyObject = std::make_shared<ShittyObject>(m_display);
+    }
+    catch (const char* error)
+    {
+        std::cout << "Error: " << error << std::endl;
         return false;
     }
 
@@ -68,7 +69,6 @@ void OpenGL::DisplayFunc()
 {
     auto start = std::chrono::high_resolution_clock::now();
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_renderChain->AttachRenderObject(m_shittyObject.get());
@@ -111,7 +111,7 @@ void OpenGL::DestroyInstance()
     m_openGL = nullptr;
 }
 
-bool OpenGL::CreateInstance()
+bool OpenGL::CreateInstance(int width, int height, std::string title)
 {
     if(m_openGL != nullptr)
     {
@@ -120,7 +120,7 @@ bool OpenGL::CreateInstance()
     }
 
     m_openGL = std::make_shared<OpenGL>();
-    if(!m_openGL->InitOpenGL())
+    if(!m_openGL->InitOpenGL(width, height, title))
     {
         std::cout << "Couldn't initialize OpenGL project" << std::endl;
         return false;

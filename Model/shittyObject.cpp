@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "ShittyObject.h"
+#include "shittyObject.h"
 
 ShittyObject::ShittyObject()
 {
@@ -14,10 +14,12 @@ ShittyObject::ShittyObject()
 
 ShittyObject::ShittyObject(std::shared_ptr<Display> display)
 {
+    m_VBO = 0;
+    m_IBO = 0;
+
     if(!InitObject(display))
     {
-        std::cout << "Couldn't init shitty model" << std::endl;
-        throw;
+        throw "Couldn't init shitty model";
     }
 }
 
@@ -53,10 +55,10 @@ bool ShittyObject::InitObject(std::shared_ptr<Display> display)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, m_indices.data(), GL_STATIC_DRAW);
 
     m_shader = std::make_unique<Shader>();
-    std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
-    std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
-    //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs", "Shaders/shader.gs"};
-    //std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
+    //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
+    //std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
+    std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs", "Shaders/shader.gs"};
+    std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
     if(!m_shader->InitShader(files, types))
     {
         std::cout << "Couldn't initialize shader" << std::endl;
