@@ -1,5 +1,4 @@
 #include <iostream>
-#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -11,13 +10,11 @@ using Utilities::SafeDelete;
 Display::Display()
 {
     m_inputModule = nullptr;
-    m_isClosed = false;
     m_projMatrix = glm::mat4(1.0f);
 }
 
 Display::Display(int width, int height, std::string title)
 {
-    m_isClosed = false;
     m_projMatrix = glm::mat4(1.0f);
 
     if(!InitDisplay(width, height, title))
@@ -36,11 +33,6 @@ glm::mat4 Display::GetProjectionMatrix()
     return m_projMatrix;
 }
 
-void callback()
-{
-
-}
-
 bool Display::InitDisplay(int width, int height, std::string title)
 {
 
@@ -56,11 +48,6 @@ void Display::Destroy()
 
 }
 
-void Display::Update()
-{
-
-}
-
 std::shared_ptr<Display::InputModule> Display::GetInputModule()
 {
     return m_inputModule;
@@ -69,11 +56,6 @@ std::shared_ptr<Display::InputModule> Display::GetInputModule()
 std::shared_ptr<Display::CameraModule> Display::GetCameraModule()
 {
     return m_cameraModule;
-}
-
-bool Display::IsClosed()
-{
-    return m_isClosed;
 }
 
 

@@ -67,9 +67,6 @@ public:
     bool InitDisplay(int width, int height, std::string title);
     void Destroy();
 
-    void Update();
-    bool IsClosed();
-
     std::shared_ptr<InputModule> GetInputModule();
     std::shared_ptr<CameraModule> GetCameraModule();
 
@@ -79,7 +76,6 @@ private:
     std::shared_ptr<InputModule> m_inputModule;
     std::shared_ptr<CameraModule> m_cameraModule;
     glm::mat4 m_projMatrix;
-    bool m_isClosed;
 };
 
 #endif // _DISPLAY_H

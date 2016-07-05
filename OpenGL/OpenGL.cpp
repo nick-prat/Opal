@@ -74,7 +74,7 @@ void OpenGL::DisplayFunc()
     m_renderChain->AttachRenderObject(m_shittyObject.get());
     m_renderChain->RenderObjectChain();
 
-    m_display->Update();
+    glutSwapBuffers();
 
     auto finish = std::chrono::high_resolution_clock::now();
 
@@ -101,8 +101,6 @@ void OpenGL::DisplayFunc()
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
      */
-
-    glutSwapBuffers();
 }
 
 void OpenGL::DestroyInstance()
