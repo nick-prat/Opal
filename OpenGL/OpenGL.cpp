@@ -16,30 +16,32 @@ OpenGL::OpenGL()
     m_renderChain = nullptr;
     m_shittyObject = nullptr;
     m_display = nullptr;
+    m_lowestTime = 0;
 }
 
 OpenGL::~OpenGL()
 {}
 
-bool OpenGL::InitOpenGL()
+bool OpenGL::InitOpenGL(int width, int height, std::string title)
 {
-    try
-    {
-        m_display = std::make_shared<Display>();
-        m_renderChain = std::make_shared<RenderChain>();
-    }
-    catch (const char* error)
-    {
-        std::cout << "Error: " << error << std::endl;
-        return false;
-    }
-
     // TODO replace GLEW with gl function look ups
     glewExperimental = GL_TRUE;
     GLenum status = glewInit();
     if(status != GLEW_OK)
     {
         std::cout << "Glew failed to initialize: " << status << std::endl;
+        return false;
+    }
+
+    try
+    {
+        m_display = std::make_shared<Display>(width, height, title);
+        m_renderChain = std::make_shared<RenderChain>(10);
+        m_shittyObject = std::make_shared<ShittyObject>(m_display);
+    }
+    catch (const char* error)
+    {
+        std::cout << "Error: " << error << std::endl;
         return false;
     }
 
@@ -68,7 +70,6 @@ void OpenGL::DisplayFunc()
 {
     auto start = std::chrono::high_resolution_clock::now();
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     m_renderChain->AttachRenderObject(m_shittyObject.get());
@@ -77,7 +78,12 @@ void OpenGL::DisplayFunc()
     glutSwapBuffers();
 
     auto finish = std::chrono::high_resolution_clock::now();
-
+    
+    /*if(time < m_lowestTime || m_lowestTime == 0)
+    {
+        std::cout << "Fastest render : " << time << std::endl;
+        m_lowestTime = time;
+    }*/
     /*
     if(m_display->GetInputModule()->IsKeyPressed(Key_W))
     {
@@ -109,7 +115,7 @@ void OpenGL::DestroyInstance()
     m_openGL = nullptr;
 }
 
-bool OpenGL::CreateInstance()
+bool OpenGL::CreateInstance(int width, int height, std::string title)
 {
     if(m_openGL != nullptr)
     {
@@ -118,7 +124,7 @@ bool OpenGL::CreateInstance()
     }
 
     m_openGL = std::make_shared<OpenGL>();
-    if(!m_openGL->InitOpenGL())
+    if(!m_openGL->InitOpenGL(width, height, title))
     {
         std::cout << "Couldn't initialize OpenGL project" << std::endl;
         return false;

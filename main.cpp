@@ -18,7 +18,7 @@ int main(int argc, char **args)
     glutIdleFunc([]() { OpenGL::getInstance()->DisplayFunc(); });
 
     // Create instance of game
-    if(!OpenGL::CreateInstance())
+    if(!OpenGL::CreateInstance(width, height, title))
     {
         return -1;
     }
