@@ -35,7 +35,7 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
     try
     {
         m_display = std::make_shared<Display>(width, height, title);
-        m_renderChain = std::make_shared<RenderChain>();
+        m_renderChain = std::make_shared<RenderChain>(10);
         m_shittyObject = std::make_shared<ShittyObject>(m_display);
     }
     catch (const char* error)
