@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <glm/glm.hpp>
-#include <SDL2/SDL.h>
+
+typedef unsigned int uint;
 
 namespace Utilities
 {

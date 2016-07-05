@@ -23,7 +23,7 @@ class Display
 
 public:
     Display();
-    Display(int width, int height, std::string title, int argc, char** args);
+    Display(int width, int height, std::string title);
     ~Display();
 
     class InputModule
@@ -64,7 +64,7 @@ public:
         glm::vec3 m_rotation;
     };
 
-    bool InitDisplay(int width, int height, std::string title, int argc, char** args);
+    bool InitDisplay(int width, int height, std::string title);
     void Destroy();
 
     void Update();

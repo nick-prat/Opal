@@ -15,15 +15,14 @@ Display::Display()
     m_projMatrix = glm::mat4(1.0f);
 }
 
-Display::Display(int width, int height, std::string title, int argc, char** args)
+Display::Display(int width, int height, std::string title)
 {
     m_isClosed = false;
     m_projMatrix = glm::mat4(1.0f);
 
-    if(!InitDisplay(width, height, title, argc, args))
+    if(!InitDisplay(width, height, title))
     {
-        std::cout << "Couldn't init display" << std::endl;
-        throw;
+        throw "Couldn't init display";
     }
 }
 
@@ -42,28 +41,8 @@ void callback()
 
 }
 
-bool Display::InitDisplay(int width, int height, std::string title, int argc, char** args)
+bool Display::InitDisplay(int width, int height, std::string title)
 {
-    glutInit(&argc, args);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
-    glutInitWindowSize(width, height);
-    glutInitWindowPosition(100, 100);
-    glutCreateWindow(title.c_str());
-    glutDisplayFunc(callback);
-    
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-    // TODO fill callback with render information
-    glutMainLoop();
-    std::cout << "Exiting main loop" << std::endl;
-
-    glewExperimental = GL_TRUE;
-    GLenum status = glewInit();
-    if(status != GLEW_OK)
-    {
-        std::cout << "Glew failed to initialize: " << status << std::endl;
-        return false;
-    }
 
     m_projMatrix = glm::perspective(glm::radians(75.0f), (float) width / (float) height, 0.1f, 100.0f);
     m_inputModule = std::make_shared<InputModule>();
