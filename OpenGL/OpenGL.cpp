@@ -16,6 +16,7 @@ OpenGL::OpenGL()
     m_renderChain = nullptr;
     m_shittyObject = nullptr;
     m_display = nullptr;
+    m_lowestTime = 0;
 }
 
 OpenGL::~OpenGL()
@@ -77,7 +78,13 @@ void OpenGL::DisplayFunc()
     m_display->Update();
 
     auto finish = std::chrono::high_resolution_clock::now();
-
+    long time = std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count();
+    std::cout << "Render time: " << time << std::endl;
+    /*if(time < m_lowestTime || m_lowestTime == 0)
+    {
+        std::cout << "Fastest render : " << time << std::endl;
+        m_lowestTime = time;
+    }*/
     /*
     if(m_display->GetInputModule()->IsKeyPressed(Key_W))
     {

@@ -32,6 +32,7 @@ private:
     static std::shared_ptr<OpenGL> m_openGL;
 
 private:
+    long m_lowestTime;
     std::shared_ptr<Display> m_display;
     std::shared_ptr<RenderChain> m_renderChain;
     std::shared_ptr<ShittyObject> m_shittyObject;
