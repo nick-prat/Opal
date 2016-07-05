@@ -78,8 +78,7 @@ void OpenGL::DisplayFunc()
     m_display->Update();
 
     auto finish = std::chrono::high_resolution_clock::now();
-    long time = std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count();
-    std::cout << "Render time: " << time << std::endl;
+    
     /*if(time < m_lowestTime || m_lowestTime == 0)
     {
         std::cout << "Fastest render : " << time << std::endl;
