@@ -7,13 +7,13 @@
 
 using Utilities::SafeDelete;
 
-Display::Display()
+GlutDisplay::GlutDisplay()
 {
     m_inputModule = nullptr;
     m_projMatrix = glm::mat4(1.0f);
 }
 
-Display::Display(int width, int height, std::string title)
+GlutDisplay::GlutDisplay(int width, int height, std::string title)
 {
     m_projMatrix = glm::mat4(1.0f);
 
@@ -23,17 +23,17 @@ Display::Display(int width, int height, std::string title)
     }
 }
 
-Display::~Display()
+GlutDisplay::~GlutDisplay()
 {
     Destroy();
 }
 
-glm::mat4 Display::GetProjectionMatrix()
+glm::mat4 GlutDisplay::GetProjectionMatrix()
 {
     return m_projMatrix;
 }
 
-bool Display::InitDisplay(int width, int height, std::string title)
+bool GlutDisplay::InitDisplay(int width, int height, std::string title)
 {
 
     m_projMatrix = glm::perspective(glm::radians(75.0f), (float) width / (float) height, 0.1f, 100.0f);
@@ -43,17 +43,17 @@ bool Display::InitDisplay(int width, int height, std::string title)
     return true;
 }
 
-void Display::Destroy()
+void GlutDisplay::Destroy()
 {
 
 }
 
-std::shared_ptr<Display::InputModule> Display::GetInputModule()
+std::shared_ptr<GlutDisplay::InputModule> GlutDisplay::GetInputModule()
 {
     return m_inputModule;
 }
 
-std::shared_ptr<Display::CameraModule> Display::GetCameraModule()
+std::shared_ptr<GlutDisplay::CameraModule> GlutDisplay::GetCameraModule()
 {
     return m_cameraModule;
 }

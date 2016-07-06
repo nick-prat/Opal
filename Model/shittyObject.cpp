@@ -12,7 +12,7 @@ ShittyObject::ShittyObject()
     m_IBO = 0;
 }
 
-ShittyObject::ShittyObject(std::shared_ptr<Display> display)
+ShittyObject::ShittyObject(std::shared_ptr<GlutDisplay> display)
 {
     m_VBO = 0;
     m_IBO = 0;
@@ -28,7 +28,7 @@ ShittyObject::~ShittyObject()
     Destroy();
 }
 
-bool ShittyObject::InitObject(std::shared_ptr<Display> display)
+bool ShittyObject::InitObject(std::shared_ptr<GlutDisplay> display)
 {
     m_display = display;
 
@@ -38,9 +38,9 @@ bool ShittyObject::InitObject(std::shared_ptr<Display> display)
     m_verts[2] = glm::vec3(-1.0f, 1.0f, 0.0f);
     m_verts[3] = glm::vec3(1.0f, 1.0f, 0.0f);
 
-    glGenBuffers(1, &m_VBO);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts.data(), GL_STATIC_DRAW);
+    gl::glGenBuffers(1, &m_VBO);
+    gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts.data(), GL_STATIC_DRAW);
 
     m_indices.reserve(6);
     m_indices[0] = 0;
@@ -50,9 +50,9 @@ bool ShittyObject::InitObject(std::shared_ptr<Display> display)
     m_indices[4] = 3;
     m_indices[5] = 2;
 
-    glGenBuffers(1, &m_IBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, m_indices.data(), GL_STATIC_DRAW);
+    gl::glGenBuffers(1, &m_IBO);
+    gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+    gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 6, m_indices.data(), GL_STATIC_DRAW);
 
     m_shader = std::make_unique<Shader>();
     //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
@@ -69,9 +69,9 @@ bool ShittyObject::InitObject(std::shared_ptr<Display> display)
 
 void ShittyObject::Destroy()
 {
-    glDeleteBuffers(1, &m_VBO);
+    gl::glDeleteBuffers(1, &m_VBO);
     m_VBO = 0;
-    glDeleteBuffers(1, &m_IBO);
+    gl::glDeleteBuffers(1, &m_IBO);
     m_IBO = 0;
 }
 
@@ -81,20 +81,20 @@ void ShittyObject::Render()
 
     glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * GetWorld();
 
-    GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
+    GLint worldLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gMVP");
     if(worldLocation == -1)
     {
         std::cout << "Couldn't get uniform loaction" << std::endl;
     }
-    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+    gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
-    glEnableVertexAttribArray(0);
-    glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+    gl::glEnableVertexAttribArray(0);
+    gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glDrawArrays(GL_POINTS, 0, 4);
 
     //glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-    glDisableVertexAttribArray(0);
+    gl::glDisableVertexAttribArray(0);
 }

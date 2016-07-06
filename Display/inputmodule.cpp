@@ -1,6 +1,6 @@
 #include "display.h"
 
-Display::InputModule::InputModule()
+GlutDisplay::InputModule::InputModule()
 {
 	for(int i = 0; i < 256; i++)
 	{
@@ -8,22 +8,22 @@ Display::InputModule::InputModule()
 	}
 }
 
-Display::InputModule::~InputModule()
+GlutDisplay::InputModule::~InputModule()
 {
 	
 }
 
-bool Display::InputModule::IsKeyPressed(InputKey key) const
+bool GlutDisplay::InputModule::IsKeyPressed(InputKey key) const
 {
 	return m_keys[key];
 }
 
-glm::vec2 Display::InputModule::GetMouseLocation() const
+glm::vec2 GlutDisplay::InputModule::GetMouseLocation() const
 {
 	return glm::vec2(0.0f, 0.0f);
 }
 
-void Display::InputModule::UpdateKey(int key, bool pressed)
+void GlutDisplay::InputModule::UpdateKey(int key, bool pressed)
 {
 	if(key > 256 || key < 0)
 	{

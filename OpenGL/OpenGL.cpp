@@ -2,8 +2,6 @@
 // Created by nprat on 7/4/16.
 //
 
-#include <GL/glew.h>
-#include <GL/gl.h>
 #include <chrono>
 #include <string>
 
@@ -25,12 +23,15 @@ OpenGL::~OpenGL()
 
 bool OpenGL::InitOpenGL(int width, int height, std::string title)
 {
+    std::cout << "Creating API" << std::endl;
     gl::InitAPI();
+    std::cout << "Finished Creating API" << std::endl;
+
     // TODO replace GLEW with gl function look ups
     /*glewExperimental = GL_TRUE;
-    GLenum status = glewInit();
-    std::cout << "Error " << gluErrorString(glGetError()) << std::endl;
-    if(status != GLEW_OK)
+    GLenum status = glewInit();*/
+    //std::cout << "Error " << gluErrorString(glGetError()) << std::endl;
+    /*if(status != GLEW_OK)
     {
         std::cout << "Glew failed to initialize: " << status << std::endl;
         return false;
@@ -38,7 +39,7 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
 
     try
     {
-        m_display = std::make_shared<Display>(width, height, title);
+        m_display = std::make_shared<GlutDisplay>(width, height, title);
         m_renderChain = std::make_shared<RenderChain>(10);
         m_shittyObject = std::make_shared<ShittyObject>(m_display);
     }

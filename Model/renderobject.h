@@ -24,7 +24,7 @@ public:
     glm::mat4 GetWorld();
 
 protected:
-    std::shared_ptr<Display> m_display;
+    std::shared_ptr<GlutDisplay> m_display;
 
 private:
     glm::mat4 m_translate;

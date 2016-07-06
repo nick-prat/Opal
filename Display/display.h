@@ -1,8 +1,8 @@
 #ifndef _DISPLAY_H
 #define _DISPLAY_H
 
-#include <string>
 #include <GL/freeglut.h>
+#include <string>
 #include <memory>
 
 #include <glm/glm.hpp>
@@ -18,13 +18,13 @@ enum InputKey
     Key_Space = 32
 };
 
-class Display
+class GlutDisplay
 {
 
 public:
-    Display();
-    Display(int width, int height, std::string title);
-    ~Display();
+    GlutDisplay();
+    GlutDisplay(int width, int height, std::string title);
+    ~GlutDisplay();
 
     class InputModule
     {

@@ -13,10 +13,10 @@ class ShittyObject : public RenderObject
 {
 public:
     ShittyObject();
-    ShittyObject(std::shared_ptr<Display> display);
+    ShittyObject(std::shared_ptr<GlutDisplay> display);
     ~ShittyObject();
 
-    bool InitObject(std::shared_ptr<Display> display);
+    bool InitObject(std::shared_ptr<GlutDisplay> display);
     void Destroy();
 
     void Render();

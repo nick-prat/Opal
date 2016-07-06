@@ -64,24 +64,23 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
             return false;
         }
 
-        glAttachShader(m_shaderProgram, m_shaderObj[i]);
+        gl::glAttachShader(m_shaderProgram, m_shaderObj[i]);
         delete[] text[0];
     }
 
-    glLinkProgram(m_shaderProgram);
-    glGetShaderiv(m_shaderProgram, GL_LINK_STATUS, &success);
-    std::cout << "Error " << gluErrorString(glGetError()) << std::endl;
+    gl::glLinkProgram(m_shaderProgram);
+    gl::glGetShaderiv(m_shaderProgram, GL_LINK_STATUS, &success);
     if(success == GL_FALSE)
     {
-        glGetProgramInfoLog(m_shaderProgram, sizeof(info), nullptr, info);
+        gl::glGetProgramInfoLog(m_shaderProgram, sizeof(info), nullptr, info);
         std::cout << info << std::endl;
         return false;
     }
 
     for(unsigned int i = 0; i < size; i++)
     {
-        glDetachShader(m_shaderProgram, m_shaderObj[i]);
-        glDeleteShader(m_shaderObj[i]);
+        gl::glDetachShader(m_shaderProgram, m_shaderObj[i]);
+        gl::glDeleteShader(m_shaderObj[i]);
     }
 
     return true;
@@ -89,7 +88,7 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
 
 void Shader::Destroy()
 {
-    glDeleteProgram(m_shaderProgram);
+    gl::glDeleteProgram(m_shaderProgram);
 }
 
 GLuint Shader::GetProgram()
