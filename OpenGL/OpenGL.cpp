@@ -72,18 +72,20 @@ void OpenGL::Destroy()
 
 void OpenGL::DisplayFunc()
 {
-    auto start = std::chrono::high_resolution_clock::now();
+    //std::cout << "DisplayFunc()" << std::endl;
+    //auto start = std::chrono::high_resolution_clock::now();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    std::cout << "OpenGL::DisplayFunc()" << std::endl;
     m_renderChain->AttachRenderObject(m_shittyObject.get());
     m_renderChain->RenderObjectChain();
 
     glutSwapBuffers();
 
-    auto finish = std::chrono::high_resolution_clock::now();
+    /*auto finish = std::chrono::high_resolution_clock::now();
     
-    /*if(time < m_lowestTime || m_lowestTime == 0)
+    if(time < m_lowestTime || m_lowestTime == 0)
     {
         std::cout << "Fastest render : " << time << std::endl;
         m_lowestTime = time;

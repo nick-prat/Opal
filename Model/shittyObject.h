@@ -22,8 +22,7 @@ public:
     void Render();
 
 private:
-    GLuint m_VBO;
-    GLuint m_IBO;
+    GLuint m_VBO, m_VAO, m_IBO;
     std::vector<glm::vec3> m_verts;
     std::vector<uint> m_indices;
     std::unique_ptr<Shader> m_shader;
