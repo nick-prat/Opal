@@ -43,7 +43,7 @@ bool ShittyObject::InitObject(std::shared_ptr<GlutDisplay> display)
 
     gl::glGenBuffers(1, &m_VBO);
     gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_verts.size(), m_verts.data(), GL_STATIC_DRAW);
+    gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 4, m_verts.data(), GL_STATIC_DRAW);
 
     m_indices.reserve(4);
     m_indices[0] = 0;
@@ -55,7 +55,7 @@ bool ShittyObject::InitObject(std::shared_ptr<GlutDisplay> display)
 
     gl::glGenBuffers(1, &m_IBO);
     gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_indices.size(), m_indices.data(), GL_STATIC_DRAW);
+    gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * 4, m_indices.data(), GL_STATIC_DRAW);
 
     m_shader = std::make_unique<Shader>();
     //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
@@ -93,6 +93,7 @@ void ShittyObject::Render()
     gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     gl::glEnableVertexAttribArray(0);
     gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+
     gl::glBindVertexArray(m_VAO);
     glDrawElements(GL_POINTS, 4, GL_UNSIGNED_INT, nullptr);
 
@@ -102,6 +103,6 @@ void ShittyObject::Render()
     //glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     //gl::glDisableVertexAttribArray(0);
 
-    std::cout << "ShittyObject::Render()" << std::endl;
+    //std::cout << "ShittyObject::Render()" << std::endl;
     //std::cout << gluGetString(glGetError()) << std::endl;
 }

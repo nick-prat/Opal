@@ -27,16 +27,6 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
     gl::InitAPI();
     std::cout << "Finished Creating API" << std::endl;
 
-    // TODO replace GLEW with gl function look ups
-    /*glewExperimental = GL_TRUE;
-    GLenum status = glewInit();*/
-    //std::cout << "Error " << gluErrorString(glGetError()) << std::endl;
-    /*if(status != GLEW_OK)
-    {
-        std::cout << "Glew failed to initialize: " << status << std::endl;
-        return false;
-    }*/
-
     try
     {
         m_display = std::make_shared<GlutDisplay>(width, height, title);
@@ -77,7 +67,7 @@ void OpenGL::DisplayFunc()
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    std::cout << "OpenGL::DisplayFunc()" << std::endl;
+    //std::cout << "OpenGL::DisplayFunc()" << std::endl;
     m_renderChain->AttachRenderObject(m_shittyObject.get());
     m_renderChain->RenderObjectChain();
 

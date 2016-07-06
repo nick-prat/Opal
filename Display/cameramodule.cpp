@@ -36,8 +36,6 @@ void GlutDisplay::CameraModule::Destroy()
 
 glm::mat4 GlutDisplay::CameraModule::GetViewMatrix()
 {
-    //glm::mat4 view = m_viewMatrix *
-
     return m_viewMatrix * glm::translate(m_translation);
 }
 
