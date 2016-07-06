@@ -1,9 +1,10 @@
 #ifndef _SHADER_H
 #define _SHADER_H
 
-#include <GL/glew.h>
 #include <vector>
 #include <string>
+
+#include <OpenGL/GLApi.h>
 
 class Shader
 {

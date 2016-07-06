@@ -12,6 +12,8 @@
 #include <Display/display.h>
 #include <Model/shittyObject.h>
 
+#include "GLApi.h"
+
 class OpenGL
 {
 public:

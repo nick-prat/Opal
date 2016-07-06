@@ -16,8 +16,8 @@ Shader::~Shader()
 
 void Shader::UseShader()
 {
-    glValidateProgram(m_shaderProgram);
-    glUseProgram(m_shaderProgram);
+    gl::glValidateProgram(m_shaderProgram);
+    gl::glUseProgram(m_shaderProgram);
 }
 
 bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::vector<GLenum>& types)
@@ -33,10 +33,10 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
     unsigned long size = types.size();
     m_shaderObj.reserve(size);
 
-    m_shaderProgram = glCreateProgram();
+    m_shaderProgram = gl::glCreateProgram();
     for(unsigned int i = 0; i < size; i++)
     {
-        m_shaderObj[i] = glCreateShader(types[i]);
+        m_shaderObj[i] = gl::glCreateShader(types[i]);
 
         std::ifstream file(fileNames[i]);
         if(!file.is_open())
@@ -53,13 +53,13 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
         GLint length[1];
         length[0]= (GLint)buffer.str().length();
 
-        glShaderSource(m_shaderObj[i], 1, (const GLchar *const *) text, length);
-        glCompileShader(m_shaderObj[i]);
+        gl::glShaderSource(m_shaderObj[i], 1, (const GLchar *const *) text, length);
+        gl::glCompileShader(m_shaderObj[i]);
 
-        glGetShaderiv(m_shaderObj[i], GL_COMPILE_STATUS, &success);
+        gl::glGetShaderiv(m_shaderObj[i], GL_COMPILE_STATUS, &success);
         if(success == GL_FALSE)
         {
-            glGetShaderInfoLog(m_shaderObj[i], sizeof(info), nullptr, info);
+            gl::glGetShaderInfoLog(m_shaderObj[i], sizeof(info), nullptr, info);
             std::cout << info << std::endl;
             return false;
         }
@@ -69,7 +69,6 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
     }
 
     glLinkProgram(m_shaderProgram);
-    std::cout << "Error " << gluErrorString(glGetError()) << std::endl;
     glGetShaderiv(m_shaderProgram, GL_LINK_STATUS, &success);
     std::cout << "Error " << gluErrorString(glGetError()) << std::endl;
     if(success == GL_FALSE)
