@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include <OpenGL/GLApi.h>
+#include <OpenGL/glapi.h>
 
 class Shader
 {

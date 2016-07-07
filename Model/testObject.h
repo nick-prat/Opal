@@ -9,12 +9,12 @@
 
 #include "renderobject.h"
 
-class ShittyObject : public RenderObject
+class TestObject : public RenderObject
 {
 public:
-    ShittyObject();
-    ShittyObject(std::shared_ptr<GlutDisplay> display);
-    ~ShittyObject();
+    TestObject();
+    TestObject(std::shared_ptr<GlutDisplay> display);
+    ~TestObject();
 
     bool InitObject(std::shared_ptr<GlutDisplay> display);
     void Destroy();

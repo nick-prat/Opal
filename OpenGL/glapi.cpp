@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-#include "GLApi.h"
+#include "glapi.h"
 
 namespace gl
 {
