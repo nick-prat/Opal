@@ -5,7 +5,7 @@
 #include <chrono>
 #include <string>
 
-#include "OpenGL.h"
+#include "openGL.h"
 
 std::shared_ptr<OpenGL> OpenGL::m_openGL = nullptr;
 

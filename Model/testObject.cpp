@@ -8,13 +8,11 @@
 
 TestObject::TestObject()
 {
-    m_VBO = 0;
     m_IBO = 0;
 }
 
 TestObject::TestObject(std::shared_ptr<GlutDisplay> display)
 {
-    m_VBO = 0;
     m_IBO = 0;
 
     if(!InitObject(display))
@@ -35,14 +33,25 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     gl::glGenVertexArrays(1, &m_VAO);
     gl::glBindVertexArray(m_VAO);
 
+    gl::glGenBuffers(2, m_VBO);
+
     m_verts.push_back(glm::vec3(-1.0f, -1.0f, 0.0f));
     m_verts.push_back(glm::vec3(1.0f, -1.0f, 0.0f));
     m_verts.push_back(glm::vec3(-1.0f, 1.0f, 0.0f));
     m_verts.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
 
-    gl::glGenBuffers(1, &m_VBO);
-    gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+    gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
     gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_verts.size(), m_verts.data(), GL_STATIC_DRAW);
+    gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
+
+    m_colors.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
+    m_colors.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
+    m_colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
+    m_colors.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+
+    gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
+    gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_colors.size(), m_colors.data(), GL_STATIC_DRAW);
+    gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
     m_indices.push_back(0);
     m_indices.push_back(1);
@@ -59,13 +68,22 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_indices.size(), m_indices.data(), GL_STATIC_DRAW);
 
     m_shader = std::make_unique<Shader>();
-    //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
-    //std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
-    std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs", "Shaders/shader.gs"};
-    std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
+    std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
+    std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
+    //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs", "Shaders/shader.gs"};
+    //std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
     if(!m_shader->InitShader(files, types))
     {
         std::cout << "Couldn't initialize shader" << std::endl;
+        return false;
+    }
+
+    m_shader->BindAttribute("Position", 0);
+    m_shader->BindAttribute("Color", 1);
+
+    if(!m_shader->LinkProgram())
+    {
+        std::cout << "Couldn't link shader" << std::endl;
         return false;
     }
 
@@ -74,8 +92,8 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
 
 void TestObject::Destroy()
 {
-    gl::glDeleteBuffers(1, &m_VBO);
-    m_VBO = 0;
+    gl::glDeleteVertexArrays(1, &m_VAO);
+    gl::glDeleteBuffers(2, m_VBO);
     gl::glDeleteBuffers(1, &m_IBO);
     m_IBO = 0;
 }
@@ -94,12 +112,13 @@ void TestObject::Render()
     }
     gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
-    gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, 0);
     gl::glEnableVertexAttribArray(0);
+    gl::glEnableVertexAttribArray(1);
 
-    gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-    gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glDrawElements(GL_POINTS, (GLsizei)m_indices.size(), GL_UNSIGNED_INT, nullptr);
+    //gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
+    //gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
+    glDrawArrays(GL_POINTS, 0, 4);
+    //glDrawElements(GL_POINTS, (GLsizei)m_indices.size(), GL_UNSIGNED_INT, nullptr);
 
     gl::glDisableVertexAttribArray(0);
 }

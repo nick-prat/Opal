@@ -33,6 +33,8 @@ namespace gl
     PFNGLDISABLEVERTEXATTRIBARRAYPROC glDisableVertexAttribArray = 0;
     PFNGLGENVERTEXARRAYSPROC glGenVertexArrays = 0;
     PFNGLBINDVERTEXARRAYPROC glBindVertexArray = 0;
+    PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = 0;
+    PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation = 0;
 
     void InitAPI()
     {
@@ -61,5 +63,7 @@ namespace gl
         glDisableVertexAttribArray = (PFNGLDISABLEVERTEXATTRIBARRAYPROC)glXGetProcAddressARB((const GLubyte*)"glDisableVertexAttribArray");
         glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)glXGetProcAddressARB((const GLubyte*)"glGenVertexArrays");
         glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)glXGetProcAddressARB((const GLubyte*)"glBindVertexArray");
+        glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteVertexArrays");
+        glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)glXGetProcAddressARB((const GLubyte*)"glBindAttribLocation");
     }
 }

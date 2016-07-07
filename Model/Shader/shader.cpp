@@ -30,13 +30,12 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
 
     GLint success;
     GLchar info[1024];
-    unsigned long size = types.size();
-    m_shaderObj.reserve(size);
+    m_numShaders = types.size();
 
     m_shaderProgram = gl::glCreateProgram();
-    for(unsigned int i = 0; i < size; i++)
+    for(unsigned int i = 0; i < m_numShaders; i++)
     {
-        m_shaderObj[i] = gl::glCreateShader(types[i]);
+        m_shaderObj.push_back(gl::glCreateShader(types[i]));
 
         std::ifstream file(fileNames[i]);
         if(!file.is_open())
@@ -68,6 +67,14 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
         delete[] text[0];
     }
 
+    return true;
+}
+
+bool Shader::LinkProgram()
+{
+    GLint success;
+    GLchar info[1024];
+
     gl::glLinkProgram(m_shaderProgram);
     gl::glGetShaderiv(m_shaderProgram, GL_LINK_STATUS, &success);
     if(success == GL_FALSE)
@@ -77,13 +84,18 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
         return false;
     }
 
-    for(unsigned int i = 0; i < size; i++)
+    for(unsigned int i = 0; i < m_numShaders; i++)
     {
         gl::glDetachShader(m_shaderProgram, m_shaderObj[i]);
         gl::glDeleteShader(m_shaderObj[i]);
     }
 
     return true;
+}
+
+void Shader::BindAttribute(const char* name, GLuint location)
+{
+    gl::glBindAttribLocation(m_shaderProgram, location, name);
 }
 
 void Shader::Destroy()
