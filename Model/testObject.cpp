@@ -117,8 +117,8 @@ void TestObject::Render()
 
     //gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
     //gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glDrawArrays(GL_POINTS, 0, 4);
-    //glDrawElements(GL_POINTS, (GLsizei)m_indices.size(), GL_UNSIGNED_INT, nullptr);
+    //glDrawArrays(GL_POINTS, 0, 4);
+    glDrawElements(GL_POINTS, (GLsizei)m_indices.size(), GL_UNSIGNED_INT, nullptr);
 
     gl::glDisableVertexAttribArray(0);
 }
