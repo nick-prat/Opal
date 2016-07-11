@@ -38,7 +38,7 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     m_verts.push_back(glm::vec3(-1.0f, -1.0f, 0.0f));
     m_verts.push_back(glm::vec3(1.0f, -1.0f, 0.0f));
     m_verts.push_back(glm::vec3(-1.0f, 1.0f, 0.0f));
-    m_verts.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
+    //m_verts.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
 
     gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
     gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_verts.size(), m_verts.data(), GL_STATIC_DRAW);
@@ -47,21 +47,16 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     m_colors.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
     m_colors.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
     m_colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-    m_colors.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
+    //m_colors.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
 
     gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
     gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_colors.size(), m_colors.data(), GL_STATIC_DRAW);
     gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
 
-    m_indices.push_back(0);
-    m_indices.push_back(1);
     m_indices.push_back(2);
-    m_indices.push_back(3);
-
-    //m_indices[4] = 3;
-    //m_indices[5] = 2;
-
-    std::cout << "Index count: " << m_indices.size() << std::endl << "Vertex count: " << m_verts.size() << std::endl;
+    m_indices.push_back(1);
+    m_indices.push_back(0);
+    //m_indices.push_back(3);
 
     gl::glGenBuffers(1, &m_IBO);
     gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
@@ -115,10 +110,8 @@ void TestObject::Render()
     gl::glEnableVertexAttribArray(0);
     gl::glEnableVertexAttribArray(1);
 
-    //gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-    //gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    //glDrawArrays(GL_POINTS, 0, 4);
-    glDrawElements(GL_POINTS, (GLsizei)m_indices.size(), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, (GLsizei)m_indices.size(), GL_UNSIGNED_INT, nullptr);
 
     gl::glDisableVertexAttribArray(0);
+    gl::glDisableVertexAttribArray(1);
 }

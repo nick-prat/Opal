@@ -13,7 +13,7 @@ OpenGL::OpenGL()
 {
     m_openGL = nullptr;
     m_renderChain = nullptr;
-    m_shittyObject = nullptr;
+    m_obj = nullptr;
     m_display = nullptr;
     m_lowestTime = 0;
 }
@@ -31,13 +31,16 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
     {
         m_display = std::make_shared<GlutDisplay>(width, height, title);
         m_renderChain = std::make_shared<RenderChain>(10);
-        m_shittyObject = std::make_shared<TestObject>(m_display);
+        m_obj = std::make_shared<TestObject>(m_display);
+        m_obj2 = std::make_shared<TestObject>(m_display);
     }
     catch (const char* error)
     {
         std::cout << "Error: " << error << std::endl;
         return false;
     }
+
+    m_obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, -0.5f)));
 
     //obj->Scale(glm::scale(glm::vec3(0.5f, 1.0f, 1.0f)));
     //obj->Rotate(glm::rotate(glm::pi<float>(), glm::vec3(0.0f, 0.0f, 1.0f)));
@@ -51,7 +54,7 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     return true;
 }
 
@@ -68,9 +71,9 @@ void OpenGL::DisplayFunc()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //std::cout << "OpenGL::DisplayFunc()" << std::endl;
-    m_renderChain->AttachRenderObject(m_shittyObject.get());
+    m_renderChain->AttachRenderObject(m_obj.get());
+    m_renderChain->AttachRenderObject(m_obj2.get());
     m_renderChain->RenderObjectChain();
-
     glutSwapBuffers();
 
     /*auto finish = std::chrono::high_resolution_clock::now();

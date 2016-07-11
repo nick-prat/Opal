@@ -37,7 +37,8 @@ private:
     long m_lowestTime;
     std::shared_ptr<GlutDisplay> m_display;
     std::shared_ptr<RenderChain> m_renderChain;
-    std::shared_ptr<TestObject> m_shittyObject;
+    std::shared_ptr<TestObject> m_obj;
+    std::shared_ptr<TestObject> m_obj2;
 };
 
 
