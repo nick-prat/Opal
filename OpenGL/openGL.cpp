@@ -42,10 +42,6 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
 
     m_obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, -0.5f)));
 
-    //obj->Scale(glm::scale(glm::vec3(0.5f, 1.0f, 1.0f)));
-    //obj->Rotate(glm::rotate(glm::pi<float>(), glm::vec3(0.0f, 0.0f, 1.0f)));
-    //obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-
     std::cout << "Information: " << std::endl;
     std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "\tDisplay Address: " << m_display << std::endl;
@@ -54,7 +50,6 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     return true;
 }
 
@@ -65,12 +60,10 @@ void OpenGL::Destroy()
 
 void OpenGL::DisplayFunc()
 {
-    //std::cout << "DisplayFunc()" << std::endl;
     //auto start = std::chrono::high_resolution_clock::now();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //std::cout << "OpenGL::DisplayFunc()" << std::endl;
     m_renderChain->AttachRenderObject(m_obj.get());
     m_renderChain->AttachRenderObject(m_obj2.get());
     m_renderChain->RenderObjectChain();
