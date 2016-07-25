@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <string>
+#include <Model/Assimp/assimploader.h>
 
 #include "openGL.h"
 
