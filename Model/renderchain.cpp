@@ -7,21 +7,6 @@
 
 using Utilities::SafeDelete;
 
-RenderChain::RenderChain()
-{
-    m_memPool = nullptr;
-}
-
-RenderChain::RenderChain(int num)
-{
-    m_memPool = nullptr;
-    if(!InitRenderChain(num))
-    {
-        std::cout << "Couldn't initialize render chain!" << std::endl;
-        throw;
-    }
-}
-
 RenderChain::RenderChain(int num, bool vol)
 {
     m_memPool = nullptr;
@@ -32,14 +17,31 @@ RenderChain::RenderChain(int num, bool vol)
     }
 }
 
+std::shared_ptr<RenderChain> RenderChain::getInstance() {
+    return m_renderChain;
+}
+
+bool RenderChain::createInstance(int num) {
+    return createInstance(num, true);
+}
+
+bool RenderChain::createInstance(int num, bool vol) {
+    if(m_renderChain != nullptr)
+    {
+        std::cout << "Render chain has already been created" << std::endl;
+        return false;
+    }
+    m_renderChain = std::make_shared<RenderChain>(num, vol);
+}
+
+void RenderChain::deleteInstance() {
+    m_renderChain->Destroy();
+    m_renderChain = nullptr;
+}
+
 RenderChain::~RenderChain()
 {
     Destroy();
-}
-
-bool RenderChain::InitRenderChain(int num)
-{
-    return InitRenderChain(num, true);
 }
 
 bool RenderChain::InitRenderChain(int num, bool vol)
@@ -53,10 +55,10 @@ bool RenderChain::InitRenderChain(int num, bool vol)
 
 void RenderChain::Destroy()
 {
-    //SafeDelete(m_memPool);
     delete [] m_memPool;
     m_memPool = nullptr;
     m_objCount = 0;
+    m_objLimit = 0;
 }
 
 bool RenderChain::AttachRenderObject(RenderObject* object)
