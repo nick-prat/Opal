@@ -3,9 +3,8 @@
 #include <malloc.h>
 
 #include "Model/renderchain.h"
-#include "Utilities/utilities.hpp"
 
-using Utilities::SafeDelete;
+RenderChain* RenderChain::m_renderChain = nullptr;
 
 RenderChain::RenderChain(int num, bool vol)
 {
@@ -17,30 +16,29 @@ RenderChain::RenderChain(int num, bool vol)
     }
 }
 
-std::shared_ptr<RenderChain> RenderChain::getInstance() {
+RenderChain* RenderChain::GetInstance() {
     return m_renderChain;
 }
 
-bool RenderChain::createInstance(int num) {
-    return createInstance(num, true);
-}
-
-bool RenderChain::createInstance(int num, bool vol) {
+bool RenderChain::CreateInstance(int num, bool vol) {
     if(m_renderChain != nullptr)
     {
         std::cout << "Render chain has already been created" << std::endl;
         return false;
     }
-    m_renderChain = std::make_shared<RenderChain>(num, vol);
+    m_renderChain = new RenderChain(num, vol);
+    return true;
 }
 
-void RenderChain::deleteInstance() {
+void RenderChain::DeleteInstance() {
     m_renderChain->Destroy();
+    delete m_renderChain;
     m_renderChain = nullptr;
 }
 
 RenderChain::~RenderChain()
 {
+    delete m_renderChain;
     Destroy();
 }
 

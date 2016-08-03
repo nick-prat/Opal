@@ -12,19 +12,19 @@ public:
     bool AttachRenderObject(RenderObject* object);
     void RenderObjectChain();
 
-    std::shared_ptr<RenderChain> getInstance();
-    bool createInstance(int num);
-    bool createInstance(int num, bool vol);
-    void deleteInstance();
+    static RenderChain* GetInstance();
+    static bool CreateInstance(int num, bool vol);
+    static void DeleteInstance();
 
 protected:
-
-private:
     RenderChain(int num, bool vol);
     ~RenderChain();
 
 private:
-    static std::shared_ptr<RenderChain> m_renderChain;
+
+
+private:
+    static RenderChain* m_renderChain;
 
     int m_objCount;
     int m_objLimit;

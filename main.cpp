@@ -20,20 +20,29 @@ int main(int argc, char **args)
     glutCreateWindow(title);
 
     // Create GLUT callbacks
-    glutDisplayFunc([]() { OpenGL::getInstance()->DisplayFunc(); });
-    glutIdleFunc([]() { OpenGL::getInstance()->DisplayFunc(); });
+    glutDisplayFunc([]() { OpenGL::GetInstance()->DisplayFunc(); });
+    glutIdleFunc([]() { OpenGL::GetInstance()->DisplayFunc(); });
 
-    // Create instance of game
+    // Create singleton instance of OpenGL
     if(!OpenGL::CreateInstance(width, height, title))
     {
+        std::cout << "Couldn't Create Instance of OpenGL" << std::endl;
+        return -1;
+    }
+
+    // Create singleton instance of RenderChain (Capability of 10 objects)
+    if(!RenderChain::CreateInstance(10, true))
+    {
+        std::cout << "Couldn't Create Instance of RenderChain" << std::endl;
         return -1;
     }
 
     // Enter GLUT main loop
     glutMainLoop();
 
-    //OpenGL::DestroyInstance();
-
+    // Destroy singletons
+    OpenGL::DeleteInstance();
+    RenderChain::DeleteInstance();
     return 0;
 }
 
