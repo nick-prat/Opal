@@ -20,8 +20,13 @@ int main(int argc, char **args)
     glutCreateWindow(title);
 
     // Create GLUT callbacks
-    glutDisplayFunc([]() { OpenGL::GetInstance()->DisplayFunc(); });
-    glutIdleFunc([]() { OpenGL::GetInstance()->DisplayFunc(); });
+    glutDisplayFunc([]() -> void {
+        OpenGL::GetInstance()->DisplayFunc();
+    });
+
+    glutIdleFunc([]() -> void {
+        OpenGL::GetInstance()->DisplayFunc();
+    });
 
     // Create singleton instance of OpenGL
     if(!OpenGL::CreateInstance(width, height, title))
