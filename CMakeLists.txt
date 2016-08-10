@@ -4,7 +4,7 @@ add_definitions(-DVERSION_MIN)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories("./")
 set(SOURCE_FILES main.cpp Model/renderchain.cpp Model/renderobject.cpp Display/display.cpp Display/inputmodule.cpp
-        Model/Shader/shader.cpp Model/Sprite/sprite.cpp Utilities/utilities.hpp Display/cameramodule.cpp OpenGL/openGL.cpp OpenGL/openGL.h Model/testObject.cpp Model/testObject.h OpenGL/glapi.h OpenGL/glapi.cpp Model/Assimp/assimploader.cpp Model/Assimp/assimploader.h)
+        Model/Shader/shader.cpp Model/Sprite/sprite.cpp Utilities/utilities.hpp Display/cameramodule.cpp Core/openGL.cpp Core/openGL.h Model/testObject.cpp Model/testObject.h Core/glapi.h Core/glapi.cpp Model/Assimp/assimploader.cpp Model/Assimp/assimploader.h)
 add_executable(OpenGL ${SOURCE_FILES})
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)

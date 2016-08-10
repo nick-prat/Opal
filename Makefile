@@ -123,6 +123,60 @@ OpenGL/fast:
 	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/build
 .PHONY : OpenGL/fast
 
+Core/glapi.o: Core/glapi.cpp.o
+
+.PHONY : Core/glapi.o
+
+# target to build an object file
+Core/glapi.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/glapi.cpp.o
+.PHONY : Core/glapi.cpp.o
+
+Core/glapi.i: Core/glapi.cpp.i
+
+.PHONY : Core/glapi.i
+
+# target to preprocess a source file
+Core/glapi.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/glapi.cpp.i
+.PHONY : Core/glapi.cpp.i
+
+Core/glapi.s: Core/glapi.cpp.s
+
+.PHONY : Core/glapi.s
+
+# target to generate assembly for a file
+Core/glapi.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/glapi.cpp.s
+.PHONY : Core/glapi.cpp.s
+
+Core/openGL.o: Core/openGL.cpp.o
+
+.PHONY : Core/openGL.o
+
+# target to build an object file
+Core/openGL.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/openGL.cpp.o
+.PHONY : Core/openGL.cpp.o
+
+Core/openGL.i: Core/openGL.cpp.i
+
+.PHONY : Core/openGL.i
+
+# target to preprocess a source file
+Core/openGL.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/openGL.cpp.i
+.PHONY : Core/openGL.cpp.i
+
+Core/openGL.s: Core/openGL.cpp.s
+
+.PHONY : Core/openGL.s
+
+# target to generate assembly for a file
+Core/openGL.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/openGL.cpp.s
+.PHONY : Core/openGL.cpp.s
+
 Display/cameramodule.o: Display/cameramodule.cpp.o
 
 .PHONY : Display/cameramodule.o
@@ -366,60 +420,6 @@ Model/testObject.cpp.s:
 	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/testObject.cpp.s
 .PHONY : Model/testObject.cpp.s
 
-OpenGL/glapi.o: OpenGL/glapi.cpp.o
-
-.PHONY : OpenGL/glapi.o
-
-# target to build an object file
-OpenGL/glapi.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/OpenGL/glapi.cpp.o
-.PHONY : OpenGL/glapi.cpp.o
-
-OpenGL/glapi.i: OpenGL/glapi.cpp.i
-
-.PHONY : OpenGL/glapi.i
-
-# target to preprocess a source file
-OpenGL/glapi.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/OpenGL/glapi.cpp.i
-.PHONY : OpenGL/glapi.cpp.i
-
-OpenGL/glapi.s: OpenGL/glapi.cpp.s
-
-.PHONY : OpenGL/glapi.s
-
-# target to generate assembly for a file
-OpenGL/glapi.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/OpenGL/glapi.cpp.s
-.PHONY : OpenGL/glapi.cpp.s
-
-OpenGL/openGL.o: OpenGL/openGL.cpp.o
-
-.PHONY : OpenGL/openGL.o
-
-# target to build an object file
-OpenGL/openGL.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/OpenGL/openGL.cpp.o
-.PHONY : OpenGL/openGL.cpp.o
-
-OpenGL/openGL.i: OpenGL/openGL.cpp.i
-
-.PHONY : OpenGL/openGL.i
-
-# target to preprocess a source file
-OpenGL/openGL.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/OpenGL/openGL.cpp.i
-.PHONY : OpenGL/openGL.cpp.i
-
-OpenGL/openGL.s: OpenGL/openGL.cpp.s
-
-.PHONY : OpenGL/openGL.s
-
-# target to generate assembly for a file
-OpenGL/openGL.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/OpenGL/openGL.cpp.s
-.PHONY : OpenGL/openGL.cpp.s
-
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -456,6 +456,12 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... OpenGL"
+	@echo "... Core/glapi.o"
+	@echo "... Core/glapi.i"
+	@echo "... Core/glapi.s"
+	@echo "... Core/openGL.o"
+	@echo "... Core/openGL.i"
+	@echo "... Core/openGL.s"
 	@echo "... Display/cameramodule.o"
 	@echo "... Display/cameramodule.i"
 	@echo "... Display/cameramodule.s"
@@ -483,12 +489,6 @@ help:
 	@echo "... Model/testObject.o"
 	@echo "... Model/testObject.i"
 	@echo "... Model/testObject.s"
-	@echo "... OpenGL/glapi.o"
-	@echo "... OpenGL/glapi.i"
-	@echo "... OpenGL/glapi.s"
-	@echo "... OpenGL/openGL.o"
-	@echo "... OpenGL/openGL.i"
-	@echo "... OpenGL/openGL.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
