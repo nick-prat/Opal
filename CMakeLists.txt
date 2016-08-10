@@ -3,6 +3,7 @@ project(OpenGL)
 add_definitions(-DVERSION_MIN)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories("./src")
+# Applications source files
 set(SOURCE_FILES
         src/main.cpp
         src/Display/display.cpp src/Display/inputmodule.cpp src/Display/cameramodule.cpp
