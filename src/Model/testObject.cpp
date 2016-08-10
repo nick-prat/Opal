@@ -56,7 +56,6 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     m_indices.push_back(2);
     m_indices.push_back(1);
     m_indices.push_back(0);
-    //m_indices.push_back(3);
 
     gl::glGenBuffers(1, &m_IBO);
     gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
@@ -65,7 +64,7 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     m_shader = std::make_unique<Shader>();
     std::vector<std::string> files = {"src/Shaders/shader.vs", "src/Shaders/shader.fs"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
-    //std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs", "Shaders/shader.gs"};
+    //std::vector<std::string> files = {"src/Shaders/shader.vs", "src/Shaders/shader.fs", "src/Shaders/shader.gs"};
     //std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
     if(!m_shader->InitShader(files, types))
     {
