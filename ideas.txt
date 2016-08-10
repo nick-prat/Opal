@@ -1,0 +1,6 @@
+Static Asset Table
+	- CSV table
+	- Represents the static layout of a scene
+	- Tells what assets to load (textures, models)
+	- Tells where the assets are located
+	- Represents a scene
