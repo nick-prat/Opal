@@ -123,329 +123,329 @@ OpenGL/fast:
 	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/build
 .PHONY : OpenGL/fast
 
-Core/glapi.o: Core/glapi.cpp.o
+src/Core/glapi.o: src/Core/glapi.cpp.o
 
-.PHONY : Core/glapi.o
-
-# target to build an object file
-Core/glapi.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/glapi.cpp.o
-.PHONY : Core/glapi.cpp.o
-
-Core/glapi.i: Core/glapi.cpp.i
-
-.PHONY : Core/glapi.i
-
-# target to preprocess a source file
-Core/glapi.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/glapi.cpp.i
-.PHONY : Core/glapi.cpp.i
-
-Core/glapi.s: Core/glapi.cpp.s
-
-.PHONY : Core/glapi.s
-
-# target to generate assembly for a file
-Core/glapi.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/glapi.cpp.s
-.PHONY : Core/glapi.cpp.s
-
-Core/openGL.o: Core/openGL.cpp.o
-
-.PHONY : Core/openGL.o
+.PHONY : src/Core/glapi.o
 
 # target to build an object file
-Core/openGL.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/openGL.cpp.o
-.PHONY : Core/openGL.cpp.o
+src/Core/glapi.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Core/glapi.cpp.o
+.PHONY : src/Core/glapi.cpp.o
 
-Core/openGL.i: Core/openGL.cpp.i
+src/Core/glapi.i: src/Core/glapi.cpp.i
 
-.PHONY : Core/openGL.i
+.PHONY : src/Core/glapi.i
 
 # target to preprocess a source file
-Core/openGL.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/openGL.cpp.i
-.PHONY : Core/openGL.cpp.i
+src/Core/glapi.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Core/glapi.cpp.i
+.PHONY : src/Core/glapi.cpp.i
 
-Core/openGL.s: Core/openGL.cpp.s
+src/Core/glapi.s: src/Core/glapi.cpp.s
 
-.PHONY : Core/openGL.s
+.PHONY : src/Core/glapi.s
 
 # target to generate assembly for a file
-Core/openGL.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Core/openGL.cpp.s
-.PHONY : Core/openGL.cpp.s
+src/Core/glapi.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Core/glapi.cpp.s
+.PHONY : src/Core/glapi.cpp.s
 
-Display/cameramodule.o: Display/cameramodule.cpp.o
+src/Core/openGL.o: src/Core/openGL.cpp.o
 
-.PHONY : Display/cameramodule.o
+.PHONY : src/Core/openGL.o
 
 # target to build an object file
-Display/cameramodule.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/cameramodule.cpp.o
-.PHONY : Display/cameramodule.cpp.o
+src/Core/openGL.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Core/openGL.cpp.o
+.PHONY : src/Core/openGL.cpp.o
 
-Display/cameramodule.i: Display/cameramodule.cpp.i
+src/Core/openGL.i: src/Core/openGL.cpp.i
 
-.PHONY : Display/cameramodule.i
+.PHONY : src/Core/openGL.i
 
 # target to preprocess a source file
-Display/cameramodule.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/cameramodule.cpp.i
-.PHONY : Display/cameramodule.cpp.i
+src/Core/openGL.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Core/openGL.cpp.i
+.PHONY : src/Core/openGL.cpp.i
 
-Display/cameramodule.s: Display/cameramodule.cpp.s
+src/Core/openGL.s: src/Core/openGL.cpp.s
 
-.PHONY : Display/cameramodule.s
+.PHONY : src/Core/openGL.s
 
 # target to generate assembly for a file
-Display/cameramodule.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/cameramodule.cpp.s
-.PHONY : Display/cameramodule.cpp.s
+src/Core/openGL.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Core/openGL.cpp.s
+.PHONY : src/Core/openGL.cpp.s
 
-Display/display.o: Display/display.cpp.o
+src/Display/cameramodule.o: src/Display/cameramodule.cpp.o
 
-.PHONY : Display/display.o
+.PHONY : src/Display/cameramodule.o
 
 # target to build an object file
-Display/display.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/display.cpp.o
-.PHONY : Display/display.cpp.o
+src/Display/cameramodule.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/cameramodule.cpp.o
+.PHONY : src/Display/cameramodule.cpp.o
 
-Display/display.i: Display/display.cpp.i
+src/Display/cameramodule.i: src/Display/cameramodule.cpp.i
 
-.PHONY : Display/display.i
+.PHONY : src/Display/cameramodule.i
 
 # target to preprocess a source file
-Display/display.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/display.cpp.i
-.PHONY : Display/display.cpp.i
+src/Display/cameramodule.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/cameramodule.cpp.i
+.PHONY : src/Display/cameramodule.cpp.i
 
-Display/display.s: Display/display.cpp.s
+src/Display/cameramodule.s: src/Display/cameramodule.cpp.s
 
-.PHONY : Display/display.s
+.PHONY : src/Display/cameramodule.s
 
 # target to generate assembly for a file
-Display/display.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/display.cpp.s
-.PHONY : Display/display.cpp.s
+src/Display/cameramodule.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/cameramodule.cpp.s
+.PHONY : src/Display/cameramodule.cpp.s
 
-Display/inputmodule.o: Display/inputmodule.cpp.o
+src/Display/display.o: src/Display/display.cpp.o
 
-.PHONY : Display/inputmodule.o
+.PHONY : src/Display/display.o
 
 # target to build an object file
-Display/inputmodule.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/inputmodule.cpp.o
-.PHONY : Display/inputmodule.cpp.o
+src/Display/display.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/display.cpp.o
+.PHONY : src/Display/display.cpp.o
 
-Display/inputmodule.i: Display/inputmodule.cpp.i
+src/Display/display.i: src/Display/display.cpp.i
 
-.PHONY : Display/inputmodule.i
+.PHONY : src/Display/display.i
 
 # target to preprocess a source file
-Display/inputmodule.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/inputmodule.cpp.i
-.PHONY : Display/inputmodule.cpp.i
+src/Display/display.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/display.cpp.i
+.PHONY : src/Display/display.cpp.i
 
-Display/inputmodule.s: Display/inputmodule.cpp.s
+src/Display/display.s: src/Display/display.cpp.s
 
-.PHONY : Display/inputmodule.s
+.PHONY : src/Display/display.s
 
 # target to generate assembly for a file
-Display/inputmodule.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Display/inputmodule.cpp.s
-.PHONY : Display/inputmodule.cpp.s
+src/Display/display.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/display.cpp.s
+.PHONY : src/Display/display.cpp.s
 
-Model/Assimp/assimploader.o: Model/Assimp/assimploader.cpp.o
+src/Display/inputmodule.o: src/Display/inputmodule.cpp.o
 
-.PHONY : Model/Assimp/assimploader.o
+.PHONY : src/Display/inputmodule.o
 
 # target to build an object file
-Model/Assimp/assimploader.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Assimp/assimploader.cpp.o
-.PHONY : Model/Assimp/assimploader.cpp.o
+src/Display/inputmodule.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/inputmodule.cpp.o
+.PHONY : src/Display/inputmodule.cpp.o
 
-Model/Assimp/assimploader.i: Model/Assimp/assimploader.cpp.i
+src/Display/inputmodule.i: src/Display/inputmodule.cpp.i
 
-.PHONY : Model/Assimp/assimploader.i
+.PHONY : src/Display/inputmodule.i
 
 # target to preprocess a source file
-Model/Assimp/assimploader.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Assimp/assimploader.cpp.i
-.PHONY : Model/Assimp/assimploader.cpp.i
+src/Display/inputmodule.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/inputmodule.cpp.i
+.PHONY : src/Display/inputmodule.cpp.i
 
-Model/Assimp/assimploader.s: Model/Assimp/assimploader.cpp.s
+src/Display/inputmodule.s: src/Display/inputmodule.cpp.s
 
-.PHONY : Model/Assimp/assimploader.s
+.PHONY : src/Display/inputmodule.s
 
 # target to generate assembly for a file
-Model/Assimp/assimploader.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Assimp/assimploader.cpp.s
-.PHONY : Model/Assimp/assimploader.cpp.s
+src/Display/inputmodule.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Display/inputmodule.cpp.s
+.PHONY : src/Display/inputmodule.cpp.s
 
-Model/Shader/shader.o: Model/Shader/shader.cpp.o
+src/Model/Assimp/assimploader.o: src/Model/Assimp/assimploader.cpp.o
 
-.PHONY : Model/Shader/shader.o
+.PHONY : src/Model/Assimp/assimploader.o
 
 # target to build an object file
-Model/Shader/shader.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Shader/shader.cpp.o
-.PHONY : Model/Shader/shader.cpp.o
+src/Model/Assimp/assimploader.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Assimp/assimploader.cpp.o
+.PHONY : src/Model/Assimp/assimploader.cpp.o
 
-Model/Shader/shader.i: Model/Shader/shader.cpp.i
+src/Model/Assimp/assimploader.i: src/Model/Assimp/assimploader.cpp.i
 
-.PHONY : Model/Shader/shader.i
+.PHONY : src/Model/Assimp/assimploader.i
 
 # target to preprocess a source file
-Model/Shader/shader.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Shader/shader.cpp.i
-.PHONY : Model/Shader/shader.cpp.i
+src/Model/Assimp/assimploader.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Assimp/assimploader.cpp.i
+.PHONY : src/Model/Assimp/assimploader.cpp.i
 
-Model/Shader/shader.s: Model/Shader/shader.cpp.s
+src/Model/Assimp/assimploader.s: src/Model/Assimp/assimploader.cpp.s
 
-.PHONY : Model/Shader/shader.s
+.PHONY : src/Model/Assimp/assimploader.s
 
 # target to generate assembly for a file
-Model/Shader/shader.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Shader/shader.cpp.s
-.PHONY : Model/Shader/shader.cpp.s
+src/Model/Assimp/assimploader.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Assimp/assimploader.cpp.s
+.PHONY : src/Model/Assimp/assimploader.cpp.s
 
-Model/Sprite/sprite.o: Model/Sprite/sprite.cpp.o
+src/Model/Shader/shader.o: src/Model/Shader/shader.cpp.o
 
-.PHONY : Model/Sprite/sprite.o
+.PHONY : src/Model/Shader/shader.o
 
 # target to build an object file
-Model/Sprite/sprite.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Sprite/sprite.cpp.o
-.PHONY : Model/Sprite/sprite.cpp.o
+src/Model/Shader/shader.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Shader/shader.cpp.o
+.PHONY : src/Model/Shader/shader.cpp.o
 
-Model/Sprite/sprite.i: Model/Sprite/sprite.cpp.i
+src/Model/Shader/shader.i: src/Model/Shader/shader.cpp.i
 
-.PHONY : Model/Sprite/sprite.i
+.PHONY : src/Model/Shader/shader.i
 
 # target to preprocess a source file
-Model/Sprite/sprite.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Sprite/sprite.cpp.i
-.PHONY : Model/Sprite/sprite.cpp.i
+src/Model/Shader/shader.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Shader/shader.cpp.i
+.PHONY : src/Model/Shader/shader.cpp.i
 
-Model/Sprite/sprite.s: Model/Sprite/sprite.cpp.s
+src/Model/Shader/shader.s: src/Model/Shader/shader.cpp.s
 
-.PHONY : Model/Sprite/sprite.s
+.PHONY : src/Model/Shader/shader.s
 
 # target to generate assembly for a file
-Model/Sprite/sprite.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/Sprite/sprite.cpp.s
-.PHONY : Model/Sprite/sprite.cpp.s
+src/Model/Shader/shader.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Shader/shader.cpp.s
+.PHONY : src/Model/Shader/shader.cpp.s
 
-Model/renderchain.o: Model/renderchain.cpp.o
+src/Model/Sprite/sprite.o: src/Model/Sprite/sprite.cpp.o
 
-.PHONY : Model/renderchain.o
+.PHONY : src/Model/Sprite/sprite.o
 
 # target to build an object file
-Model/renderchain.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/renderchain.cpp.o
-.PHONY : Model/renderchain.cpp.o
+src/Model/Sprite/sprite.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Sprite/sprite.cpp.o
+.PHONY : src/Model/Sprite/sprite.cpp.o
 
-Model/renderchain.i: Model/renderchain.cpp.i
+src/Model/Sprite/sprite.i: src/Model/Sprite/sprite.cpp.i
 
-.PHONY : Model/renderchain.i
+.PHONY : src/Model/Sprite/sprite.i
 
 # target to preprocess a source file
-Model/renderchain.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/renderchain.cpp.i
-.PHONY : Model/renderchain.cpp.i
+src/Model/Sprite/sprite.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Sprite/sprite.cpp.i
+.PHONY : src/Model/Sprite/sprite.cpp.i
 
-Model/renderchain.s: Model/renderchain.cpp.s
+src/Model/Sprite/sprite.s: src/Model/Sprite/sprite.cpp.s
 
-.PHONY : Model/renderchain.s
+.PHONY : src/Model/Sprite/sprite.s
 
 # target to generate assembly for a file
-Model/renderchain.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/renderchain.cpp.s
-.PHONY : Model/renderchain.cpp.s
+src/Model/Sprite/sprite.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Sprite/sprite.cpp.s
+.PHONY : src/Model/Sprite/sprite.cpp.s
 
-Model/renderobject.o: Model/renderobject.cpp.o
+src/Model/renderchain.o: src/Model/renderchain.cpp.o
 
-.PHONY : Model/renderobject.o
+.PHONY : src/Model/renderchain.o
 
 # target to build an object file
-Model/renderobject.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/renderobject.cpp.o
-.PHONY : Model/renderobject.cpp.o
+src/Model/renderchain.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/renderchain.cpp.o
+.PHONY : src/Model/renderchain.cpp.o
 
-Model/renderobject.i: Model/renderobject.cpp.i
+src/Model/renderchain.i: src/Model/renderchain.cpp.i
 
-.PHONY : Model/renderobject.i
+.PHONY : src/Model/renderchain.i
 
 # target to preprocess a source file
-Model/renderobject.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/renderobject.cpp.i
-.PHONY : Model/renderobject.cpp.i
+src/Model/renderchain.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/renderchain.cpp.i
+.PHONY : src/Model/renderchain.cpp.i
 
-Model/renderobject.s: Model/renderobject.cpp.s
+src/Model/renderchain.s: src/Model/renderchain.cpp.s
 
-.PHONY : Model/renderobject.s
+.PHONY : src/Model/renderchain.s
 
 # target to generate assembly for a file
-Model/renderobject.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/renderobject.cpp.s
-.PHONY : Model/renderobject.cpp.s
+src/Model/renderchain.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/renderchain.cpp.s
+.PHONY : src/Model/renderchain.cpp.s
 
-Model/testObject.o: Model/testObject.cpp.o
+src/Model/renderobject.o: src/Model/renderobject.cpp.o
 
-.PHONY : Model/testObject.o
+.PHONY : src/Model/renderobject.o
 
 # target to build an object file
-Model/testObject.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/testObject.cpp.o
-.PHONY : Model/testObject.cpp.o
+src/Model/renderobject.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/renderobject.cpp.o
+.PHONY : src/Model/renderobject.cpp.o
 
-Model/testObject.i: Model/testObject.cpp.i
+src/Model/renderobject.i: src/Model/renderobject.cpp.i
 
-.PHONY : Model/testObject.i
+.PHONY : src/Model/renderobject.i
 
 # target to preprocess a source file
-Model/testObject.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/testObject.cpp.i
-.PHONY : Model/testObject.cpp.i
+src/Model/renderobject.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/renderobject.cpp.i
+.PHONY : src/Model/renderobject.cpp.i
 
-Model/testObject.s: Model/testObject.cpp.s
+src/Model/renderobject.s: src/Model/renderobject.cpp.s
 
-.PHONY : Model/testObject.s
+.PHONY : src/Model/renderobject.s
 
 # target to generate assembly for a file
-Model/testObject.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/Model/testObject.cpp.s
-.PHONY : Model/testObject.cpp.s
+src/Model/renderobject.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/renderobject.cpp.s
+.PHONY : src/Model/renderobject.cpp.s
 
-main.o: main.cpp.o
+src/Model/testObject.o: src/Model/testObject.cpp.o
 
-.PHONY : main.o
+.PHONY : src/Model/testObject.o
 
 # target to build an object file
-main.cpp.o:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/main.cpp.o
-.PHONY : main.cpp.o
+src/Model/testObject.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/testObject.cpp.o
+.PHONY : src/Model/testObject.cpp.o
 
-main.i: main.cpp.i
+src/Model/testObject.i: src/Model/testObject.cpp.i
 
-.PHONY : main.i
+.PHONY : src/Model/testObject.i
 
 # target to preprocess a source file
-main.cpp.i:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/main.cpp.i
-.PHONY : main.cpp.i
+src/Model/testObject.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/testObject.cpp.i
+.PHONY : src/Model/testObject.cpp.i
 
-main.s: main.cpp.s
+src/Model/testObject.s: src/Model/testObject.cpp.s
 
-.PHONY : main.s
+.PHONY : src/Model/testObject.s
 
 # target to generate assembly for a file
-main.cpp.s:
-	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/main.cpp.s
-.PHONY : main.cpp.s
+src/Model/testObject.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/testObject.cpp.s
+.PHONY : src/Model/testObject.cpp.s
+
+src/main.o: src/main.cpp.o
+
+.PHONY : src/main.o
+
+# target to build an object file
+src/main.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/main.cpp.o
+.PHONY : src/main.cpp.o
+
+src/main.i: src/main.cpp.i
+
+.PHONY : src/main.i
+
+# target to preprocess a source file
+src/main.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/main.cpp.i
+.PHONY : src/main.cpp.i
+
+src/main.s: src/main.cpp.s
+
+.PHONY : src/main.s
+
+# target to generate assembly for a file
+src/main.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/main.cpp.s
+.PHONY : src/main.cpp.s
 
 # Help Target
 help:
@@ -456,42 +456,42 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... edit_cache"
 	@echo "... OpenGL"
-	@echo "... Core/glapi.o"
-	@echo "... Core/glapi.i"
-	@echo "... Core/glapi.s"
-	@echo "... Core/openGL.o"
-	@echo "... Core/openGL.i"
-	@echo "... Core/openGL.s"
-	@echo "... Display/cameramodule.o"
-	@echo "... Display/cameramodule.i"
-	@echo "... Display/cameramodule.s"
-	@echo "... Display/display.o"
-	@echo "... Display/display.i"
-	@echo "... Display/display.s"
-	@echo "... Display/inputmodule.o"
-	@echo "... Display/inputmodule.i"
-	@echo "... Display/inputmodule.s"
-	@echo "... Model/Assimp/assimploader.o"
-	@echo "... Model/Assimp/assimploader.i"
-	@echo "... Model/Assimp/assimploader.s"
-	@echo "... Model/Shader/shader.o"
-	@echo "... Model/Shader/shader.i"
-	@echo "... Model/Shader/shader.s"
-	@echo "... Model/Sprite/sprite.o"
-	@echo "... Model/Sprite/sprite.i"
-	@echo "... Model/Sprite/sprite.s"
-	@echo "... Model/renderchain.o"
-	@echo "... Model/renderchain.i"
-	@echo "... Model/renderchain.s"
-	@echo "... Model/renderobject.o"
-	@echo "... Model/renderobject.i"
-	@echo "... Model/renderobject.s"
-	@echo "... Model/testObject.o"
-	@echo "... Model/testObject.i"
-	@echo "... Model/testObject.s"
-	@echo "... main.o"
-	@echo "... main.i"
-	@echo "... main.s"
+	@echo "... src/Core/glapi.o"
+	@echo "... src/Core/glapi.i"
+	@echo "... src/Core/glapi.s"
+	@echo "... src/Core/openGL.o"
+	@echo "... src/Core/openGL.i"
+	@echo "... src/Core/openGL.s"
+	@echo "... src/Display/cameramodule.o"
+	@echo "... src/Display/cameramodule.i"
+	@echo "... src/Display/cameramodule.s"
+	@echo "... src/Display/display.o"
+	@echo "... src/Display/display.i"
+	@echo "... src/Display/display.s"
+	@echo "... src/Display/inputmodule.o"
+	@echo "... src/Display/inputmodule.i"
+	@echo "... src/Display/inputmodule.s"
+	@echo "... src/Model/Assimp/assimploader.o"
+	@echo "... src/Model/Assimp/assimploader.i"
+	@echo "... src/Model/Assimp/assimploader.s"
+	@echo "... src/Model/Shader/shader.o"
+	@echo "... src/Model/Shader/shader.i"
+	@echo "... src/Model/Shader/shader.s"
+	@echo "... src/Model/Sprite/sprite.o"
+	@echo "... src/Model/Sprite/sprite.i"
+	@echo "... src/Model/Sprite/sprite.s"
+	@echo "... src/Model/renderchain.o"
+	@echo "... src/Model/renderchain.i"
+	@echo "... src/Model/renderchain.s"
+	@echo "... src/Model/renderobject.o"
+	@echo "... src/Model/renderobject.i"
+	@echo "... src/Model/renderobject.s"
+	@echo "... src/Model/testObject.o"
+	@echo "... src/Model/testObject.i"
+	@echo "... src/Model/testObject.s"
+	@echo "... src/main.o"
+	@echo "... src/main.i"
+	@echo "... src/main.s"
 .PHONY : help
 
 
