@@ -9,12 +9,8 @@ int main(int argc, char **args)
 
     // Create GLUT window
     glutInit(&argc, args);
-
-    //#ifdef VERSION_MIN
     glutInitContextVersion(3,3);
     glutInitContextProfile( GLUT_CORE_PROFILE);
-    //#endif
-
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(100, 100);
@@ -30,6 +26,7 @@ int main(int argc, char **args)
     });
 
     glutKeyboardFunc([](unsigned char key, int x, int y) -> void {
+        std::cout << "Key down" << std::endl;
         OpenGL::GetInstance()->KeyboardFunc(key, true, x, y);
     });
 
@@ -44,8 +41,6 @@ int main(int argc, char **args)
         return -1;
     }
 
-
-    RenderChain::GetInstance();
     // Enter GLUT main loop
     glutMainLoop();
 
