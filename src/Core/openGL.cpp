@@ -32,7 +32,7 @@ bool OpenGL::CreateInstance(int width, int height, std::string title)
     }
     catch (Utilities::Exception* error)
     {
-        std::cout << "Error (" << error->GetCode() << "): " << error->GetError() << std::endl;
+        error->PrintError();
         delete error;
         return false;
     }
@@ -49,6 +49,7 @@ OpenGL::OpenGL(int width, int height, std::string title)
 {
     m_lowestTime = 0;
 
+    // Look up all GL functions for later use
     gl::InitAPI();
 
     // Create singleton instance of RenderChain (Capability of 10 objects)

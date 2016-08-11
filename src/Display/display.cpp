@@ -41,7 +41,7 @@ bool GlutDisplay::InitDisplay(int width, int height, std::string title)
     }
     catch (Utilities::Exception* error)
     {
-        std::cout << "Error (" << error->GetCode() << "): " << error->GetError() << std::endl;
+        error->PrintError();
         delete error;
         return false;
     }

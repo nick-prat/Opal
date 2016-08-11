@@ -14,6 +14,8 @@ namespace Utilities
         Exception(const unsigned char code, const std::string error);
         ~Exception();
 
+        void PrintError();
+
         void SetCode(int code);
         int GetCode();
 

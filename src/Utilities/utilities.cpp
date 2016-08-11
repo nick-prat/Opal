@@ -9,6 +9,11 @@ Utilities::Exception::Exception(const unsigned char code, std::string error)
 Utilities::Exception::~Exception()
 {}
 
+void Utilities::Exception::PrintError()
+{
+    std::cout << "Error (" << code << "): " << error << std::endl;
+}
+
 void Utilities::Exception::SetCode(int code)
 {
     this->code = code;
