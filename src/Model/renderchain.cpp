@@ -7,12 +7,7 @@
 RenderChain* RenderChain::m_renderChain = nullptr;
 
 RenderChain* RenderChain::GetInstance() {
-    std::thread::id tid = std::this_thread::get_id();
-    if(m_renderChain != nullptr && m_renderChain->m_threadID == tid)
-    {
-        return m_renderChain;
-    }
-    return nullptr;
+    return m_renderChain;
 }
 
 bool RenderChain::CreateInstance(int num, bool vol) {
@@ -52,6 +47,12 @@ RenderChain::~RenderChain()
 
 bool RenderChain::AttachRenderObject(RenderObject* object)
 {
+    if(m_renderChain == nullptr)
+    {
+        return false;
+    }
+
+    // Make sure we don't go over the object render limit
     if(m_objCount < m_objLimit)
     {
         m_memPool[m_objCount] = object;
@@ -66,6 +67,13 @@ bool RenderChain::AttachRenderObject(RenderObject* object)
 
 void RenderChain::RenderObjectChain()
 {
+    // All rendering must be done on the creation thread
+    std::thread::id tid = std::this_thread::get_id();
+    if(m_renderChain != nullptr && m_renderChain->m_threadID == tid)
+    {
+        return;
+    }
+
     for(int i = 0; i < m_objCount; i++)
     {
         m_memPool[i]->Render();
