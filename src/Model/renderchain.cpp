@@ -67,9 +67,7 @@ bool RenderChain::AttachRenderObject(RenderObject* object)
 
 void RenderChain::RenderObjectChain()
 {
-    // All rendering must be done on the creation thread
-    std::thread::id tid = std::this_thread::get_id();
-    if(m_renderChain != nullptr && m_renderChain->m_threadID == tid)
+    if(m_renderChain == nullptr)
     {
         return;
     }
