@@ -5,45 +5,61 @@
 #include <chrono>
 #include <string>
 #include <thread>
+#include <Utilities/utilities.h>
 #include <Model/Assimp/assimploader.h>
 
 #include "openGL.h"
 
 OpenGL* OpenGL::m_openGL = nullptr;
 
-OpenGL::OpenGL()
+void OpenGL::DeleteInstance()
 {
+    delete m_openGL;
     m_openGL = nullptr;
-    m_obj = nullptr;
-    m_display = nullptr;
-    m_lowestTime = 0;
 }
 
-OpenGL::~OpenGL()
-{}
-
-bool OpenGL::InitOpenGL(int width, int height, std::string title)
+bool OpenGL::CreateInstance(int width, int height, std::string title)
 {
+    if(m_openGL != nullptr)
+    {
+        std::cout << "OpenGL has already been created, destroy first";
+        return false;
+    }
+
+    try
+    {
+        m_openGL = new OpenGL(width, height, title);
+    }
+    catch (Utilities::Exception* error)
+    {
+        std::cout << "Error (" << error->GetCode() << "): " << error->GetError() << std::endl;
+        delete error;
+        return false;
+    }
+
+    return true;
+}
+
+OpenGL* OpenGL::GetInstance()
+{
+    return m_openGL;
+}
+
+OpenGL::OpenGL(int width, int height, std::string title)
+{
+    m_lowestTime = 0;
+
     gl::InitAPI();
 
     // Create singleton instance of RenderChain (Capability of 10 objects)
     if(!RenderChain::CreateInstance(10, true))
     {
-        std::cout << "Couldn't Create Instance of RenderChain" << std::endl;
-        return -1;
+        throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
     }
 
-    try
-    {
-        m_display = std::make_shared<GlutDisplay>(width, height, title);
-        m_obj = std::make_shared<TestObject>(m_display);
-        m_obj2 = std::make_shared<TestObject>(m_display);
-    }
-    catch (const char* error)
-    {
-        std::cout << "Error: " << error << std::endl;
-        return false;
-    }
+    m_display = std::make_shared<GlutDisplay>(width, height, title);
+    m_obj = std::make_shared<TestObject>(m_display);
+    m_obj2 = std::make_shared<TestObject>(m_display);
 
     m_obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, -0.5f)));
 
@@ -55,10 +71,9 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-    return true;
 }
 
-void OpenGL::Destroy()
+OpenGL::~OpenGL()
 {}
 
 void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y)
@@ -80,7 +95,7 @@ void OpenGL::DisplayFunc()
 
     auto finish = std::chrono::high_resolution_clock::now();
 
-    if(m_display->GetInputModule()->IsKeyPressed('w'))
+    if(m_display->GetInputModule()->IsKeyPressed('W'))
     {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
     }
@@ -101,34 +116,4 @@ void OpenGL::DisplayFunc()
     {
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
-}
-
-void OpenGL::DeleteInstance()
-{
-    m_openGL->Destroy();
-    delete m_openGL;
-    m_openGL = nullptr;
-}
-
-bool OpenGL::CreateInstance(int width, int height, std::string title)
-{
-    if(m_openGL != nullptr)
-    {
-        std::cout << "OpenGL has already been created, destroy first";
-        return false;
-    }
-
-    m_openGL = new OpenGL();
-    if(!m_openGL->InitOpenGL(width, height, title))
-    {
-        std::cout << "Couldn't initialize OpenGL project" << std::endl;
-        return false;
-    }
-
-    return true;
-}
-
-OpenGL* OpenGL::GetInstance()
-{
-    return m_openGL;
 }

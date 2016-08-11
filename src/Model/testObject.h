@@ -5,7 +5,7 @@
 #ifndef OPENGL_SHITTYOBJECT_H
 #define OPENGL_SHITTYOBJECT_H
 
-#include <Utilities/utilities.hpp>
+#include <Utilities/utilities.h>
 
 #include "renderobject.h"
 

@@ -17,7 +17,7 @@
 class OpenGL
 {
 public:
-    OpenGL();
+    OpenGL(int width, int height, std::string title);
     ~OpenGL();
 
     void DisplayFunc();
@@ -26,10 +26,6 @@ public:
     static bool CreateInstance(int width, int height, std::string title);
     static void DeleteInstance();
     static OpenGL* GetInstance();
-
-private:
-    bool InitOpenGL(int width, int height, std::string title);
-    void Destroy();
 
 private:
     static OpenGL* m_openGL;

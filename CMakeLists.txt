@@ -12,7 +12,7 @@ set(SOURCE_FILES
         src/main.cpp
         src/Display/display.cpp src/Display/inputmodule.cpp src/Display/cameramodule.cpp
         src/Model/Shader/shader.cpp src/Model/Sprite/sprite.cpp src/Model/testObject.cpp src/Model/renderchain.cpp src/Model/renderobject.cpp src/Model/Assimp/assimploader.cpp
-        src/Utilities/utilities.hpp
+        src/Utilities/utilities.cpp
         src/Core/openGL.cpp
         src/Core/glapi.h src/Core/glapi.cpp )
 add_executable(OpenGL ${SOURCE_FILES})

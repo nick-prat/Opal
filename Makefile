@@ -420,6 +420,33 @@ src/Model/testObject.cpp.s:
 	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/testObject.cpp.s
 .PHONY : src/Model/testObject.cpp.s
 
+src/Utilities/utilities.o: src/Utilities/utilities.cpp.o
+
+.PHONY : src/Utilities/utilities.o
+
+# target to build an object file
+src/Utilities/utilities.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Utilities/utilities.cpp.o
+.PHONY : src/Utilities/utilities.cpp.o
+
+src/Utilities/utilities.i: src/Utilities/utilities.cpp.i
+
+.PHONY : src/Utilities/utilities.i
+
+# target to preprocess a source file
+src/Utilities/utilities.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Utilities/utilities.cpp.i
+.PHONY : src/Utilities/utilities.cpp.i
+
+src/Utilities/utilities.s: src/Utilities/utilities.cpp.s
+
+.PHONY : src/Utilities/utilities.s
+
+# target to generate assembly for a file
+src/Utilities/utilities.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Utilities/utilities.cpp.s
+.PHONY : src/Utilities/utilities.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -489,6 +516,9 @@ help:
 	@echo "... src/Model/testObject.o"
 	@echo "... src/Model/testObject.i"
 	@echo "... src/Model/testObject.s"
+	@echo "... src/Utilities/utilities.o"
+	@echo "... src/Utilities/utilities.i"
+	@echo "... src/Utilities/utilities.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

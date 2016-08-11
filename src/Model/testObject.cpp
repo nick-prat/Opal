@@ -3,6 +3,7 @@
 //
 
 #include <iostream>
+#include <Utilities/utilities.h>
 
 #include "testObject.h"
 
@@ -17,7 +18,7 @@ TestObject::TestObject(std::shared_ptr<GlutDisplay> display)
 
     if(!InitObject(display))
     {
-        throw "Couldn't init shitty model";
+        throw new Utilities::Exception(1, "Couldn't init shitty model");
     }
 }
 

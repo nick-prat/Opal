@@ -1,4 +1,5 @@
 #include <iostream>
+#include <Utilities/utilities.h>
 #include "display.h"
 
 GlutDisplay::CameraModule::CameraModule()
@@ -7,10 +8,9 @@ GlutDisplay::CameraModule::CameraModule()
     m_translation = glm::vec3(0.0f, 0.0f, 0.0f);
     m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
-    if(!InitCamera())
+    if(InitCamera())
     {
-        std::cout << "Couldn't initialize camera!" << std::endl;
-        throw;
+        throw new Utilities::Exception(1, "Couldn't initialize camera!");
     }
 }
 
