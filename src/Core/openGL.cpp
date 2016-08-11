@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <string>
+#include <thread>
 #include <Model/Assimp/assimploader.h>
 
 #include "openGL.h"
@@ -24,6 +25,13 @@ OpenGL::~OpenGL()
 bool OpenGL::InitOpenGL(int width, int height, std::string title)
 {
     gl::InitAPI();
+
+    // Create singleton instance of RenderChain (Capability of 10 objects)
+    if(!RenderChain::CreateInstance(10, true))
+    {
+        std::cout << "Couldn't Create Instance of RenderChain" << std::endl;
+        return -1;
+    }
 
     try
     {
@@ -66,7 +74,7 @@ void OpenGL::DisplayFunc()
     glutSwapBuffers();
 
     /*auto finish = std::chrono::high_resolution_clock::now();
-    
+
     if(time < m_lowestTime || m_lowestTime == 0)
     {
         std::cout << "Fastest render : " << time << std::endl;
@@ -125,4 +133,3 @@ OpenGL* OpenGL::GetInstance()
 {
     return m_openGL;
 }
-

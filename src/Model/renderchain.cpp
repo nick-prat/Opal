@@ -6,18 +6,13 @@
 
 RenderChain* RenderChain::m_renderChain = nullptr;
 
-RenderChain::RenderChain(int num, bool vol)
-{
-    m_memPool = nullptr;
-    if(!InitRenderChain(num, vol))
-    {
-        std::cout << "Couldn't initialize render chain!" << std::endl;
-        throw;
-    }
-}
-
 RenderChain* RenderChain::GetInstance() {
-    return m_renderChain;
+    std::thread::id tid = std::this_thread::get_id();
+    if(m_renderChain != nullptr && m_renderChain->m_threadID == tid)
+    {
+        return m_renderChain;
+    }
+    return nullptr;
 }
 
 bool RenderChain::CreateInstance(int num, bool vol) {
@@ -26,33 +21,29 @@ bool RenderChain::CreateInstance(int num, bool vol) {
         std::cout << "Render chain has already been created" << std::endl;
         return false;
     }
-    m_renderChain = new RenderChain(num, vol);
+
+    m_renderChain = new RenderChain(num, vol, std::this_thread::get_id());
     return true;
 }
 
 void RenderChain::DeleteInstance() {
-    m_renderChain->Destroy();
     delete m_renderChain;
     m_renderChain = nullptr;
+}
+
+RenderChain::RenderChain(int num, bool vol, std::thread::id threadID)
+{
+    m_memPool = nullptr;
+    m_memPool = (RenderObject**)malloc(sizeof(RenderObject*) * num);
+    m_objCount = 0;
+    m_objLimit = num;
+    m_volatile = vol;
+    m_threadID = threadID;
 }
 
 RenderChain::~RenderChain()
 {
     delete m_renderChain;
-    Destroy();
-}
-
-bool RenderChain::InitRenderChain(int num, bool vol)
-{
-    m_memPool = (RenderObject**)malloc(sizeof(RenderObject*) * num);
-    m_objCount = 0;
-    m_objLimit = num;
-    m_volatile = vol;
-    return true;
-}
-
-void RenderChain::Destroy()
-{
     delete [] m_memPool;
     m_memPool = nullptr;
     m_objCount = 0;

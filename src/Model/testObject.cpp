@@ -38,7 +38,6 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     m_verts.push_back(glm::vec3(-1.0f, -1.0f, 0.0f));
     m_verts.push_back(glm::vec3(1.0f, -1.0f, 0.0f));
     m_verts.push_back(glm::vec3(-1.0f, 1.0f, 0.0f));
-    //m_verts.push_back(glm::vec3(1.0f, 1.0f, 0.0f));
 
     gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
     gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_verts.size(), m_verts.data(), GL_STATIC_DRAW);
@@ -47,7 +46,6 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     m_colors.push_back(glm::vec3(0.0f, 0.0f, 1.0f));
     m_colors.push_back(glm::vec3(0.0f, 1.0f, 0.0f));
     m_colors.push_back(glm::vec3(1.0f, 0.0f, 0.0f));
-    //m_colors.push_back(glm::vec3(1.0f, 1.0f, 1.0f));
 
     gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[1]);
     gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_colors.size(), m_colors.data(), GL_STATIC_DRAW);
@@ -64,8 +62,11 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     m_shader = std::make_unique<Shader>();
     std::vector<std::string> files = {"src/Shaders/shader.vs", "src/Shaders/shader.fs"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
+
+    // Use the geometry shader
     //std::vector<std::string> files = {"src/Shaders/shader.vs", "src/Shaders/shader.fs", "src/Shaders/shader.gs"};
     //std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER, GL_GEOMETRY_SHADER};
+
     if(!m_shader->InitShader(files, types))
     {
         std::cout << "Couldn't initialize shader" << std::endl;

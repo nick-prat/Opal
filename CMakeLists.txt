@@ -16,8 +16,9 @@ set(SOURCE_FILES
         src/Core/openGL.cpp
         src/Core/glapi.h src/Core/glapi.cpp )
 add_executable(OpenGL ${SOURCE_FILES})
+find_package(Threads REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLUT REQUIRED)
 find_package(ASSIMP REQUIRED)
 include_directories( ${OPENGL_INCLUDE_DIRS}  ${GLUT_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIR})
-target_link_libraries(OpenGL ${OPENGL_LIBRARIES} ${GLUT_LIBRARIES} ${ASSIMP_LIBRARIES})
+target_link_libraries(OpenGL ${OPENGL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${GLUT_LIBRARIES} ${ASSIMP_LIBRARIES})

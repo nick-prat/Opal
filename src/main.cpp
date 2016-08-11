@@ -1,3 +1,4 @@
+#include <thread>
 #include <Core/openGL.h>
 
 int main(int argc, char **args)
@@ -35,13 +36,8 @@ int main(int argc, char **args)
         return -1;
     }
 
-    // Create singleton instance of RenderChain (Capability of 10 objects)
-    if(!RenderChain::CreateInstance(10, true))
-    {
-        std::cout << "Couldn't Create Instance of RenderChain" << std::endl;
-        return -1;
-    }
 
+    RenderChain::GetInstance();
     // Enter GLUT main loop
     glutMainLoop();
 
