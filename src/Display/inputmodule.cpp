@@ -10,10 +10,10 @@ GlutDisplay::InputModule::InputModule()
 
 GlutDisplay::InputModule::~InputModule()
 {
-	
+
 }
 
-bool GlutDisplay::InputModule::IsKeyPressed(InputKey key) const
+bool GlutDisplay::InputModule::IsKeyPressed(unsigned char key) const
 {
 	return m_keys[key];
 }
@@ -23,11 +23,7 @@ glm::vec2 GlutDisplay::InputModule::GetMouseLocation() const
 	return glm::vec2(0.0f, 0.0f);
 }
 
-void GlutDisplay::InputModule::UpdateKey(int key, bool pressed)
+void GlutDisplay::InputModule::UpdateKey(unsigned char key, bool pressed)
 {
-	if(key > 256 || key < 0)
-	{
-		return;
-	}
 	m_keys[key] = pressed;
 }

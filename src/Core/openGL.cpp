@@ -61,9 +61,14 @@ bool OpenGL::InitOpenGL(int width, int height, std::string title)
 void OpenGL::Destroy()
 {}
 
+void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y)
+{
+    m_display->GetInputModule()->UpdateKey(key, state);
+}
+
 void OpenGL::DisplayFunc()
 {
-    //auto start = std::chrono::high_resolution_clock::now();
+    auto start = std::chrono::high_resolution_clock::now();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -73,35 +78,29 @@ void OpenGL::DisplayFunc()
     renderChain->RenderObjectChain();
     glutSwapBuffers();
 
-    /*auto finish = std::chrono::high_resolution_clock::now();
+    auto finish = std::chrono::high_resolution_clock::now();
 
-    if(time < m_lowestTime || m_lowestTime == 0)
-    {
-        std::cout << "Fastest render : " << time << std::endl;
-        m_lowestTime = time;
-    }*/
-
-    /*if(m_display->GetInputModule()->IsKeyPressed(Key_W))
+    if(m_display->GetInputModule()->IsKeyPressed('w'))
     {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed(Key_S))
+    if(m_display->GetInputModule()->IsKeyPressed('s'))
     {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed(Key_A))
+    if(m_display->GetInputModule()->IsKeyPressed('a'))
     {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed(Key_D))
+    if(m_display->GetInputModule()->IsKeyPressed('d'))
     {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     }
 
-    if(m_display->GetInputModule()->IsKeyPressed(Key_Space))
+    if(m_display->GetInputModule()->IsKeyPressed(' '))
     {
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
-    }*/
+    }
 }
 
 void OpenGL::DeleteInstance()

@@ -9,15 +9,6 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-enum InputKey
-{
-    Key_W = 119,
-    Key_A = 97,
-    Key_S = 115,
-    Key_D = 100,
-    Key_Space = 32
-};
-
 class GlutDisplay
 {
 
@@ -33,9 +24,9 @@ public:
         InputModule();
         ~InputModule();
 
-        bool IsKeyPressed(InputKey key) const;
+        bool IsKeyPressed(unsigned char key) const;
         glm::vec2 GetMouseLocation() const;
-        void UpdateKey(int key, bool pressed);
+        void UpdateKey(unsigned char key, bool pressed);
 
     private:
         bool m_keys[256];

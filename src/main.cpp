@@ -29,6 +29,14 @@ int main(int argc, char **args)
         OpenGL::GetInstance()->DisplayFunc();
     });
 
+    glutKeyboardFunc([](unsigned char key, int x, int y) -> void {
+        OpenGL::GetInstance()->KeyboardFunc(key, true, x, y);
+    });
+
+    glutKeyboardUpFunc([](unsigned char key, int x, int y) -> void {
+        OpenGL::GetInstance()->KeyboardFunc(key, false, x, y);
+    });
+
     // Create singleton instance of OpenGL
     if(!OpenGL::CreateInstance(width, height, title))
     {
@@ -46,5 +54,3 @@ int main(int argc, char **args)
     RenderChain::DeleteInstance();
     return 0;
 }
-
-#pragma clang diagnostic pop

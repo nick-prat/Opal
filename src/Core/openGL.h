@@ -21,6 +21,7 @@ public:
     ~OpenGL();
 
     void DisplayFunc();
+    void KeyboardFunc(unsigned char key, bool state, int x, int y);
 
     static bool CreateInstance(int width, int height, std::string title);
     static void DeleteInstance();
