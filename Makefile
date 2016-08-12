@@ -70,7 +70,7 @@ rebuild_cache/fast: rebuild_cache
 # Special rule for the target edit_cache
 edit_cache:
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --cyan "Running CMake cache editor..."
-	/usr/bin/ccmake -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
+	/usr/bin/cmake-gui -H$(CMAKE_SOURCE_DIR) -B$(CMAKE_BINARY_DIR)
 .PHONY : edit_cache
 
 # Special rule for the target edit_cache
@@ -284,6 +284,33 @@ src/Model/Assimp/assimploader.s: src/Model/Assimp/assimploader.cpp.s
 src/Model/Assimp/assimploader.cpp.s:
 	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Assimp/assimploader.cpp.s
 .PHONY : src/Model/Assimp/assimploader.cpp.s
+
+src/Model/Assimp/assimpmodel.o: src/Model/Assimp/assimpmodel.cpp.o
+
+.PHONY : src/Model/Assimp/assimpmodel.o
+
+# target to build an object file
+src/Model/Assimp/assimpmodel.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Assimp/assimpmodel.cpp.o
+.PHONY : src/Model/Assimp/assimpmodel.cpp.o
+
+src/Model/Assimp/assimpmodel.i: src/Model/Assimp/assimpmodel.cpp.i
+
+.PHONY : src/Model/Assimp/assimpmodel.i
+
+# target to preprocess a source file
+src/Model/Assimp/assimpmodel.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Assimp/assimpmodel.cpp.i
+.PHONY : src/Model/Assimp/assimpmodel.cpp.i
+
+src/Model/Assimp/assimpmodel.s: src/Model/Assimp/assimpmodel.cpp.s
+
+.PHONY : src/Model/Assimp/assimpmodel.s
+
+# target to generate assembly for a file
+src/Model/Assimp/assimpmodel.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Assimp/assimpmodel.cpp.s
+.PHONY : src/Model/Assimp/assimpmodel.cpp.s
 
 src/Model/Shader/shader.o: src/Model/Shader/shader.cpp.o
 
@@ -501,6 +528,9 @@ help:
 	@echo "... src/Model/Assimp/assimploader.o"
 	@echo "... src/Model/Assimp/assimploader.i"
 	@echo "... src/Model/Assimp/assimploader.s"
+	@echo "... src/Model/Assimp/assimpmodel.o"
+	@echo "... src/Model/Assimp/assimpmodel.i"
+	@echo "... src/Model/Assimp/assimpmodel.s"
 	@echo "... src/Model/Shader/shader.o"
 	@echo "... src/Model/Shader/shader.i"
 	@echo "... src/Model/Shader/shader.s"

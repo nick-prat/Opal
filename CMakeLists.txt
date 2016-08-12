@@ -4,14 +4,16 @@ add_definitions(-DVERSION_MIN)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
 include_directories("./src")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ./bin/debug)
-set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ./bin/release)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/debug)
+set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
 
 # Applications source files
 set(SOURCE_FILES
         src/main.cpp
         src/Display/display.cpp src/Display/inputmodule.cpp src/Display/cameramodule.cpp
-        src/Model/Shader/shader.cpp src/Model/Sprite/sprite.cpp src/Model/testObject.cpp src/Model/renderchain.cpp src/Model/renderobject.cpp src/Model/Assimp/assimploader.cpp
+	src/Model/testObject.cpp src/Model/renderchain.cpp src/Model/renderobject.cpp
+        	src/Model/Shader/shader.cpp src/Model/Sprite/sprite.cpp  
+		src/Model/Assimp/assimploader.cpp src/Model/Assimp/assimpmodel.cpp
         src/Utilities/utilities.cpp
         src/Core/openGL.cpp
         src/Core/glapi.h src/Core/glapi.cpp )

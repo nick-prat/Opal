@@ -9,13 +9,15 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#include "assimpmodel.h"
+
 class AssimpLoader
 {
 public:
     AssimpLoader();
     ~AssimpLoader();
 
-    bool LoadModel(std::string filename);
+    AssimpModel* LoadModel(std::string filename);
 };
 
 
