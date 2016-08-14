@@ -10,14 +10,14 @@ AssimpModel::~AssimpModel()
 
 }
 
-void* AssimpModel::RequestData(ModelData type, int& count)
+void* AssimpModel::RequestData(ModelData type, int& count) const
 {
     switch(type)
     {
-    case (ModelData_Vertices):
+    case (Vertices):
 
         return RequestVertices();
-    case (ModelData_Normals):
+    case (Normals):
 
 
         return RequestNormals();
@@ -26,12 +26,12 @@ void* AssimpModel::RequestData(ModelData type, int& count)
     }
 }
 
-void* AssimpModel::RequestNormals()
+void* AssimpModel::RequestNormals() const
 {
     return nullptr;
 }
 
-void* AssimpModel::RequestVertices()
+void* AssimpModel::RequestVertices() const
 {
-    return nullptr;
+
 }
