@@ -96,7 +96,7 @@ void OpenGL::DisplayFunc()
 
     auto finish = std::chrono::high_resolution_clock::now();
 
-    if(m_display->GetInputModule()->IsKeyPressed('W'))
+    if(m_display->GetInputModule()->IsKeyPressed('w'))
     {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
     }

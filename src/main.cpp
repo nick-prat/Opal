@@ -26,7 +26,6 @@ int main(int argc, char **args)
     });
 
     glutKeyboardFunc([](unsigned char key, int x, int y) -> void {
-        std::cout << "Key down" << std::endl;
         OpenGL::GetInstance()->KeyboardFunc(key, true, x, y);
     });
 
