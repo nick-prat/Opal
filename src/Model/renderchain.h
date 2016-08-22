@@ -8,7 +8,7 @@
 class RenderChain
 {
 public:
-    bool AttachRenderObject(RenderObject* object);
+    bool AttachRenderObject(IRenderObject* object);
     void RenderObjectChain();
 
     static RenderChain* GetInstance();
@@ -26,7 +26,7 @@ private:
     int m_objCount;
     int m_objLimit;
     bool m_volatile;
-    RenderObject** m_memPool;
+    IRenderObject** m_memPool;
 };
 
 #endif // _RENDERCHAIN_H

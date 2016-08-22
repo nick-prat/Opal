@@ -1,36 +1,36 @@
 #include "renderobject.h"
 
-RenderObject::RenderObject()
+IRenderObject::IRenderObject()
 {
     m_translate = glm::mat4(1.0f);
     m_scale = glm::mat4(1.0f);
     m_rotate = glm::mat4(1.0f);
 }
 
-RenderObject::~RenderObject()
+IRenderObject::~IRenderObject()
 {
 
 }
 
-glm::mat4 RenderObject::GetWorld()
+glm::mat4 IRenderObject::GetWorld()
 {
     return m_world;
 }
 
-void RenderObject::Translate(glm::mat4 trans)
+void IRenderObject::Translate(glm::mat4 trans)
 {
     m_translate = trans;
     //m_world =  m_translate * m_rotate * m_scale;
     m_world = m_translate;
 }
 
-void RenderObject::Rotate(glm::mat4 rotate)
+void IRenderObject::Rotate(glm::mat4 rotate)
 {
     m_rotate = rotate;
     m_world =  m_translate * m_rotate * m_scale;
 }
 
-void RenderObject::Scale(glm::mat4 scale)
+void IRenderObject::Scale(glm::mat4 scale)
 {
     m_scale = scale;
     m_world =  m_translate * m_rotate * m_scale;

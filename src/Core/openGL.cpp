@@ -58,6 +58,9 @@ OpenGL::OpenGL(int width, int height, std::string title)
         throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
     }
 
+    auto aLoader = std::make_unique<AssimpLoader>();
+    aLoader->LoadModel("Models/wolf.3ds");
+
     m_display = std::make_shared<GlutDisplay>(width, height, title);
     m_obj = std::make_shared<TestObject>(m_display);
     m_obj2 = std::make_shared<TestObject>(m_display);

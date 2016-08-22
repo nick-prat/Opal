@@ -61,7 +61,7 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * m_indices.size(), m_indices.data(), GL_STATIC_DRAW);
 
     m_shader = std::make_unique<Shader>();
-    std::vector<std::string> files = {"src/Shaders/shader.vs", "src/Shaders/shader.fs"};
+    std::vector<std::string> files = {"Shaders/shader.vs", "Shaders/shader.fs"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
 
     // Use the geometry shader

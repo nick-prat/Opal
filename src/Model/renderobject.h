@@ -9,11 +9,11 @@
 #include <Model/Shader/shader.h>
 #include <Display/display.h>
 
-class RenderObject
+class IRenderObject
 {
 public:
-    RenderObject();
-    virtual ~RenderObject();
+    IRenderObject();
+    virtual ~IRenderObject();
     virtual void Render() = 0;
     virtual void Destroy() = 0;
 

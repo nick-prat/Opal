@@ -6,7 +6,7 @@
 #include "Model/renderobject.h"
 #include "Model/Shader/shader.h"
 
-class Sprite : public RenderObject
+class Sprite : public IRenderObject
 {
     public:
         Sprite();

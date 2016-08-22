@@ -29,7 +29,7 @@ void RenderChain::DeleteInstance() {
 RenderChain::RenderChain(int num, bool vol, std::thread::id threadID)
 {
     m_memPool = nullptr;
-    m_memPool = (RenderObject**)malloc(sizeof(RenderObject*) * num);
+    m_memPool = (IRenderObject**)malloc(sizeof(IRenderObject*) * num);
     m_objCount = 0;
     m_objLimit = num;
     m_volatile = vol;
@@ -45,7 +45,7 @@ RenderChain::~RenderChain()
     m_objLimit = 0;
 }
 
-bool RenderChain::AttachRenderObject(RenderObject* object)
+bool RenderChain::AttachRenderObject(IRenderObject* object)
 {
     if(m_renderChain == nullptr)
     {

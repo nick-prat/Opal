@@ -9,7 +9,7 @@
 
 #include "renderobject.h"
 
-class TestObject : public RenderObject
+class TestObject : public IRenderObject
 {
 public:
     TestObject();
