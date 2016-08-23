@@ -14,7 +14,7 @@ set(SOURCE_FILES
 	src/Model/testObject.cpp src/Model/renderchain.cpp src/Model/renderobject.cpp
         	src/Model/Shader/shader.cpp src/Model/Sprite/sprite.cpp  
 		src/Model/Assimp/assimploader.cpp src/Model/Assimp/assimpmodel.cpp
-        src/Utilities/utilities.cpp
+        src/Utilities/utilities.cpp src/Utilities/log.cpp
         src/Core/openGL.cpp src/Core/glapi.cpp )
 add_executable(OpenGL ${SOURCE_FILES})
 find_package(Threads REQUIRED)

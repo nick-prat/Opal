@@ -6,6 +6,7 @@
 #include <string>
 #include <thread>
 #include <Utilities/utilities.h>
+#include <Utilities/log.h>
 #include <Model/Assimp/assimploader.h>
 
 #include "openGL.h"
@@ -20,6 +21,7 @@ void OpenGL::DeleteInstance()
 
 bool OpenGL::CreateInstance(int width, int height, std::string title)
 {
+    //Log::info("Create OpenGL Instance", true);
     if(m_openGL != nullptr)
     {
         std::cout << "OpenGL has already been created, destroy first";
