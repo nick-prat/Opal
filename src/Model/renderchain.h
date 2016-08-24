@@ -9,7 +9,7 @@ public:
     bool AttachRenderObject(IRenderObject* object);
     void RenderObjectChain();
 
-    static RenderChain* GetInstance();
+    static RenderChain*& GetInstance();
     static bool CreateInstance(int num, bool vol);
     static void DeleteInstance();
 

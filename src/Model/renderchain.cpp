@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <malloc.h>
 
+#include <Utilities/log.h>
 #include "Model/renderchain.h"
 
 RenderChain* RenderChain::m_renderChain = nullptr;
 
-RenderChain* RenderChain::GetInstance() {
+RenderChain*& RenderChain::GetInstance() {
     return m_renderChain;
 }
 
@@ -68,6 +69,7 @@ void RenderChain::RenderObjectChain()
 {
     if(m_renderChain == nullptr)
     {
+        Log::error("RenderChain was null, skipping", Log::OUT_CONS);
         return;
     }
 

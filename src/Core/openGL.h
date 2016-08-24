@@ -25,7 +25,7 @@ public:
 
     static bool CreateInstance(int width, int height, std::string title);
     static void DeleteInstance();
-    static OpenGL* GetInstance();
+    static OpenGL*& GetInstance();
 
 private:
     static OpenGL* m_openGL;
@@ -36,6 +36,5 @@ private:
     std::shared_ptr<TestObject> m_obj;
     std::shared_ptr<TestObject> m_obj2;
 };
-
 
 #endif //OPENGL_OPENGL_H

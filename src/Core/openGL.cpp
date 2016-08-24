@@ -36,13 +36,15 @@ bool OpenGL::CreateInstance(int width, int height, std::string title)
     {
         error->PrintError();
         delete error;
+        delete m_openGL;
+        m_openGL = nullptr;
         return false;
     }
 
     return true;
 }
 
-OpenGL* OpenGL::GetInstance()
+OpenGL*& OpenGL::GetInstance()
 {
     return m_openGL;
 }
@@ -55,7 +57,7 @@ OpenGL::OpenGL(int width, int height, std::string title)
     gl::InitAPI();
 
     // Create singleton instance of RenderChain (Capability of 10 objects)
-    if(!RenderChain::CreateInstance(10, true))
+    if(!RenderChain::CreateInstance(10, false))
     {
         throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
     }
@@ -65,7 +67,10 @@ OpenGL::OpenGL(int width, int height, std::string title)
 
     m_display = std::make_shared<GlutDisplay>(width, height, title);
     m_obj = std::make_shared<TestObject>(m_display);
+    RenderChain::GetInstance()->AttachRenderObject(m_obj.get());
+
     m_obj2 = std::make_shared<TestObject>(m_display);
+    RenderChain::GetInstance()->AttachRenderObject(m_obj2.get());
 
     m_obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, -0.5f)));
 
@@ -92,15 +97,12 @@ void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y)
 void OpenGL::DisplayFunc()
 {
     auto start = std::chrono::high_resolution_clock::now();
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     RenderChain* renderChain = RenderChain::GetInstance();
-    renderChain->AttachRenderObject(m_obj.get());
-    renderChain->AttachRenderObject(m_obj2.get());
     renderChain->RenderObjectChain();
-    glutSwapBuffers();
 
+    glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();
 
     if(m_display->GetInputModule()->IsKeyPressed('w'))
