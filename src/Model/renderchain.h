@@ -1,8 +1,6 @@
 #ifndef _RENDERCHAIN_H
 #define _RENDERCHAIN_H
 
-#include <thread>
-
 #include "renderobject.h"
 
 class RenderChain
@@ -16,13 +14,12 @@ public:
     static void DeleteInstance();
 
 private:
-    RenderChain(int num, bool vol, std::thread::id);
+    RenderChain(int num, bool vol);
     ~RenderChain();
 
 private:
     static RenderChain* m_renderChain;
 
-    std::thread::id m_threadID;
     int m_objCount;
     int m_objLimit;
     bool m_volatile;

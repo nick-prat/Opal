@@ -18,8 +18,6 @@ Log::Log()
     std::string filename = stream.str();
 
     m_logFile.open(filename);
-
-    info("Log file created", OUT_LOG | OUT_CONS);
 }
 
 Log::~Log()

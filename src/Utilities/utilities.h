@@ -4,6 +4,8 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
+#include "log.h"
+
 typedef unsigned int uint;
 
 namespace Utilities
@@ -14,13 +16,13 @@ namespace Utilities
         Exception(const unsigned char code, const std::string error);
         ~Exception();
 
-        void PrintError();
+        void PrintError() const;
 
         void SetCode(int code);
-        int GetCode();
+        int GetCode() const;
 
         void SetError(std::string error);
-        std::string GetError();
+        std::string GetError() const;
 
     private:
         std::string error;

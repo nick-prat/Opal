@@ -17,7 +17,7 @@ bool RenderChain::CreateInstance(int num, bool vol) {
         return false;
     }
 
-    m_renderChain = new RenderChain(num, vol, std::this_thread::get_id());
+    m_renderChain = new RenderChain(num, vol);
     return true;
 }
 
@@ -26,14 +26,13 @@ void RenderChain::DeleteInstance() {
     m_renderChain = nullptr;
 }
 
-RenderChain::RenderChain(int num, bool vol, std::thread::id threadID)
+RenderChain::RenderChain(int num, bool vol)
 {
     m_memPool = nullptr;
     m_memPool = (IRenderObject**)malloc(sizeof(IRenderObject*) * num);
     m_objCount = 0;
     m_objLimit = num;
     m_volatile = vol;
-    m_threadID = threadID;
 }
 
 RenderChain::~RenderChain()

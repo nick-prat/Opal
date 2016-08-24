@@ -77,6 +77,8 @@ OpenGL::OpenGL(int width, int height, std::string title)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+    Log::info("OpenGL context created", Log::OUT_LOG);
 }
 
 OpenGL::~OpenGL()
