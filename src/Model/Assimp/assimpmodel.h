@@ -22,12 +22,12 @@ public:
         std::vector<glm::vec3> m_normals;
         std::vector<glm::vec3> m_vertices;
         std::vector<glm::vec2> m_texCoords;
-    }
+    };
 
     AssimpModel();
     ~AssimpModel();
 
-    void AddMesh(AssimpMesh mesh);
+    void AddMesh(const AssimpMesh& mesh);
 
 private:
     std::vector<AssimpMesh> m_meshes;

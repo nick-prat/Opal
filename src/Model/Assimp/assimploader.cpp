@@ -31,16 +31,38 @@ std::unique_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
     for(int i = 0; i < scene->mNumMeshes; i++)
     {
-        
         aiMesh* mesh = scene->mMeshes[i];
+        AssimpModel::AssimpMesh aMesh;
 
-        for(int j = 0; j < mesh->mNumFaces; j++)
+        std::vector<glm::vec3> vertices;
+        for(int j = 0; j < mesh->mNumVertices; j++)
         {
-            const aiFace& face = mesh->mFaces[j];
-            for(int k = 0; k < 3; k++)
-            {
+            aiVector3D vertex = mesh->mVertices[j];
+            vertices.push_back(glm::vec3(vertex.x, vertex.y, vertex.z));
+        }
+        aMesh.SetVertices(vertices);
 
+        if(mesh->HasNormals())
+        {
+            std::vector<glm::vec3> normals;
+            for(int j = 0; j < mesh->mNumVertices; j++)
+            {
+                aiVector3D normal = mesh->mNormals[j];
+                normals.push_back(glm::vec3(normal.x, normal.y, normal.z));
             }
+            aMesh.SetNormals(normals);
+        }
+
+        for(int j = 0; mesh->HasTextureCoords(j); j++)
+        {
+            std::cout << "Loading textures: " << j << " from mesh: " << i << std::endl;
+            std::vector<glm::vec2> texCoords;
+            for(int k = 0; k < mesh->mNumVertices; k++)
+            {
+                aiVector3D texCoord = mesh->mTextureCoords[j][k];
+                texCoords.push_back(glm::vec2(texCoord.x, texCoord.y));
+            }
+            aMesh.SetTexCoods(texCoords);
         }
     }
 
