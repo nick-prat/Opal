@@ -12,12 +12,8 @@
 
 #include "assimpmodel.h"
 
-class AssimpLoader
+namespace AssimpLoader
 {
-public:
-    AssimpLoader();
-    ~AssimpLoader();
-
     std::unique_ptr<AssimpModel> LoadModel(std::string filename);
 };
 

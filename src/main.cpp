@@ -1,4 +1,3 @@
-#include <thread>
 #include <Core/openGL.h>
 
 int main(int argc, char **args)

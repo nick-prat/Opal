@@ -1,7 +1,3 @@
-//
-// Created by nprat on 7/4/16.
-//
-
 #include <chrono>
 #include <string>
 #include <thread>
@@ -62,8 +58,7 @@ OpenGL::OpenGL(int width, int height, std::string title)
         throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
     }
 
-    auto aLoader = std::make_unique<AssimpLoader>();
-    aLoader->LoadModel("Models/wolf.3ds");
+    AssimpLoader::LoadModel("Models/wolf.3ds");
 
     m_display = std::make_shared<GlutDisplay>(width, height, title);
     m_obj = std::make_shared<TestObject>(m_display);
@@ -74,6 +69,7 @@ OpenGL::OpenGL(int width, int height, std::string title)
 
     m_obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, -0.5f)));
 
+    // Log information about current context
     std::cout << "Information: " << std::endl;
     std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "\tDisplay Address: " << m_display << std::endl;

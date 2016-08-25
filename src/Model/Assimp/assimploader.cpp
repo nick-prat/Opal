@@ -10,17 +10,6 @@
 #include "assimpmodel.h"
 #include "assimploader.h"
 
-
-AssimpLoader::AssimpLoader()
-{
-
-}
-
-AssimpLoader::~AssimpLoader()
-{
-
-}
-
 std::unique_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 {
     Assimp::Importer importer;
@@ -36,7 +25,24 @@ std::unique_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
         return nullptr;
     }
 
+    std::cout << "Loading model: " << filename << std::endl;
+
     auto model = std::make_unique<AssimpModel>();
+
+    for(int i = 0; i < scene->mNumMeshes; i++)
+    {
+        
+        aiMesh* mesh = scene->mMeshes[i];
+
+        for(int j = 0; j < mesh->mNumFaces; j++)
+        {
+            const aiFace& face = mesh->mFaces[j];
+            for(int k = 0; k < 3; k++)
+            {
+
+            }
+        }
+    }
 
     return model;
 }

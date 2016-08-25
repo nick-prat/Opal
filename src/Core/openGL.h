@@ -1,7 +1,3 @@
-//
-// Created by nprat on 7/4/16.
-//
-
 #ifndef _OPENGL_OPENGL_H
 #define _OPENGL_OPENGL_H
 
@@ -17,9 +13,6 @@
 class OpenGL
 {
 public:
-    OpenGL(int width, int height, std::string title);
-    ~OpenGL();
-
     void DisplayFunc();
     void KeyboardFunc(unsigned char key, bool state, int x, int y);
 
@@ -28,9 +21,12 @@ public:
     static OpenGL*& GetInstance();
 
 private:
-    static OpenGL* m_openGL;
+    OpenGL(int width, int height, std::string title);
+    ~OpenGL();
 
 private:
+    static OpenGL* m_openGL;
+
     long m_lowestTime;
     std::shared_ptr<GlutDisplay> m_display;
     std::shared_ptr<TestObject> m_obj;

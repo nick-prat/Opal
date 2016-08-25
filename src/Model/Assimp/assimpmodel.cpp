@@ -10,32 +10,32 @@ AssimpModel::~AssimpModel()
 
 }
 
-void AssimpModel::SetNormals(std::vector<glm::vec3> normals)
+void AssimpModel::AssimpMesh::SetNormals(std::vector<glm::vec3> normals)
 {
     m_normals = normals;
 }
 
-void AssimpModel::SetVertices(std::vector<glm::vec3> vertices)
+void AssimpModel::AssimpMesh::SetVertices(std::vector<glm::vec3> vertices)
 {
     m_vertices = vertices;
 }
 
-void AssimpModel::SetTexCoods(std::vector<glm::vec2> texCoords)
+void AssimpModel::AssimpMesh::SetTexCoods(std::vector<glm::vec2> texCoords)
 {
         m_texCoords = texCoords;
 }
 
-std::vector<glm::vec3> AssimpModel::RequestNormals() const
+std::vector<glm::vec3> AssimpModel::AssimpMesh::RequestNormals() const
 {
     return m_normals;
 }
 
-std::vector<glm::vec3> AssimpModel::RequestVertices() const
+std::vector<glm::vec3> AssimpModel::AssimpMesh::RequestVertices() const
 {
     return m_vertices;
 }
 
-std::vector<glm::vec2> AssimpModel::RequestTexCoords() const
+std::vector<glm::vec2> AssimpModel::AssimpMesh::RequestTexCoords() const
 {
     return m_texCoords;
 }
