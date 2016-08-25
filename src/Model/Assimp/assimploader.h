@@ -1,7 +1,3 @@
-//
-// Created by nprat on 7/14/16.
-//
-
 #ifndef OPENGL_ASSIMP_H
 #define OPENGL_ASSIMP_H
 
