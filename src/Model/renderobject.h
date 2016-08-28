@@ -15,11 +15,10 @@ public:
     IRenderObject();
     virtual ~IRenderObject();
     virtual void Render() = 0;
-    virtual void Destroy() = 0;
 
-    void Translate(glm::mat4 trans);
-    void Rotate(glm::mat4 rotate);
-    void Scale(glm::mat4 scale);
+    void Translate(const glm::mat4& trans);
+    void Rotate(const glm::mat4& rotate);
+    void Scale(const glm::mat4& scale);
 
     glm::mat4 GetWorld();
 

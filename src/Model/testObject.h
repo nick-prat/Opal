@@ -17,7 +17,6 @@ public:
     ~TestObject();
 
     bool InitObject(std::shared_ptr<GlutDisplay> display);
-    void Destroy();
 
     void Render();
 

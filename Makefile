@@ -312,6 +312,33 @@ src/Model/Assimp/assimpmodel.cpp.s:
 	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Assimp/assimpmodel.cpp.s
 .PHONY : src/Model/Assimp/assimpmodel.cpp.s
 
+src/Model/Models/staticmodel.o: src/Model/Models/staticmodel.cpp.o
+
+.PHONY : src/Model/Models/staticmodel.o
+
+# target to build an object file
+src/Model/Models/staticmodel.cpp.o:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Models/staticmodel.cpp.o
+.PHONY : src/Model/Models/staticmodel.cpp.o
+
+src/Model/Models/staticmodel.i: src/Model/Models/staticmodel.cpp.i
+
+.PHONY : src/Model/Models/staticmodel.i
+
+# target to preprocess a source file
+src/Model/Models/staticmodel.cpp.i:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Models/staticmodel.cpp.i
+.PHONY : src/Model/Models/staticmodel.cpp.i
+
+src/Model/Models/staticmodel.s: src/Model/Models/staticmodel.cpp.s
+
+.PHONY : src/Model/Models/staticmodel.s
+
+# target to generate assembly for a file
+src/Model/Models/staticmodel.cpp.s:
+	$(MAKE) -f CMakeFiles/OpenGL.dir/build.make CMakeFiles/OpenGL.dir/src/Model/Models/staticmodel.cpp.s
+.PHONY : src/Model/Models/staticmodel.cpp.s
+
 src/Model/Shader/shader.o: src/Model/Shader/shader.cpp.o
 
 .PHONY : src/Model/Shader/shader.o
@@ -558,6 +585,9 @@ help:
 	@echo "... src/Model/Assimp/assimpmodel.o"
 	@echo "... src/Model/Assimp/assimpmodel.i"
 	@echo "... src/Model/Assimp/assimpmodel.s"
+	@echo "... src/Model/Models/staticmodel.o"
+	@echo "... src/Model/Models/staticmodel.i"
+	@echo "... src/Model/Models/staticmodel.s"
 	@echo "... src/Model/Shader/shader.o"
 	@echo "... src/Model/Shader/shader.i"
 	@echo "... src/Model/Shader/shader.s"

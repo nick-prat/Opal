@@ -10,7 +10,7 @@
 #include "assimpmodel.h"
 #include "assimploader.h"
 
-std::unique_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
+std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
@@ -27,7 +27,7 @@ std::unique_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
     std::cout << "Loading model: " << filename << std::endl;
 
-    auto model = std::make_unique<AssimpModel>();
+    auto model = std::make_shared<AssimpModel>();
 
     for(int i = 0; i < scene->mNumMeshes; i++)
     {

@@ -17,20 +17,20 @@ glm::mat4 IRenderObject::GetWorld()
     return m_world;
 }
 
-void IRenderObject::Translate(glm::mat4 trans)
+void IRenderObject::Translate(const glm::mat4& trans)
 {
     m_translate = trans;
     //m_world =  m_translate * m_rotate * m_scale;
     m_world = m_translate;
 }
 
-void IRenderObject::Rotate(glm::mat4 rotate)
+void IRenderObject::Rotate(const glm::mat4& rotate)
 {
     m_rotate = rotate;
     m_world =  m_translate * m_rotate * m_scale;
 }
 
-void IRenderObject::Scale(glm::mat4 scale)
+void IRenderObject::Scale(const glm::mat4& scale)
 {
     m_scale = scale;
     m_world =  m_translate * m_rotate * m_scale;

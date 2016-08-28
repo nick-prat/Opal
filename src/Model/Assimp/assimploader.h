@@ -14,7 +14,7 @@
 
 namespace AssimpLoader
 {
-    std::unique_ptr<AssimpModel> LoadModel(std::string filename);
+    std::shared_ptr<AssimpModel> LoadModel(std::string filename);
 };
 
 

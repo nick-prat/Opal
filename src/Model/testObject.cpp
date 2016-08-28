@@ -24,7 +24,10 @@ TestObject::TestObject(std::shared_ptr<GlutDisplay> display)
 
 TestObject::~TestObject()
 {
-    Destroy();
+    gl::glDeleteVertexArrays(1, &m_VAO);
+    gl::glDeleteBuffers(2, m_VBO);
+    gl::glDeleteBuffers(1, &m_IBO);
+    m_IBO = 0;
 }
 
 bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
@@ -84,14 +87,6 @@ bool TestObject::InitObject(std::shared_ptr<GlutDisplay> display)
     }
 
     return true;
-}
-
-void TestObject::Destroy()
-{
-    gl::glDeleteVertexArrays(1, &m_VAO);
-    gl::glDeleteBuffers(2, m_VBO);
-    gl::glDeleteBuffers(1, &m_IBO);
-    m_IBO = 0;
 }
 
 void TestObject::Render()

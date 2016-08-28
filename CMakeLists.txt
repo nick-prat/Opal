@@ -12,7 +12,9 @@ set(SOURCE_FILES
         src/main.cpp
         src/Display/display.cpp src/Display/inputmodule.cpp src/Display/cameramodule.cpp
 	src/Model/testObject.cpp src/Model/renderchain.cpp src/Model/renderobject.cpp
-        	src/Model/Shader/shader.cpp src/Model/Sprite/sprite.cpp  
+        	src/Model/Shader/shader.cpp 
+		src/Model/Sprite/sprite.cpp
+		src/Model/Models/staticmodel.cpp  
 		src/Model/Assimp/assimploader.cpp src/Model/Assimp/assimpmodel.cpp
         src/Utilities/utilities.cpp src/Utilities/log.cpp
         src/Core/openGL.cpp src/Core/glapi.cpp )
