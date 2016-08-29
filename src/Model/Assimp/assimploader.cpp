@@ -1,7 +1,3 @@
-//
-// Created by nprat on 7/14/16.
-//
-
 #include <glm/glm.hpp>
 #include <memory>
 #include <vector>
@@ -53,16 +49,20 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
             aMesh.SetNormals(normals);
         }
 
+        std::vector<std::vector<glm::vec2>> texCoords;
         for(int j = 0; mesh->HasTextureCoords(j); j++)
         {
-            std::cout << "Loading textures: " << j << " from mesh: " << i << std::endl;
-            std::vector<glm::vec2> texCoords;
+            std::vector<glm::vec2> texCoordsPart;
             for(int k = 0; k < mesh->mNumVertices; k++)
             {
                 aiVector3D texCoord = mesh->mTextureCoords[j][k];
-                texCoords.push_back(glm::vec2(texCoord.x, texCoord.y));
+                texCoordsPart.push_back(glm::vec2(texCoord.x, texCoord.y));
             }
-            aMesh.SetTexCoods(texCoords);
+            texCoords.push_back(texCoordsPart);
+        }
+        if(texCoords.size() > 0)
+        {
+            aMesh.SetTexCoords(texCoords);
         }
 
         if(mesh->HasFaces())
@@ -78,6 +78,7 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
             }
             aMesh.SetIndices(indices);
         }
+        model->AddMesh(aMesh);
     }
 
     return model;

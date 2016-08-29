@@ -18,13 +18,13 @@ public:
         std::vector<uint> GetIndices() const;
         std::vector<glm::vec3> GetNormals() const;
         std::vector<glm::vec3> GetVertices() const;
-        std::vector<glm::vec2> GetTexCoords() const;
+        std::vector<glm::vec2> GetTexCoords(int index) const;
 
     private:
         std::vector<uint> m_indices;
         std::vector<glm::vec3> m_normals;
         std::vector<glm::vec3> m_vertices;
-        std::vector<glm::vec2> m_texCoords;
+        std::vector<std::vector<glm::vec2>> m_texCoords;
     };
 
     AssimpModel();
