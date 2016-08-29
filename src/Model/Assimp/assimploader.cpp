@@ -70,10 +70,10 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
             std::vector<uint> indices;
             for(int j = 0; j < mesh->mNumFaces; j++)
             {
-                aiFaces* face = mesh->mFaces[j];
-                for(int k = 0; k < face->mNumIndices; k++)
+                aiFace face = mesh->mFaces[j];
+                for(int k = 0; k < face.mNumIndices; k++)
                 {
-                    indices.push_back(face->mIndices[k]);
+                    indices.push_back(face.mIndices[k]);
                 }
             }
             aMesh.SetIndices(indices);

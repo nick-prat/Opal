@@ -10,10 +10,10 @@ public:
     class AssimpMesh
     {
     public:
-        void SetIndices(std::vector<uint> indices);
-        void SetNormals(std::vector<glm::vec3> normals);
-        void SetVertices(std::vector<glm::vec3> vertices);
-        void SetTexCoods(std::vector<glm::vec2> texCoords);
+        void SetIndices(const std::vector<uint>& indices);
+        void SetNormals(const std::vector<glm::vec3>& normals);
+        void SetVertices(const std::vector<glm::vec3>& vertices);
+        void SetTexCoords(const std::vector<std::vector<glm::vec2>>& texCoords);
 
         std::vector<uint> GetIndices() const;
         std::vector<glm::vec3> GetNormals() const;
@@ -31,6 +31,7 @@ public:
     ~AssimpModel();
 
     void AddMesh(const AssimpMesh& mesh);
+    std::vector<AssimpMesh> GetMeshes() const;
 
 private:
     std::vector<AssimpMesh> m_meshes;

@@ -5,12 +5,24 @@
 StaticModel::StaticModel(std::shared_ptr<GlutDisplay> display, std::shared_ptr<AssimpModel> model)
     : m_display(display), m_model(model)
 {
-    gl::glGenVertexArrays(1, &m_VAO);
-    gl::glBindVertexArray(m_VAO);
+    for(int i = 0; i < m_model->GetMeshes().size(); i++)
+    {
+        AssimpModel::AssimpMesh mesh = m_model->GetMeshes()[i];
+        GLuint vbo, vao, ibo;
 
-    gl::glGenBuffers(1, m_VBO);
-    gl::glBindBuffer(GL_ARRAY_BUFFER, m_VBO[0]);
-    gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * m_model->GetVertices().size(), m_model->GetVertices().data(), GL_STATIC_DRAW);
+        gl::glGenVertexArrays(1, &vao);
+        gl::glBindVertexArray(vao);
+
+        m_VAO.push_back(vao);
+
+        gl::glGenBuffers(1, &vbo);
+        gl::glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh.GetVertices().size(), mesh.GetVertices().data(), GL_STATIC_DRAW);
+
+        gl::glGenBuffers(1, &ibo);
+        gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh.GetIndices().size(), mesh.GetIndices().data(), GL_STATIC_DRAW);
+    }
 
 
 }
