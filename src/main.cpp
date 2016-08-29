@@ -9,8 +9,8 @@ int main(int argc, char **args)
     // Create GLUT window
     glutInit(&argc, args);
     glutInitContextVersion(3,3);
-    glutInitContextProfile( GLUT_CORE_PROFILE);
-    glutInitDisplayMode(GLUT_RGBA);
+    glutInitContextProfile(GLUT_CORE_PROFILE);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(100, 100);
     glutCreateWindow(title);

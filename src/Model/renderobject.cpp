@@ -20,8 +20,7 @@ glm::mat4 IRenderObject::GetWorld()
 void IRenderObject::Translate(const glm::mat4& trans)
 {
     m_translate = trans;
-    //m_world =  m_translate * m_rotate * m_scale;
-    m_world = m_translate;
+    m_world =  m_translate * m_rotate * m_scale;
 }
 
 void IRenderObject::Rotate(const glm::mat4& rotate)
