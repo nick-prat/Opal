@@ -7,6 +7,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
     : m_display(display), m_model(model)
 {
     m_meshCount = m_model->GetMeshes().size();
+    
     for(uint i = 0; i < m_meshCount; i++)
     {
         AssimpModel::AssimpMesh mesh = m_model->GetMeshes()[i];

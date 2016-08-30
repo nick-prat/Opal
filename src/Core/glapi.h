@@ -1,7 +1,3 @@
-//
-// Created by nprat on 7/5/16.
-//
-
 #ifndef OPENGL_GLAPI_H
 #define OPENGL_GLAPI_H
 
