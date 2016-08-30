@@ -63,6 +63,8 @@ OpenGL::OpenGL(int width, int height, std::string title)
     m_display = std::make_shared<GlutDisplay>(width, height, title);
 
     m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
+    m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    m_staticModel->Translate(glm::vec3(0.0f, 0.0f, -10.0f));
     RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
 
     m_obj = std::make_shared<TestObject>(m_display);
@@ -71,7 +73,7 @@ OpenGL::OpenGL(int width, int height, std::string title)
     m_obj2 = std::make_shared<TestObject>(m_display);
     //RenderChain::GetInstance()->AttachRenderObject(m_obj2.get());
 
-    m_obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, -0.5f)));
+    m_obj->Translate(glm::vec3(0.5f, 0.5f, -0.5f));
 
     // Log information about current context
     std::cout << "Information: " << std::endl;

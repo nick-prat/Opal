@@ -16,8 +16,8 @@ public:
     virtual ~IRenderObject();
     virtual void Render() = 0;
 
-    void Translate(const glm::mat4& trans);
-    void Rotate(const glm::mat4& rotate);
+    void Translate(const glm::vec3& trans);
+    void Rotate(const float& degrees, const glm::vec3& rotate);
     void Scale(const glm::mat4& scale);
 
     glm::mat4 GetWorld();

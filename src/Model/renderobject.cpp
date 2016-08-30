@@ -14,19 +14,17 @@ IRenderObject::~IRenderObject()
 
 glm::mat4 IRenderObject::GetWorld()
 {
-    return m_world;
+    return m_translate * m_rotate * m_scale;
 }
 
-void IRenderObject::Translate(const glm::mat4& trans)
+void IRenderObject::Translate(const glm::vec3& trans)
 {
-    m_translate = trans;
-    m_world =  m_translate * m_rotate * m_scale;
+    m_translate = glm::translate(m_translate, trans);
 }
 
-void IRenderObject::Rotate(const glm::mat4& rotate)
+void IRenderObject::Rotate(const float& degrees, const glm::vec3& rotate)
 {
-    m_rotate = rotate;
-    m_world =  m_translate * m_rotate * m_scale;
+    m_rotate = glm::rotate(m_rotate, degrees, rotate);
 }
 
 void IRenderObject::Scale(const glm::mat4& scale)
