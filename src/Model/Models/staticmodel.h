@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <Display/display.h>
+#include <Model/Shader/shader.h>
 #include <Model/Assimp/assimpmodel.h>
 #include <Model/renderobject.h>
 
@@ -16,10 +17,13 @@ public:
     void Render();
 
 private:
+    uint m_meshCount;
+    std::vector<GLsizei> m_indexCount;
     std::vector<std::vector<GLuint>> m_VBO;
     std::vector<GLuint> m_VAO, m_IBO;
-    std::shared_ptr<GlutDisplay> m_display;
-    std::shared_ptr<AssimpModel> m_model;
+    const std::shared_ptr<GlutDisplay> m_display;
+    const std::shared_ptr<AssimpModel> m_model;
+    std::shared_ptr<Shader> m_shader;
 };
 
 #endif // _STATIC_MODEL_H

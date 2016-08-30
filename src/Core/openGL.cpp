@@ -1,11 +1,13 @@
+#include "openGL.h"
+
 #include <chrono>
 #include <string>
 #include <thread>
 #include <Utilities/utilities.h>
 #include <Utilities/log.h>
-#include <Model/Assimp/assimploader.h>
 
-#include "openGL.h"
+#include <Model/Assimp/assimploader.h>
+#include <Model/Models/staticmodel.h>
 
 OpenGL* OpenGL::m_openGL = nullptr;
 
@@ -58,14 +60,16 @@ OpenGL::OpenGL(int width, int height, std::string title)
         throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
     }
 
-    AssimpLoader::LoadModel("Models/wolf.3ds");
-
     m_display = std::make_shared<GlutDisplay>(width, height, title);
+
+    m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
+    RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
+
     m_obj = std::make_shared<TestObject>(m_display);
-    RenderChain::GetInstance()->AttachRenderObject(m_obj.get());
+    //RenderChain::GetInstance()->AttachRenderObject(m_obj.get());
 
     m_obj2 = std::make_shared<TestObject>(m_display);
-    RenderChain::GetInstance()->AttachRenderObject(m_obj2.get());
+    //RenderChain::GetInstance()->AttachRenderObject(m_obj2.get());
 
     m_obj->Translate(glm::translate(glm::mat4(1.0f), glm::vec3(0.5f, 0.5f, -0.5f)));
 
@@ -95,8 +99,7 @@ void OpenGL::DisplayFunc()
     auto start = std::chrono::high_resolution_clock::now();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    RenderChain* renderChain = RenderChain::GetInstance();
-    renderChain->RenderObjectChain();
+    RenderChain::GetInstance()->RenderObjectChain();
 
     glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();
