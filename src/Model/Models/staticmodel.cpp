@@ -11,7 +11,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
     for(uint i = 0; i < m_meshCount; i++)
     {
         AssimpModel::AssimpMesh mesh = m_model->GetMeshes()[i];
-        GLuint vbo[2], vao, ibo;
+        GLuint vbo[3], vao, ibo;
 
         std::vector<GLuint> vbos;
 
@@ -19,7 +19,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         gl::glBindVertexArray(vao);
         m_VAO.push_back(vao);
 
-        gl::glGenBuffers(2, &vbo[0]);
+        gl::glGenBuffers(2, vbo);
 
         gl::glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
         gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh.GetVertices().size(), mesh.GetVertices().data(), GL_STATIC_DRAW);
@@ -27,10 +27,14 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         vbos.push_back(vbo[0]);
 
         gl::glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
-        std::cout << sizeof(glm::vec3) * mesh.GetNormals().size() << " : " << mesh.GetNormals().data() << std::endl;
         gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * mesh.GetNormals().size(), mesh.GetNormals().data(), GL_STATIC_DRAW);
         gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, 0);
         vbos.push_back(vbo[1]);
+
+        gl::glBindBuffer(GL_ARRAY_BUFFER, vbo[2]);
+        gl::glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * mesh.GetTexCoords(0).size(), mesh.GetTexCoords(0).data(), GL_STATIC_DRAW);
+        gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, 0);
+        vbos.push_back(vbo[2]);
 
         m_VBO.push_back(vbos);
 

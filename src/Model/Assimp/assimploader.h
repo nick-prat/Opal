@@ -11,7 +11,7 @@
 namespace AssimpLoader
 {
     std::shared_ptr<AssimpModel> LoadModel(std::string filename);
-};
+}
 
 
 #endif //OPENGL_ASSIMP_H
