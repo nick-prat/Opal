@@ -7,24 +7,25 @@
 class AssimpModel
 {
 public:
+    struct Vertex
+    {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec2 texCoord;
+    };
+
     class AssimpMesh
     {
     public:
-        void SetIndices(const std::vector<uint>& indices);
-        void SetNormals(const std::vector<glm::vec3>& normals);
-        void SetVertices(const std::vector<glm::vec3>& vertices);
-        void SetTexCoords(const std::vector<std::vector<glm::vec2>>& texCoords);
+        AssimpMesh(std::vector<Vertex> vertices, std::vector<uint> indices);
+        ~AssimpMesh();
 
+        std::vector<Vertex> GetVertices() const;
         std::vector<uint> GetIndices() const;
-        std::vector<glm::vec3> GetNormals() const;
-        std::vector<glm::vec3> GetVertices() const;
-        std::vector<glm::vec2> GetTexCoords(int index) const;
 
     private:
         std::vector<uint> m_indices;
-        std::vector<glm::vec3> m_normals;
-        std::vector<glm::vec3> m_vertices;
-        std::vector<std::vector<glm::vec2>> m_texCoords;
+        std::vector<Vertex> m_vertices;
     };
 
     AssimpModel();

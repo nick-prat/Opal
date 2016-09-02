@@ -17,7 +17,7 @@ void OpenGL::DeleteInstance()
     m_openGL = nullptr;
 }
 
-bool OpenGL::CreateInstance(int width, int height, std::string title)
+bool OpenGL::CreateInstance(int width, int height)
 {
     //Log::info("Create OpenGL Instance", true);
     if(m_openGL != nullptr)
@@ -28,7 +28,7 @@ bool OpenGL::CreateInstance(int width, int height, std::string title)
 
     try
     {
-        m_openGL = new OpenGL(width, height, title);
+        m_openGL = new OpenGL(width, height);
     }
     catch (Utilities::Exception* error)
     {
@@ -47,7 +47,7 @@ OpenGL*& OpenGL::GetInstance()
     return m_openGL;
 }
 
-OpenGL::OpenGL(int width, int height, std::string title)
+OpenGL::OpenGL(int width, int height)
 {
     m_lowestTime = 0;
 
@@ -60,7 +60,7 @@ OpenGL::OpenGL(int width, int height, std::string title)
         throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
     }
 
-    m_display = std::make_shared<GlutDisplay>(width, height, title);
+    m_display = std::make_shared<GlutDisplay>(width, height);
 
     m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
     m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));

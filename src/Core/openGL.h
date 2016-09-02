@@ -17,12 +17,12 @@ public:
     void DisplayFunc();
     void KeyboardFunc(unsigned char key, bool state, int x, int y);
 
-    static bool CreateInstance(int width, int height, std::string title);
+    static bool CreateInstance(int width, int height);
     static void DeleteInstance();
     static OpenGL*& GetInstance();
 
 private:
-    OpenGL(int width, int height, std::string title);
+    OpenGL(int width, int height);
     ~OpenGL();
 
 private:

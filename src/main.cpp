@@ -33,7 +33,7 @@ int main(int argc, char **args)
     });
 
     // Create singleton instance of OpenGL
-    if(!OpenGL::CreateInstance(width, height, title))
+    if(!OpenGL::CreateInstance(width, height))
     {
         std::cout << "Couldn't Create Instance of OpenGL" << std::endl;
         return -1;

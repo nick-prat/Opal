@@ -14,7 +14,7 @@ class GlutDisplay
 
 public:
     GlutDisplay();
-    GlutDisplay(int width, int height, std::string title);
+    GlutDisplay(int width, int height);
     ~GlutDisplay();
 
     class InputModule
@@ -55,7 +55,7 @@ public:
         glm::vec3 m_rotation;
     };
 
-    bool InitDisplay(int width, int height, std::string title);
+    bool InitDisplay(int width, int height);
     void Destroy();
 
     std::shared_ptr<InputModule> GetInputModule();

@@ -45,6 +45,7 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
         }
         std::stringstream buffer;
         buffer << file.rdbuf();
+        file.close();
 
         GLchar* text[1];
         text[0] = new GLchar[buffer.str().length() + 1];
@@ -64,6 +65,7 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
         }
 
         gl::glAttachShader(m_shaderProgram, m_shaderObj[i]);
+
         delete[] text[0];
     }
 

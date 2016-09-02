@@ -11,11 +11,11 @@ GlutDisplay::GlutDisplay()
     m_projMatrix = glm::mat4(1.0f);
 }
 
-GlutDisplay::GlutDisplay(int width, int height, std::string title)
+GlutDisplay::GlutDisplay(int width, int height)
 {
     m_projMatrix = glm::mat4(1.0f);
 
-    if(!InitDisplay(width, height, title))
+    if(!InitDisplay(width, height))
     {
         throw new Utilities::Exception(1, "Couldn't init display");
     }
@@ -31,7 +31,7 @@ glm::mat4 GlutDisplay::GetProjectionMatrix()
     return m_projMatrix;
 }
 
-bool GlutDisplay::InitDisplay(int width, int height, std::string title)
+bool GlutDisplay::InitDisplay(int width, int height)
 {
     try
     {

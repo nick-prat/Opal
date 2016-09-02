@@ -1,4 +1,5 @@
 #include <glm/glm.hpp>
+#include <FreeImage.h>
 #include <memory>
 #include <vector>
 #include <iostream>
@@ -25,60 +26,40 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
     auto model = std::make_shared<AssimpModel>();
 
-    for(int i = 0; i < scene->mNumMeshes; i++)
+    //aiMaterial** materials = scene->mMaterials;
+    for(uint i = 0; i < scene->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[i];
-        AssimpModel::AssimpMesh aMesh;
+        std::vector<AssimpModel::Vertex> vertices;
 
-        std::vector<glm::vec3> vertices;
-        for(int j = 0; j < mesh->mNumVertices; j++)
+        for(uint j = 0; j < mesh->mNumVertices; j++)
         {
-            aiVector3D vertex = mesh->mVertices[j];
-            vertices.push_back(glm::vec3(vertex.x, vertex.y, vertex.z));
-        }
-        aMesh.SetVertices(vertices);
+            AssimpModel::Vertex vertex;
 
-        if(mesh->HasNormals())
-        {
-            std::vector<glm::vec3> normals;
-            for(int j = 0; j < mesh->mNumVertices; j++)
-            {
-                aiVector3D normal = mesh->mNormals[j];
-                normals.push_back(glm::vec3(normal.x, normal.y, normal.z));
-            }
-            aMesh.SetNormals(normals);
+            vertex.position = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
+            vertex.normal = (mesh->HasNormals()) ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z) : glm::vec3(0.0f, 0.0f, 0.0f);
+
+            vertices.push_back(vertex);
         }
 
-        std::vector<std::vector<glm::vec2>> texCoords;
-        for(int j = 0; mesh->HasTextureCoords(j); j++)
-        {
-            std::vector<glm::vec2> texCoordsPart;
-            for(int k = 0; k < mesh->mNumVertices; k++)
-            {
-                aiVector3D texCoord = mesh->mTextureCoords[j][k];
-                texCoordsPart.push_back(glm::vec2(texCoord.x, texCoord.y));
-            }
-            texCoords.push_back(texCoordsPart);
-        }
-        if(texCoords.size() > 0)
-        {
-            aMesh.SetTexCoords(texCoords);
-        }
-
+        std::vector<uint> indices;
         if(mesh->HasFaces())
         {
-            std::vector<uint> indices;
-            for(int j = 0; j < mesh->mNumFaces; j++)
+            for(uint j = 0; j < mesh->mNumFaces; j++)
             {
                 aiFace face = mesh->mFaces[j];
-                for(int k = 0; k < face.mNumIndices; k++)
+                for(uint k = 0; k < face.mNumIndices; k++)
                 {
                     indices.push_back(face.mIndices[k]);
                 }
             }
-            aMesh.SetIndices(indices);
         }
-        model->AddMesh(aMesh);
+        else
+        {
+            return nullptr;
+        }
+
+        model->AddMesh(AssimpModel::AssimpMesh(vertices, indices));
     }
 
     return model;
