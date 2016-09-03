@@ -6,8 +6,8 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <memory>
 
-#include <Model/Shader/shader.h>
-#include <Display/display.h>
+#include <Model/Shader/shader.hpp>
+#include <Display/display.hpp>
 
 class IRenderObject
 {

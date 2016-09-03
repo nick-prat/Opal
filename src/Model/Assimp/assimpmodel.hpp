@@ -2,6 +2,8 @@
 #define _ASSIMPMODEL_H
 
 #include <glm/glm.hpp>
+#include <string>
+#include <unordered_map>
 #include <vector>
 
 class AssimpModel
@@ -12,6 +14,11 @@ public:
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 texCoord;
+    };
+
+    class Texture
+    {
+
     };
 
     class AssimpMesh
@@ -31,10 +38,14 @@ public:
     AssimpModel();
     ~AssimpModel();
 
-    void AddMesh(const AssimpMesh& mesh);
+    void SetMeshes(const std::vector<AssimpMesh>& meshes);
+    void SetTextures(const std::unordered_map<std::string, Texture>& textures);
+
+    bool GetTexture(const std::string& key, Texture& texture) const;
     std::vector<AssimpMesh> GetMeshes() const;
 
 private:
+    std::unordered_map<std::string, Texture> m_textures;
     std::vector<AssimpMesh> m_meshes;
 
 };

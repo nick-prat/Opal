@@ -4,7 +4,7 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
-#include "log.h"
+#include "log.hpp"
 
 typedef unsigned int uint;
 

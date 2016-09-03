@@ -1,13 +1,9 @@
-//
-// Created by nprat on 7/4/16.
-//
-
 #ifndef OPENGL_SHITTYOBJECT_H
 #define OPENGL_SHITTYOBJECT_H
 
-#include <Utilities/utilities.h>
+#include <Utilities/utilities.hpp>
 
-#include "renderobject.h"
+#include "renderobject.hpp"
 
 class TestObject : public IRenderObject
 {

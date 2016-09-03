@@ -1,7 +1,7 @@
 #ifndef _RENDERCHAIN_H
 #define _RENDERCHAIN_H
 
-#include "renderobject.h"
+#include "renderobject.hpp"
 
 class RenderChain
 {

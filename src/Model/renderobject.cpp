@@ -1,4 +1,4 @@
-#include "renderobject.h"
+#include "renderobject.hpp"
 
 IRenderObject::IRenderObject()
 {

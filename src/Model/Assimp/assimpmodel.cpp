@@ -1,4 +1,4 @@
-#include "assimpmodel.h"
+#include "assimpmodel.hpp"
 
 AssimpModel::AssimpModel()
 {
@@ -10,9 +10,14 @@ AssimpModel::~AssimpModel()
 
 }
 
-void AssimpModel::AddMesh(const AssimpMesh& mesh)
+void AssimpModel::SetMeshes(const std::vector<AssimpMesh> &meshes)
 {
-    m_meshes.push_back(mesh);
+    m_meshes = meshes;
+}
+
+void AssimpModel::SetTextures(const std::unordered_map<std::string, Texture> &textures)
+{
+    m_textures = textures;
 }
 
 std::vector<AssimpModel::AssimpMesh> AssimpModel::GetMeshes() const
@@ -20,8 +25,19 @@ std::vector<AssimpModel::AssimpMesh> AssimpModel::GetMeshes() const
     return m_meshes;
 }
 
+bool AssimpModel::GetTexture(const std::string& key, Texture& texture) const
+{
+    auto tex = m_textures.find(key);
+    if(tex != m_textures.end())
+    {
+        texture = tex->second;
+        return true;
+    }
+    return false;
+}
+
 AssimpModel::AssimpMesh::AssimpMesh(std::vector<Vertex> vertices, std::vector<uint> indices)
-: m_indices(indices), m_vertices(vertices) 
+: m_indices(indices), m_vertices(vertices)
 {
 
 }

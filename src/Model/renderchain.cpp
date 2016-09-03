@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-#include <Utilities/log.h>
-#include "Model/renderchain.h"
+#include <Utilities/log.hpp>
+#include "Model/renderchain.hpp"
 
 RenderChain* RenderChain::m_renderChain = nullptr;
 

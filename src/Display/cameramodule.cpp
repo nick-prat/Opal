@@ -1,6 +1,8 @@
+#include "display.hpp"
+
 #include <iostream>
-#include <Utilities/utilities.h>
-#include "display.h"
+
+#include <Utilities/utilities.hpp>
 
 GlutDisplay::CameraModule::CameraModule()
 {

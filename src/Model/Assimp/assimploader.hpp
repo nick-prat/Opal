@@ -6,7 +6,7 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "assimpmodel.h"
+#include "assimpmodel.hpp"
 
 namespace AssimpLoader
 {

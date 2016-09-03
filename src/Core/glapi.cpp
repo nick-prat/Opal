@@ -1,10 +1,6 @@
-//
-// Created by nprat on 7/5/16.
-//
-
 #include <iostream>
 
-#include "glapi.h"
+#include "glapi.hpp"
 
 namespace gl
 {

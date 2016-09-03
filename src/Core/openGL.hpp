@@ -4,12 +4,12 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Model/renderchain.h>
-#include <Display/display.h>
-#include <Model/Models/staticmodel.h>
-#include <Model/testObject.h>
+#include <Model/renderchain.hpp>
+#include <Display/display.hpp>
+#include <Model/Models/staticmodel.hpp>
+#include <Model/testObject.hpp>
 
-#include "glapi.h"
+#include "glapi.hpp"
 
 class OpenGL
 {

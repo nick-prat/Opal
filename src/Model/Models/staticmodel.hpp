@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include <Display/display.h>
-#include <Model/Shader/shader.h>
-#include <Model/Assimp/assimpmodel.h>
-#include <Model/renderobject.h>
+#include <Display/display.hpp>
+#include <Model/Shader/shader.hpp>
+#include <Model/Assimp/assimpmodel.hpp>
+#include <Model/renderobject.hpp>
 
 class StaticModel : public IRenderObject
 {

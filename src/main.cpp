@@ -1,4 +1,4 @@
-#include <Core/openGL.h>
+#include <Core/openGL.hpp>
 
 int main(int argc, char **args)
 {

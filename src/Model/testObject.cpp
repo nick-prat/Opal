@@ -1,11 +1,8 @@
-//
-// Created by nprat on 7/4/16.
-//
+#include "testObject.hpp"
 
 #include <iostream>
-#include <Utilities/utilities.h>
 
-#include "testObject.h"
+#include <Utilities/utilities.hpp>
 
 TestObject::TestObject()
 {

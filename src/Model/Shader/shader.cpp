@@ -4,7 +4,7 @@
 #include <string>
 #include <cstring>
 
-#include "shader.h"
+#include "shader.hpp"
 
 Shader::Shader()
 {

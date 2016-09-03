@@ -1,13 +1,12 @@
-#include "staticmodel.h"
+#include "staticmodel.hpp"
 
-#include <Utilities/utilities.h>
-#include <Core/glapi.h>
+#include <Utilities/utilities.hpp>
+#include <Core/glapi.hpp>
 
 StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<AssimpModel> model)
     : m_display(display), m_model(model)
 {
     m_meshCount = m_model->GetMeshes().size();
-
     for(uint i = 0; i < m_meshCount; i++)
     {
         AssimpModel::AssimpMesh mesh = m_model->GetMeshes()[i];
@@ -83,7 +82,7 @@ void StaticModel::Render()
         gl::glEnableVertexAttribArray(0);
         gl::glEnableVertexAttribArray(1);
 
-        glDrawElements(GL_POINTS, (GLsizei)m_indexCount.data()[i], GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, (GLsizei)m_indexCount.data()[i], GL_UNSIGNED_INT, nullptr);
 
         gl::glDisableVertexAttribArray(0);
         gl::glDisableVertexAttribArray(1);
