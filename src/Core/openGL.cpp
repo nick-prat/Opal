@@ -19,7 +19,6 @@ void OpenGL::DeleteInstance()
 
 bool OpenGL::CreateInstance(int width, int height)
 {
-    //Log::info("Create OpenGL Instance", true);
     if(m_openGL != nullptr)
     {
         std::cout << "OpenGL has already been created, destroy first";
@@ -89,7 +88,9 @@ OpenGL::OpenGL(int width, int height)
 }
 
 OpenGL::~OpenGL()
-{}
+{
+    RenderChain::DeleteInstance();
+}
 
 void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y)
 {

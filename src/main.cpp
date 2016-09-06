@@ -44,6 +44,5 @@ int main(int argc, char **args)
 
     // Destroy singletons
     OpenGL::DeleteInstance();
-    RenderChain::DeleteInstance();
     return 0;
 }

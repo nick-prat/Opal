@@ -7,8 +7,9 @@
 #include "assimpmodel.hpp"
 #include "assimploader.hpp"
 
-bool LoadTexture(std::string filename, AssimpModel::Texture& texture)
+AssimpModel::Texture LoadTexture(std::string filename)
 {
+    AssimpModel::Texture texture;
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
@@ -18,11 +19,22 @@ bool LoadTexture(std::string filename, AssimpModel::Texture& texture)
     if(!img)
     {
         std::cout << "Couldn't load image: " << filename << std::endl;
-        return false;
+        return texture;
     }
 
+    int height, width;
+    FREE_IMAGE_TYPE type;
+    BITMAPINFOHEADER* header;
+
+    type = FreeImage_GetImageType(img);
+    header = FreeImage_GetInfoHeader(img);
+    width = FreeImage_GetWidth(img);
+    height = FreeImage_GetHeight(img);
+
+    std::cout << filename << " width: " << width << " height: " << height << std::endl;
+
     FreeImage_Unload(img);
-    return true;
+    return texture;
 }
 
 std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
@@ -45,25 +57,25 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
     auto model = std::make_shared<AssimpModel>();
 
     aiMaterial** materials = scene->mMaterials;
-    std::vector<std::string> texNames;
+    std::unordered_map<std::string, AssimpModel::Texture> textures;
     for(uint i = 0; i < scene->mNumMaterials; i++)
     {
         aiString aName;
         materials[i]->Get(AI_MATKEY_NAME, aName);
         std::string name = std::string(aName.C_Str());
 
-        texNames.push_back(name);
-        AssimpModel::Texture texture;
-        LoadTexture(name, texture);
+        if(textures.find(name) == textures.end())
+        {
+            textures[name] = LoadTexture(name);
+        }
     }
+    model->SetTextures(textures);
 
     std::vector<AssimpModel::AssimpMesh> meshes;
-    std::unordered_map<std::string, AssimpModel::Texture> textures;
 
     for(uint i = 0; i < scene->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[i];
-        std::cout << mesh->mMaterialIndex << std::endl;
         std::vector<AssimpModel::Vertex> vertices;
 
         for(uint j = 0; j < mesh->mNumVertices; j++)
@@ -97,7 +109,6 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
     }
 
     model->SetMeshes(meshes);
-    model->SetTextures(textures);
 
     return model;
 }
