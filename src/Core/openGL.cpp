@@ -81,6 +81,7 @@ OpenGL::OpenGL(int width, int height)
     std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
 
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
