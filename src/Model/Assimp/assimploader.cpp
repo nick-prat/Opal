@@ -37,45 +37,16 @@ AssimpModel::Texture LoadTexture(std::string filename)
     return texture;
 }
 
-std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
+void LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel::AssimpMesh>& meshes)
 {
-    Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filename.c_str(),
-        aiProcess_CalcTangentSpace |
-        aiProcess_Triangulate |
-        aiProcess_JoinIdenticalVertices |
-        aiProcess_SortByPType);
-
-    if(!scene)
+    for(uint i = 0; i < node->mNumChildren; i++)
     {
-        std::cout << "Couldn't open model: " << filename << std::endl;
-        return nullptr;
+        LoadNode(scene, node->mChildren[i], meshes);
     }
 
-    std::cout << "Loading model: " << filename << std::endl;
-
-    auto model = std::make_shared<AssimpModel>();
-
-    aiMaterial** materials = scene->mMaterials;
-    std::unordered_map<std::string, AssimpModel::Texture> textures;
-    for(uint i = 0; i < scene->mNumMaterials; i++)
+    for(uint i = 0; i < node->mNumMeshes; i++)
     {
-        aiString aName;
-        materials[i]->Get(AI_MATKEY_NAME, aName);
-        std::string name = std::string(aName.C_Str());
-
-        if(textures.find(name) == textures.end())
-        {
-            textures[name] = LoadTexture(name);
-        }
-    }
-    model->SetTextures(textures);
-
-    std::vector<AssimpModel::AssimpMesh> meshes;
-
-    for(uint i = 0; i < scene->mNumMeshes; i++)
-    {
-        aiMesh* mesh = scene->mMeshes[i];
+        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         std::vector<AssimpModel::Vertex> vertices;
 
         for(uint j = 0; j < mesh->mNumVertices; j++)
@@ -102,13 +73,50 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
         }
         else
         {
-            return nullptr;
+            return;
         }
 
         meshes.push_back(AssimpModel::AssimpMesh(vertices, indices));
     }
+}
 
+std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
+{
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(filename.c_str(),
+        aiProcess_CalcTangentSpace |
+        aiProcess_Triangulate |
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_SortByPType);
+
+    if(!scene)
+    {
+        std::cout << "Couldn't open model: " << filename << std::endl;
+        return nullptr;
+    }
+
+    std::cout << "Loading model: " << filename << std::endl;
+
+    auto model = std::make_shared<AssimpModel>();
+
+    std::vector<AssimpModel::AssimpMesh> meshes;
+    LoadNode(scene, scene->mRootNode, meshes);
     model->SetMeshes(meshes);
+
+    aiMaterial** materials = scene->mMaterials;
+    std::unordered_map<std::string, AssimpModel::Texture> textures;
+    for(uint i = 0; i < scene->mNumMaterials; i++)
+    {
+        aiString aName;
+        materials[i]->Get(AI_MATKEY_NAME, aName);
+        std::string name = std::string(aName.C_Str());
+
+        if(textures.find(name) == textures.end())
+        {
+            textures[name] = LoadTexture(name);
+        }
+    }
+    model->SetTextures(textures);
 
     return model;
 }
