@@ -1,4 +1,5 @@
 #include <glm/glm.hpp>
+#include <glm/ext.hpp>
 #include <FreeImage.h>
 #include <memory>
 #include <vector>
@@ -35,6 +36,17 @@ AssimpModel::Texture LoadTexture(std::string filename)
 
     FreeImage_Unload(img);
     return texture;
+}
+
+void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
+    to[0][0] = from->a1; to[1][0] = from->a2;
+    to[2][0] = from->a3; to[3][0] = from->a4;
+    to[0][1] = from->b1; to[1][1] = from->b2;
+    to[2][1] = from->b3; to[3][1] = from->b4;
+    to[0][2] = from->c1; to[1][2] = from->c2;
+    to[2][2] = from->c3; to[3][2] = from->c4;
+    to[0][3] = from->d1; to[1][3] = from->d2;
+    to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
 void LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel::AssimpMesh>& meshes)
@@ -76,7 +88,13 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel:
             return;
         }
 
-        meshes.push_back(AssimpModel::AssimpMesh(vertices, indices));
+        glm::mat4x4 transformation;
+        CopyaiMat(&node->mTransformation, transformation);
+        std::cout << glm::to_string(transformation) << std::endl;
+        AssimpModel::AssimpMesh rmesh(vertices, indices);
+        rmesh.SetTransformation(transformation);
+
+        meshes.push_back(rmesh);
     }
 }
 

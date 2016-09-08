@@ -38,13 +38,19 @@ bool AssimpModel::GetTexture(const std::string& key, Texture& texture) const
 
 AssimpModel::AssimpMesh::AssimpMesh(std::vector<Vertex> vertices, std::vector<uint> indices)
 : m_indices(indices), m_vertices(vertices)
-{
-
-}
+{}
 
 AssimpModel::AssimpMesh::~AssimpMesh()
-{
+{}
 
+void AssimpModel::AssimpMesh::SetTransformation(const glm::mat4x4& transformation)
+{
+    m_transformation = transformation;
+}
+
+glm::mat4x4 AssimpModel::AssimpMesh::GetTransformation() const
+{
+    return m_transformation;
 }
 
 std::vector<AssimpModel::Vertex> AssimpModel::AssimpMesh::GetVertices() const

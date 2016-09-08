@@ -66,10 +66,10 @@ void StaticModel::Render()
 {
     m_shader->UseShader();
 
-    glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * GetWorld();
-
     for(uint i = 0; i < m_meshCount; i++)
     {
+        glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * (GetWorld() * m_model->GetMeshes()[i].GetTransformation());
+
         gl::glBindVertexArray(m_VAO[i]);
 
         GLint worldLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gMVP");
@@ -77,6 +77,7 @@ void StaticModel::Render()
         {
             std::cout << "Couldn't get uniform loaction" << std::endl;
         }
+
         gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
         gl::glEnableVertexAttribArray(0);

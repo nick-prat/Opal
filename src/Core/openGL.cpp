@@ -63,7 +63,6 @@ OpenGL::OpenGL(int width, int height)
 
     m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
     m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    m_staticModel->Translate(glm::vec3(0.0f, 0.0f, -10.0f));
     RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
 
     m_obj = std::make_shared<TestObject>(m_display);
@@ -108,6 +107,14 @@ void OpenGL::DisplayFunc()
     glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();
 
+    if(m_display->GetInputModule()->IsKeyPressed('q'))
+    {
+        m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
+    }
+    if(m_display->GetInputModule()->IsKeyPressed('e'))
+    {
+        m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
+    }
     if(m_display->GetInputModule()->IsKeyPressed('w'))
     {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
