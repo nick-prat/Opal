@@ -1,8 +1,6 @@
 #ifndef _STATIC_MODEL_H
 #define _STATIC_MODEL_H
 
-#include <memory>
-
 #include <Display/display.hpp>
 #include <Model/Shader/shader.hpp>
 #include <Model/Assimp/assimpmodel.hpp>
