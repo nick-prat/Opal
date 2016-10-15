@@ -1,5 +1,9 @@
 #include "assimpmodel.hpp"
 
+#include <iostream>
+
+// AssimpModel
+
 AssimpModel::AssimpModel()
 {
 
@@ -20,6 +24,14 @@ void AssimpModel::SetTextures(const std::unordered_map<std::string, Texture> &te
     m_textures = textures;
 }
 
+void AssimpModel::PrintTextures()
+{
+    for(auto it = m_textures.begin(); it != m_textures.end(); it++)
+    {
+        std::cout << (it->second.IsLoaded() ? "loaded: " : "load failed: ") << ": " << it->second.GetFileName() << std::endl;
+    }
+}
+
 std::vector<AssimpModel::AssimpMesh> AssimpModel::GetMeshes() const
 {
     return m_meshes;
@@ -35,6 +47,36 @@ bool AssimpModel::GetTexture(const std::string& key, Texture& texture) const
     }
     return false;
 }
+
+// AssimpModel::Texture
+
+AssimpModel::Texture::Texture()
+{}
+
+AssimpModel::Texture::~Texture()
+{}
+
+void AssimpModel::Texture::SetLoaded(const bool loaded)
+{
+    m_loaded = loaded;
+}
+
+bool AssimpModel::Texture::IsLoaded() const
+{
+    return m_loaded;
+}
+
+void AssimpModel::Texture::SetFileName(const std::string filename)
+{
+    m_filename = filename;
+}
+
+std::string AssimpModel::Texture::GetFileName() const
+{
+    return m_filename;
+}
+
+// AssimpModel::AssimpMesh
 
 AssimpModel::AssimpMesh::AssimpMesh(std::vector<Vertex> vertices, std::vector<uint> indices)
 : m_indices(indices), m_vertices(vertices)

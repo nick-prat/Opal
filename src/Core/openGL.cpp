@@ -62,6 +62,7 @@ OpenGL::OpenGL(int width, int height)
     m_display = std::make_shared<GlutDisplay>(width, height);
 
     m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
+    m_staticModel->GetModel()->PrintTextures();
     m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     m_staticModel->Translate(glm::vec3(0.0f, 0.0f, -10.0f));
     RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());

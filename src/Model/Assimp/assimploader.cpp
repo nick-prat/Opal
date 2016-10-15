@@ -4,22 +4,30 @@
 #include <vector>
 #include <iostream>
 
+#include <Utilities/utilities.hpp>
+
 #include "assimpmodel.hpp"
 #include "assimploader.hpp"
 
-AssimpModel::Texture LoadTexture(std::string filename)
+bool LoadTexture(AssimpModel::Texture& texture, std::string filename)
 {
-    AssimpModel::Texture texture;
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
+    texture.SetFileName(filename);
+
+    if(format == FIF_UNKNOWN)
+    {
+        std::cout << "Unknown format: " << filename << std::endl;
+        return false;
+    }
 
     img = FreeImage_Load(format, filename.c_str(), 0);
 
     if(!img)
     {
         std::cout << "Couldn't load image: " << filename << std::endl;
-        return texture;
+        return false;
     }
 
     int height, width;
@@ -35,8 +43,11 @@ AssimpModel::Texture LoadTexture(std::string filename)
 
     // TODO Load image and return it
 
+    unsigned char* bytes = FreeImage_GetBits(img);
+
     FreeImage_Unload(img);
-    return texture;
+    texture.SetLoaded(true);
+    return true;
 }
 
 std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
@@ -68,7 +79,11 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
         if(textures.find(name) == textures.end())
         {
-            textures[name] = LoadTexture(name);
+            if(!LoadTexture(textures[name], name))
+            {
+                textures[name].SetLoaded(false);
+                std::cout << "Couldn't load texture: " << name << std::endl;
+            }
         }
     }
     model->SetTextures(textures);

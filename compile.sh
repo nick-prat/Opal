@@ -1,3 +1,4 @@
+#! /bin/bash
 if [ $1 == "DEBUG" ]; then 
 	cp -rf ./src/Shaders/ ./bin/debug/
 elif [ $1 == "RELEASE" ]; then

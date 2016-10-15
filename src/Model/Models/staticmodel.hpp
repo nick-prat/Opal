@@ -14,6 +14,8 @@ public:
 
     void Render();
 
+    std::shared_ptr<AssimpModel> GetModel();
+
 private:
     uint m_meshCount;
     std::vector<GLsizei> m_indexCount;

@@ -95,3 +95,8 @@ void StaticModel::Render()
         gl::glDisableVertexAttribArray(1);
     }
 }
+
+std::shared_ptr<AssimpModel> StaticModel::GetModel()
+{
+    return m_model;
+}

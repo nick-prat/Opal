@@ -18,7 +18,19 @@ public:
 
     class Texture
     {
+    public:
+        Texture();
+        ~Texture();
 
+        void SetLoaded(const bool loaded);
+        bool IsLoaded() const;
+
+        void SetFileName(const std::string filename);
+        std::string GetFileName() const;
+
+    private:
+        bool m_loaded;
+        std::string m_filename;
     };
 
     class AssimpMesh
@@ -43,6 +55,8 @@ public:
 
     bool GetTexture(const std::string& key, Texture& texture) const;
     std::vector<AssimpMesh> GetMeshes() const;
+
+    void PrintTextures();
 
 private:
     std::unordered_map<std::string, Texture> m_textures;
