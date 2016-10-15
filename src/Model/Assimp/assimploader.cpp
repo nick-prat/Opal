@@ -33,6 +33,8 @@ AssimpModel::Texture LoadTexture(std::string filename)
 
     std::cout << filename << " width: " << width << " height: " << height << std::endl;
 
+    // TODO Load image and return it
+
     FreeImage_Unload(img);
     return texture;
 }
