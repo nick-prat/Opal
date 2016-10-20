@@ -6,6 +6,8 @@
 #include <unordered_map>
 #include <vector>
 
+#include <Core/glapi.hpp>
+
 class AssimpModel
 {
 public:
@@ -28,7 +30,10 @@ public:
         void SetFileName(const std::string filename);
         std::string GetFileName() const;
 
+        void SetTexture(const GLuint glTexture);
+
     private:
+        GLuint m_glTexture;
         bool m_loaded;
         std::string m_filename;
     };

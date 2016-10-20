@@ -33,6 +33,7 @@ namespace gl
     extern PFNGLBINDVERTEXARRAYPROC glBindVertexArray;
     extern PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays;
     extern PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation;
+    extern PFNGLGENSAMPLERSPROC glGenSamplers;
 
     void InitAPI();
 }

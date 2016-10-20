@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include <Utilities/utilities.hpp>
+#include <Core/glapi.hpp>
 
 #include "assimpmodel.hpp"
 #include "assimploader.hpp"
@@ -14,7 +15,9 @@ bool LoadTexture(AssimpModel::Texture& texture, std::string filename)
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
+
     texture.SetFileName(filename);
+    texture.SetLoaded(false);
 
     if(format == FIF_UNKNOWN)
     {
@@ -30,23 +33,32 @@ bool LoadTexture(AssimpModel::Texture& texture, std::string filename)
         return false;
     }
 
-    int height, width;
-    FREE_IMAGE_TYPE type;
-    BITMAPINFOHEADER* header;
+    if(FreeImage_GetBPP(img) != 32)
+    {
+        FIBITMAP* oldImg = img;
+        img = FreeImage_ConvertTo32Bits(oldImg);
+        FreeImage_Unload(oldImg);
+    }
 
-    type = FreeImage_GetImageType(img);
-    header = FreeImage_GetInfoHeader(img);
+    int height, width;
     width = FreeImage_GetWidth(img);
     height = FreeImage_GetHeight(img);
-
-    std::cout << filename << " width: " << width << " height: " << height << std::endl;
 
     // TODO Load image and return it
 
     unsigned char* bytes = FreeImage_GetBits(img);
 
+    GLuint glTexture;
+    glGenTextures(1, &glTexture);
+    glBindTexture(GL_TEXTURE_2D, glTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
     FreeImage_Unload(img);
+
     texture.SetLoaded(true);
+    texture.SetTexture(glTexture);
+
     return true;
 }
 
@@ -79,11 +91,7 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
         if(textures.find(name) == textures.end())
         {
-            if(!LoadTexture(textures[name], name))
-            {
-                textures[name].SetLoaded(false);
-                std::cout << "Couldn't load texture: " << name << std::endl;
-            }
+            LoadTexture(textures[name], name);
         }
     }
     model->SetTextures(textures);

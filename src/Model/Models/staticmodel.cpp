@@ -26,7 +26,6 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         m_VAO.push_back(vao);
 
         gl::glGenBuffers(2, vbo);
-
         gl::glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
         gl::glBufferData(GL_ARRAY_BUFFER, sizeof(AssimpModel::Vertex) * mesh.GetVertices().size(), mesh.GetVertices().data(), GL_STATIC_DRAW);
         gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), 0);
