@@ -7,6 +7,7 @@
 #include <vector>
 
 #include <Core/glapi.hpp>
+#include <Model/Textures/texture.hpp>
 
 class AssimpModel
 {
@@ -16,26 +17,6 @@ public:
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 texCoord;
-    };
-
-    class Texture
-    {
-    public:
-        Texture();
-        ~Texture();
-
-        void SetLoaded(const bool loaded);
-        bool IsLoaded() const;
-
-        void SetFileName(const std::string filename);
-        std::string GetFileName() const;
-
-        void SetTexture(const GLuint glTexture);
-
-    private:
-        GLuint m_glTexture;
-        bool m_loaded;
-        std::string m_filename;
     };
 
     class AssimpMesh

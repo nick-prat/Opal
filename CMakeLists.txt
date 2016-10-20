@@ -14,6 +14,8 @@ set(SOURCE_FILES
 	src/Model/testObject.cpp src/Model/renderchain.cpp src/Model/renderobject.cpp
         	src/Model/Shader/shader.cpp 
 		src/Model/Sprite/sprite.cpp
+		src/Model/Textures/texture.cpp
+		src/Model/Textures/sampler.cpp
 		src/Model/Models/staticmodel.cpp  
 		src/Model/Assimp/assimploader.cpp src/Model/Assimp/assimpmodel.cpp
         src/Utilities/utilities.cpp src/Utilities/log.cpp

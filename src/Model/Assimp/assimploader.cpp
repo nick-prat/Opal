@@ -6,18 +6,18 @@
 
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
+#include <Model/Textures/texture.hpp>
 
 #include "assimpmodel.hpp"
 #include "assimploader.hpp"
 
-bool LoadTexture(AssimpModel::Texture& texture, std::string filename)
+bool LoadTexture(Texture& texture, std::string filename)
 {
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
 
     texture.SetFileName(filename);
-    texture.SetLoaded(false);
 
     if(format == FIF_UNKNOWN)
     {
@@ -56,7 +56,6 @@ bool LoadTexture(AssimpModel::Texture& texture, std::string filename)
 
     FreeImage_Unload(img);
 
-    texture.SetLoaded(true);
     texture.SetTexture(glTexture);
 
     return true;
@@ -82,7 +81,7 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
     auto model = std::make_shared<AssimpModel>();
 
     aiMaterial** materials = scene->mMaterials;
-    std::unordered_map<std::string, AssimpModel::Texture> textures;
+    std::unordered_map<std::string, Texture> textures;
     for(uint i = 0; i < scene->mNumMaterials; i++)
     {
         aiString aName;

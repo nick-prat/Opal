@@ -48,45 +48,6 @@ bool AssimpModel::GetTexture(const std::string& key, Texture& texture) const
     return false;
 }
 
-// AssimpModel::Texture
-
-AssimpModel::Texture::Texture()
-{}
-
-AssimpModel::Texture::~Texture()
-{
-    if(m_loaded)
-    {
-        glDeleteTextures(1, &m_glTexture);
-        m_glTexture = 0;
-    }
-}
-
-void AssimpModel::Texture::SetLoaded(const bool loaded)
-{
-    m_loaded = loaded;
-}
-
-bool AssimpModel::Texture::IsLoaded() const
-{
-    return m_loaded;
-}
-
-void AssimpModel::Texture::SetFileName(const std::string filename)
-{
-    m_filename = filename;
-}
-
-std::string AssimpModel::Texture::GetFileName() const
-{
-    return m_filename;
-}
-
-void AssimpModel::Texture::SetTexture(const GLuint glTexture)
-{
-    m_glTexture = glTexture;
-}
-
 // AssimpModel::AssimpMesh
 
 AssimpModel::AssimpMesh::AssimpMesh(std::vector<Vertex> vertices, std::vector<uint> indices)

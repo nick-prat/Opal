@@ -32,6 +32,7 @@ namespace gl
     PFNGLDELETEVERTEXARRAYSPROC glDeleteVertexArrays = 0;
     PFNGLBINDATTRIBLOCATIONPROC glBindAttribLocation = 0;
     PFNGLGENSAMPLERSPROC glGenSamplers = 0;
+    PFNGLDELETESAMPLERSPROC glDeleteSamplers = 0;
 
     void InitAPI()
     {
@@ -63,5 +64,6 @@ namespace gl
         glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteVertexArrays");
         glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)glXGetProcAddressARB((const GLubyte*)"glBindAttribLocation");
         glGenSamplers = (PFNGLGENSAMPLERSPROC)glXGetProcAddress((const GLubyte*)"glGenSamplers");
+        glDeleteSamplers = (PFNGLDELETESAMPLERSPROC)glXGetProcAddress((const GLubyte*)"glDeleteSamplers");
     }
 }
