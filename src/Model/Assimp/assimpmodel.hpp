@@ -25,10 +25,14 @@ public:
         AssimpMesh(std::vector<Vertex> vertices, std::vector<uint> indices);
         ~AssimpMesh();
 
+        void SetTransformation(const glm::mat4x4& transformation);
+
+        glm::mat4x4 GetTransformation() const;
         std::vector<Vertex> GetVertices() const;
         std::vector<uint> GetIndices() const;
 
     private:
+        glm::mat4x4 m_transformation;
         std::vector<uint> m_indices;
         std::vector<Vertex> m_vertices;
     };
