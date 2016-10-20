@@ -155,7 +155,7 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
         if(textures.find(name) == textures.end())
         {
-            textures[name] = LoadTexture(name);
+            LoadTexture(textures[name], name);
         }
     }
     model->SetTextures(textures);
