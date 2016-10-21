@@ -26,9 +26,9 @@ void AssimpModel::SetTextures(const std::unordered_map<std::string, Texture> &te
 
 void AssimpModel::PrintTextures()
 {
-    for(auto it = m_textures.begin(); it != m_textures.end(); it++)
+    for(const auto texture : m_textures)
     {
-        std::cout << (it->second.IsLoaded() ? "loaded: " : "load failed: ") << ": " << it->second.GetFileName() << std::endl;
+        std::cout << texture.first << "->" << (texture.second.IsLoaded() ? "loaded: " : "load failed: ") << ": " << texture.second.GetFileName() << std::endl;
     }
 }
 

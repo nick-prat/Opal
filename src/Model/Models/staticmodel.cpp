@@ -4,6 +4,8 @@
 
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
+#include <Model/Textures/sampler.hpp>
+#include <Model/Textures/texture.hpp>
 
 StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<AssimpModel> model)
     : m_display(display), m_model(model)
@@ -30,6 +32,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         gl::glBufferData(GL_ARRAY_BUFFER, sizeof(AssimpModel::Vertex) * mesh.GetVertices().size(), mesh.GetVertices().data(), GL_STATIC_DRAW);
         gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), 0);
         gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)sizeof(glm::vec3));
+        gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 
         vbos.push_back(vbo[0]);
 
@@ -48,20 +51,20 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         throw new Utilities::Exception(1, "Couldn't intialize shader");
     }
 
-    m_shader->BindAttribute("Position", 0);
-    m_shader->BindAttribute("Normal", 1);
+    m_shader->BindAttribute("iPosition", 0);
+    m_shader->BindAttribute("iNormal", 1);
+    m_shader->BindAttribute("iTexCoord", 2);
 
     if(!m_shader->LinkProgram())
     {
         throw new Utilities::Exception(1, "Couldn't link shader");
     }
-
 }
 
 StaticModel::~StaticModel()
 {
     gl::glDeleteVertexArrays(m_VAO.size(), m_VAO.data());
-    for(std::vector<GLuint> vbo : m_VBO)
+    for(std::vector<GLuint>& vbo : m_VBO)
     {
         gl::glDeleteBuffers(vbo.size(), vbo.data());
     }
@@ -81,10 +84,31 @@ void StaticModel::Render()
         GLint worldLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gMVP");
         if(worldLocation == -1)
         {
-            std::cout << "Couldn't get uniform loaction" << std::endl;
+            std::cout << "Couldn't get MVP uniform loaction" << std::endl;
+            exit(-1);
+        }
+        gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+
+        /*GLint samplerLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gSampler");
+        if(samplerLocation == -1)
+        {
+            std::cout << "Couldn't get sampler uniform location" << std::endl;
+            exit(-1);
+        }
+        gl::glUniform1i(samplerLocation, 0);
+
+        Texture texture;
+        if(m_model->GetTexture(m_model->GetMeshes()[i].GetMatName(), texture))
+        {
+            texture.Bind();
+        }
+        else
+        {
+            std::cout << "Couldn't get material " << m_model->GetMeshes()[i].GetMatName() << std::endl;
+            exit(-1);
         }
 
-        gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+        m_sampler.Bind();*/
 
         gl::glEnableVertexAttribArray(0);
         gl::glEnableVertexAttribArray(1);

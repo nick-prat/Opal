@@ -1,8 +1,12 @@
 #include "sampler.hpp"
 
+#include <Core/glapi.hpp>
+
 Sampler::Sampler()
 {
     gl::glGenSamplers(1, &m_sampler);
+    gl::glSamplerParameteri(m_sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    gl::glSamplerParameteri(m_sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 }
 
 Sampler::~Sampler()
@@ -12,7 +16,7 @@ Sampler::~Sampler()
 
 void Sampler::Bind() const
 {
-    // TODO bind the sampler here
+    gl::glBindSampler(0, m_sampler);
 }
 
 void Sampler::SetParams(int magnification, int minification)

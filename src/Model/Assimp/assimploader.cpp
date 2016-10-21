@@ -52,7 +52,7 @@ bool LoadTexture(Texture& texture, std::string filename)
     GLuint glTexture;
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     FreeImage_Unload(img);
@@ -100,6 +100,7 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel:
 
             vertex.position = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
             vertex.normal = (mesh->HasNormals()) ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z) : glm::vec3(0.0f, 0.0f, 0.0f);
+            vertex.texCoord = (mesh->HasTextureCoords(0)) ? glm::vec2(mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y) : glm::vec2(0.0f, 0.0f);
 
             vertices.push_back(vertex);
         }
@@ -169,14 +170,14 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
     std::vector<AssimpModel::AssimpMesh> meshes;
     LoadNode(scene, scene->mRootNode, meshes);
 
-    for(uint i = 0; i < meshes.size(); i++)
+    for(AssimpModel::AssimpMesh& mesh : meshes)
     {
         aiString aName;
-        uint index = meshes[i].GetMatIndex();
+        uint index = mesh.GetMatIndex();
         if(index < scene->mNumMaterials)
         {
-            materials[meshes[i].GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
-            meshes[i].SetMatName(std::string(aName.C_Str()));
+            materials[mesh.GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
+            mesh.SetMatName(std::string(aName.C_Str()));
         }
     }
 

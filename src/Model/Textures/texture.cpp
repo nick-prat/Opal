@@ -25,6 +25,15 @@ void Texture::SetTexture(const GLuint glTexture)
     m_loaded = true;
 }
 
+void Texture::Bind() const
+{
+    if(m_loaded)
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_glTexture);
+    }
+}
+
 void Texture::Unload()
 {
     if(m_loaded)

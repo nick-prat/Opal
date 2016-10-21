@@ -5,6 +5,7 @@
 #include <Model/Shader/shader.hpp>
 #include <Model/Assimp/assimpmodel.hpp>
 #include <Model/renderobject.hpp>
+#include <Model/Textures/sampler.hpp>
 
 class StaticModel : public IRenderObject
 {
@@ -17,6 +18,7 @@ public:
     std::shared_ptr<AssimpModel> GetModel();
 
 private:
+    Sampler m_sampler;
     uint m_meshCount;
     std::vector<GLsizei> m_indexCount;
     std::vector<std::vector<GLuint>> m_VBO;
