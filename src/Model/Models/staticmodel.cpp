@@ -7,7 +7,7 @@
 
 StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<AssimpModel> model)
     : m_display(display), m_model(model)
-{
+{    
     if(model == nullptr || display == nullptr)
     {
         throw new Utilities::Exception(1, "Null param passed to StaticModel constructor");
@@ -55,7 +55,6 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
     {
         throw new Utilities::Exception(1, "Couldn't link shader");
     }
-
 }
 
 StaticModel::~StaticModel()
