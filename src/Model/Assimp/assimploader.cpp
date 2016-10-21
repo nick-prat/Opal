@@ -49,6 +49,11 @@ bool LoadTexture(Texture& texture, std::string filename)
 
     unsigned char* bytes = FreeImage_GetBits(img);
 
+    if(bytes == nullptr)
+    {
+        std::cout << "couldn't load image bytes for " << filename << std::endl;
+    }
+
     GLuint glTexture;
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);

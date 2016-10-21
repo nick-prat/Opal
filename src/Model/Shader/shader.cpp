@@ -82,7 +82,7 @@ bool Shader::LinkProgram()
     if(success == GL_FALSE)
     {
         gl::glGetProgramInfoLog(m_shaderProgram, sizeof(info), nullptr, info);
-        std::cout << info << std::endl;
+        std::cout << "Shader IV didn't succeed " << info << std::endl;
         return false;
     }
 

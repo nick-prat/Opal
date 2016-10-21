@@ -32,7 +32,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         gl::glBufferData(GL_ARRAY_BUFFER, sizeof(AssimpModel::Vertex) * mesh.GetVertices().size(), mesh.GetVertices().data(), GL_STATIC_DRAW);
         gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), 0);
         gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)sizeof(glm::vec3));
-        gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+        //gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 
         vbos.push_back(vbo[0]);
 
@@ -53,11 +53,17 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
 
     m_shader->BindAttribute("iPosition", 0);
     m_shader->BindAttribute("iNormal", 1);
-    m_shader->BindAttribute("iTexCoord", 2);
+    //m_shader->BindAttribute("iTexCoord", 2);
 
     if(!m_shader->LinkProgram())
     {
         throw new Utilities::Exception(1, "Couldn't link shader");
+    }
+
+    std::cout << "Printing errors" << std::endl;
+    for(GLenum err; (err = glGetError()) != GL_NO_ERROR;)
+    {
+        std::cout << err << std::endl;
     }
 }
 
@@ -89,7 +95,7 @@ void StaticModel::Render()
         }
         gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
-        /*GLint samplerLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gSampler");
+        GLint samplerLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gSampler");
         if(samplerLocation == -1)
         {
             std::cout << "Couldn't get sampler uniform location" << std::endl;
@@ -108,15 +114,17 @@ void StaticModel::Render()
             exit(-1);
         }
 
-        m_sampler.Bind();*/
+        m_sampler.Bind();
 
         gl::glEnableVertexAttribArray(0);
         gl::glEnableVertexAttribArray(1);
+        //gl::glEnableVertexAttribArray(2);
 
         glDrawElements(GL_TRIANGLES, (GLsizei)m_indexCount.data()[i], GL_UNSIGNED_INT, nullptr);
 
         gl::glDisableVertexAttribArray(0);
         gl::glDisableVertexAttribArray(1);
+        //gl::glDisableVertexAttribArray(2);
     }
 }
 
