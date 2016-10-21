@@ -51,7 +51,7 @@ bool AssimpModel::GetTexture(const std::string& key, Texture& texture) const
 // AssimpModel::AssimpMesh
 
 AssimpModel::AssimpMesh::AssimpMesh(std::vector<Vertex> vertices, std::vector<uint> indices)
-: m_indices(indices), m_vertices(vertices)
+: m_matIndex(0), m_matName("null"), m_indices(indices), m_vertices(vertices)
 {}
 
 AssimpModel::AssimpMesh::~AssimpMesh()
@@ -75,4 +75,24 @@ std::vector<AssimpModel::Vertex> AssimpModel::AssimpMesh::GetVertices() const
 std::vector<uint> AssimpModel::AssimpMesh::GetIndices() const
 {
     return m_indices;
+}
+
+void AssimpModel::AssimpMesh::SetMatIndex(const uint matIndex)
+{
+    m_matIndex = matIndex;
+}
+
+uint AssimpModel::AssimpMesh::GetMatIndex() const
+{
+    return m_matIndex;
+}
+
+void AssimpModel::AssimpMesh::SetMatName(const std::string matName)
+{
+    m_matName = matName;
+}
+
+std::string AssimpModel::AssimpMesh::GetMatName() const
+{
+    return m_matName;
 }

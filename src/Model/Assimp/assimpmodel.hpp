@@ -31,7 +31,15 @@ public:
         std::vector<Vertex> GetVertices() const;
         std::vector<uint> GetIndices() const;
 
+        void SetMatIndex(const uint matIndex);
+        uint GetMatIndex() const;
+
+        void SetMatName(const std::string matName);
+        std::string GetMatName() const;
+
     private:
+        uint m_matIndex;
+        std::string m_matName;
         glm::mat4x4 m_transformation;
         std::vector<uint> m_indices;
         std::vector<Vertex> m_vertices;

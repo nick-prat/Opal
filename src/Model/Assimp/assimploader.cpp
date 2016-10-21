@@ -73,11 +73,20 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-void LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel::AssimpMesh>& meshes)
+bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel::AssimpMesh>& meshes)
 {
+    for(aiNode* finder = node->mParent; finder != nullptr; finder = finder->mParent)
+    {
+        std::cout << "\t";
+    }
+    std::cout << "Loading node: " << node->mName.C_Str() << std::endl;
+
     for(uint i = 0; i < node->mNumChildren; i++)
     {
-        LoadNode(scene, node->mChildren[i], meshes);
+        if(!LoadNode(scene, node->mChildren[i], meshes))
+        {
+            return false;
+        }
     }
 
     for(uint i = 0; i < node->mNumMeshes; i++)
@@ -109,17 +118,20 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel:
         }
         else
         {
-            return;
+            std::cout << "Node was missing faces, load cancled" << std::endl;
+            return false;
         }
 
         glm::mat4x4 transformation;
         CopyaiMat(&node->mTransformation, transformation);
-        std::cout << glm::to_string(transformation) << std::endl;
         AssimpModel::AssimpMesh rmesh(vertices, indices);
         rmesh.SetTransformation(transformation);
+        rmesh.SetMatIndex(mesh->mMaterialIndex);
 
         meshes.push_back(rmesh);
     }
+
+    return true;
 }
 
 std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
@@ -137,13 +149,7 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
         return nullptr;
     }
 
-    std::cout << "Loading model: " << filename << std::endl;
-
     auto model = std::make_shared<AssimpModel>();
-
-    std::vector<AssimpModel::AssimpMesh> meshes;
-    LoadNode(scene, scene->mRootNode, meshes);
-    model->SetMeshes(meshes);
 
     aiMaterial** materials = scene->mMaterials;
     std::unordered_map<std::string, Texture> textures;
@@ -159,6 +165,22 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
         }
     }
     model->SetTextures(textures);
+
+    std::vector<AssimpModel::AssimpMesh> meshes;
+    LoadNode(scene, scene->mRootNode, meshes);
+
+    for(uint i = 0; i < meshes.size(); i++)
+    {
+        aiString aName;
+        uint index = meshes[i].GetMatIndex();
+        if(index < scene->mNumMaterials)
+        {
+            materials[meshes[i].GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
+            meshes[i].SetMatName(std::string(aName.C_Str()));
+        }
+    }
+
+    model->SetMeshes(meshes);
 
     return model;
 }
