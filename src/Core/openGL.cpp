@@ -6,8 +6,7 @@
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
 
-#include <Model/Assimp/assimploader.hpp>
-#include <Model/Models/staticmodel.hpp>
+#include <Assimp/assimploader.hpp>
 
 OpenGL* OpenGL::m_openGL = nullptr;
 

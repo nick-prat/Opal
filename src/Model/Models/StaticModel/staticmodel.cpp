@@ -4,7 +4,6 @@
 
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
-#include <Model/Textures/sampler.hpp>
 #include <Model/Textures/texture.hpp>
 
 StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<AssimpModel> model)

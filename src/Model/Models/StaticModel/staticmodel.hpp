@@ -2,10 +2,10 @@
 #define _STATIC_MODEL_H
 
 #include <Display/display.hpp>
+#include <Assimp/assimpmodel.hpp>
 #include <Model/Shader/shader.hpp>
-#include <Model/Assimp/assimpmodel.hpp>
 #include <Model/Render/renderobject.hpp>
-#include <Model/Textures/sampler.hpp>
+#include <Model/Sampler/sampler.hpp>
 
 class StaticModel : public IRenderObject
 {

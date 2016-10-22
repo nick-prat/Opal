@@ -10,14 +10,15 @@ set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
 # Applications source files
 set(SOURCE_FILES
         src/main.cpp
-        src/Display/display.cpp src/Display/inputmodule.cpp src/Display/cameramodule.cpp
+        src/Display/display.cpp 
+		src/Display/Modules/inputmodule.cpp src/Display/Modules/cameramodule.cpp
 	src/Model/Render/renderchain.cpp src/Model/Render/renderobject.cpp
         src/Model/Shader/shader.cpp 
-	src/Model/Sprite/sprite.cpp
 	src/Model/Textures/texture.cpp
-	src/Model/Textures/sampler.cpp
-	src/Model/Models/staticmodel.cpp  
-	src/Model/Assimp/assimploader.cpp src/Model/Assimp/assimpmodel.cpp
+	src/Model/Sampler/sampler.cpp
+		src/Model/Models/StaticModel/staticmodel.cpp  
+		src/Model/Models/Sprite/sprite.cpp
+	src/Assimp/assimploader.cpp src/Assimp/assimpmodel.cpp
         src/Utilities/utilities.cpp src/Utilities/log.cpp
         src/Core/openGL.cpp src/Core/glapi.cpp )
 add_executable(OpenGL ${SOURCE_FILES})

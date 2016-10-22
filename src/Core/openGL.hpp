@@ -4,9 +4,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Model/Render/renderchain.hpp>
 #include <Display/display.hpp>
-#include <Model/Models/staticmodel.hpp>
+#include <Model/Render/renderchain.hpp>
+#include <Model/Models/StaticModel/staticmodel.hpp>
 
 #include "glapi.hpp"
 
