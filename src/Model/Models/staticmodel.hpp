@@ -4,7 +4,7 @@
 #include <Display/display.hpp>
 #include <Model/Shader/shader.hpp>
 #include <Model/Assimp/assimpmodel.hpp>
-#include <Model/renderobject.hpp>
+#include <Model/Render/renderobject.hpp>
 #include <Model/Textures/sampler.hpp>
 
 class StaticModel : public IRenderObject
