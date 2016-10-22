@@ -66,14 +66,6 @@ OpenGL::OpenGL(int width, int height)
     m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
 
-    m_obj = std::make_shared<TestObject>(m_display);
-    //RenderChain::GetInstance()->AttachRenderObject(m_obj.get());
-
-    m_obj2 = std::make_shared<TestObject>(m_display);
-    //RenderChain::GetInstance()->AttachRenderObject(m_obj2.get());
-
-    m_obj->Translate(glm::vec3(0.5f, 0.5f, -0.5f));
-
     // Log information about current context
     std::cout << "Information: " << std::endl;
     std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
@@ -82,8 +74,9 @@ OpenGL::OpenGL(int width, int height)
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+    //glEnable(GL_TEXTURE_2D);
     glDepthFunc(GL_LESS);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
     Log::info("OpenGL context created", Log::OUT_LOG);
 }

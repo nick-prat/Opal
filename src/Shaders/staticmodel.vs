@@ -13,4 +13,5 @@ void main()
 {
     gl_Position = gMVP * vec4(iPosition, 1.0);
     texCoord = iTexCoord;
+    color = vec4(clamp(iTexCoord, 0.0, 1.0), 1.0, 1.0);
 }

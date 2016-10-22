@@ -11,7 +11,7 @@ set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
 set(SOURCE_FILES
         src/main.cpp
         src/Display/display.cpp src/Display/inputmodule.cpp src/Display/cameramodule.cpp
-	src/Model/testObject.cpp src/Model/renderchain.cpp src/Model/renderobject.cpp
+	src/Model/renderchain.cpp src/Model/renderobject.cpp
         	src/Model/Shader/shader.cpp 
 		src/Model/Sprite/sprite.cpp
 		src/Model/Textures/texture.cpp

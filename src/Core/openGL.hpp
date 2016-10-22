@@ -7,7 +7,6 @@
 #include <Model/renderchain.hpp>
 #include <Display/display.hpp>
 #include <Model/Models/staticmodel.hpp>
-#include <Model/testObject.hpp>
 
 #include "glapi.hpp"
 
@@ -31,8 +30,6 @@ private:
     long m_lowestTime;
     std::shared_ptr<GlutDisplay> m_display;
     std::shared_ptr<StaticModel> m_staticModel;
-    std::shared_ptr<TestObject> m_obj;
-    std::shared_ptr<TestObject> m_obj2;
 };
 
 #endif //OPENGL_OPENGL_H

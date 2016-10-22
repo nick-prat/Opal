@@ -19,7 +19,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
     for(uint i = 0; i < m_meshCount; i++)
     {
         AssimpModel::AssimpMesh mesh = m_model->GetMeshes()[i];
-        GLuint vbo[3], vao, ibo;
+        GLuint vbo, vao, ibo;
 
         std::vector<GLuint> vbos;
 
@@ -27,14 +27,14 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         gl::glBindVertexArray(vao);
         m_VAO.push_back(vao);
 
-        gl::glGenBuffers(2, vbo);
-        gl::glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+        gl::glGenBuffers(1, &vbo);
+        gl::glBindBuffer(GL_ARRAY_BUFFER, vbo);
         gl::glBufferData(GL_ARRAY_BUFFER, sizeof(AssimpModel::Vertex) * mesh.GetVertices().size(), mesh.GetVertices().data(), GL_STATIC_DRAW);
         gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), 0);
         gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)sizeof(glm::vec3));
-        //gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+        gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 
-        vbos.push_back(vbo[0]);
+        vbos.push_back(vbo);
 
         gl::glGenBuffers(1, &ibo);
         gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
@@ -49,21 +49,6 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
     if(!m_shader->InitShader(files, types))
     {
         throw new Utilities::Exception(1, "Couldn't intialize shader");
-    }
-
-    m_shader->BindAttribute("iPosition", 0);
-    m_shader->BindAttribute("iNormal", 1);
-    //m_shader->BindAttribute("iTexCoord", 2);
-
-    if(!m_shader->LinkProgram())
-    {
-        throw new Utilities::Exception(1, "Couldn't link shader");
-    }
-
-    std::cout << "Printing errors" << std::endl;
-    for(GLenum err; (err = glGetError()) != GL_NO_ERROR;)
-    {
-        std::cout << err << std::endl;
     }
 }
 
@@ -118,14 +103,16 @@ void StaticModel::Render()
 
         gl::glEnableVertexAttribArray(0);
         gl::glEnableVertexAttribArray(1);
-        //gl::glEnableVertexAttribArray(2);
+        gl::glEnableVertexAttribArray(2);
 
         glDrawElements(GL_TRIANGLES, (GLsizei)m_indexCount.data()[i], GL_UNSIGNED_INT, nullptr);
 
         gl::glDisableVertexAttribArray(0);
         gl::glDisableVertexAttribArray(1);
-        //gl::glDisableVertexAttribArray(2);
+        gl::glDisableVertexAttribArray(2);
     }
+
+    exit(0);
 }
 
 std::shared_ptr<AssimpModel> StaticModel::GetModel()

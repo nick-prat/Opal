@@ -20,6 +20,12 @@ bool LoadTexture(Texture& texture, std::string filename)
 
     texture.SetFileName(filename);
 
+    if(!FreeImage_FIFSupportsReading(format))
+    {
+        std::cout << "FreeImage can't read from this file" << std::endl;
+        return false;
+    }
+
     if(format == FIF_UNKNOWN)
     {
         std::cout << "Unknown format: " << filename << std::endl;
@@ -34,8 +40,10 @@ bool LoadTexture(Texture& texture, std::string filename)
         return false;
     }
 
+    std::cout << "BPP: " << FreeImage_GetBPP(img) << std::endl;
     if(FreeImage_GetBPP(img) != 32)
     {
+        std::cout << "converting to 32 bits" << std::endl;
         FIBITMAP* oldImg = img;
         img = FreeImage_ConvertTo32Bits(oldImg);
         FreeImage_Unload(oldImg);
@@ -44,6 +52,8 @@ bool LoadTexture(Texture& texture, std::string filename)
     int height, width;
     width = FreeImage_GetWidth(img);
     height = FreeImage_GetHeight(img);
+
+    std::cout << "Width: " << width << std::endl << "Height: " << height << std::endl;
 
     // TODO Load image and return it
 
@@ -57,11 +67,11 @@ bool LoadTexture(Texture& texture, std::string filename)
     GLuint glTexture;
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
     glBindTexture(GL_TEXTURE_2D, 0);
 
     FreeImage_Unload(img);
-
+    std::cout << glTexture << " : " << filename << std::endl;
     texture.SetTexture(glTexture);
 
     return true;

@@ -9,5 +9,6 @@ uniform sampler2D gSampler;
 
 void main()
 {
+    //FragColor = color;
     FragColor = texture2D(gSampler, texCoord);
 }

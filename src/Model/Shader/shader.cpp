@@ -1,10 +1,12 @@
+#include "shader.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <cstring>
 
-#include "shader.hpp"
+#include <Utilities/utilities.hpp>
 
 Shader::Shader()
 {
@@ -69,14 +71,6 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
         delete[] text[0];
     }
 
-    return true;
-}
-
-bool Shader::LinkProgram()
-{
-    GLint success;
-    GLchar info[1024];
-
     gl::glLinkProgram(m_shaderProgram);
     gl::glGetShaderiv(m_shaderProgram, GL_LINK_STATUS, &success);
     if(success == GL_FALSE)
@@ -93,11 +87,6 @@ bool Shader::LinkProgram()
     }
 
     return true;
-}
-
-void Shader::BindAttribute(const char* name, GLuint location)
-{
-    gl::glBindAttribLocation(m_shaderProgram, location, name);
 }
 
 void Shader::Destroy()

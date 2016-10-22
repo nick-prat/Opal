@@ -1,5 +1,9 @@
 #include "texture.hpp"
 
+#include <iostream>
+
+#include <Utilities/utilities.hpp>
+
 Texture::Texture()
     : m_loaded(false)
 {}
