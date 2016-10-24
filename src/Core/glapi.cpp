@@ -10,6 +10,7 @@ namespace gl
     PFNGLLINKPROGRAMPROC glLinkProgram = 0;
     PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog = 0;
     PFNGLDELETEPROGRAMPROC glDeleteProgram = 0;
+    PFNGLGETPROGRAMIVPROC glGetProgramiv = 0;
 
     PFNGLCREATESHADERPROC glCreateShader = 0;
     PFNGLSHADERSOURCEPROC glShaderSource = 0;
@@ -52,6 +53,7 @@ namespace gl
         glLinkProgram = (PFNGLLINKPROGRAMPROC)glXGetProcAddressARB((const GLubyte*)"glLinkProgram");
         glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)glXGetProcAddressARB((const GLubyte*)"glGetProgramInfoLog");
         glDeleteProgram = (PFNGLDELETEPROGRAMPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteProgram");
+        glGetProgramiv = (PFNGLGETPROGRAMIVPROC)glXGetProcAddressARB((const GLubyte*)"glGetProgramiv");
 
         glCreateShader = (PFNGLCREATESHADERPROC)glXGetProcAddressARB((const GLubyte*)"glCreateShader");
         glShaderSource = (PFNGLSHADERSOURCEPROC)glXGetProcAddressARB((const GLubyte*)"glShaderSource");

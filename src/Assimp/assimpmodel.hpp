@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <memory>
 
 #include <Core/glapi.hpp>
 #include <Model/Textures/texture.hpp>
@@ -49,15 +50,15 @@ public:
     ~AssimpModel();
 
     void SetMeshes(const std::vector<AssimpMesh>& meshes);
-    void SetTextures(const std::unordered_map<std::string, Texture>& textures);
+    void SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
 
-    bool GetTexture(const std::string& key, Texture& texture) const;
+    std::shared_ptr<Texture> GetTexture(const std::string& key) const;
     std::vector<AssimpMesh> GetMeshes() const;
 
     void PrintTextures();
 
 private:
-    std::unordered_map<std::string, Texture> m_textures;
+    std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
     std::vector<AssimpMesh> m_meshes;
 
 };

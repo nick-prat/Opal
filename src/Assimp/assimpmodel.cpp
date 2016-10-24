@@ -19,7 +19,7 @@ void AssimpModel::SetMeshes(const std::vector<AssimpMesh> &meshes)
     m_meshes = meshes;
 }
 
-void AssimpModel::SetTextures(const std::unordered_map<std::string, Texture> &textures)
+void AssimpModel::SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures)
 {
     m_textures = textures;
 }
@@ -28,7 +28,7 @@ void AssimpModel::PrintTextures()
 {
     for(const auto texture : m_textures)
     {
-        std::cout << texture.first << "->" << (texture.second.IsLoaded() ? "loaded: " : "load failed: ") << ": " << texture.second.GetFileName() << std::endl;
+        std::cout << texture.first << "->" << (texture.second->IsLoaded() ? "loaded: " : "load failed: ") << ": " << texture.second->GetFileName() << std::endl;
     }
 }
 
@@ -37,15 +37,14 @@ std::vector<AssimpModel::AssimpMesh> AssimpModel::GetMeshes() const
     return m_meshes;
 }
 
-bool AssimpModel::GetTexture(const std::string& key, Texture& texture) const
+std::shared_ptr<Texture> AssimpModel::GetTexture(const std::string& key) const
 {
     auto tex = m_textures.find(key);
     if(tex != m_textures.end())
     {
-        texture = tex->second;
-        return true;
+        return tex->second;
     }
-    return false;
+    return nullptr;
 }
 
 // AssimpModel::AssimpMesh

@@ -1,3 +1,5 @@
+#include "assimploader.hpp"
+
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <FreeImage.h>
@@ -8,17 +10,14 @@
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
 #include <Model/Textures/texture.hpp>
+#include <Assimp/assimpmodel.hpp>
+#include <Utilities/utilities.hpp>
 
-#include "assimpmodel.hpp"
-#include "assimploader.hpp"
-
-bool LoadTexture(Texture& texture, std::string filename)
+bool LoadTexture(std::shared_ptr<Texture>& texture, std::string filename)
 {
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
-
-    texture.SetFileName(filename);
 
     if(!FreeImage_FIFSupportsReading(format))
     {
@@ -40,10 +39,9 @@ bool LoadTexture(Texture& texture, std::string filename)
         return false;
     }
 
-    std::cout << "BPP: " << FreeImage_GetBPP(img) << std::endl;
     if(FreeImage_GetBPP(img) != 32)
     {
-        std::cout << "converting to 32 bits" << std::endl;
+        std::cout << "converting to 32 bits for image " << filename << std::endl;
         FIBITMAP* oldImg = img;
         img = FreeImage_ConvertTo32Bits(oldImg);
         FreeImage_Unload(oldImg);
@@ -53,10 +51,6 @@ bool LoadTexture(Texture& texture, std::string filename)
     width = FreeImage_GetWidth(img);
     height = FreeImage_GetHeight(img);
 
-    std::cout << "Width: " << width << std::endl << "Height: " << height << std::endl;
-
-    // TODO Load image and return it
-
     unsigned char* bytes = FreeImage_GetBits(img);
 
     if(bytes == nullptr)
@@ -65,14 +59,22 @@ bool LoadTexture(Texture& texture, std::string filename)
     }
 
     GLuint glTexture;
+    glBindTexture(GL_TEXTURE_2D, 0);
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
     glBindTexture(GL_TEXTURE_2D, 0);
 
+    if(!glIsTexture(glTexture))
+    {
+        std::cout << "texture is not valid " << glTexture << std::endl;
+    }
+
     FreeImage_Unload(img);
-    std::cout << glTexture << " : " << filename << std::endl;
-    texture.SetTexture(glTexture);
+
+    texture = std::make_shared<Texture>();
+    texture->SetFileName(filename);
+    texture->SetTexture(glTexture);
 
     return true;
 }
@@ -90,12 +92,6 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
 
 bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel::AssimpMesh>& meshes)
 {
-    for(aiNode* finder = node->mParent; finder != nullptr; finder = finder->mParent)
-    {
-        std::cout << "\t";
-    }
-    std::cout << "Loading node: " << node->mName.C_Str() << std::endl;
-
     for(uint i = 0; i < node->mNumChildren; i++)
     {
         if(!LoadNode(scene, node->mChildren[i], meshes))
@@ -168,7 +164,7 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
     auto model = std::make_shared<AssimpModel>();
 
     aiMaterial** materials = scene->mMaterials;
-    std::unordered_map<std::string, Texture> textures;
+    std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
     for(uint i = 0; i < scene->mNumMaterials; i++)
     {
         aiString aName;
@@ -177,7 +173,11 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
         if(textures.find(name) == textures.end())
         {
-            LoadTexture(textures[name], name);
+            std::shared_ptr<Texture> temp;
+            if(LoadTexture(temp, name))
+            {
+                textures[name] = temp;
+            }
         }
     }
     model->SetTextures(textures);

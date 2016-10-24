@@ -60,16 +60,16 @@ OpenGL::OpenGL(int width, int height)
 
     m_display = std::make_shared<GlutDisplay>(width, height);
 
-    m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
-    m_staticModel->GetModel()->PrintTextures();
-    m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
-
     // Log information about current context
     std::cout << "Information: " << std::endl;
     std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "\tDisplay Address: " << m_display << std::endl;
     std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
+
+    m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
+    m_staticModel->GetModel()->PrintTextures();
+    m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

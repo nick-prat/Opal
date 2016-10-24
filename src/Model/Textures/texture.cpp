@@ -10,6 +10,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
+    std::cout << "unloading" << std::endl;
     Unload();
 }
 
@@ -34,7 +35,15 @@ void Texture::Bind() const
     if(m_loaded)
     {
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, m_glTexture);
+        if(glIsTexture(m_glTexture))
+        {
+            glBindTexture(GL_TEXTURE_2D, m_glTexture);
+        }
+        else
+        {
+            std::cout << "(" << m_glTexture << ") Trying to bind texture that doesn't exist " << m_filename << std::endl;
+            Utilities::PrintGLErrors();
+        }
     }
 }
 

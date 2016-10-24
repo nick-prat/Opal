@@ -12,6 +12,7 @@ namespace gl
     extern PFNGLLINKPROGRAMPROC glLinkProgram;
     extern PFNGLGETPROGRAMINFOLOGPROC glGetProgramInfoLog;
     extern PFNGLDELETEPROGRAMPROC glDeleteProgram;
+    extern PFNGLGETPROGRAMIVPROC glGetProgramiv;
 
     extern PFNGLCREATESHADERPROC glCreateShader;
     extern PFNGLSHADERSOURCEPROC glShaderSource;

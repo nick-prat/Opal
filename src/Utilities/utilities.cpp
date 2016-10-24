@@ -12,7 +12,7 @@ void Utilities::PrintGLErrors()
         GLenum glErr = glGetError();
         if(glErr != GL_NO_ERROR)
         {
-            std::cout << "\nGLError (" << glErr << ") " << gluErrorString(glErr) << std::endl << std::endl;
+            std::cout << "~~  GLError (" << glErr << ") " << gluErrorString(glErr) << " ~~" << std::endl;
         }
         else
         {

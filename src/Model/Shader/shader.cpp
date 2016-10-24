@@ -72,7 +72,7 @@ bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::ve
     }
 
     gl::glLinkProgram(m_shaderProgram);
-    gl::glGetShaderiv(m_shaderProgram, GL_LINK_STATUS, &success);
+    gl::glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
     if(success == GL_FALSE)
     {
         gl::glGetProgramInfoLog(m_shaderProgram, sizeof(info), nullptr, info);

@@ -87,10 +87,10 @@ void StaticModel::Render()
         }
         gl::glUniform1i(samplerLocation, 0);
 
-        Texture texture;
-        if(m_model->GetTexture(m_model->GetMeshes()[i].GetMatName(), texture))
+        std::shared_ptr<Texture> texture = m_model->GetTexture(m_model->GetMeshes()[i].GetMatName());
+        if(texture != nullptr)
         {
-            texture.Bind();
+            texture->Bind();
         }
         else
         {
@@ -111,7 +111,7 @@ void StaticModel::Render()
         gl::glDisableVertexAttribArray(2);
     }
 
-    exit(0);
+    Utilities::PrintGLErrors();
 }
 
 std::shared_ptr<AssimpModel> StaticModel::GetModel()
