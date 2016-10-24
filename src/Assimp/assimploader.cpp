@@ -90,7 +90,7 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel::AssimpMesh>& meshes)
+bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<AssimpModel::AssimpMesh>>& meshes)
 {
     for(uint i = 0; i < node->mNumChildren; i++)
     {
@@ -136,9 +136,9 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel:
 
         glm::mat4x4 transformation;
         CopyaiMat(&node->mTransformation, transformation);
-        AssimpModel::AssimpMesh rmesh(vertices, indices);
-        rmesh.SetTransformation(transformation);
-        rmesh.SetMatIndex(mesh->mMaterialIndex);
+        std::shared_ptr<AssimpModel::AssimpMesh> rmesh = std::make_shared<AssimpModel::AssimpMesh>(vertices, indices);
+        rmesh->SetTransformation(transformation);
+        rmesh->SetMatIndex(mesh->mMaterialIndex);
 
         meshes.push_back(rmesh);
     }
@@ -182,17 +182,17 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
     }
     model->SetTextures(textures);
 
-    std::vector<AssimpModel::AssimpMesh> meshes;
+    std::vector<std::shared_ptr<AssimpModel::AssimpMesh>> meshes;
     LoadNode(scene, scene->mRootNode, meshes);
 
-    for(AssimpModel::AssimpMesh& mesh : meshes)
+    for(std::shared_ptr<AssimpModel::AssimpMesh>& mesh : meshes)
     {
         aiString aName;
-        uint index = mesh.GetMatIndex();
+        uint index = mesh->GetMatIndex();
         if(index < scene->mNumMaterials)
         {
-            materials[mesh.GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
-            mesh.SetMatName(std::string(aName.C_Str()));
+            materials[mesh->GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
+            mesh->SetMatName(std::string(aName.C_Str()));
         }
     }
 

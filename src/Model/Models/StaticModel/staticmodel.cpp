@@ -17,7 +17,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
     m_meshCount = m_model->GetMeshes().size();
     for(uint i = 0; i < m_meshCount; i++)
     {
-        AssimpModel::AssimpMesh mesh = m_model->GetMeshes()[i];
+        std::shared_ptr<AssimpModel::AssimpMesh> mesh = m_model->GetMeshes()[i];
         GLuint vbo, vao, ibo;
 
         std::vector<GLuint> vbos;
@@ -28,7 +28,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
 
         gl::glGenBuffers(1, &vbo);
         gl::glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        gl::glBufferData(GL_ARRAY_BUFFER, sizeof(AssimpModel::Vertex) * mesh.GetVertices().size(), mesh.GetVertices().data(), GL_STATIC_DRAW);
+        gl::glBufferData(GL_ARRAY_BUFFER, sizeof(AssimpModel::Vertex) * mesh->GetVertices().size(), mesh->GetVertices().data(), GL_STATIC_DRAW);
         gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), 0);
         gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)sizeof(glm::vec3));
         gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
@@ -37,8 +37,8 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
 
         gl::glGenBuffers(1, &ibo);
         gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh.GetIndices().size(), mesh.GetIndices().data(), GL_STATIC_DRAW);
-        m_indexCount.push_back(mesh.GetIndices().size());
+        gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->GetIndices().size(), mesh->GetIndices().data(), GL_STATIC_DRAW);
+        m_indexCount.push_back(mesh->GetIndices().size());
     }
 
     m_shader = std::make_unique<Shader>();
@@ -67,7 +67,7 @@ void StaticModel::Render()
 
     for(uint i = 0; i < m_meshCount; i++)
     {
-        glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * (GetWorld() * m_model->GetMeshes()[i].GetTransformation());
+        glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * (GetWorld() * m_model->GetMeshes()[i]->GetTransformation());
 
         gl::glBindVertexArray(m_VAO[i]);
 
@@ -87,14 +87,14 @@ void StaticModel::Render()
         }
         gl::glUniform1i(samplerLocation, 0);
 
-        std::shared_ptr<Texture> texture = m_model->GetTexture(m_model->GetMeshes()[i].GetMatName());
+        std::shared_ptr<Texture> texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
         if(texture != nullptr)
         {
             texture->Bind();
         }
         else
         {
-            std::cout << "Couldn't get material " << m_model->GetMeshes()[i].GetMatName() << std::endl;
+            std::cout << "Couldn't get material " << m_model->GetMeshes()[i]->GetMatName() << std::endl;
             exit(-1);
         }
 

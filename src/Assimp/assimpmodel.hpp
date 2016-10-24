@@ -49,17 +49,17 @@ public:
     AssimpModel();
     ~AssimpModel();
 
-    void SetMeshes(const std::vector<AssimpMesh>& meshes);
+    void SetMeshes(const std::vector<std::shared_ptr<AssimpMesh>>& meshes);
     void SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
 
     std::shared_ptr<Texture> GetTexture(const std::string& key) const;
-    std::vector<AssimpMesh> GetMeshes() const;
+    std::vector<std::shared_ptr<AssimpMesh>> GetMeshes() const;
 
     void PrintTextures();
 
 private:
     std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
-    std::vector<AssimpMesh> m_meshes;
+    std::vector<std::shared_ptr<AssimpMesh>> m_meshes;
 
 };
 

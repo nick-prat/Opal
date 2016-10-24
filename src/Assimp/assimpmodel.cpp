@@ -14,7 +14,7 @@ AssimpModel::~AssimpModel()
 
 }
 
-void AssimpModel::SetMeshes(const std::vector<AssimpMesh> &meshes)
+void AssimpModel::SetMeshes(const std::vector<std::shared_ptr<AssimpMesh>>& meshes)
 {
     m_meshes = meshes;
 }
@@ -32,7 +32,7 @@ void AssimpModel::PrintTextures()
     }
 }
 
-std::vector<AssimpModel::AssimpMesh> AssimpModel::GetMeshes() const
+std::vector<std::shared_ptr<AssimpModel::AssimpMesh>> AssimpModel::GetMeshes() const
 {
     return m_meshes;
 }
