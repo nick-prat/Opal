@@ -12,7 +12,9 @@
 #include <Assimp/assimpmodel.hpp>
 #include <Utilities/utilities.hpp>
 
-std::shared_ptr<Texture> AssimpLoader::LoadTexture(std::string filename)
+using namespace gl;
+
+std::shared_ptr<Texture> AssimpLoader::LoadTexture(std::string filename, bool genMipMaps)
 {
     // TODO Change to freeimageplus at some point
     FIBITMAP *img;
@@ -63,6 +65,10 @@ std::shared_ptr<Texture> AssimpLoader::LoadTexture(std::string filename)
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
+    if(genMipMaps)
+    {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
     glBindTexture(GL_TEXTURE_2D, 0);
 
     if(!glIsTexture(glTexture))
@@ -172,7 +178,7 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
         if(textures.find(name) == textures.end())
         {
-            std::shared_ptr<Texture> temp = LoadTexture(name);
+            std::shared_ptr<Texture> temp = LoadTexture(name, true);
             if(temp != nullptr)
             {
                 textures[name] = temp;

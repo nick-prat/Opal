@@ -45,6 +45,8 @@ namespace gl
     PFNGLBINDSAMPLERSPROC glBindSamplers = 0;
     PFNGLSAMPLERPARAMETERIPROC glSamplerParameteri = 0;
 
+    PFNGLGENERATEMIPMAPPROC glGenerateMipmap = 0;
+
     void InitAPI()
     {
         glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)glXGetProcAddressARB((const GLubyte*)"glValidateProgram");
@@ -87,5 +89,7 @@ namespace gl
         glBindSampler = (PFNGLBINDSAMPLERPROC)glXGetProcAddress((const GLubyte*)"glBindSampler");
         glBindSamplers = (PFNGLBINDSAMPLERSPROC)glXGetProcAddress((const GLubyte*)"glBindSamplers");
         glSamplerParameteri = (PFNGLSAMPLERPARAMETERIPROC)glXGetProcAddressARB((const GLubyte*)"glSamplerParameteri");
+
+        glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)glXGetProcAddress((const GLubyte*)"glGenerateMipmap");
     }
 }

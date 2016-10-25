@@ -47,6 +47,8 @@ namespace gl
     extern PFNGLBINDSAMPLERSPROC glBindSamplers;
     extern PFNGLSAMPLERPARAMETERIPROC glSamplerParameteri;
 
+    extern PFNGLGENERATEMIPMAPPROC glGenerateMipmap;
+
     void InitAPI();
 }
 

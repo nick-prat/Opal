@@ -11,7 +11,7 @@
 
 namespace AssimpLoader
 {
-    std::shared_ptr<Texture> LoadTexture(std::string filename);
+    std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
     std::shared_ptr<AssimpModel> LoadModel(std::string filename);
 }
 
