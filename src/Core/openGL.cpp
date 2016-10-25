@@ -73,7 +73,6 @@ OpenGL::OpenGL(int width, int height)
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    //glEnable(GL_TEXTURE_2D);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 

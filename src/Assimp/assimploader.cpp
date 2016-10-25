@@ -9,12 +9,12 @@
 
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
-#include <Model/Textures/texture.hpp>
 #include <Assimp/assimpmodel.hpp>
 #include <Utilities/utilities.hpp>
 
-bool LoadTexture(std::shared_ptr<Texture>& texture, std::string filename)
+std::shared_ptr<Texture> AssimpLoader::LoadTexture(std::string filename)
 {
+    // TODO Change to freeimageplus at some point
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
@@ -22,13 +22,13 @@ bool LoadTexture(std::shared_ptr<Texture>& texture, std::string filename)
     if(!FreeImage_FIFSupportsReading(format))
     {
         std::cout << "FreeImage can't read from this file" << std::endl;
-        return false;
+        return nullptr;
     }
 
     if(format == FIF_UNKNOWN)
     {
         std::cout << "Unknown format: " << filename << std::endl;
-        return false;
+        return nullptr;
     }
 
     img = FreeImage_Load(format, filename.c_str(), 0);
@@ -36,7 +36,7 @@ bool LoadTexture(std::shared_ptr<Texture>& texture, std::string filename)
     if(!img)
     {
         std::cout << "Couldn't load image: " << filename << std::endl;
-        return false;
+        return nullptr;
     }
 
     if(FreeImage_GetBPP(img) != 32)
@@ -72,11 +72,10 @@ bool LoadTexture(std::shared_ptr<Texture>& texture, std::string filename)
 
     FreeImage_Unload(img);
 
-    texture = std::make_shared<Texture>();
+    std::shared_ptr<Texture> texture = std::make_shared<Texture>();
     texture->SetFileName(filename);
     texture->SetTexture(glTexture);
-
-    return true;
+    return texture;
 }
 
 void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
@@ -173,8 +172,8 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
         if(textures.find(name) == textures.end())
         {
-            std::shared_ptr<Texture> temp;
-            if(LoadTexture(temp, name))
+            std::shared_ptr<Texture> temp = LoadTexture(name);
+            if(temp != nullptr)
             {
                 textures[name] = temp;
             }

@@ -5,11 +5,13 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <Model/Textures/texture.hpp>
 
 #include "assimpmodel.hpp"
 
 namespace AssimpLoader
 {
+    std::shared_ptr<Texture> LoadTexture(std::string filename);
     std::shared_ptr<AssimpModel> LoadModel(std::string filename);
 }
 
