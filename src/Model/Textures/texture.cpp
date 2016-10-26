@@ -5,7 +5,7 @@
 #include <Utilities/utilities.hpp>
 
 Texture::Texture()
-    : m_loaded(false)
+    : m_glTexture(-1), m_loaded(false), m_filename("invalid")
 {}
 
 Texture::~Texture()
@@ -32,18 +32,15 @@ void Texture::SetTexture(const GLuint glTexture)
 
 void Texture::Bind() const
 {
-    if(m_loaded)
+    if(m_loaded && glIsTexture(m_glTexture))
     {
         glActiveTexture(GL_TEXTURE0);
-        if(glIsTexture(m_glTexture))
-        {
-            glBindTexture(GL_TEXTURE_2D, m_glTexture);
-        }
-        else
-        {
-            std::cout << "(" << m_glTexture << ") Trying to bind texture that doesn't exist " << m_filename << std::endl;
-            Utilities::PrintGLErrors();
-        }
+        glBindTexture(GL_TEXTURE_2D, m_glTexture);
+    }
+    else
+    {
+        std::cout << "(" << m_glTexture << ") Trying to bind texture that doesn't exist " << m_filename << std::endl;
+        Utilities::PrintGLErrors();
     }
 }
 

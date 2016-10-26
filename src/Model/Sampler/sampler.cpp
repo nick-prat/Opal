@@ -2,11 +2,16 @@
 
 #include <Core/glapi.hpp>
 
+using namespace gl;
+
 Sampler::Sampler()
 {
-    gl::glGenSamplers(1, &m_sampler);
-    gl::glSamplerParameteri(m_sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    gl::glSamplerParameteri(m_sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glGenSamplers(1, &m_sampler);
+    glSamplerParameteri(m_sampler, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glSamplerParameteri(m_sampler, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glSamplerParameteri(m_sampler, GL_TEXTURE_WRAP_R, GL_REPEAT);
+    glSamplerParameteri(m_sampler, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glSamplerParameteri(m_sampler, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 Sampler::~Sampler()
@@ -16,7 +21,7 @@ Sampler::~Sampler()
 
 void Sampler::Bind() const
 {
-    gl::glBindSampler(0, m_sampler);
+    glBindSampler(0, m_sampler);
 }
 
 void Sampler::SetParams(int magnification, int minification)
@@ -27,5 +32,5 @@ void Sampler::SetParams(int magnification, int minification)
 
 void Sampler::Unload()
 {
-    gl::glDeleteSamplers(1, &m_sampler);
+    glDeleteSamplers(1, &m_sampler);
 }
