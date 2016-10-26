@@ -118,8 +118,15 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
             Model3D::Vertex vertex;
 
             vertex.position = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
-            vertex.normal = (mesh->HasNormals()) ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z) : glm::vec3(0.0f, 0.0f, 0.0f);
-            vertex.texCoord = (mesh->HasTextureCoords(0)) ? glm::vec2(mesh->mTextureCoords[0][j].x, 1.0f - mesh->mTextureCoords[0][j].y) : glm::vec2(0.0f, 0.0f);
+            
+            vertex.normal = (mesh->HasNormals())
+                ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z)
+                : glm::vec3(0.0f, 0.0f, 0.0f);
+
+            vertex.texCoord = (mesh->HasTextureCoords(0))
+                ? glm::vec2(mesh->mTextureCoords[0][j].x, 1.0f - mesh->mTextureCoords[0][j].y)
+                : glm::vec2(0.0f, 0.0f);
+
             std::cout << vertex.texCoord.x << " " << vertex.texCoord.y << std::endl;
             vertices.push_back(vertex);
         }
