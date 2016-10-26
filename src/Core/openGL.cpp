@@ -6,7 +6,7 @@
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
 
-#include <Assimp/assimploader.hpp>
+#include <Resources/resourceloader.hpp>
 
 OpenGL* OpenGL::m_openGL = nullptr;
 
@@ -66,7 +66,7 @@ OpenGL::OpenGL(int width, int height)
     std::cout << "\tDisplay Address: " << m_display << std::endl;
     std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
 
-    m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
+    m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D("Models/wolf.3ds"));
     m_staticModel->GetModel()->PrintTextures();
     m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());

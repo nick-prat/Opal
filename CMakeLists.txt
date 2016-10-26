@@ -18,7 +18,7 @@ set(SOURCE_FILES
 	src/Model/Sampler/sampler.cpp
 		src/Model/Models/StaticModel/staticmodel.cpp  
 		src/Model/Models/Sprite/sprite.cpp
-	src/Assimp/assimploader.cpp src/Assimp/assimpmodel.cpp
+		src/Resources/resourceloader.cpp src/Resources/model3d.cpp
         src/Utilities/utilities.cpp src/Utilities/log.cpp
         src/Core/openGL.cpp src/Core/glapi.cpp )
 add_executable(OpenGL ${SOURCE_FILES})

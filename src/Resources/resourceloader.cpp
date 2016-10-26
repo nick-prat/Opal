@@ -1,4 +1,4 @@
-#include "assimploader.hpp"
+#include "resourceloader.hpp"
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -9,14 +9,15 @@
 
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
-#include <Assimp/assimpmodel.hpp>
+#include <Resources/model3d.hpp>
 #include <Utilities/utilities.hpp>
 
 using namespace gl;
 
-std::shared_ptr<Texture> AssimpLoader::LoadTexture(std::string filename, bool genMipMaps)
+std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps)
 {
     // TODO Change to freeimageplus at some point
+
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
@@ -65,10 +66,12 @@ std::shared_ptr<Texture> AssimpLoader::LoadTexture(std::string filename, bool ge
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
+
     if(genMipMaps)
     {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
+
     glBindTexture(GL_TEXTURE_2D, 0);
 
     if(!glIsTexture(glTexture))
@@ -95,7 +98,7 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<AssimpModel::AssimpMesh>>& meshes)
+bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes)
 {
     for(uint i = 0; i < node->mNumChildren; i++)
     {
@@ -108,11 +111,11 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
     for(uint i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        std::vector<AssimpModel::Vertex> vertices;
+        std::vector<Model3D::Vertex> vertices;
 
         for(uint j = 0; j < mesh->mNumVertices; j++)
         {
-            AssimpModel::Vertex vertex;
+            Model3D::Vertex vertex;
 
             vertex.position = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
             vertex.normal = (mesh->HasNormals()) ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z) : glm::vec3(0.0f, 0.0f, 0.0f);
@@ -141,7 +144,7 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
 
         glm::mat4x4 transformation;
         CopyaiMat(&node->mTransformation, transformation);
-        std::shared_ptr<AssimpModel::AssimpMesh> rmesh = std::make_shared<AssimpModel::AssimpMesh>(vertices, indices);
+        std::shared_ptr<Model3D::Mesh> rmesh = std::make_shared<Model3D::Mesh>(vertices, indices);
         rmesh->SetTransformation(transformation);
         rmesh->SetMatIndex(mesh->mMaterialIndex);
 
@@ -151,7 +154,7 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
     return true;
 }
 
-std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
+std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string filename)
 {
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
@@ -166,7 +169,7 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
         return nullptr;
     }
 
-    auto model = std::make_shared<AssimpModel>();
+    auto model = std::make_shared<Model3D>();
 
     aiMaterial** materials = scene->mMaterials;
     std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
@@ -187,10 +190,10 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
     }
     model->SetTextures(textures);
 
-    std::vector<std::shared_ptr<AssimpModel::AssimpMesh>> meshes;
+    std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
     LoadNode(scene, scene->mRootNode, meshes);
 
-    for(std::shared_ptr<AssimpModel::AssimpMesh>& mesh : meshes)
+    for(std::shared_ptr<Model3D::Mesh>& mesh : meshes)
     {
         aiString aName;
         uint index = mesh->GetMatIndex();

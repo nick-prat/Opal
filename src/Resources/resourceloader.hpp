@@ -6,13 +6,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <Model/Textures/texture.hpp>
+#include <Resources/model3d.hpp>
 
-#include "assimpmodel.hpp"
-
-namespace AssimpLoader
+namespace ResourceLoader
 {
     std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
-    std::shared_ptr<AssimpModel> LoadModel(std::string filename);
+    std::shared_ptr<Model3D> LoadModel3D(std::string filename);
 }
 
 #endif //OPENGL_ASSIMP_H

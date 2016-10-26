@@ -1,5 +1,5 @@
-#ifndef _ASSIMPMODEL_H
-#define _ASSIMPMODEL_H
+#ifndef _3DMODEL_H
+#define _3DMODEL_H
 
 #include <glm/glm.hpp>
 #include <string>
@@ -10,7 +10,7 @@
 #include <Core/glapi.hpp>
 #include <Model/Textures/texture.hpp>
 
-class AssimpModel
+class Model3D
 {
 public:
     struct Vertex
@@ -20,11 +20,11 @@ public:
         glm::vec2 texCoord;
     };
 
-    class AssimpMesh
+    class Mesh
     {
     public:
-        AssimpMesh(std::vector<Vertex> vertices, std::vector<uint> indices);
-        ~AssimpMesh();
+        Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
+        ~Mesh();
 
         void SetTransformation(const glm::mat4x4& transformation);
 
@@ -46,21 +46,21 @@ public:
         std::vector<Vertex> m_vertices;
     };
 
-    AssimpModel();
-    ~AssimpModel();
+    Model3D();
+    ~Model3D();
 
-    void SetMeshes(const std::vector<std::shared_ptr<AssimpMesh>>& meshes);
+    void SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
     void SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
 
     std::shared_ptr<Texture> GetTexture(const std::string& key) const;
-    std::vector<std::shared_ptr<AssimpMesh>> GetMeshes() const;
+    std::vector<std::shared_ptr<Mesh>> GetMeshes() const;
 
     void PrintTextures();
 
 private:
     std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
-    std::vector<std::shared_ptr<AssimpMesh>> m_meshes;
+    std::vector<std::shared_ptr<Mesh>> m_meshes;
 
 };
 
-#endif // _ASSIMPMODEL_H
+#endif // _3DMODEL_H

@@ -6,7 +6,7 @@
 #include <Core/glapi.hpp>
 #include <Model/Textures/texture.hpp>
 
-StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<AssimpModel> model)
+StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<Model3D> model)
     : m_display(display), m_model(model)
 {
     if(model == nullptr || display == nullptr)
@@ -17,7 +17,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
     m_meshCount = m_model->GetMeshes().size();
     for(uint i = 0; i < m_meshCount; i++)
     {
-        std::shared_ptr<AssimpModel::AssimpMesh> mesh = m_model->GetMeshes()[i];
+        std::shared_ptr<Model3D::Mesh> mesh = m_model->GetMeshes()[i];
         GLuint vbo, vao, ibo;
 
         std::vector<GLuint> vbos;
@@ -28,10 +28,10 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
 
         gl::glGenBuffers(1, &vbo);
         gl::glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        gl::glBufferData(GL_ARRAY_BUFFER, sizeof(AssimpModel::Vertex) * mesh->GetVertices().size(), mesh->GetVertices().data(), GL_STATIC_DRAW);
-        gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), 0);
-        gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)sizeof(glm::vec3));
-        gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(AssimpModel::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+        gl::glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->GetVertices().size(), mesh->GetVertices().data(), GL_STATIC_DRAW);
+        gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
+        gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
+        gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 
         vbos.push_back(vbo);
 
@@ -65,19 +65,19 @@ void StaticModel::Render()
 {
     m_shader->UseShader();
 
+    GLint worldLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gMVP");
+    if(worldLocation == -1)
+    {
+        std::cout << "Couldn't get MVP uniform loaction" << std::endl;
+        exit(-1);
+    }
+
     for(uint i = 0; i < m_meshCount; i++)
     {
         glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * (GetWorld() * m_model->GetMeshes()[i]->GetTransformation());
+        gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
         gl::glBindVertexArray(m_VAO[i]);
-
-        GLint worldLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gMVP");
-        if(worldLocation == -1)
-        {
-            std::cout << "Couldn't get MVP uniform loaction" << std::endl;
-            exit(-1);
-        }
-        gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
         GLint samplerLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gSampler");
         if(samplerLocation == -1)
@@ -114,7 +114,7 @@ void StaticModel::Render()
     Utilities::PrintGLErrors();
 }
 
-std::shared_ptr<AssimpModel> StaticModel::GetModel()
+std::shared_ptr<Model3D> StaticModel::GetModel()
 {
     return m_model;
 }
