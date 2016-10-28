@@ -19,12 +19,12 @@ void Model3D::SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes)
     m_meshes = meshes;
 }
 
-void Model3D::SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures)
+void Model3D::SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>> textures)
 {
     m_textures = textures;
 }
 
-void Model3D::PrintTextures()
+void Model3D::PrintTextures() const
 {
     for(const auto texture : m_textures)
     {
@@ -49,7 +49,7 @@ std::shared_ptr<Texture> Model3D::GetTexture(const std::string& key) const
 
 // Model3D::Mesh
 
-Model3D::Mesh::Mesh(std::vector<Vertex> vertices, std::vector<uint> indices)
+Model3D::Mesh::Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices)
 : m_matIndex(0), m_matName("null"), m_indices(indices), m_vertices(vertices)
 {}
 

@@ -23,7 +23,7 @@ public:
     class Mesh
     {
     public:
-        Mesh(std::vector<Vertex> vertices, std::vector<uint> indices);
+        Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices);
         ~Mesh();
 
         void SetTransformation(const glm::mat4x4& transformation);
@@ -50,12 +50,12 @@ public:
     ~Model3D();
 
     void SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
-    void SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>>& textures);
+    void SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>> textures);
 
     std::shared_ptr<Texture> GetTexture(const std::string& key) const;
     std::vector<std::shared_ptr<Mesh>> GetMeshes() const;
 
-    void PrintTextures();
+    void PrintTextures() const;
 
 private:
     std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
