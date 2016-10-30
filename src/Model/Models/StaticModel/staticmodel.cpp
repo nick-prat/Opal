@@ -25,22 +25,22 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
 
         std::vector<GLuint> vbos;
 
-        gl::glGenVertexArrays(1, &vao);
-        gl::glBindVertexArray(vao);
+        glGenVertexArrays(1, &vao);
+        glBindVertexArray(vao);
         m_VAO.push_back(vao);
 
-        gl::glGenBuffers(1, &vbo);
-        gl::glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        gl::glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->GetVertices().size(), mesh->GetVertices().data(), GL_STATIC_DRAW);
-        gl::glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
-        gl::glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
-        gl::glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+        glGenBuffers(1, &vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->GetVertices().size(), mesh->GetVertices().data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
 
         vbos.push_back(vbo);
 
-        gl::glGenBuffers(1, &ibo);
-        gl::glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        gl::glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->GetIndices().size(), mesh->GetIndices().data(), GL_STATIC_DRAW);
+        glGenBuffers(1, &ibo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->GetIndices().size(), mesh->GetIndices().data(), GL_STATIC_DRAW);
         m_indexCount.push_back(mesh->GetIndices().size());
     }
 
