@@ -16,8 +16,6 @@ using namespace gl;
 
 std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps)
 {
-    // TODO Change to freeimageplus at some point
-
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
@@ -34,7 +32,7 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
         return nullptr;
     }
 
-    img = FreeImage_Load(format, filename.c_str(), 0);
+    img = FreeImage_Load(format, filename.c_str());
 
     if(!img)
     {
@@ -125,7 +123,7 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
                 : glm::vec3(0.0f, 0.0f, 0.0f);
 
             vertex.texCoord = (mesh->HasTextureCoords(0))
-                ? glm::vec2(mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y)
+                ? glm::vec2(mesh->mTextureCoords[0][j].y, mesh->mTextureCoords[0][j].y)
                 : glm::vec2(0.0f, 0.0f);
 
             vertices.push_back(vertex);
@@ -161,8 +159,9 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
     return true;
 }
 
-std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string filename)
+std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname)
 {
+    std::string filename = "Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
         aiProcess_CalcTangentSpace |
@@ -170,9 +169,10 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string filename)
         aiProcess_JoinIdenticalVertices |
         aiProcess_SortByPType);
 
-    if(!scene)
+    if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE)
     {
         std::cout << "Couldn't open model: " << filename << std::endl;
+        std::cout << "Assimp: " << importer.GetErrorString() << std::endl;
         return nullptr;
     }
 
@@ -188,7 +188,7 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string filename)
 
         if(textures.find(name) == textures.end())
         {
-            std::shared_ptr<Texture> temp = LoadTexture(name, true);
+            std::shared_ptr<Texture> temp = LoadTexture(modelname + "/" + name, true);
             if(temp != nullptr)
             {
                 textures[name] = temp;

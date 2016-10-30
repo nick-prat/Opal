@@ -11,7 +11,7 @@
 namespace ResourceLoader
 {
     std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
-    std::shared_ptr<Model3D> LoadModel3D(std::string filename);
+    std::shared_ptr<Model3D> LoadModel3D(std::string modelname);
 }
 
 #endif //OPENGL_ASSIMP_H

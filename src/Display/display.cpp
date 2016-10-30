@@ -4,7 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include "Utilities/utilities.hpp"
+#include <Core/glapi.hpp>
+#include <Utilities/utilities.hpp>
 
 GlutDisplay::GlutDisplay()
 {
@@ -13,9 +14,8 @@ GlutDisplay::GlutDisplay()
 }
 
 GlutDisplay::GlutDisplay(int width, int height)
+    : m_projMatrix(glm::mat4(1.0f))
 {
-    m_projMatrix = glm::mat4(1.0f);
-
     if(!InitDisplay(width, height))
     {
         throw new Utilities::Exception(1, "Couldn't init display");
@@ -46,6 +46,8 @@ bool GlutDisplay::InitDisplay(int width, int height)
         delete error;
         return false;
     }
+
+    glViewport(0, 0, width, height);
 
     return true;
 }

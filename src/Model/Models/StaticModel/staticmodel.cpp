@@ -6,6 +6,8 @@
 #include <Core/glapi.hpp>
 #include <Model/Textures/texture.hpp>
 
+using namespace gl;
+
 StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<Model3D> model)
     : m_display(display), m_model(model)
 {
@@ -15,6 +17,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
     }
 
     m_meshCount = m_model->GetMeshes().size();
+
     for(uint i = 0; i < m_meshCount; i++)
     {
         std::shared_ptr<Model3D::Mesh> mesh = m_model->GetMeshes()[i];

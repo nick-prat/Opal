@@ -3,9 +3,10 @@
 #include <chrono>
 #include <string>
 #include <thread>
+#include <fstream>
+
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
-
 #include <Resources/resourceloader.hpp>
 
 OpenGL* OpenGL::m_openGL = nullptr;
@@ -66,7 +67,20 @@ OpenGL::OpenGL(int width, int height)
     std::cout << "\tDisplay Address: " << m_display << std::endl;
     std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
 
-    m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D("Models/boar.3ds"));
+    std::string line;
+    std::ifstream file("model.txt");
+
+    if(file.is_open())
+    {
+        getline(file, line);
+    }
+    else
+    {
+        std::cout << "Couldn't open file" << std::endl;
+    }
+
+    std::cout << "Opening model " << line << std::endl;
+    m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
     m_staticModel->GetModel()->PrintTextures();
     m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
