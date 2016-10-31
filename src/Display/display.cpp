@@ -36,7 +36,7 @@ bool GlutDisplay::InitDisplay(int width, int height)
 {
     try
     {
-        m_projMatrix = glm::perspective(glm::radians(70.0f), (float) width / (float) height, 0.1f, 100.0f);
+        m_projMatrix = glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.1f, 100.0f);
         m_inputModule = std::make_shared<InputModule>();
         m_cameraModule = std::make_shared<CameraModule>();
     }

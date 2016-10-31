@@ -15,6 +15,8 @@ class Model3D
 public:
     struct Vertex
     {
+        Vertex();
+        Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoord);
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 texCoord;
@@ -26,6 +28,7 @@ public:
         Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices);
         ~Mesh();
 
+        bool HasTransformation() const;
         void SetTransformation(const glm::mat4x4& transformation);
 
         glm::mat4x4 GetTransformation() const;
@@ -39,6 +42,7 @@ public:
         std::string GetMatName() const;
 
     private:
+        bool m_hasTransformation;
         uint m_matIndex;
         std::string m_matName;
         glm::mat4x4 m_transformation;
@@ -47,6 +51,7 @@ public:
     };
 
     Model3D();
+    Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, std::shared_ptr<Texture>> textures);
     ~Model3D();
 
     void SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
