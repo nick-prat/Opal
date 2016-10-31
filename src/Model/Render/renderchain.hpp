@@ -1,29 +1,30 @@
 #ifndef _RENDERCHAIN_H
 #define _RENDERCHAIN_H
 
+#include <memory>
+#include <list>
+
 #include "renderobject.hpp"
 
 class RenderChain
 {
 public:
-    bool AttachRenderObject(IRenderObject* object);
+    bool AttachRenderObject(std::weak_ptr<IRenderObject> object);
     void RenderObjectChain();
 
     static RenderChain*& GetInstance();
-    static bool CreateInstance(int num, bool vol);
+    static bool CreateInstance(bool vol = false);
     static void DeleteInstance();
 
 private:
-    RenderChain(int num, bool vol);
+    RenderChain(bool vol);
     ~RenderChain();
 
 private:
     static RenderChain* m_renderChain;
 
-    int m_objCount;
-    int m_objLimit;
     bool m_volatile;
-    IRenderObject** m_memPool;
+    std::list<std::weak_ptr<IRenderObject>> m_objects;
 };
 
 #endif // _RENDERCHAIN_H

@@ -10,6 +10,8 @@ typedef unsigned int uint;
 
 namespace Utilities
 {
+    void PrintGLErrors();
+
     class Exception
     {
     public:

@@ -1,11 +1,16 @@
 #include "texture.hpp"
 
+#include <iostream>
+
+#include <Utilities/utilities.hpp>
+
 Texture::Texture()
-    : m_loaded(false)
+    : m_glTexture(-1), m_loaded(false), m_filename("invalid")
 {}
 
 Texture::~Texture()
 {
+    std::cout << "unloading " << m_filename << std::endl;
     Unload();
 }
 
@@ -23,6 +28,20 @@ void Texture::SetTexture(const GLuint glTexture)
 {
     m_glTexture = glTexture;
     m_loaded = true;
+}
+
+void Texture::Bind() const
+{
+    if(m_loaded && glIsTexture(m_glTexture))
+    {
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, m_glTexture);
+    }
+    else
+    {
+        std::cout << "(" << m_glTexture << ") Trying to bind texture that doesn't exist " << m_filename << std::endl;
+        Utilities::PrintGLErrors();
+    }
 }
 
 void Texture::Unload()

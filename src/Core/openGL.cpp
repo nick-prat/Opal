@@ -3,34 +3,28 @@
 #include <chrono>
 #include <string>
 #include <thread>
+#include <fstream>
+
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
-
-#include <Model/Assimp/assimploader.hpp>
-#include <Model/Models/staticmodel.hpp>
+#include <Resources/resourceloader.hpp>
 
 OpenGL* OpenGL::m_openGL = nullptr;
 
-void OpenGL::DeleteInstance()
-{
+void OpenGL::DeleteInstance() {
     delete m_openGL;
     m_openGL = nullptr;
 }
 
-bool OpenGL::CreateInstance(int width, int height)
-{
-    if(m_openGL != nullptr)
-    {
+bool OpenGL::CreateInstance(int width, int height) {
+    if(m_openGL != nullptr) {
         std::cout << "OpenGL has already been created, destroy first";
         return false;
     }
 
-    try
-    {
+    try {
         m_openGL = new OpenGL(width, height);
-    }
-    catch (Utilities::Exception* error)
-    {
+    } catch (Utilities::Exception* error) {
         error->PrintError();
         delete error;
         delete m_openGL;
@@ -41,38 +35,22 @@ bool OpenGL::CreateInstance(int width, int height)
     return true;
 }
 
-OpenGL*& OpenGL::GetInstance()
-{
+OpenGL*& OpenGL::GetInstance() {
     return m_openGL;
 }
 
-OpenGL::OpenGL(int width, int height)
-{
+OpenGL::OpenGL(int width, int height) {
     m_lowestTime = 0;
 
     // Look up all GL functions for later use
     gl::InitAPI();
 
     // Create singleton instance of RenderChain (Capability of 10 objects)
-    if(!RenderChain::CreateInstance(10, false))
-    {
+    if(!RenderChain::CreateInstance(false)) {
         throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
     }
 
     m_display = std::make_shared<GlutDisplay>(width, height);
-
-    m_staticModel = std::make_shared<StaticModel>(m_display, AssimpLoader::LoadModel("Models/wolf.3ds"));
-    m_staticModel->GetModel()->PrintTextures();
-    m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
-
-    m_obj = std::make_shared<TestObject>(m_display);
-    //RenderChain::GetInstance()->AttachRenderObject(m_obj.get());
-
-    m_obj2 = std::make_shared<TestObject>(m_display);
-    //RenderChain::GetInstance()->AttachRenderObject(m_obj2.get());
-
-    m_obj->Translate(glm::vec3(0.5f, 0.5f, -0.5f));
 
     // Log information about current context
     std::cout << "Information: " << std::endl;
@@ -80,61 +58,94 @@ OpenGL::OpenGL(int width, int height)
     std::cout << "\tDisplay Address: " << m_display << std::endl;
     std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
 
+    std::string line;
+    std::ifstream file("model.txt");
+
+    if(file.is_open()) {
+        getline(file, line);
+    } else {
+        throw new Utilities::Exception(1, "Couldn't open model selection file");
+    }
+
+    std::vector<Model3D::Vertex> verts;
+    verts.push_back(Model3D::Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(0.0f, 1.0f)));
+    verts.push_back(Model3D::Vertex(glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(1.0f, 0.0f)));
+    verts.push_back(Model3D::Vertex(glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(0.0f, 0.0f)));
+    verts.push_back(Model3D::Vertex(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(1.0f, 1.0f)));
+
+    std::vector<GLuint> indices;
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(2);
+    indices.push_back(0);
+    indices.push_back(3);
+    indices.push_back(1);
+
+    std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
+    meshes.push_back(std::make_shared<Model3D::Mesh>(verts, indices));
+    meshes[0]->SetMatName("texture");
+
+    std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
+    textures["texture"] = ResourceLoader::LoadTexture("wolf/wolf", false);
+
+    auto model = std::make_shared<Model3D>(meshes, textures);
+
+    m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
+    //m_staticModel = std::make_shared<StaticModel>(m_display, model);
+    m_staticModel->GetModel()->PrintTextures();
+    //m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    RenderChain::GetInstance()->AttachRenderObject(m_staticModel);
+
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
     Log::info("OpenGL context created", Log::OUT_LOG);
 }
 
-OpenGL::~OpenGL()
-{
+OpenGL::~OpenGL() {
     RenderChain::DeleteInstance();
 }
 
-void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y)
-{
+void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y) {
     m_display->GetInputModule()->UpdateKey(key, state);
 }
 
-void OpenGL::DisplayFunc()
-{
+void OpenGL::DisplayFunc() {
     auto start = std::chrono::high_resolution_clock::now();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    RenderChain::GetInstance()->RenderObjectChain();
+    try {
+        RenderChain::GetInstance()->RenderObjectChain();
+    } catch (Utilities::Exception* error) {
+        error->PrintError();
+        delete error;
+    }
 
     glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();
 
-    if(m_display->GetInputModule()->IsKeyPressed('q'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('q')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('e'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('e')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('w'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('w')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('s'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('s')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('a'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('a')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('d'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('d')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     }
 
-    if(m_display->GetInputModule()->IsKeyPressed(' '))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed(' ')) {
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
 }
