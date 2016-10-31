@@ -28,7 +28,7 @@ void Model3D::PrintTextures() const
 {
     for(const auto texture : m_textures)
     {
-        std::cout << texture.first << "->" << (texture.second->IsLoaded() ? "loaded: " : "load failed: ") << ": " << texture.second->GetFileName() << std::endl;
+        std::cout << texture.first << "->" << (texture.second->IsLoaded() ? "loaded" : "load failed") << ": " << texture.second->GetFileName() << std::endl;
     }
 }
 

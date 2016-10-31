@@ -76,7 +76,7 @@ OpenGL::OpenGL(int width, int height)
     }
     else
     {
-        std::cout << "Couldn't open file" << std::endl;
+        throw new Utilities::Exception(1, "Couldn't open model selection file");
     }
 
     std::cout << "Opening model " << line << std::endl;

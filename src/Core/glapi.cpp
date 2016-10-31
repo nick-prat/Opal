@@ -49,46 +49,46 @@ namespace gl
 
     void InitAPI()
     {
-        glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)glXGetProcAddressARB((const GLubyte*)"glValidateProgram");
-        glUseProgram = (PFNGLUSEPROGRAMPROC)glXGetProcAddressARB((const GLubyte*)"glUseProgram");
-        glCreateProgram = (PFNGLCREATEPROGRAMPROC)glXGetProcAddressARB((const GLubyte*)"glCreateProgram");
-        glLinkProgram = (PFNGLLINKPROGRAMPROC)glXGetProcAddressARB((const GLubyte*)"glLinkProgram");
-        glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)glXGetProcAddressARB((const GLubyte*)"glGetProgramInfoLog");
-        glDeleteProgram = (PFNGLDELETEPROGRAMPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteProgram");
-        glGetProgramiv = (PFNGLGETPROGRAMIVPROC)glXGetProcAddressARB((const GLubyte*)"glGetProgramiv");
+        glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)glXGetProcAddress((const GLubyte*)"glValidateProgram");
+        glUseProgram = (PFNGLUSEPROGRAMPROC)glXGetProcAddress((const GLubyte*)"glUseProgram");
+        glCreateProgram = (PFNGLCREATEPROGRAMPROC)glXGetProcAddress((const GLubyte*)"glCreateProgram");
+        glLinkProgram = (PFNGLLINKPROGRAMPROC)glXGetProcAddress((const GLubyte*)"glLinkProgram");
+        glGetProgramInfoLog = (PFNGLGETPROGRAMINFOLOGPROC)glXGetProcAddress((const GLubyte*)"glGetProgramInfoLog");
+        glDeleteProgram = (PFNGLDELETEPROGRAMPROC)glXGetProcAddress((const GLubyte*)"glDeleteProgram");
+        glGetProgramiv = (PFNGLGETPROGRAMIVPROC)glXGetProcAddress((const GLubyte*)"glGetProgramiv");
 
-        glCreateShader = (PFNGLCREATESHADERPROC)glXGetProcAddressARB((const GLubyte*)"glCreateShader");
-        glShaderSource = (PFNGLSHADERSOURCEPROC)glXGetProcAddressARB((const GLubyte*)"glShaderSource");
-        glCompileShader = (PFNGLCOMPILESHADERPROC)glXGetProcAddressARB((const GLubyte*)"glCompileShader");
-        glGetShaderiv = (PFNGLGETSHADERIVPROC)glXGetProcAddressARB((const GLubyte*)"glGetShaderiv");
-        glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)glXGetProcAddressARB((const GLubyte*)"glGetShaderInfoLog");
-        glAttachShader = (PFNGLATTACHSHADERPROC)glXGetProcAddressARB((const GLubyte*)"glAttachShader");
-        glDetachShader = (PFNGLDETACHSHADERPROC)glXGetProcAddressARB((const GLubyte*)"glDetachShader");
-        glDeleteShader = (PFNGLDELETESHADERPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteShader");
+        glCreateShader = (PFNGLCREATESHADERPROC)glXGetProcAddress((const GLubyte*)"glCreateShader");
+        glShaderSource = (PFNGLSHADERSOURCEPROC)glXGetProcAddress((const GLubyte*)"glShaderSource");
+        glCompileShader = (PFNGLCOMPILESHADERPROC)glXGetProcAddress((const GLubyte*)"glCompileShader");
+        glGetShaderiv = (PFNGLGETSHADERIVPROC)glXGetProcAddress((const GLubyte*)"glGetShaderiv");
+        glGetShaderInfoLog = (PFNGLGETSHADERINFOLOGPROC)glXGetProcAddress((const GLubyte*)"glGetShaderInfoLog");
+        glAttachShader = (PFNGLATTACHSHADERPROC)glXGetProcAddress((const GLubyte*)"glAttachShader");
+        glDetachShader = (PFNGLDETACHSHADERPROC)glXGetProcAddress((const GLubyte*)"glDetachShader");
+        glDeleteShader = (PFNGLDELETESHADERPROC)glXGetProcAddress((const GLubyte*)"glDeleteShader");
 
-        glGenBuffers = (PFNGLGENBUFFERSPROC)glXGetProcAddressARB((const GLubyte*)"glGenBuffers");
-        glBindBuffer = (PFNGLBINDBUFFERPROC)glXGetProcAddressARB((const GLubyte*)"glBindBuffer");
-        glBufferData = (PFNGLBUFFERDATAPROC)glXGetProcAddressARB((const GLubyte*)"glBufferData");
-        glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteBuffers");
+        glGenBuffers = (PFNGLGENBUFFERSPROC)glXGetProcAddress((const GLubyte*)"glGenBuffers");
+        glBindBuffer = (PFNGLBINDBUFFERPROC)glXGetProcAddress((const GLubyte*)"glBindBuffer");
+        glBufferData = (PFNGLBUFFERDATAPROC)glXGetProcAddress((const GLubyte*)"glBufferData");
+        glDeleteBuffers = (PFNGLDELETEBUFFERSPROC)glXGetProcAddress((const GLubyte*)"glDeleteBuffers");
 
-        glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)glXGetProcAddressARB((const GLubyte*)"glGetUniformLocation");
-        glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)glXGetProcAddressARB((const GLubyte*)"glUniformMatrix4fv");
-        glUniform1i = (PFNGLUNIFORM1IPROC)glXGetProcAddressARB((const GLubyte*)"glUniform1i");
+        glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)glXGetProcAddress((const GLubyte*)"glGetUniformLocation");
+        glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)glXGetProcAddress((const GLubyte*)"glUniformMatrix4fv");
+        glUniform1i = (PFNGLUNIFORM1IPROC)glXGetProcAddress((const GLubyte*)"glUniform1i");
 
-        glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)glXGetProcAddressARB((const GLubyte*)"glEnableVertexAttribArray");
-        glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)glXGetProcAddressARB((const GLubyte*)"glVertexAttribPointer");
-        glDisableVertexAttribArray = (PFNGLDISABLEVERTEXATTRIBARRAYPROC)glXGetProcAddressARB((const GLubyte*)"glDisableVertexAttribArray");
-        glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)glXGetProcAddressARB((const GLubyte*)"glBindAttribLocation");
+        glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)glXGetProcAddress((const GLubyte*)"glEnableVertexAttribArray");
+        glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)glXGetProcAddress((const GLubyte*)"glVertexAttribPointer");
+        glDisableVertexAttribArray = (PFNGLDISABLEVERTEXATTRIBARRAYPROC)glXGetProcAddress((const GLubyte*)"glDisableVertexAttribArray");
+        glBindAttribLocation = (PFNGLBINDATTRIBLOCATIONPROC)glXGetProcAddress((const GLubyte*)"glBindAttribLocation");
 
-        glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)glXGetProcAddressARB((const GLubyte*)"glGenVertexArrays");
-        glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)glXGetProcAddressARB((const GLubyte*)"glBindVertexArray");
-        glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteVertexArrays");
+        glGenVertexArrays = (PFNGLGENVERTEXARRAYSPROC)glXGetProcAddress((const GLubyte*)"glGenVertexArrays");
+        glBindVertexArray = (PFNGLBINDVERTEXARRAYPROC)glXGetProcAddress((const GLubyte*)"glBindVertexArray");
+        glDeleteVertexArrays = (PFNGLDELETEVERTEXARRAYSPROC)glXGetProcAddress((const GLubyte*)"glDeleteVertexArrays");
 
-        glGenSamplers = (PFNGLGENSAMPLERSPROC)glXGetProcAddressARB((const GLubyte*)"glGenSamplers");
-        glDeleteSamplers = (PFNGLDELETESAMPLERSPROC)glXGetProcAddressARB((const GLubyte*)"glDeleteSamplers");
+        glGenSamplers = (PFNGLGENSAMPLERSPROC)glXGetProcAddress((const GLubyte*)"glGenSamplers");
+        glDeleteSamplers = (PFNGLDELETESAMPLERSPROC)glXGetProcAddress((const GLubyte*)"glDeleteSamplers");
         glBindSampler = (PFNGLBINDSAMPLERPROC)glXGetProcAddress((const GLubyte*)"glBindSampler");
         glBindSamplers = (PFNGLBINDSAMPLERSPROC)glXGetProcAddress((const GLubyte*)"glBindSamplers");
-        glSamplerParameteri = (PFNGLSAMPLERPARAMETERIPROC)glXGetProcAddressARB((const GLubyte*)"glSamplerParameteri");
+        glSamplerParameteri = (PFNGLSAMPLERPARAMETERIPROC)glXGetProcAddress((const GLubyte*)"glSamplerParameteri");
 
         glGenerateMipmap = (PFNGLGENERATEMIPMAPPROC)glXGetProcAddress((const GLubyte*)"glGenerateMipmap");
     }
