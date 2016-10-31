@@ -10,8 +10,7 @@
 
 #include "glapi.hpp"
 
-class OpenGL
-{
+class OpenGL {
 public:
     void DisplayFunc();
     void KeyboardFunc(unsigned char key, bool state, int x, int y);

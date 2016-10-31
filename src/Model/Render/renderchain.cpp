@@ -9,8 +9,7 @@
 RenderChain* RenderChain::m_renderChain = nullptr;
 
 RenderChain*& RenderChain::GetInstance() {
-    if(m_renderChain == nullptr)
-    {
+    if(m_renderChain == nullptr) {
         throw new Utilities::Exception(1, "Render object was null, returning nullptr");
     }
 
@@ -18,8 +17,7 @@ RenderChain*& RenderChain::GetInstance() {
 }
 
 bool RenderChain::CreateInstance(bool vol) {
-    if(m_renderChain != nullptr)
-    {
+    if(m_renderChain != nullptr) {
         Log::error("Render chian has already been created", Log::OUT_CONS);
         return false;
     }
@@ -33,27 +31,21 @@ void RenderChain::DeleteInstance() {
     m_renderChain = nullptr;
 }
 
-RenderChain::RenderChain(bool vol)
-{
+RenderChain::RenderChain(bool vol) {
     m_volatile = vol;
 }
 
-RenderChain::~RenderChain()
-{
+RenderChain::~RenderChain() {
     delete m_renderChain;
 }
 
-bool RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object)
-{
+bool RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
     m_objects.push_back(object);
     return true;
 }
 
-void RenderChain::RenderObjectChain()
-{
-    for(std::weak_ptr<IRenderObject> object : m_objects)
-    {
+void RenderChain::RenderObjectChain() {
+    for(std::weak_ptr<IRenderObject> object : m_objects) {
         object.lock()->Render();
     }
-
 }

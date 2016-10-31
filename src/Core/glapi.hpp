@@ -4,8 +4,7 @@
 #include <GL/gl.h>
 #include <GL/glx.h>
 
-namespace gl
-{
+namespace gl {
     extern PFNGLVALIDATEPROGRAMPROC glValidateProgram;
     extern PFNGLUSEPROGRAMPROC glUseProgram;
     extern PFNGLCREATEPROGRAMPROC glCreateProgram;

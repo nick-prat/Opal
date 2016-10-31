@@ -2,8 +2,7 @@
 
 #include "glapi.hpp"
 
-namespace gl
-{
+namespace gl {
     PFNGLVALIDATEPROGRAMPROC glValidateProgram = 0;
     PFNGLUSEPROGRAMPROC glUseProgram = 0;
     PFNGLCREATEPROGRAMPROC glCreateProgram = 0;
@@ -47,8 +46,7 @@ namespace gl
 
     PFNGLGENERATEMIPMAPPROC glGenerateMipmap = 0;
 
-    void InitAPI()
-    {
+    void InitAPI() {
         glValidateProgram = (PFNGLVALIDATEPROGRAMPROC)glXGetProcAddress((const GLubyte*)"glValidateProgram");
         glUseProgram = (PFNGLUSEPROGRAMPROC)glXGetProcAddress((const GLubyte*)"glUseProgram");
         glCreateProgram = (PFNGLCREATEPROGRAMPROC)glXGetProcAddress((const GLubyte*)"glCreateProgram");

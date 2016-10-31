@@ -6,8 +6,7 @@
 
 #include "renderobject.hpp"
 
-class RenderChain
-{
+class RenderChain {
 public:
     bool AttachRenderObject(std::weak_ptr<IRenderObject> object);
     void RenderObjectChain();
