@@ -7,6 +7,7 @@
 #include <Display/display.hpp>
 #include <Render/renderchain.hpp>
 #include <Models/staticmodel.hpp>
+#include <Models/line.hpp>
 
 #include "glapi.hpp"
 
@@ -28,6 +29,7 @@ private:
 
     long m_lowestTime;
     std::shared_ptr<GlutDisplay> m_display;
+    std::shared_ptr<Line> m_line;
     std::shared_ptr<StaticModel> m_staticModel;
 };
 
