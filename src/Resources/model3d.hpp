@@ -54,6 +54,7 @@ public:
     Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, std::shared_ptr<Texture>> textures);
     ~Model3D();
 
+    void AddMesh(std::shared_ptr<Mesh> mesh);
     void SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
     void SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>> textures);
 
