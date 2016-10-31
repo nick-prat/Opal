@@ -1,3 +1,5 @@
+#include "resourceloader.hpp"
+
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <FreeImage.h>
@@ -7,36 +9,42 @@
 
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
-#include <Model/Textures/texture.hpp>
+#include <Resources/model3d.hpp>
+#include <Utilities/utilities.hpp>
 
-#include "assimpmodel.hpp"
-#include "assimploader.hpp"
+using namespace gl;
 
-bool LoadTexture(Texture& texture, std::string filename)
+std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps)
 {
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
 
-    texture.SetFileName(filename);
+    if(!FreeImage_FIFSupportsReading(format))
+    {
+        std::cout << "FreeImage can't read from this file" << std::endl;
+        return nullptr;
+    }
 
     if(format == FIF_UNKNOWN)
     {
         std::cout << "Unknown format: " << filename << std::endl;
-        return false;
+        return nullptr;
     }
 
-    img = FreeImage_Load(format, filename.c_str(), 0);
+    img = FreeImage_Load(format, filename.c_str());
 
     if(!img)
     {
         std::cout << "Couldn't load image: " << filename << std::endl;
-        return false;
+        return nullptr;
     }
 
     if(FreeImage_GetBPP(img) != 32)
     {
+        std::cout << "converting to 32 bits for image " << filename << std::endl;
         FIBITMAP* oldImg = img;
+        //img = FreeImage_ConvertTo24Bits(oldImg);
         img = FreeImage_ConvertTo32Bits(oldImg);
         FreeImage_Unload(oldImg);
     }
@@ -45,21 +53,37 @@ bool LoadTexture(Texture& texture, std::string filename)
     width = FreeImage_GetWidth(img);
     height = FreeImage_GetHeight(img);
 
-    // TODO Load image and return it
-
     unsigned char* bytes = FreeImage_GetBits(img);
 
+    if(bytes == nullptr)
+    {
+        std::cout << "couldn't load image bytes for " << filename << std::endl;
+    }
+
     GLuint glTexture;
+    glBindTexture(GL_TEXTURE_2D, 0);
     glGenTextures(1, &glTexture);
     glBindTexture(GL_TEXTURE_2D, glTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_BGRA, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
+
+    if(genMipMaps)
+    {
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+
     glBindTexture(GL_TEXTURE_2D, 0);
+
+    if(!glIsTexture(glTexture))
+    {
+        std::cout << "texture is not valid " << glTexture << std::endl;
+    }
 
     FreeImage_Unload(img);
 
-    texture.SetTexture(glTexture);
-
-    return true;
+    std::shared_ptr<Texture> texture = std::make_shared<Texture>();
+    texture->SetFileName(filename);
+    texture->SetTexture(glTexture);
+    return texture;
 }
 
 void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
@@ -73,14 +97,8 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel::AssimpMesh>& meshes)
+bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes)
 {
-    for(aiNode* finder = node->mParent; finder != nullptr; finder = finder->mParent)
-    {
-        std::cout << "\t";
-    }
-    std::cout << "Loading node: " << node->mName.C_Str() << std::endl;
-
     for(uint i = 0; i < node->mNumChildren; i++)
     {
         if(!LoadNode(scene, node->mChildren[i], meshes))
@@ -92,14 +110,21 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel:
     for(uint i = 0; i < node->mNumMeshes; i++)
     {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        std::vector<AssimpModel::Vertex> vertices;
+        std::vector<Model3D::Vertex> vertices;
 
         for(uint j = 0; j < mesh->mNumVertices; j++)
         {
-            AssimpModel::Vertex vertex;
+            Model3D::Vertex vertex;
 
             vertex.position = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
-            vertex.normal = (mesh->HasNormals()) ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z) : glm::vec3(0.0f, 0.0f, 0.0f);
+
+            vertex.normal = (mesh->HasNormals())
+                ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z)
+                : glm::vec3(0.0f, 0.0f, 0.0f);
+
+            vertex.texCoord = (mesh->HasTextureCoords(0))
+                ? glm::vec2(mesh->mTextureCoords[0][j].y, mesh->mTextureCoords[0][j].y)
+                : glm::vec2(0.0f, 0.0f);
 
             vertices.push_back(vertex);
         }
@@ -124,9 +149,9 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel:
 
         glm::mat4x4 transformation;
         CopyaiMat(&node->mTransformation, transformation);
-        AssimpModel::AssimpMesh rmesh(vertices, indices);
-        rmesh.SetTransformation(transformation);
-        rmesh.SetMatIndex(mesh->mMaterialIndex);
+        std::shared_ptr<Model3D::Mesh> rmesh = std::make_shared<Model3D::Mesh>(vertices, indices);
+        rmesh->SetTransformation(transformation);
+        rmesh->SetMatIndex(mesh->mMaterialIndex);
 
         meshes.push_back(rmesh);
     }
@@ -134,8 +159,9 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<AssimpModel:
     return true;
 }
 
-std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
+std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname)
 {
+    std::string filename = "Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
         aiProcess_CalcTangentSpace |
@@ -143,16 +169,17 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
         aiProcess_JoinIdenticalVertices |
         aiProcess_SortByPType);
 
-    if(!scene)
+    if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE)
     {
         std::cout << "Couldn't open model: " << filename << std::endl;
+        std::cout << "Assimp: " << importer.GetErrorString() << std::endl;
         return nullptr;
     }
 
-    auto model = std::make_shared<AssimpModel>();
+    auto model = std::make_shared<Model3D>();
 
     aiMaterial** materials = scene->mMaterials;
-    std::unordered_map<std::string, Texture> textures;
+    std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
     for(uint i = 0; i < scene->mNumMaterials; i++)
     {
         aiString aName;
@@ -161,22 +188,26 @@ std::shared_ptr<AssimpModel> AssimpLoader::LoadModel(std::string filename)
 
         if(textures.find(name) == textures.end())
         {
-            LoadTexture(textures[name], name);
+            std::shared_ptr<Texture> temp = LoadTexture(modelname + "/" + name, true);
+            if(temp != nullptr)
+            {
+                textures[name] = temp;
+            }
         }
     }
     model->SetTextures(textures);
 
-    std::vector<AssimpModel::AssimpMesh> meshes;
+    std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
     LoadNode(scene, scene->mRootNode, meshes);
 
-    for(uint i = 0; i < meshes.size(); i++)
+    for(std::shared_ptr<Model3D::Mesh>& mesh : meshes)
     {
         aiString aName;
-        uint index = meshes[i].GetMatIndex();
+        uint index = mesh->GetMatIndex();
         if(index < scene->mNumMaterials)
         {
-            materials[meshes[i].GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
-            meshes[i].SetMatName(std::string(aName.C_Str()));
+            materials[mesh->GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
+            mesh->SetMatName(std::string(aName.C_Str()));
         }
     }
 

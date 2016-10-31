@@ -16,6 +16,8 @@ public:
 
     void SetTexture(const GLuint glTexture);
 
+    void Bind() const;
+
     bool IsLoaded() const;
     void Unload();
 
