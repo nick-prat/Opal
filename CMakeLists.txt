@@ -14,13 +14,14 @@ set(SOURCE_FILES
         src/main.cpp
         src/Display/display.cpp 
 		src/Display/Modules/inputmodule.cpp src/Display/Modules/cameramodule.cpp
-	src/Model/Render/renderchain.cpp src/Model/Render/renderobject.cpp
-        src/Model/Shader/shader.cpp 
-	src/Model/Textures/texture.cpp
-	src/Model/Sampler/sampler.cpp
-		src/Model/Models/StaticModel/staticmodel.cpp  
-		src/Model/Models/Sprite/sprite.cpp
-		src/Resources/resourceloader.cpp src/Resources/model3d.cpp
+	src/Render/renderchain.cpp src/Render/renderobject.cpp
+	src/Render/Shader/shader.cpp 
+	src/Render/Textures/texture.cpp
+	src/Render/Sampler/sampler.cpp
+	src/Models/staticmodel.cpp  
+	src/Models/sprite.cpp
+	src/Models/line.cpp
+	src/Resources/resourceloader.cpp src/Resources/model3d.cpp
         src/Utilities/utilities.cpp src/Utilities/log.cpp
         src/Core/openGL.cpp src/Core/glapi.cpp )
 add_executable(OpenGL ${SOURCE_FILES})

@@ -4,7 +4,7 @@
 
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
-#include <Model/Render/renderchain.hpp>
+#include <Render/renderchain.hpp>
 
 RenderChain* RenderChain::m_renderChain = nullptr;
 

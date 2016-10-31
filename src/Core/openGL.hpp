@@ -5,8 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Display/display.hpp>
-#include <Model/Render/renderchain.hpp>
-#include <Model/Models/StaticModel/staticmodel.hpp>
+#include <Render/renderchain.hpp>
+#include <Models/staticmodel.hpp>
 
 #include "glapi.hpp"
 

@@ -86,14 +86,14 @@ OpenGL::OpenGL(int width, int height) {
     meshes[0]->SetMatName("texture");
 
     std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
-    textures["texture"] = ResourceLoader::LoadTexture("wolf/wolf", false);
+    textures["texture"] = ResourceLoader::LoadTexture("bear/bear", false);
 
     auto model = std::make_shared<Model3D>(meshes, textures);
 
-    m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
-    //m_staticModel = std::make_shared<StaticModel>(m_display, model);
+    //m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
+    m_staticModel = std::make_shared<StaticModel>(m_display, model);
     m_staticModel->GetModel()->PrintTextures();
-    //m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     RenderChain::GetInstance()->AttachRenderObject(m_staticModel);
 
     glEnable(GL_DEPTH_TEST);

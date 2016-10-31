@@ -5,7 +5,7 @@
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
-#include <Model/Textures/texture.hpp>
+#include <Render/Textures/texture.hpp>
 #include <Resources/model3d.hpp>
 
 namespace ResourceLoader {

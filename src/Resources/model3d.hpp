@@ -8,7 +8,7 @@
 #include <memory>
 
 #include <Core/glapi.hpp>
-#include <Model/Textures/texture.hpp>
+#include <Render/Textures/texture.hpp>
 
 class Model3D
 {

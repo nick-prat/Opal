@@ -4,12 +4,13 @@
 
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
-#include <Model/Textures/texture.hpp>
+#include <Render/Textures/texture.hpp>
 
 using namespace gl;
 
 StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<Model3D> model)
-    : m_display(display), m_model(model) {
+        : m_display(display), m_model(model) {
+
     if(model == nullptr || display == nullptr) {
         throw new Utilities::Exception(1, "Null param passed to StaticModel constructor");
     }

@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include <Model/Render/renderobject.hpp>
-#include <Model/Shader/shader.hpp>
+#include <Render/renderobject.hpp>
+#include <Render/Shader/shader.hpp>
 
 class Sprite : public IRenderObject
 {

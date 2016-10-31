@@ -3,9 +3,9 @@
 
 #include <Display/display.hpp>
 #include <Resources/model3d.hpp>
-#include <Model/Shader/shader.hpp>
-#include <Model/Render/renderobject.hpp>
-#include <Model/Sampler/sampler.hpp>
+#include <Render/renderobject.hpp>
+#include <Render/Shader/shader.hpp>
+#include <Render/Sampler/sampler.hpp>
 
 class StaticModel : public IRenderObject
 {
