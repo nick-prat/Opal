@@ -6,13 +6,13 @@
 
 #include <Core/glapi.hpp>
 
-class Shader
-{
+class Shader {
 public:
     Shader();
+    Shader(const std::vector<std::string>& fileNames, const std::vector<GLenum>& types);
     ~Shader();
 
-    bool InitShader(const std::vector<std::string>& filesNames, const std::vector<GLenum>& types);
+    bool InitShader(const std::vector<std::string>& fileNames, const std::vector<GLenum>& types);
     void Destroy();
 
     void UseShader();

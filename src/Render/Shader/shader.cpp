@@ -9,15 +9,17 @@
 #include <Utilities/utilities.hpp>
 
 Shader::Shader()
-{
-    m_shaderProgram = 0;
+        : m_shaderProgram(0) {}
+
+Shader::Shader(const std::vector<std::string>& fileNames, const std::vector<GLenum>& types) {
+    if(!InitShader(fileNames, types)) {
+        throw new Utilities::Exception(1, "Couldn't load shader");
+    }
 }
 
-Shader::~Shader()
-{}
+Shader::~Shader() {}
 
-void Shader::UseShader()
-{
+void Shader::UseShader() {
     gl::glValidateProgram(m_shaderProgram);
     gl::glUseProgram(m_shaderProgram);
 }

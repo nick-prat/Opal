@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <Display/display.hpp>
+#include <Render/Shader/shader.hpp>
 #include <Render/renderobject.hpp>
 
 class Line : public IRenderObject {
@@ -20,6 +21,7 @@ private:
     glm::vec3 m_tail;
     glm::vec3 m_head;
     glm::vec3 m_color;
+    std::unique_ptr<Shader> m_shader;
     std::shared_ptr<GlutDisplay> m_display;
 };
 
