@@ -11,26 +11,20 @@
 
 OpenGL* OpenGL::m_openGL = nullptr;
 
-void OpenGL::DeleteInstance()
-{
+void OpenGL::DeleteInstance() {
     delete m_openGL;
     m_openGL = nullptr;
 }
 
-bool OpenGL::CreateInstance(int width, int height)
-{
-    if(m_openGL != nullptr)
-    {
+bool OpenGL::CreateInstance(int width, int height) {
+    if(m_openGL != nullptr) {
         std::cout << "OpenGL has already been created, destroy first";
         return false;
     }
 
-    try
-    {
+    try {
         m_openGL = new OpenGL(width, height);
-    }
-    catch (Utilities::Exception* error)
-    {
+    } catch (Utilities::Exception* error) {
         error->PrintError();
         delete error;
         delete m_openGL;
@@ -41,21 +35,18 @@ bool OpenGL::CreateInstance(int width, int height)
     return true;
 }
 
-OpenGL*& OpenGL::GetInstance()
-{
+OpenGL*& OpenGL::GetInstance() {
     return m_openGL;
 }
 
-OpenGL::OpenGL(int width, int height)
-{
+OpenGL::OpenGL(int width, int height) {
     m_lowestTime = 0;
 
     // Look up all GL functions for later use
     gl::InitAPI();
 
     // Create singleton instance of RenderChain (Capability of 10 objects)
-    if(!RenderChain::CreateInstance(10, false))
-    {
+    if(!RenderChain::CreateInstance(false)) {
         throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
     }
 
@@ -70,12 +61,9 @@ OpenGL::OpenGL(int width, int height)
     std::string line;
     std::ifstream file("model.txt");
 
-    if(file.is_open())
-    {
+    if(file.is_open()) {
         getline(file, line);
-    }
-    else
-    {
+    } else {
         throw new Utilities::Exception(1, "Couldn't open model selection file");
     }
 
@@ -106,7 +94,7 @@ OpenGL::OpenGL(int width, int height)
     //m_staticModel = std::make_shared<StaticModel>(m_display, model);
     m_staticModel->GetModel()->PrintTextures();
     //m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
+    RenderChain::GetInstance()->AttachRenderObject(m_staticModel);
 
     glEnable(GL_DEPTH_TEST);
     //glEnable(GL_CULL_FACE);
@@ -116,53 +104,48 @@ OpenGL::OpenGL(int width, int height)
     Log::info("OpenGL context created", Log::OUT_LOG);
 }
 
-OpenGL::~OpenGL()
-{
+OpenGL::~OpenGL() {
     RenderChain::DeleteInstance();
 }
 
-void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y)
-{
+void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y) {
     m_display->GetInputModule()->UpdateKey(key, state);
 }
 
-void OpenGL::DisplayFunc()
-{
+void OpenGL::DisplayFunc() {
     auto start = std::chrono::high_resolution_clock::now();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    RenderChain::GetInstance()->RenderObjectChain();
+    try {
+        RenderChain::GetInstance()->RenderObjectChain();
+    } catch (Utilities::Exception* error) {
+        error->PrintError();
+        delete error;
+    }
 
     glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();
 
-    if(m_display->GetInputModule()->IsKeyPressed('q'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('q')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('e'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('e')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('w'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('w')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('s'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('s')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('a'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('a')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('d'))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed('d')) {
         m_display->GetCameraModule()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     }
 
-    if(m_display->GetInputModule()->IsKeyPressed(' '))
-    {
+    if(m_display->GetInputModule()->IsKeyPressed(' ')) {
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
 }

@@ -2,23 +2,29 @@
 #include <stdlib.h>
 #include <malloc.h>
 
+#include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
 #include <Model/Render/renderchain.hpp>
 
 RenderChain* RenderChain::m_renderChain = nullptr;
 
 RenderChain*& RenderChain::GetInstance() {
+    if(m_renderChain == nullptr)
+    {
+        throw new Utilities::Exception(1, "Render object was null, returning nullptr");
+    }
+
     return m_renderChain;
 }
 
-bool RenderChain::CreateInstance(int num, bool vol) {
+bool RenderChain::CreateInstance(bool vol) {
     if(m_renderChain != nullptr)
     {
-        std::cout << "Render chain has already been created" << std::endl;
+        Log::error("Render chian has already been created", Log::OUT_CONS);
         return false;
     }
 
-    m_renderChain = new RenderChain(num, vol);
+    m_renderChain = new RenderChain(vol);
     return true;
 }
 
@@ -27,58 +33,27 @@ void RenderChain::DeleteInstance() {
     m_renderChain = nullptr;
 }
 
-RenderChain::RenderChain(int num, bool vol)
+RenderChain::RenderChain(bool vol)
 {
-    m_memPool = nullptr;
-    m_memPool = (IRenderObject**)malloc(sizeof(IRenderObject*) * num);
-    m_objCount = 0;
-    m_objLimit = num;
     m_volatile = vol;
 }
 
 RenderChain::~RenderChain()
 {
     delete m_renderChain;
-    delete [] m_memPool;
-    m_memPool = nullptr;
-    m_objCount = 0;
-    m_objLimit = 0;
 }
 
-bool RenderChain::AttachRenderObject(IRenderObject* object)
+bool RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object)
 {
-    if(m_renderChain == nullptr)
-    {
-        return false;
-    }
-
-    // Make sure we don't go over the object render limit
-    if(m_objCount < m_objLimit)
-    {
-        m_memPool[m_objCount] = object;
-        m_objCount++;
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    m_objects.push_back(object);
+    return true;
 }
 
 void RenderChain::RenderObjectChain()
 {
-    if(m_renderChain == nullptr)
+    for(std::weak_ptr<IRenderObject> object : m_objects)
     {
-        Log::error("RenderChain was null, skipping", Log::OUT_CONS);
-        return;
+        object.lock()->Render();
     }
 
-    for(int i = 0; i < m_objCount; i++)
-    {
-        m_memPool[i]->Render();
-    }
-    if(m_volatile)
-    {
-        m_objCount = 0;
-    }
 }
