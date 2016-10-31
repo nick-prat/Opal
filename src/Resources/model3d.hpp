@@ -15,6 +15,8 @@ class Model3D
 public:
     struct Vertex
     {
+        Vertex();
+        Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoord);
         glm::vec3 position;
         glm::vec3 normal;
         glm::vec2 texCoord;
@@ -47,6 +49,7 @@ public:
     };
 
     Model3D();
+    Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, std::shared_ptr<Texture>> textures);
     ~Model3D();
 
     void SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);

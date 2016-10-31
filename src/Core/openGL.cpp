@@ -79,8 +79,31 @@ OpenGL::OpenGL(int width, int height)
         std::cout << "Couldn't open file" << std::endl;
     }
 
-    std::cout << "Opening model " << line << std::endl;
-    m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
+    std::vector<Model3D::Vertex> verts;
+    verts.push_back(Model3D::Vertex(glm::vec3(-1.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec2(0.0f, 0.0f)));
+    verts.push_back(Model3D::Vertex(glm::vec3(1.0f, 0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(1.0f, 0.0f)));
+    verts.push_back(Model3D::Vertex(glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f), glm::vec2(1.0f, 1.0f)));
+    verts.push_back(Model3D::Vertex(glm::vec3(1.0f, 0.0f, 1.0f), glm::vec3(0.0f), glm::vec2(0.0f, 1.0f)));
+
+    std::vector<GLuint> indices;
+    indices.push_back(2);
+    indices.push_back(1);
+    indices.push_back(0);
+    indices.push_back(1);
+    indices.push_back(3);
+    indices.push_back(0);
+
+    std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
+    meshes.push_back(std::make_shared<Model3D::Mesh>(verts, indices));
+    meshes[0]->SetMatName("texture");
+
+    std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
+    textures["texture"] = ResourceLoader::LoadTexture("wolf/wolf", false);
+
+    auto model = std::make_shared<Model3D>(meshes, textures);
+
+    //m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
+    m_staticModel = std::make_shared<StaticModel>(m_display, model);
     m_staticModel->GetModel()->PrintTextures();
     m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
     RenderChain::GetInstance()->AttachRenderObject(m_staticModel.get());
