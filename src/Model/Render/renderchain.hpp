@@ -1,6 +1,8 @@
 #ifndef _RENDERCHAIN_H
 #define _RENDERCHAIN_H
 
+#include <list>
+
 #include "renderobject.hpp"
 
 class RenderChain
@@ -23,6 +25,7 @@ private:
     int m_objCount;
     int m_objLimit;
     bool m_volatile;
+    std::list<std::weak_ptr<IRenderObject>> m_objects;
     IRenderObject** m_memPool;
 };
 

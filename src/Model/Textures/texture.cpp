@@ -10,7 +10,7 @@ Texture::Texture()
 
 Texture::~Texture()
 {
-    std::cout << "unloading" << std::endl;
+    std::cout << "unloading " << m_filename << std::endl;
     Unload();
 }
 
