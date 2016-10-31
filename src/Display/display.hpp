@@ -9,16 +9,13 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-class GlutDisplay
-{
-
+class GlutDisplay {
 public:
     GlutDisplay();
     GlutDisplay(int width, int height);
     ~GlutDisplay();
 
-    class InputModule
-    {
+    class InputModule {
     public:
 
         InputModule();
@@ -32,8 +29,7 @@ public:
         bool m_keys[256];
     };
 
-    class CameraModule
-    {
+    class CameraModule {
     public:
 
         CameraModule();

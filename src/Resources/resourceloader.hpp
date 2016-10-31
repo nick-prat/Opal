@@ -8,8 +8,7 @@
 #include <Model/Textures/texture.hpp>
 #include <Resources/model3d.hpp>
 
-namespace ResourceLoader
-{
+namespace ResourceLoader {
     std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
     std::shared_ptr<Model3D> LoadModel3D(std::string modelname);
 }

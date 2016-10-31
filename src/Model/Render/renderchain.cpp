@@ -9,10 +9,6 @@
 RenderChain* RenderChain::m_renderChain = nullptr;
 
 RenderChain*& RenderChain::GetInstance() {
-    if(m_renderChain == nullptr) {
-        throw new Utilities::Exception(1, "Render object was null, returning nullptr");
-    }
-
     return m_renderChain;
 }
 

@@ -14,37 +14,31 @@
 
 using namespace gl;
 
-std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps)
-{
+std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps) {
     FIBITMAP *img;
     filename = "./Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
 
-    if(!FreeImage_FIFSupportsReading(format))
-    {
+    if(!FreeImage_FIFSupportsReading(format)) {
         std::cout << "FreeImage can't read from this file" << std::endl;
         return nullptr;
     }
 
-    if(format == FIF_UNKNOWN)
-    {
+    if(format == FIF_UNKNOWN) {
         std::cout << "Unknown format: " << filename << std::endl;
         return nullptr;
     }
 
     img = FreeImage_Load(format, filename.c_str());
 
-    if(!img)
-    {
+    if(!img) {
         std::cout << "Couldn't load image: " << filename << std::endl;
         return nullptr;
     }
 
-    if(FreeImage_GetBPP(img) != 32)
-    {
+    if(FreeImage_GetBPP(img) != 32) {
         std::cout << "converting to 32 bits for image " << filename << std::endl;
         FIBITMAP* oldImg = img;
-        //img = FreeImage_ConvertTo24Bits(oldImg);
         img = FreeImage_ConvertTo32Bits(oldImg);
         FreeImage_Unload(oldImg);
     }
@@ -55,8 +49,7 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
 
     unsigned char* bytes = FreeImage_GetBits(img);
 
-    if(bytes == nullptr)
-    {
+    if(bytes == nullptr) {
         std::cout << "couldn't load image bytes for " << filename << std::endl;
     }
 
@@ -66,15 +59,13 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
     glBindTexture(GL_TEXTURE_2D, glTexture);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bytes);
 
-    if(genMipMaps)
-    {
+    if(genMipMaps) {
         glGenerateMipmap(GL_TEXTURE_2D);
     }
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    if(!glIsTexture(glTexture))
-    {
+    if(!glIsTexture(glTexture)) {
         std::cout << "texture is not valid " << glTexture << std::endl;
     }
 
@@ -97,23 +88,18 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes)
-{
-    for(uint i = 0; i < node->mNumChildren; i++)
-    {
-        if(!LoadNode(scene, node->mChildren[i], meshes))
-        {
+bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes) {
+    for(uint i = 0; i < node->mNumChildren; i++) {
+        if(!LoadNode(scene, node->mChildren[i], meshes)) {
             return false;
         }
     }
 
-    for(uint i = 0; i < node->mNumMeshes; i++)
-    {
+    for(uint i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         std::vector<Model3D::Vertex> vertices;
 
-        for(uint j = 0; j < mesh->mNumVertices; j++)
-        {
+        for(uint j = 0; j < mesh->mNumVertices; j++) {
             Model3D::Vertex vertex;
 
             vertex.position = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
@@ -130,19 +116,14 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
         }
 
         std::vector<uint> indices;
-        if(mesh->HasFaces())
-        {
-            for(uint j = 0; j < mesh->mNumFaces; j++)
-            {
+        if(mesh->HasFaces()) {
+            for(uint j = 0; j < mesh->mNumFaces; j++) {
                 aiFace face = mesh->mFaces[j];
-                for(uint k = 0; k < face.mNumIndices; k++)
-                {
+                for(uint k = 0; k < face.mNumIndices; k++) {
                     indices.push_back(face.mIndices[k]);
                 }
             }
-        }
-        else
-        {
+        } else {
             std::cout << "Node was missing faces, load cancled" << std::endl;
             return false;
         }
@@ -159,8 +140,7 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
     return true;
 }
 
-std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname)
-{
+std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
     std::string filename = "Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
@@ -169,8 +149,7 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname)
         aiProcess_JoinIdenticalVertices |
         aiProcess_SortByPType);
 
-    if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE)
-    {
+    if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE) {
         std::cout << "Couldn't open model: " << filename << std::endl;
         std::cout << "Assimp: " << importer.GetErrorString() << std::endl;
         return nullptr;
@@ -180,17 +159,14 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname)
 
     aiMaterial** materials = scene->mMaterials;
     std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
-    for(uint i = 0; i < scene->mNumMaterials; i++)
-    {
+    for(uint i = 0; i < scene->mNumMaterials; i++) {
         aiString aName;
         materials[i]->Get(AI_MATKEY_NAME, aName);
         std::string name = std::string(aName.C_Str());
 
-        if(textures.find(name) == textures.end())
-        {
+        if(textures.find(name) == textures.end()) {
             std::shared_ptr<Texture> temp = LoadTexture(modelname + "/" + name, true);
-            if(temp != nullptr)
-            {
+            if(temp != nullptr) {
                 textures[name] = temp;
             }
         }
@@ -200,12 +176,10 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname)
     std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
     LoadNode(scene, scene->mRootNode, meshes);
 
-    for(std::shared_ptr<Model3D::Mesh>& mesh : meshes)
-    {
+    for(std::shared_ptr<Model3D::Mesh>& mesh : meshes) {
         aiString aName;
         uint index = mesh->GetMatIndex();
-        if(index < scene->mNumMaterials)
-        {
+        if(index < scene->mNumMaterials) {
             materials[mesh->GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
             mesh->SetMatName(std::string(aName.C_Str()));
         }

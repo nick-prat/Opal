@@ -116,11 +116,12 @@ void OpenGL::DisplayFunc() {
     auto start = std::chrono::high_resolution_clock::now();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    try {
-        RenderChain::GetInstance()->RenderObjectChain();
-    } catch (Utilities::Exception* error) {
-        error->PrintError();
-        delete error;
+    auto renderChain = RenderChain::GetInstance();
+
+    if(renderChain != nullptr) {
+        renderChain->RenderObjectChain();
+    } else {
+        Log::error("Render chain was null in render loop", Log::OUT_CONS);
     }
 
     glutSwapBuffers();
