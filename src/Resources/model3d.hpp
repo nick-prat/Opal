@@ -28,6 +28,7 @@ public:
         Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices);
         ~Mesh();
 
+        bool HasTransformation() const;
         void SetTransformation(const glm::mat4x4& transformation);
 
         glm::mat4x4 GetTransformation() const;
@@ -41,6 +42,7 @@ public:
         std::string GetMatName() const;
 
     private:
+        bool m_hasTransformation;
         uint m_matIndex;
         std::string m_matName;
         glm::mat4x4 m_transformation;

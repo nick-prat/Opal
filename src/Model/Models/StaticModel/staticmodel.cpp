@@ -31,10 +31,11 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
 
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        std::cout << sizeof(Model3D::Vertex) << std::endl;
         glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->GetVertices().size(), mesh->GetVertices().data(), GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec2)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
 
         vbos.push_back(vbo);
 
@@ -77,7 +78,17 @@ void StaticModel::Render()
 
     for(uint i = 0; i < m_meshCount; i++)
     {
-        glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * (GetWorld() * m_model->GetMeshes()[i]->GetTransformation());
+        glm::mat4 model;
+        if(m_model->GetMeshes()[i]->HasTransformation())
+        {
+            model = GetWorld() * m_model->GetMeshes()[i]->GetTransformation();
+        }
+        else
+        {
+            model = GetWorld();
+        }
+
+        glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * model;
         gl::glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
         gl::glBindVertexArray(m_VAO[i]);
