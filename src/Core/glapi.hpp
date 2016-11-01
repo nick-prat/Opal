@@ -30,6 +30,16 @@ namespace gl {
     extern PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation;
     extern PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv;
     extern PFNGLUNIFORM1IPROC glUniform1i;
+    extern PFNGLUNIFORM1IVPROC glUniform1iv;
+    extern PFNGLUNIFORM1FPROC glUniform1f;
+    extern PFNGLUNIFORM1FVPROC glUniform1fv;
+    extern PFNGLUNIFORM2FPROC glUniform2f;
+    extern PFNGLUNIFORM2FVPROC glUniform2fv;
+    extern PFNGLUNIFORM3FPROC glUniform3f;
+    extern PFNGLUNIFORM3FVPROC glUniform3fv;
+    extern PFNGLUNIFORM4FPROC glUniform4f;
+    extern PFNGLUNIFORM4FVPROC glUniform4fv;
+
 
     extern PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray;
     extern PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer;

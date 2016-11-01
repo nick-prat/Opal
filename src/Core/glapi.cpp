@@ -28,6 +28,15 @@ namespace gl {
     PFNGLGETUNIFORMLOCATIONPROC glGetUniformLocation = 0;
     PFNGLUNIFORMMATRIX4FVPROC glUniformMatrix4fv = 0;
     PFNGLUNIFORM1IPROC glUniform1i = 0;
+    PFNGLUNIFORM1IVPROC glUniform1iv = 0;
+    PFNGLUNIFORM1FPROC glUniform1f = 0;
+    PFNGLUNIFORM1FVPROC glUniform1fv = 0;
+    PFNGLUNIFORM2FPROC glUniform2f = 0;
+    PFNGLUNIFORM2FVPROC glUniform2fv = 0;
+    PFNGLUNIFORM3FPROC glUniform3f = 0;
+    PFNGLUNIFORM3FVPROC glUniform3fv = 0;
+    PFNGLUNIFORM4FPROC glUniform4f = 0;
+    PFNGLUNIFORM4FVPROC glUniform4fv = 0;
 
     PFNGLENABLEVERTEXATTRIBARRAYPROC glEnableVertexAttribArray = 0;
     PFNGLVERTEXATTRIBPOINTERPROC glVertexAttribPointer = 0;
@@ -72,6 +81,15 @@ namespace gl {
         glGetUniformLocation = (PFNGLGETUNIFORMLOCATIONPROC)glXGetProcAddress((const GLubyte*)"glGetUniformLocation");
         glUniformMatrix4fv = (PFNGLUNIFORMMATRIX4FVPROC)glXGetProcAddress((const GLubyte*)"glUniformMatrix4fv");
         glUniform1i = (PFNGLUNIFORM1IPROC)glXGetProcAddress((const GLubyte*)"glUniform1i");
+        glUniform1iv = (PFNGLUNIFORM1IVPROC)glXGetProcAddress((const GLubyte*)"glUniform1iv");
+        glUniform1f = (PFNGLUNIFORM1FPROC)glXGetProcAddress((const GLubyte*)"glUniform1f");
+        glUniform1fv = (PFNGLUNIFORM1FVPROC)glXGetProcAddress((const GLubyte*)"glUniform1fv");
+        glUniform2f = (PFNGLUNIFORM2FPROC)glXGetProcAddress((const GLubyte*)"glUniform2f");
+        glUniform2fv = (PFNGLUNIFORM2FVPROC)glXGetProcAddress((const GLubyte*)"glUniform2fv");
+        glUniform3f = (PFNGLUNIFORM3FPROC)glXGetProcAddress((const GLubyte*)"glUniform3f");
+        glUniform3fv = (PFNGLUNIFORM3FVPROC)glXGetProcAddress((const GLubyte*)"glUniform3fv");
+        glUniform4f = (PFNGLUNIFORM4FPROC)glXGetProcAddress((const GLubyte*)"glUniform4f");
+        glUniform4fv = (PFNGLUNIFORM4FVPROC)glXGetProcAddress((const GLubyte*)"glUniform4fv");
 
         glEnableVertexAttribArray = (PFNGLENABLEVERTEXATTRIBARRAYPROC)glXGetProcAddress((const GLubyte*)"glEnableVertexAttribArray");
         glVertexAttribPointer = (PFNGLVERTEXATTRIBPOINTERPROC)glXGetProcAddress((const GLubyte*)"glVertexAttribPointer");

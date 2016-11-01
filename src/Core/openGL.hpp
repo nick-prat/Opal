@@ -29,7 +29,7 @@ private:
 
     long m_lowestTime;
     std::shared_ptr<GlutDisplay> m_display;
-    std::shared_ptr<Line> m_line;
+    std::vector<std::shared_ptr<Line>> m_lines;
     std::shared_ptr<StaticModel> m_staticModel;
 };
 

@@ -40,7 +40,7 @@ OpenGL*& OpenGL::GetInstance() {
 }
 
 OpenGL::OpenGL(int width, int height)
-        : m_lowestTime(0), m_display(nullptr), m_line(nullptr), m_staticModel(nullptr) {
+        : m_lowestTime(0), m_display(nullptr), m_staticModel(nullptr) {
 
     // Look up all GL functions for later use
     gl::InitAPI();
@@ -94,9 +94,16 @@ OpenGL::OpenGL(int width, int height)
     m_staticModel = std::make_shared<StaticModel>(m_display, model);
     m_staticModel->GetModel()->PrintTextures();
     m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-    RenderChain::GetInstance()->AttachRenderObject(m_staticModel);
 
-    m_line = std::make_shared<Line>(m_display, glm::vec3(-100.0f, 0.0f, 0.0f), glm::vec3(100.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+    // TODO only renders one of the lines..
+    m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(-100.0f, 0.0f, 0.0f), glm::vec3(100.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
+    m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(0.0f, -100.0f, 0.0f), glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
+    //m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(0.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+
+    std::cout << m_lines.size() << std::endl;
+    for(std::shared_ptr<Line> line : m_lines) {
+        RenderChain::GetInstance()->AttachRenderObject(line);
+    }
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

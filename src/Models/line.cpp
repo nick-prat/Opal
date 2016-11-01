@@ -47,4 +47,25 @@ Line::~Line() {
 
 void Line::Render() {
     m_shader->UseShader();
+
+    GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
+    if(worldLocation == -1) {
+        std::cout << "Couldn't get MVP uniform loaction" << std::endl;
+        exit(-1);
+    }
+
+    glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * GetWorld();
+    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
+
+    GLint colorLocation = glGetUniformLocation(m_shader->GetProgram(), "gColor");
+    if(colorLocation == -1) {
+        std::cout << "Couldn't get line color uniform location" << std::endl;
+        exit(-1);
+    }
+
+    glUniform3fv(colorLocation, 1, (GLfloat*)&m_color);
+
+    glEnableVertexAttribArray(0);
+    glDrawElements(GL_LINES, (GLsizei)m_indexCount, GL_UNSIGNED_INT, nullptr);
+    glDisableVertexAttribArray(0);
 }
