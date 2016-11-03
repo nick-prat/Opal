@@ -42,6 +42,9 @@ bool RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
 
 void RenderChain::RenderObjectChain() {
     for(std::weak_ptr<IRenderObject> object : m_objects) {
-        object.lock()->Render();
+        auto obj = object.lock();
+        if(obj) {
+            obj->Render();
+        }
     }
 }

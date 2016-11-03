@@ -8,6 +8,8 @@
 
 #include <Utilities/utilities.hpp>
 
+using namespace gl;
+
 Shader::Shader()
         : m_shaderProgram(0) {}
 
@@ -21,7 +23,13 @@ Shader::~Shader() {}
 
 void Shader::UseShader() {
     gl::glValidateProgram(m_shaderProgram);
-    gl::glUseProgram(m_shaderProgram);
+    GLint status = 0;
+    glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, &status);
+    if(status == GL_TRUE) {
+        gl::glUseProgram(m_shaderProgram);
+    } else {
+        std::cout << "Couldn't validate program" << std::endl;
+    }
 }
 
 bool Shader::InitShader(const std::vector<std::string>& fileNames, const std::vector<GLenum>& types)

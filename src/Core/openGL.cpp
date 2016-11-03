@@ -40,7 +40,7 @@ OpenGL*& OpenGL::GetInstance() {
 }
 
 OpenGL::OpenGL(int width, int height)
-        : m_lowestTime(0), m_display(nullptr), m_staticModel(nullptr) {
+        : m_display(nullptr) {
 
     // Look up all GL functions for later use
     gl::InitAPI();
@@ -91,23 +91,30 @@ OpenGL::OpenGL(int width, int height)
     auto model = std::make_shared<Model3D>(meshes, textures);
 
     //m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
-    m_staticModel = std::make_shared<StaticModel>(m_display, model);
-    m_staticModel->GetModel()->PrintTextures();
-    m_staticModel->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+    m_staticModels.push_back(std::make_shared<StaticModel>(m_display, model));
+    m_staticModels[0]->GetModel()->PrintTextures();
+    m_staticModels[0]->Translate(glm::vec3(-2.5f, 0.0f, 0.0f));
+    m_staticModels[0]->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+    m_staticModels.push_back(std::make_shared<StaticModel>(m_display, model));
+    m_staticModels[1]->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+
+    for(std::shared_ptr<StaticModel> model : m_staticModels) {
+        RenderChain::GetInstance()->AttachRenderObject(model);
+    }
 
     // TODO only renders one of the lines..
     m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(-100.0f, 0.0f, 0.0f), glm::vec3(100.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
     m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(0.0f, -100.0f, 0.0f), glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-    //m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(0.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
+    m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(0.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
 
-    std::cout << m_lines.size() << std::endl;
     for(std::shared_ptr<Line> line : m_lines) {
         RenderChain::GetInstance()->AttachRenderObject(line);
     }
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glDepthFunc(GL_LESS);
+    //glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
     Log::info("OpenGL context created", Log::OUT_LOG);
@@ -132,6 +139,8 @@ void OpenGL::DisplayFunc() {
     } else {
         Log::error("Render chain was null in render loop", Log::OUT_CONS);
     }
+
+    Utilities::PrintGLErrors();
 
     glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();

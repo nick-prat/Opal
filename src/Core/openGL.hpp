@@ -27,10 +27,9 @@ private:
 private:
     static OpenGL* m_openGL;
 
-    long m_lowestTime;
     std::shared_ptr<GlutDisplay> m_display;
     std::vector<std::shared_ptr<Line>> m_lines;
-    std::shared_ptr<StaticModel> m_staticModel;
+    std::vector<std::shared_ptr<StaticModel>> m_staticModels;
 };
 
 #endif //OPENGL_OPENGL_H

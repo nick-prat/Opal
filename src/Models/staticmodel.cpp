@@ -31,11 +31,13 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+        m_VBO.push_back(vbo);
 
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->GetIndices().size(), mesh->GetIndices().data(), GL_STATIC_DRAW);
         m_indexCount.push_back(mesh->GetIndices().size());
+        m_IBO.push_back(ibo);
     }
 
     m_shader = std::make_unique<Shader>();
@@ -49,9 +51,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
 
 StaticModel::~StaticModel() {
     glDeleteVertexArrays(m_VAO.size(), m_VAO.data());
-    for(std::vector<GLuint>& vbo : m_VBO) {
-        glDeleteBuffers(vbo.size(), vbo.data());
-    }
+    glDeleteBuffers(m_VBO.size(), m_VBO.data());
     glDeleteBuffers(m_IBO.size(), m_IBO.data());
 }
 
@@ -63,6 +63,15 @@ void StaticModel::Render() {
         std::cout << "Couldn't get MVP uniform loaction" << std::endl;
         exit(-1);
     }
+
+    GLint samplerLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gSampler");
+    if(samplerLocation == -1) {
+        std::cout << "Couldn't get sampler uniform location" << std::endl;
+        exit(-1);
+    }
+    glUniform1i(samplerLocation, 0);
+
+    m_sampler.Bind();
 
     for(uint i = 0; i < m_meshCount; i++) {
         glm::mat4 model;
@@ -77,13 +86,6 @@ void StaticModel::Render() {
 
         glBindVertexArray(m_VAO[i]);
 
-        GLint samplerLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gSampler");
-        if(samplerLocation == -1) {
-            std::cout << "Couldn't get sampler uniform location" << std::endl;
-            exit(-1);
-        }
-        glUniform1i(samplerLocation, 0);
-
         std::shared_ptr<Texture> texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
         if(texture != nullptr) {
             texture->Bind();
@@ -91,8 +93,6 @@ void StaticModel::Render() {
             std::cout << "Couldn't get material " << m_model->GetMeshes()[i]->GetMatName() << std::endl;
             exit(-1);
         }
-
-        m_sampler.Bind();
 
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);

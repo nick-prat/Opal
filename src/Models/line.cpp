@@ -62,9 +62,9 @@ void Line::Render() {
         std::cout << "Couldn't get line color uniform location" << std::endl;
         exit(-1);
     }
-
     glUniform3fv(colorLocation, 1, (GLfloat*)&m_color);
 
+    glBindVertexArray(m_VAO);
     glEnableVertexAttribArray(0);
     glDrawElements(GL_LINES, (GLsizei)m_indexCount, GL_UNSIGNED_INT, nullptr);
     glDisableVertexAttribArray(0);
