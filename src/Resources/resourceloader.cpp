@@ -5,7 +5,9 @@
 #include <FreeImage.h>
 #include <memory>
 #include <vector>
+#include <fstream>
 #include <iostream>
+#include <json.hpp>
 
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
@@ -13,6 +15,64 @@
 #include <Utilities/utilities.hpp>
 
 using namespace gl;
+using json = nlohmann::json;
+
+bool ResourceLoader::LoadScene(std::string filename) {
+    std::string contents;
+    std::ifstream in(filename, std::ios::in | std::ios::binary);
+    if (in) {
+        in.seekg(0, std::ios::end);
+        contents.resize(in.tellg());
+        in.seekg(0, std::ios::beg);
+        in.read(&contents[0], contents.size());
+        in.close();
+    } else {
+        std::cout << "Couldn't load " << filename << std::endl;
+        return false;
+    }
+
+    json scene = json::parse(contents);
+    std::vector<json> objects = scene["objects"];
+
+    for(json object : objects) {
+        std::string type = object["type"];
+        if(type == "line") {
+            glm::vec3 head, tail, color;
+
+            std::vector<float> head3f = object["head"];
+            if(head3f.size() == 3) {
+                head.x = head3f[0];
+                head.y = head3f[1];
+                head.z = head3f[2];
+            } else {
+                std::cout << "elements in head for model line not equal to 3" << std::endl;
+                return false;
+            }
+
+            std::vector<float> tail3f = object["tail"];
+            if(tail3f.size() == 3) {
+                tail.x = head3f[0];
+                tail.y = head3f[1];
+                head.z = head3f[2];
+            } else {
+                std::cout << "elements in head for model line not equal to 3" << std::endl;
+                return false;
+            }
+
+            std::vector<float> color3f = object["color"];
+            if(head3f.size() == 3) {
+                head.x = head3f[0];
+                head.y = head3f[1];
+                head.z = head3f[2];
+            } else {
+                std::cout << "elements in head for model line not equal to 3" << std::endl;
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
 
 std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps) {
     FIBITMAP *img;

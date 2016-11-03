@@ -9,6 +9,7 @@
 #include <Resources/model3d.hpp>
 
 namespace ResourceLoader {
+    bool LoadScene(std::string filename);
     std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
     std::shared_ptr<Model3D> LoadModel3D(std::string modelname);
 }

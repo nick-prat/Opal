@@ -11,6 +11,8 @@
 
 OpenGL* OpenGL::m_openGL = nullptr;
 
+// Static Functions
+
 void OpenGL::DeleteInstance() {
     delete m_openGL;
     m_openGL = nullptr;
@@ -38,6 +40,8 @@ bool OpenGL::CreateInstance(int width, int height) {
 OpenGL*& OpenGL::GetInstance() {
     return m_openGL;
 }
+
+// Non Static Functions
 
 OpenGL::OpenGL(int width, int height)
         : m_display(nullptr) {
@@ -67,6 +71,10 @@ OpenGL::OpenGL(int width, int height)
         throw new Utilities::Exception(1, "Couldn't open model selection file");
     }
 
+    if(!ResourceLoader::LoadScene("defscene.json")) {
+        throw new Utilities::Exception(1, "Couldn't load scene");
+    }
+
     std::vector<Model3D::Vertex> verts;
     verts.push_back(Model3D::Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(0.0f, 1.0f)));
     verts.push_back(Model3D::Vertex(glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(1.0f, 0.0f)));
@@ -86,7 +94,7 @@ OpenGL::OpenGL(int width, int height)
     meshes[0]->SetMatName("texture");
 
     std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
-    textures["texture"] = ResourceLoader::LoadTexture("bear/bear", false);
+    textures["texture"] = ResourceLoader::LoadTexture("wolf/wolf", false);
 
     auto model = std::make_shared<Model3D>(meshes, textures);
 
@@ -167,4 +175,8 @@ void OpenGL::DisplayFunc() {
     if(m_display->GetInputModule()->IsKeyPressed(' ')) {
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
+}
+
+bool OpenGL::LoadScene(std::string name) {
+    return true;
 }

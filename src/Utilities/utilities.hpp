@@ -4,6 +4,9 @@
 #include <iostream>
 #include <glm/glm.hpp>
 
+#include <vector>
+#include <string>
+
 #include "log.hpp"
 
 typedef unsigned int uint;
