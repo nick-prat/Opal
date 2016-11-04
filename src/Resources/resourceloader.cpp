@@ -43,7 +43,7 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::share
         if(type == "line") {
             glm::vec3 head, tail, color;
 
-            std::vector<float> head3f = object["head"];
+            std::vector<float> head3f = object["shit"];
             if(head3f.size() == 3) {
                 head = glm::vec3(head3f[0], head3f[1], head3f[2]);
             } else {
