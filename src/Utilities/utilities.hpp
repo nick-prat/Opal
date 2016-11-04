@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <glm/glm.hpp>
-
+#include <exception>
 #include <vector>
 #include <string>
 
@@ -11,23 +11,18 @@
 
 typedef unsigned int uint;
 
-namespace Utilities
-{
+namespace Utilities {
     void PrintGLErrors();
 
-    class Exception
-    {
+    class Exception : public std::exception {
     public:
-        Exception(const unsigned char code, const std::string error);
+        Exception(const std::string& error);
         ~Exception();
 
         void PrintError() const;
-
-        void SetCode(int code);
-        int GetCode() const;
-
-        void SetError(std::string error);
         std::string GetError() const;
+
+        const char* what() const noexcept override;
 
     private:
         std::string error;

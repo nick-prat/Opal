@@ -9,6 +9,9 @@
 #include <Utilities/log.hpp>
 #include <Resources/resourceloader.hpp>
 
+using namespace gl;
+using Utilities::Exception;
+
 OpenGL* OpenGL::m_openGL = nullptr;
 
 // Static Functions
@@ -26,9 +29,8 @@ bool OpenGL::CreateInstance(int width, int height) {
 
     try {
         m_openGL = new OpenGL(width, height);
-    } catch (Utilities::Exception* error) {
-        error->PrintError();
-        delete error;
+    } catch (Exception& error) {
+        error.PrintError();
         delete m_openGL;
         m_openGL = nullptr;
         return false;
@@ -47,11 +49,11 @@ OpenGL::OpenGL(int width, int height)
         : m_display(nullptr) {
 
     // Look up all GL functions for later use
-    gl::InitAPI();
+    InitAPI();
 
     // Create singleton instance of RenderChain (Capability of 10 objects)
     if(!RenderChain::CreateInstance(false)) {
-        throw new Utilities::Exception(1, "Couldn't Create Instance of RenderChain");
+        throw Exception("Couldn't Create Instance of RenderChain");
     }
 
     m_display = std::make_shared<GlutDisplay>(width, height);
@@ -68,7 +70,7 @@ OpenGL::OpenGL(int width, int height)
     if(file.is_open()) {
         getline(file, line);
     } else {
-        throw new Utilities::Exception(1, "Couldn't open model selection file");
+        throw Exception("Couldn't open model selection file");
     }
 
     m_renderObjects = ResourceLoader::LoadScene(m_display, "defscene.json");

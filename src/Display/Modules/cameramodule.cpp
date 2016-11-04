@@ -4,6 +4,8 @@
 
 #include <Utilities/utilities.hpp>
 
+using Utilities::Exception;
+
 GlutDisplay::CameraModule::CameraModule()
 {
     m_viewMatrix = glm::mat4(1.0f);
@@ -12,7 +14,7 @@ GlutDisplay::CameraModule::CameraModule()
 
     if(!InitCamera())
     {
-        throw new Utilities::Exception(1, "Couldn't initialize camera!");
+        throw Exception("Couldn't initialize camera!");
     }
 }
 

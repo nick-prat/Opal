@@ -7,12 +7,13 @@
 #include <Render/Textures/texture.hpp>
 
 using namespace gl;
+using Utilities::Exception;
 
 StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<Model3D> model)
         : m_display(display), m_model(model) {
 
     if(model == nullptr || display == nullptr) {
-        throw new Utilities::Exception(1, "Null param passed to StaticModel constructor");
+        throw Exception("Null param passed to StaticModel constructor");
     }
 
     m_meshCount = m_model->GetMeshes().size();
@@ -40,13 +41,9 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         m_IBO.push_back(ibo);
     }
 
-    m_shader = std::make_unique<Shader>();
     std::vector<std::string> files = {"Shaders/staticmodel.vs", "Shaders/staticmodel.fs"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
-
-    if(!m_shader->InitShader(files, types)) {
-        throw new Utilities::Exception(1, "Couldn't intialize shader");
-    }
+    m_shader = std::make_unique<Shader>(files, types);
 }
 
 StaticModel::~StaticModel() {
