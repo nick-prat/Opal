@@ -13,11 +13,15 @@
 #include <Core/glapi.hpp>
 #include <Resources/model3d.hpp>
 #include <Utilities/utilities.hpp>
+#include <Models/line.hpp>
+#include <Models/staticmodel.hpp>
 
 using namespace gl;
 using json = nlohmann::json;
 
-bool ResourceLoader::LoadScene(std::string filename) {
+std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::shared_ptr<GlutDisplay> display, std::string filename) {
+    std::vector<std::shared_ptr<IRenderObject>> renderObjects;
+
     std::string contents;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
     if (in) {
@@ -28,7 +32,7 @@ bool ResourceLoader::LoadScene(std::string filename) {
         in.close();
     } else {
         std::cout << "Couldn't load " << filename << std::endl;
-        return false;
+        return renderObjects;
     }
 
     json scene = json::parse(contents);
@@ -41,37 +45,33 @@ bool ResourceLoader::LoadScene(std::string filename) {
 
             std::vector<float> head3f = object["head"];
             if(head3f.size() == 3) {
-                head.x = head3f[0];
-                head.y = head3f[1];
-                head.z = head3f[2];
+                head = glm::vec3(head3f[0], head3f[1], head3f[2]);
             } else {
                 std::cout << "elements in head for model line not equal to 3" << std::endl;
-                return false;
+                continue;
             }
 
             std::vector<float> tail3f = object["tail"];
             if(tail3f.size() == 3) {
-                tail.x = head3f[0];
-                tail.y = head3f[1];
-                head.z = head3f[2];
+                tail = glm::vec3(tail3f[0], tail3f[1], tail3f[2]);
             } else {
-                std::cout << "elements in head for model line not equal to 3" << std::endl;
-                return false;
+                std::cout << "elements in tail for model line not equal to 3" << std::endl;
+                continue;
             }
 
             std::vector<float> color3f = object["color"];
             if(head3f.size() == 3) {
-                head.x = head3f[0];
-                head.y = head3f[1];
-                head.z = head3f[2];
+                color = glm::vec3(color3f[0], color3f[1], color3f[2]);
             } else {
-                std::cout << "elements in head for model line not equal to 3" << std::endl;
-                return false;
+                std::cout << "elements in color for model line not equal to 3" << std::endl;
+                continue;
             }
+
+            renderObjects.push_back(std::make_shared<Line>(display, head, tail, color));
         }
     }
 
-    return true;
+    return renderObjects;
 }
 
 std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps) {

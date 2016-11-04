@@ -71,8 +71,9 @@ OpenGL::OpenGL(int width, int height)
         throw new Utilities::Exception(1, "Couldn't open model selection file");
     }
 
-    if(!ResourceLoader::LoadScene("defscene.json")) {
-        throw new Utilities::Exception(1, "Couldn't load scene");
+    m_renderObjects = ResourceLoader::LoadScene(m_display, "defscene.json");
+    for(auto obj : m_renderObjects) {
+        RenderChain::GetInstance()->AttachRenderObject(obj);
     }
 
     std::vector<Model3D::Vertex> verts;
@@ -111,18 +112,9 @@ OpenGL::OpenGL(int width, int height)
         RenderChain::GetInstance()->AttachRenderObject(model);
     }
 
-    // TODO only renders one of the lines..
-    m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(-100.0f, 0.0f, 0.0f), glm::vec3(100.0f, 0.0f, 0.0f), glm::vec3(1.0f, 0.0f, 0.0f)));
-    m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(0.0f, -100.0f, 0.0f), glm::vec3(0.0f, 100.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)));
-    m_lines.push_back(std::make_shared<Line>(m_display, glm::vec3(0.0f, 0.0f, -100.0f), glm::vec3(0.0f, 0.0f, 100.0f), glm::vec3(0.0f, 0.0f, 1.0f)));
-
-    for(std::shared_ptr<Line> line : m_lines) {
-        RenderChain::GetInstance()->AttachRenderObject(line);
-    }
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    //glDepthFunc(GL_LESS);
+    glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
     Log::info("OpenGL context created", Log::OUT_LOG);

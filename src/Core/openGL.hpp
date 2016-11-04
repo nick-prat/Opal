@@ -28,7 +28,7 @@ private:
 
 private:
     static OpenGL* m_openGL;
-
+    std::vector<std::shared_ptr<IRenderObject>> m_renderObjects;
     std::shared_ptr<GlutDisplay> m_display;
     std::vector<std::shared_ptr<Line>> m_lines;
     std::vector<std::shared_ptr<StaticModel>> m_staticModels;
