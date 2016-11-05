@@ -1,7 +1,6 @@
 #include "resourceloader.hpp"
 
 #include <glm/glm.hpp>
-#include <glm/ext.hpp>
 #include <FreeImage.h>
 #include <memory>
 #include <vector>
@@ -12,9 +11,7 @@
 #include <Utilities/utilities.hpp>
 #include <Core/glapi.hpp>
 #include <Resources/model3d.hpp>
-#include <Utilities/utilities.hpp>
 #include <Models/line.hpp>
-#include <Models/staticmodel.hpp>
 
 using namespace gl;
 using json = nlohmann::json;

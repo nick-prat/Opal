@@ -99,15 +99,15 @@ OpenGL::OpenGL(int width, int height)
     std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
     textures["texture"] = ResourceLoader::LoadTexture("wolf/wolf", false);
 
-    auto model = std::make_shared<Model3D>(meshes, textures);
+    auto square = std::make_shared<Model3D>(meshes, textures);
 
     //m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
-    m_staticModels.push_back(std::make_shared<StaticModel>(m_display, model));
+    m_staticModels.push_back(std::make_shared<StaticModel>(m_display, square));
     m_staticModels[0]->GetModel()->PrintTextures();
     m_staticModels[0]->Translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     m_staticModels[0]->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-    m_staticModels.push_back(std::make_shared<StaticModel>(m_display, model));
+    m_staticModels.push_back(std::make_shared<StaticModel>(m_display, square));
     m_staticModels[1]->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     for(std::shared_ptr<StaticModel> model : m_staticModels) {
