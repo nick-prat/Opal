@@ -23,7 +23,7 @@ void Utilities::PrintGLErrors()
 
 Utilities::Exception::Exception(const std::string& error)
 {
-    this->error = error;
+    m_error = error;
 }
 
 Utilities::Exception::~Exception()
@@ -31,16 +31,14 @@ Utilities::Exception::~Exception()
 
 void Utilities::Exception::PrintError() const
 {
-    std::stringstream ss;
-    ss << "(" << code << "): " << error << std::endl;
-    Log::error(ss.str(), Log::OUT_LOG | Log::OUT_CONS);
+    Log::error(m_error, Log::OUT_LOG | Log::OUT_CONS);
 }
 
 std::string Utilities::Exception::GetError() const
 {
-    return this->error;
+    return m_error;
 }
 
 const char* Utilities::Exception::what() const noexcept {
-    return error.c_str();
+    return m_error.c_str();
 }

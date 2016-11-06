@@ -14,7 +14,47 @@
 #include <Models/line.hpp>
 
 using namespace gl;
+using namespace Utilities;
 using json = nlohmann::json;
+
+std::shared_ptr<IRenderObject> LoadLineJSON(std::shared_ptr<GlutDisplay> display, json object) {
+    glm::vec3 head, tail, color;
+
+    std::string name = "";
+    try {
+        name = object["name"];
+    } catch (std::domain_error error) {
+        name = "null";
+    }
+
+    std::vector<float> head3f = object["head"];
+    if(head3f.size() == 3) {
+        head = glm::vec3(head3f[0], head3f[1], head3f[2]);
+    } else {
+        throw Exception("head element size is incorrect: " + name);
+    }
+
+    std::vector<float> tail3f = object["tail"];
+    if(tail3f.size() == 3) {
+        tail = glm::vec3(tail3f[0], tail3f[1], tail3f[2]);
+    } else {
+        throw Exception("tail element size is incorrect: " + name);
+    }
+
+    std::vector<float> color3f = object["color"];
+    if(head3f.size() == 3) {
+        color = glm::vec3(color3f[0], color3f[1], color3f[2]);
+    } else {
+        throw Exception("color element size is incorrect: " + name);
+        return nullptr;
+    }
+
+    return std::make_shared<Line>(display, head, tail, color);
+}
+
+std::shared_ptr<IRenderObject> LoadStaticModelJSON(std::shared_ptr<GlutDisplay> display, json object) {
+    return nullptr;
+}
 
 std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::shared_ptr<GlutDisplay> display, std::string filename) {
     std::vector<std::shared_ptr<IRenderObject>> renderObjects;
@@ -28,44 +68,27 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::share
         in.read(&contents[0], contents.size());
         in.close();
     } else {
-        std::cout << "Couldn't load " << filename << std::endl;
-        return renderObjects;
+        throw Exception("Couldn't load scene " + filename);
     }
 
-    json scene = json::parse(contents);
-    std::vector<json> objects = scene["objects"];
+    try {
+        json scene = json::parse(contents);
+        std::vector<json> objects = scene["objects"];
 
-    for(json object : objects) {
-        std::string type = object["type"];
-        if(type == "line") {
-            glm::vec3 head, tail, color;
-
-            std::vector<float> head3f = object["head"];
-            if(head3f.size() == 3) {
-                head = glm::vec3(head3f[0], head3f[1], head3f[2]);
-            } else {
-                std::cout << "elements in head for model line not equal to 3" << std::endl;
-                continue;
+        for(json object : objects) {
+            std::string type = object["type"];
+            try {
+                if(type == "line") {
+                    renderObjects.push_back(LoadLineJSON(display, object));
+                } else if(type == "staticModel") {
+                    renderObjects.push_back(LoadStaticModelJSON(display, object));
+                }
+            } catch (Exception& error) {
+                error.PrintError();
             }
-
-            std::vector<float> tail3f = object["tail"];
-            if(tail3f.size() == 3) {
-                tail = glm::vec3(tail3f[0], tail3f[1], tail3f[2]);
-            } else {
-                std::cout << "elements in tail for model line not equal to 3" << std::endl;
-                continue;
-            }
-
-            std::vector<float> color3f = object["color"];
-            if(head3f.size() == 3) {
-                color = glm::vec3(color3f[0], color3f[1], color3f[2]);
-            } else {
-                std::cout << "elements in color for model line not equal to 3" << std::endl;
-                continue;
-            }
-
-            renderObjects.push_back(std::make_shared<Line>(display, head, tail, color));
         }
+    } catch(std::exception& error) {
+        std::cout << "Parsing of " << filename << " failed : " << error.what() << std::endl;
     }
 
     return renderObjects;

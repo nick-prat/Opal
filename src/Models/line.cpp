@@ -31,7 +31,7 @@ Line::Line(std::shared_ptr<GlutDisplay> display, glm::vec3 tail, glm::vec3 head,
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), indices.data(), GL_STATIC_DRAW);
     m_indexCount = indices.size();
 
-    std::vector<std::string> files = {"Shaders/line.vs", "Shaders/line.fs"};
+    std::vector<std::string> files = {"line.vs", "line.fs"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
     m_shader = std::make_unique<Shader>(files, types);
 }

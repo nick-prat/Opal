@@ -11,11 +11,15 @@
 using namespace gl;
 using Utilities::Exception;
 
-Shader::Shader(const std::vector<std::string>& fileNames, const std::vector<GLenum>& types)
+Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types)
         : m_numShaders(0), m_shaderProgram(0) {
 
     if(fileNames.size() != types.size() && fileNames.size() != 0 && types.size() != 0) {
         throw Exception("Couldn't initialize shader: incorrect information passed");
+    }
+
+    for(std::string& filename: fileNames) {
+        filename = "./Shaders/" + filename;
     }
 
     GLint success;

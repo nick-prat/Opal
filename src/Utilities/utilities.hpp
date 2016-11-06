@@ -25,8 +25,7 @@ namespace Utilities {
         const char* what() const noexcept override;
 
     private:
-        std::string error;
-        int code;
+        std::string m_error;
     };
 
 }

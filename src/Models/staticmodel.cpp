@@ -41,7 +41,7 @@ StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::
         m_IBO.push_back(ibo);
     }
 
-    std::vector<std::string> files = {"Shaders/staticmodel.vs", "Shaders/staticmodel.fs"};
+    std::vector<std::string> files = {"staticmodel.vs", "staticmodel.fs"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
     m_shader = std::make_unique<Shader>(files, types);
 }
