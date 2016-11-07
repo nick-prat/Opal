@@ -12,6 +12,7 @@
 #include <Core/glapi.hpp>
 #include <Resources/model3d.hpp>
 #include <Models/line.hpp>
+#include <Models/staticmodel.hpp>
 
 using namespace gl;
 using namespace Utilities;
@@ -52,10 +53,6 @@ std::shared_ptr<IRenderObject> LoadLineJSON(std::shared_ptr<GlutDisplay> display
     return std::make_shared<Line>(display, head, tail, color);
 }
 
-std::shared_ptr<IRenderObject> LoadStaticModelJSON(std::shared_ptr<GlutDisplay> display, json object) {
-    return nullptr;
-}
-
 std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::shared_ptr<GlutDisplay> display, std::string filename) {
     std::vector<std::shared_ptr<IRenderObject>> renderObjects;
 
@@ -81,7 +78,8 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::share
                 if(type == "line") {
                     renderObjects.push_back(LoadLineJSON(display, object));
                 } else if(type == "staticModel") {
-                    renderObjects.push_back(LoadStaticModelJSON(display, object));
+                    auto model = std::make_shared<StaticModel>(display, LoadModel3D(object["filename"]));
+                    renderObjects.push_back(model);
                 }
             } catch (Exception& error) {
                 error.PrintError();
