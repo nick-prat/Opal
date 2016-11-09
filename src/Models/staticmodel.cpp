@@ -41,7 +41,7 @@ StaticModel::StaticModel(const std::shared_ptr<Model3D> model)
         m_IBO.push_back(ibo);
     }
 
-    std::vector<std::string> files = {"staticmodel.vs", "staticmodel.fs"};
+    std::vector<std::string> files = {"staticmodel_vs.glsl", "staticmodel_fs.glsl"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
     m_shader = std::make_unique<Shader>(files, types);
 }
