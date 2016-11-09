@@ -9,10 +9,10 @@
 using namespace gl;
 using Utilities::Exception;
 
-StaticModel::StaticModel(const std::shared_ptr<GlutDisplay> display, const std::shared_ptr<Model3D> model)
-        : m_display(display), m_model(model) {
+StaticModel::StaticModel(const std::shared_ptr<Model3D> model)
+        : m_model(model) {
 
-    if(model == nullptr || display == nullptr) {
+    if(model == nullptr) {
         throw Exception("Null param passed to StaticModel constructor");
     }
 
@@ -52,7 +52,7 @@ StaticModel::~StaticModel() {
     glDeleteBuffers(m_IBO.size(), m_IBO.data());
 }
 
-void StaticModel::Render() {
+void StaticModel::Render(const std::shared_ptr<GlutDisplay> display) {
     m_shader->UseShader();
 
     GLint worldLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gMVP");
@@ -78,7 +78,7 @@ void StaticModel::Render() {
             model = GetWorld();
         }
 
-        glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * model;
+        glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCameraModule()->GetViewMatrix() * model;
         glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
         glBindVertexArray(m_VAO[i]);

@@ -9,12 +9,8 @@
 using namespace gl;
 using Utilities::Exception;
 
-Line::Line(std::shared_ptr<GlutDisplay> display, glm::vec3 tail, glm::vec3 head, glm::vec3 color)
-        : m_indexCount(2), m_VAO(0), m_VBO(0), m_tail(tail), m_head(head), m_color(color), m_shader(nullptr), m_display(display) {
-
-    if(display == nullptr) {
-        throw Exception("Null parameter passed to Line constructor");
-    }
+Line::Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color)
+        : m_indexCount(2), m_VAO(0), m_VBO(0), m_tail(tail), m_head(head), m_color(color), m_shader(nullptr) {
 
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
@@ -31,7 +27,7 @@ Line::Line(std::shared_ptr<GlutDisplay> display, glm::vec3 tail, glm::vec3 head,
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), indices.data(), GL_STATIC_DRAW);
     m_indexCount = indices.size();
 
-    std::vector<std::string> files = {"line.vs", "line.fs"};
+    std::vector<std::string> files = {"line_fs.glsl", "line_vs.glsl"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
     m_shader = std::make_unique<Shader>(files, types);
 }
@@ -42,7 +38,11 @@ Line::~Line() {
     glDeleteBuffers(1, &m_IBO);
 }
 
-void Line::Render() {
+void Line::Render(const std::shared_ptr<GlutDisplay> display) {
+    if(m_shader == nullptr || display == nullptr) {
+        throw new Exception("Null param in render function");
+    }
+
     m_shader->UseShader();
 
     GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
@@ -51,7 +51,7 @@ void Line::Render() {
         exit(-1);
     }
 
-    glm::mat4 mvp = m_display->GetProjectionMatrix() * m_display->GetCameraModule()->GetViewMatrix() * GetWorld();
+    glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCameraModule()->GetViewMatrix() * GetWorld();
     glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
     GLint colorLocation = glGetUniformLocation(m_shader->GetProgram(), "gColor");

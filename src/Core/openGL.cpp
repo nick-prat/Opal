@@ -51,12 +51,13 @@ OpenGL::OpenGL(int width, int height)
     // Look up all GL functions for later use
     InitAPI();
 
+    // Create standard display with screen dimensions
+    m_display = std::make_shared<GlutDisplay>(width, height);
+
     // Create singleton instance of RenderChain (Capability of 10 objects)
-    if(!RenderChain::CreateInstance(false)) {
+    if(!RenderChain::CreateInstance(m_display, false)) {
         throw Exception("Couldn't Create Instance of RenderChain");
     }
-
-    m_display = std::make_shared<GlutDisplay>(width, height);
 
     // Log information about current context
     std::cout << "Information: " << std::endl;
@@ -73,7 +74,7 @@ OpenGL::OpenGL(int width, int height)
         throw Exception("Couldn't open model selection file");
     }
 
-    m_renderObjects = ResourceLoader::LoadScene(m_display, "defscene.json");
+    m_renderObjects = ResourceLoader::LoadScene("defscene.json");
     for(auto obj : m_renderObjects) {
         RenderChain::GetInstance()->AttachRenderObject(obj);
     }
@@ -102,12 +103,12 @@ OpenGL::OpenGL(int width, int height)
     auto square = std::make_shared<Model3D>(meshes, textures);
 
     //m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
-    m_staticModels.push_back(std::make_shared<StaticModel>(m_display, square));
+    m_staticModels.push_back(std::make_shared<StaticModel>(square));
     m_staticModels[0]->GetModel()->PrintTextures();
     m_staticModels[0]->Translate(glm::vec3(-2.5f, 0.0f, 0.0f));
     m_staticModels[0]->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
-    m_staticModels.push_back(std::make_shared<StaticModel>(m_display, square));
+    m_staticModels.push_back(std::make_shared<StaticModel>(square));
     m_staticModels[1]->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 
     for(std::shared_ptr<StaticModel> model : m_staticModels) {

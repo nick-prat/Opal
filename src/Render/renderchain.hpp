@@ -4,6 +4,7 @@
 #include <memory>
 #include <list>
 
+#include <Display/display.hpp>
 #include <Render/renderobject.hpp>
 
 class RenderChain {
@@ -12,17 +13,20 @@ public:
     void RenderObjectChain();
 
     static RenderChain*& GetInstance();
-    static bool CreateInstance(bool vol = false);
+    static bool CreateInstance(std::shared_ptr<GlutDisplay> display, bool vol = false);
     static void DeleteInstance();
 
+    void SetDisplay(std::shared_ptr<GlutDisplay> display);
+
 private:
-    RenderChain(bool vol);
+    RenderChain(std::shared_ptr<GlutDisplay> display, bool vol);
     ~RenderChain();
 
 private:
     static RenderChain* m_renderChain;
 
     bool m_volatile;
+    std::shared_ptr<GlutDisplay> m_display;
     std::list<std::weak_ptr<IRenderObject>> m_objects;
 };
 

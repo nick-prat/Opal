@@ -6,6 +6,10 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 #include <json.hpp>
 
 #include <Utilities/utilities.hpp>
@@ -18,7 +22,7 @@ using namespace gl;
 using namespace Utilities;
 using json = nlohmann::json;
 
-std::shared_ptr<IRenderObject> LoadLineJSON(std::shared_ptr<GlutDisplay> display, json object) {
+std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
     glm::vec3 head, tail, color;
 
     std::string name = "";
@@ -50,10 +54,10 @@ std::shared_ptr<IRenderObject> LoadLineJSON(std::shared_ptr<GlutDisplay> display
         return nullptr;
     }
 
-    return std::make_shared<Line>(display, head, tail, color);
+    return std::make_shared<Line>(head, tail, color);
 }
 
-std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::shared_ptr<GlutDisplay> display, std::string filename) {
+std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::string filename) {
     std::vector<std::shared_ptr<IRenderObject>> renderObjects;
 
     std::string contents;
@@ -76,9 +80,9 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::share
             std::string type = object["type"];
             try {
                 if(type == "line") {
-                    renderObjects.push_back(LoadLineJSON(display, object));
+                    renderObjects.push_back(LoadLineJSON(object));
                 } else if(type == "staticModel") {
-                    auto model = std::make_shared<StaticModel>(display, LoadModel3D(object["filename"]));
+                    auto model = std::make_shared<StaticModel>(LoadModel3D(object["filename"]));
                     renderObjects.push_back(model);
                 }
             } catch (Exception& error) {
