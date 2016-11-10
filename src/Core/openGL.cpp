@@ -65,15 +65,6 @@ OpenGL::OpenGL(int width, int height)
     std::cout << "\tDisplay Address: " << m_display << std::endl;
     std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
 
-    std::string line;
-    std::ifstream file("model.txt");
-
-    if(file.is_open()) {
-        getline(file, line);
-    } else {
-        throw Exception("Couldn't open model selection file");
-    }
-
     m_renderObjects = ResourceLoader::LoadScene("defscene.json");
     for(auto obj : m_renderObjects) {
         RenderChain::GetInstance()->AttachRenderObject(obj);

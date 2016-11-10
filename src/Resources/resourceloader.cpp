@@ -22,6 +22,23 @@ using namespace gl;
 using namespace Utilities;
 using json = nlohmann::json;
 
+std::shared_ptr<IRenderObject> LoadRawJSON(json object) {
+    std::string name = "";
+    try {
+        name = object["name"];
+    } catch (std::domain_error error) {
+        name = "null";
+    }
+
+    std::vector<std::vector<float>> verts = object["vertices"];
+    for(std::vector<float> floats : verts) {
+        std::cout << floats.size() << std::endl;
+    }
+
+    throw Exception("not done yet");
+    return nullptr;
+}
+
 std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
     glm::vec3 head, tail, color;
 
@@ -74,13 +91,15 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::strin
 
     try {
         json scene = json::parse(contents);
-        std::vector<json> objects = scene["objects"];
+        std::vector<json> objects = scene["staticObjects"];
 
         for(json object : objects) {
             std::string type = object["type"];
             try {
                 if(type == "line") {
                     renderObjects.push_back(LoadLineJSON(object));
+                //} else if(type == "raw") {
+                //    renderObjects.push_back(LoadRawJSON(object));
                 } else if(type == "staticModel") {
                     auto model = std::make_shared<StaticModel>(LoadModel3D(object["filename"]));
                     renderObjects.push_back(model);
