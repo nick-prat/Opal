@@ -28,9 +28,9 @@
         },
         {
             "type": "staticmodel",
-            "datatype": "raw",
+            "datatype": "rawkkk",
             "name": "square",
-            "matname": "bear",
+            "matname": "bear/bear",
             "vertices": [
                 [-1.0, 1.0, 0.0],
                 [1.0, -1.0, 0.0],
@@ -43,7 +43,7 @@
                 [0.0, 0.0],
                 [1.0, 1.0]
             ],
-            "indices": [0, 1, 2, 0, 3, 1]
+            "indices": [2, 1, 0, 1, 3, 0]
         }
     ]
 }

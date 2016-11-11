@@ -1,3 +1,14 @@
+/*
+ *
+ *  Resource loader, functions for loading all supported data types
+ *      - Loads scene information from json
+ *      - Loads textures form TGA's
+ *      - Loads models from 3ds
+ *
+ *  TODO Change all functions to throw errors instead of return values
+ *
+ */
+
 #include "resourceloader.hpp"
 
 #include <glm/glm.hpp>
@@ -30,8 +41,6 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
     } catch (std::domain_error& error) {
         type = "normal";
     }
-
-    std::cout << type << std::endl;
 
     if(type == "normal") {
         return std::make_shared<StaticModel>(ResourceLoader::LoadModel3D(object["filename"]));
@@ -82,19 +91,17 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         }
 
         std::vector<Model3D::Vertex> vertices;
-        std::cout << verts.size() << std::endl;
-        std::cout << norms.size() << std::endl;
-        std::cout << uvs.size() << std::endl;
-
         for(uint i = 0; i < verts.size(); i++) {
             vertices.push_back(Model3D::Vertex(verts[i], norms[i], uvs[i]));
         }
 
         std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
         meshes.push_back(std::make_shared<Model3D::Mesh>(vertices, indices));
-        meshes[0]->SetMatName(object["matname"]);
+        meshes[0]->SetMatName("texture");
 
-        return nullptr;
+        std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
+        textures["texture"] = ResourceLoader::LoadTexture(object["matname"], true);
+        return std::make_shared<StaticModel>(std::make_shared<Model3D>(meshes, textures));
     } else {
         throw Exception("Unknown data type");
     }
@@ -186,24 +193,20 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
 
     if(!FreeImage_FIFSupportsReading(format)) {
-        std::cout << "FreeImage can't read from this file" << std::endl;
-        return nullptr;
+        throw Exception("FreeImage can't read from file: " + filename);
     }
 
     if(format == FIF_UNKNOWN) {
-        std::cout << "Unknown format: " << filename << std::endl;
-        return nullptr;
+        throw Exception("Unknown format for file: " + filename);
     }
 
     img = FreeImage_Load(format, filename.c_str());
 
     if(!img) {
-        std::cout << "Couldn't load image: " << filename << std::endl;
-        return nullptr;
+        throw Exception("Couldn't load image data for file: " + filename);
     }
 
     if(FreeImage_GetBPP(img) != 32) {
-        std::cout << "converting to 32 bits for image " << filename << std::endl;
         FIBITMAP* oldImg = img;
         img = FreeImage_ConvertTo32Bits(oldImg);
         FreeImage_Unload(oldImg);
@@ -216,7 +219,8 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
     unsigned char* bytes = FreeImage_GetBits(img);
 
     if(bytes == nullptr) {
-        std::cout << "couldn't load image bytes for " << filename << std::endl;
+        FreeImage_Unload(img);
+        throw Exception("couldn't load image bytes for file: " + filename);
     }
 
     GLuint glTexture;
@@ -232,7 +236,8 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
     glBindTexture(GL_TEXTURE_2D, 0);
 
     if(!glIsTexture(glTexture)) {
-        std::cout << "texture is not valid " << glTexture << std::endl;
+        FreeImage_Unload(img);
+        throw Exception("texture is not valid for file: " + filename);
     }
 
     FreeImage_Unload(img);
@@ -331,9 +336,13 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
         std::string name = std::string(aName.C_Str());
 
         if(textures.find(name) == textures.end()) {
-            std::shared_ptr<Texture> temp = LoadTexture(modelname + "/" + name, true);
-            if(temp != nullptr) {
-                textures[name] = temp;
+            try {
+                std::shared_ptr<Texture> temp = LoadTexture(modelname + "/" + name, true);
+                if(temp != nullptr) {
+                    textures[name] = temp;
+                }
+            } catch (Exception& error) {
+                error.PrintError();
             }
         }
     }

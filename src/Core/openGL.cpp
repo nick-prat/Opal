@@ -70,42 +70,6 @@ OpenGL::OpenGL(int width, int height)
         RenderChain::GetInstance()->AttachRenderObject(obj);
     }
 
-    std::vector<Model3D::Vertex> verts;
-    verts.push_back(Model3D::Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(0.0f, 1.0f)));
-    verts.push_back(Model3D::Vertex(glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(1.0f, 0.0f)));
-    verts.push_back(Model3D::Vertex(glm::vec3(-1.0f, -1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(0.0f, 0.0f)));
-    verts.push_back(Model3D::Vertex(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec2(1.0f, 1.0f)));
-
-    std::vector<GLuint> indices;
-    indices.push_back(0);
-    indices.push_back(1);
-    indices.push_back(2);
-    indices.push_back(0);
-    indices.push_back(3);
-    indices.push_back(1);
-
-    std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
-    meshes.push_back(std::make_shared<Model3D::Mesh>(verts, indices));
-    meshes[0]->SetMatName("texture");
-
-    std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
-    textures["texture"] = ResourceLoader::LoadTexture("wolf/wolf", false);
-
-    auto square = std::make_shared<Model3D>(meshes, textures);
-
-    //m_staticModel = std::make_shared<StaticModel>(m_display, ResourceLoader::LoadModel3D(line));
-    m_staticModels.push_back(std::make_shared<StaticModel>(square));
-    m_staticModels[0]->GetModel()->PrintTextures();
-    m_staticModels[0]->Translate(glm::vec3(-2.5f, 0.0f, 0.0f));
-    m_staticModels[0]->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-
-    m_staticModels.push_back(std::make_shared<StaticModel>(square));
-    m_staticModels[1]->Rotate(-90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
-
-    for(std::shared_ptr<StaticModel> model : m_staticModels) {
-        RenderChain::GetInstance()->AttachRenderObject(model);
-    }
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
