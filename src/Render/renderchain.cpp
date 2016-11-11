@@ -38,9 +38,12 @@ RenderChain::~RenderChain() {
     delete m_renderChain;
 }
 
-bool RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
-    m_objects.push_back(object);
-    return true;
+void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
+    if(object.lock() != nullptr) {
+        m_objects.push_back(object);
+    } else {
+        throw Exception("Null param passed to attach render object");
+    }
 }
 
 void RenderChain::RenderObjectChain() {
@@ -50,7 +53,7 @@ void RenderChain::RenderObjectChain() {
         if(obj == nullptr) {
             continue;
         }
-        
+
         try {
             if(obj) {
                 obj->Render(m_display);

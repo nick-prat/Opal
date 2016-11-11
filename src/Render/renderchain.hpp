@@ -9,7 +9,7 @@
 
 class RenderChain {
 public:
-    bool AttachRenderObject(std::weak_ptr<IRenderObject> object);
+    void AttachRenderObject(std::weak_ptr<IRenderObject> object);
     void RenderObjectChain();
 
     static RenderChain*& GetInstance();
