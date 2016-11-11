@@ -22,52 +22,106 @@ using namespace gl;
 using namespace Utilities;
 using json = nlohmann::json;
 
-std::shared_ptr<IRenderObject> LoadRawJSON(json object) {
-    std::string name = "";
+std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
+    std::string type = "";
+
     try {
-        name = object["name"];
-    } catch (std::domain_error error) {
-        name = "null";
+        type = object["datatype"];
+    } catch (std::domain_error& error) {
+        type = "normal";
     }
 
-    std::vector<std::vector<float>> verts = object["vertices"];
-    for(std::vector<float> floats : verts) {
-        std::cout << floats.size() << std::endl;
-    }
+    std::cout << type << std::endl;
 
-    throw Exception("not done yet");
-    return nullptr;
+    if(type == "normal") {
+        return std::make_shared<StaticModel>(ResourceLoader::LoadModel3D(object["filename"]));
+    } else if(type == "raw") {
+        std::vector<glm::vec3> verts;
+        std::vector<std::vector<float>> vertsf = object["vertices"];
+        for(std::vector<float> vert : vertsf) {
+            if(vert.size() != 3) {
+                continue;
+            }
+            verts.push_back(glm::vec3(vert[0], vert[1], vert[2]));
+        }
+
+        std::vector<GLuint> indices;
+        std::vector<uint> indicesf = object["indices"];
+        for(uint index : indicesf) {
+            indices.push_back(index);
+        }
+
+        std::vector<glm::vec3> norms;
+        try {
+            std::vector<std::vector<float>> normsf = object["normals"];
+            for(std::vector<float> norm : normsf) {
+                if(norm.size() != 3) {
+                    continue;
+                }
+                norms.push_back(glm::vec3(norm[0], norm[1], norm[2]));
+            }
+        } catch (std::domain_error& error) {
+            for(uint i = 0; i < verts.size(); i++) {
+                norms.push_back(glm::vec3(0.0f));
+            }
+        }
+
+        std::vector<glm::vec2> uvs;
+        try {
+            std::vector<std::vector<float>> uvsf = object["uvs"];
+            for(std::vector<float> uv : uvsf) {
+                if(uv.size() != 2) {
+                    continue;
+                }
+                uvs.push_back(glm::vec2(uv[0], uv[1]));
+            }
+        } catch (std::domain_error& error) {
+            for(uint i = 0; i < verts.size(); i++) {
+                uvs.push_back(glm::vec2(0.0f));
+            }
+        }
+
+        std::vector<Model3D::Vertex> vertices;
+        std::cout << verts.size() << std::endl;
+        std::cout << norms.size() << std::endl;
+        std::cout << uvs.size() << std::endl;
+
+        for(uint i = 0; i < verts.size(); i++) {
+            vertices.push_back(Model3D::Vertex(verts[i], norms[i], uvs[i]));
+        }
+
+        std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
+        meshes.push_back(std::make_shared<Model3D::Mesh>(vertices, indices));
+        meshes[0]->SetMatName(object["matname"]);
+
+        return nullptr;
+    } else {
+        throw Exception("Unknown data type");
+    }
 }
 
 std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
     glm::vec3 head, tail, color;
 
-    std::string name = "";
-    try {
-        name = object["name"];
-    } catch (std::domain_error error) {
-        name = "null";
-    }
-
     std::vector<float> head3f = object["head"];
     if(head3f.size() == 3) {
         head = glm::vec3(head3f[0], head3f[1], head3f[2]);
     } else {
-        throw Exception("head element size is incorrect: " + name);
+        throw Exception("head element size is incorrect");
     }
 
     std::vector<float> tail3f = object["tail"];
     if(tail3f.size() == 3) {
         tail = glm::vec3(tail3f[0], tail3f[1], tail3f[2]);
     } else {
-        throw Exception("tail element size is incorrect: " + name);
+        throw Exception("tail element size is incorrect");
     }
 
     std::vector<float> color3f = object["color"];
     if(head3f.size() == 3) {
         color = glm::vec3(color3f[0], color3f[1], color3f[2]);
     } else {
-        throw Exception("color element size is incorrect: " + name);
+        throw Exception("color element size is incorrect");
         return nullptr;
     }
 
@@ -94,18 +148,29 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::strin
         std::vector<json> objects = scene["staticObjects"];
 
         for(json object : objects) {
-            std::string type = object["type"];
+            std::string type = "";
+            std::string name = "";
+
             try {
+                try {
+                    name = object["name"];
+                } catch (std::domain_error& error) {
+                    name = "null";
+                }
+
+                type = object["type"];
+
+                std::shared_ptr<IRenderObject> rObject;
                 if(type == "line") {
-                    renderObjects.push_back(LoadLineJSON(object));
-                //} else if(type == "raw") {
-                //    renderObjects.push_back(LoadRawJSON(object));
-                } else if(type == "staticModel") {
-                    auto model = std::make_shared<StaticModel>(LoadModel3D(object["filename"]));
-                    renderObjects.push_back(model);
+                    rObject = LoadLineJSON(object);
+                } else if(type == "staticmodel") {
+                    rObject = LoadStaticModelJSON(object);
+                }
+                if(rObject != nullptr) {
+                    renderObjects.push_back(rObject);
                 }
             } catch (Exception& error) {
-                error.PrintError();
+                std::cout << name << " : " << error.what() << std::endl;
             }
         }
     } catch(std::exception& error) {
