@@ -28,7 +28,7 @@
         },
         {
             "type": "staticmodel",
-            "datatype": "rawkkk",
+            "datatype": "raw",
             "name": "square",
             "matname": "bear/bear",
             "vertices": [
