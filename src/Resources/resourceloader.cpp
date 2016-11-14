@@ -264,11 +264,9 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes) {
+void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes) {
     for(uint i = 0; i < node->mNumChildren; i++) {
-        if(!LoadNode(scene, node->mChildren[i], meshes)) {
-            return false;
-        }
+        LoadNode(scene, node->mChildren[i], meshes);
     }
 
     for(uint i = 0; i < node->mNumMeshes; i++) {
@@ -300,8 +298,7 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
                 }
             }
         } else {
-            std::cout << "Node was missing faces, load cancled" << std::endl;
-            return false;
+            throw Exception("Node was missing faces, load cancled");
         }
 
         glm::mat4x4 transformation;
@@ -312,8 +309,6 @@ bool LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
 
         meshes.push_back(rmesh);
     }
-
-    return true;
 }
 
 std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
