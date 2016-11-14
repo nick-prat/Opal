@@ -283,7 +283,7 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
                 : glm::vec3(0.0f, 0.0f, 0.0f);
 
             vertex.texCoord = (mesh->HasTextureCoords(0))
-                ? glm::vec2(mesh->mTextureCoords[0][j].y, mesh->mTextureCoords[0][j].y)
+                ? glm::vec2(mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y)
                 : glm::vec2(0.0f, 0.0f);
 
             vertices.push_back(vertex);
