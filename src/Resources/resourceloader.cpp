@@ -49,7 +49,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         std::vector<std::vector<float>> vertsf = object["vertices"];
         for(std::vector<float> vert : vertsf) {
             if(vert.size() != 3) {
-                continue;
+                throw Exception("Vertex data is jumbled");
             }
             verts.push_back(glm::vec3(vert[0], vert[1], vert[2]));
         }
@@ -57,6 +57,9 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         std::vector<GLuint> indices;
         std::vector<uint> indicesf = object["indices"];
         for(uint index : indicesf) {
+            if(index >= verts.size()) {
+                throw Exception("Index is out of range");
+            }
             indices.push_back(index);
         }
 
@@ -65,11 +68,12 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
             std::vector<std::vector<float>> normsf = object["normals"];
             for(std::vector<float> norm : normsf) {
                 if(norm.size() != 3) {
-                    continue;
+                    throw Exception("Normal data is jumbled");
                 }
                 norms.push_back(glm::vec3(norm[0], norm[1], norm[2]));
             }
         } catch (std::domain_error& error) {
+            norms.clear();
             for(uint i = 0; i < verts.size(); i++) {
                 norms.push_back(glm::vec3(0.0f));
             }
@@ -80,11 +84,12 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
             std::vector<std::vector<float>> uvsf = object["uvs"];
             for(std::vector<float> uv : uvsf) {
                 if(uv.size() != 2) {
-                    continue;
+                    throw Exception("UV data is jumbled");
                 }
                 uvs.push_back(glm::vec2(uv[0], uv[1]));
             }
         } catch (std::domain_error& error) {
+            uvs.clear();
             for(uint i = 0; i < verts.size(); i++) {
                 uvs.push_back(glm::vec2(0.0f));
             }
