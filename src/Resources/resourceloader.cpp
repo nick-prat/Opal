@@ -293,7 +293,7 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
                 }
             }
         } else {
-            std::cout << "Node was missing faces, load cancled" << std::endl;
+            throw Exception("Node was missing faces, load cancled");
         }
 
         glm::mat4x4 transformation;
