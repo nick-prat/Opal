@@ -42,8 +42,10 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         type = "normal";
     }
 
+    std::shared_ptr<IRenderObject> rObject;
+
     if(type == "normal") {
-        return std::make_shared<StaticModel>(ResourceLoader::LoadModel3D(object["filename"]));
+        rObject = std::make_shared<StaticModel>(ResourceLoader::LoadModel3D(object["filename"]));
     } else if(type == "raw") {
         std::vector<glm::vec3> verts;
         std::vector<std::vector<float>> vertsf = object["vertices"];
@@ -106,10 +108,25 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
 
         std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
         textures["texture"] = ResourceLoader::LoadTexture(object["matname"], true);
-        return std::make_shared<StaticModel>(std::make_shared<Model3D>(meshes, textures));
+
+        rObject = std::make_shared<StaticModel>(std::make_shared<Model3D>(meshes, textures));
     } else {
         throw Exception("Unknown data type");
     }
+
+    try {
+        std::vector<float> scale = object["scale"];
+        rObject->Scale(glm::vec3(scale[0], scale[1], scale[2]));
+    } catch (std::domain_error& error) {
+        std::cout << "no scale" << std::endl;
+    }
+
+    try {
+        std::vector<float> translation = object["translation"];
+        rObject->Translate(glm::vec3(translation[0], translation[1], translation[2]));
+    } catch (std::domain_error& error) {}
+
+    return rObject;
 }
 
 std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
@@ -134,7 +151,6 @@ std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
         color = glm::vec3(color3f[0], color3f[1], color3f[2]);
     } else {
         throw Exception("color element size is incorrect");
-        return nullptr;
     }
 
     return std::make_shared<Line>(head, tail, color);

@@ -27,8 +27,7 @@ void IRenderObject::Rotate(const float& degrees, const glm::vec3& rotate)
     m_rotate = glm::rotate(m_rotate, degrees, rotate);
 }
 
-void IRenderObject::Scale(const glm::mat4& scale)
+void IRenderObject::Scale(const glm::vec3& scale)
 {
-    m_scale = scale;
-    m_world =  m_translate * m_rotate * m_scale;
+    m_scale = glm::scale(m_scale, scale);
 }

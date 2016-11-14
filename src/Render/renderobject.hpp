@@ -18,7 +18,7 @@ public:
 
     void Translate(const glm::vec3& trans);
     void Rotate(const float& degrees, const glm::vec3& rotate);
-    void Scale(const glm::mat4& scale);
+    void Scale(const glm::vec3& scale);
 
     glm::mat4 GetWorld();
 
