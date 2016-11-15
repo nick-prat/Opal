@@ -4,7 +4,7 @@
 int main(int argc, char **args)
 {
     if(argc != 2) {
-        std::cout << "Arguments are invalid, use:\n\tOpenGL [scene_name]" << std::endl;
+        std::cout << "Arguments are invalid, use:\n\t" << args[0] << " [scene_name]" << std::endl;
         exit(-1);
     }
 

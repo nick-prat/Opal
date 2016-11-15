@@ -54,7 +54,7 @@ OpenGL::OpenGL(int width, int height, std::string scene)
     // Create standard display with screen dimensions
     m_display = std::make_shared<GlutDisplay>(width, height);
 
-    // Create singleton instance of RenderChain (Capability of 10 objects)
+    // Create singleton instance of RenderChain
     if(!RenderChain::CreateInstance(m_display, false)) {
         throw Exception("Couldn't Create Instance of RenderChain");
     }
