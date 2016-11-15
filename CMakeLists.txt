@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
 project(OpenGL)
-add_definitions(-DVERSION_MIN)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g  -Wall -pedantic -Wextra -std=c++14")
 include_directories("./src")
 
@@ -12,7 +11,7 @@ set(SOURCE_FILES
     # Root
     src/main.cpp
 
-    # Display/
+    # Display
     src/Display/display.cpp
 	src/Display/Modules/inputmodule.cpp
     src/Display/Modules/cameramodule.cpp
@@ -39,7 +38,8 @@ set(SOURCE_FILES
 
     # Core
     src/Core/openGL.cpp
-    src/Core/glapi.cpp )
+    src/Core/glapi.cpp
+)
 
 add_executable(OpenGL ${SOURCE_FILES})
 find_package(Threads REQUIRED)

@@ -16,7 +16,7 @@ public:
     void DisplayFunc();
     void KeyboardFunc(unsigned char key, bool state, int x, int y);
 
-    bool LoadScene(std::string name);
+    void LoadScene(std::string name);
 
     static bool CreateInstance(int width, int height);
     static void DeleteInstance();

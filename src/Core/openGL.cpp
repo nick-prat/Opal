@@ -65,10 +65,7 @@ OpenGL::OpenGL(int width, int height)
     std::cout << "\tDisplay Address: " << m_display << std::endl;
     std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
 
-    m_renderObjects = ResourceLoader::LoadScene("defscene.json");
-    for(auto obj : m_renderObjects) {
-        RenderChain::GetInstance()->AttachRenderObject(obj);
-    }
+    LoadScene("defscene.json");
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -127,6 +124,9 @@ void OpenGL::DisplayFunc() {
     }
 }
 
-bool OpenGL::LoadScene(std::string name) {
-    return true;
+void OpenGL::LoadScene(std::string name) {
+    m_renderObjects = ResourceLoader::LoadScene(name);
+    for(auto obj : m_renderObjects) {
+        RenderChain::GetInstance()->AttachRenderObject(obj);
+    }
 }

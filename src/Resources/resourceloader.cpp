@@ -117,9 +117,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
     try {
         std::vector<float> scale = object["scale"];
         rObject->Scale(glm::vec3(scale[0], scale[1], scale[2]));
-    } catch (std::domain_error& error) {
-        std::cout << "no scale" << std::endl;
-    }
+    } catch (std::domain_error& error) {}
 
     try {
         std::vector<float> translation = object["translation"];
