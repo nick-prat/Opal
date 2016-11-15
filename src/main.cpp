@@ -3,6 +3,12 @@
 
 int main(int argc, char **args)
 {
+    if(argc != 2) {
+        std::cout << "Arguments are invalid, use:\n\tOpenGL [scene_name]" << std::endl;
+        exit(-1);
+    }
+
+    std::string scene = args[1];
     const char* title = "OpenGL Project";
     int width = 1024;
     int height = 576;
@@ -34,7 +40,7 @@ int main(int argc, char **args)
     });
 
     // Create singleton instance of OpenGL
-    if(!OpenGL::CreateInstance(width, height))
+    if(!OpenGL::CreateInstance(width, height, scene))
     {
         std::cout << "Couldn't Create Instance of OpenGL" << std::endl;
         return -1;

@@ -21,14 +21,14 @@ void OpenGL::DeleteInstance() {
     m_openGL = nullptr;
 }
 
-bool OpenGL::CreateInstance(int width, int height) {
+bool OpenGL::CreateInstance(int width, int height, std::string scene) {
     if(m_openGL != nullptr) {
         std::cout << "OpenGL has already been created, destroy first";
         return false;
     }
 
     try {
-        m_openGL = new OpenGL(width, height);
+        m_openGL = new OpenGL(width, height, scene);
     } catch (Exception& error) {
         error.PrintError();
         delete m_openGL;
@@ -45,7 +45,7 @@ OpenGL*& OpenGL::GetInstance() {
 
 // Non Static Functions
 
-OpenGL::OpenGL(int width, int height)
+OpenGL::OpenGL(int width, int height, std::string scene)
         : m_display(nullptr) {
 
     // Look up all GL functions for later use
@@ -60,12 +60,14 @@ OpenGL::OpenGL(int width, int height)
     }
 
     // Log information about current context
+    std::cout << std::endl;
     std::cout << "Information: " << std::endl;
     std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "\tDisplay Address: " << m_display << std::endl;
     std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
+    std::cout << std::endl;
 
-    LoadScene("defscene.json");
+    LoadScene(scene);
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);

@@ -157,6 +157,7 @@ std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
 std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::string filename) {
     std::vector<std::shared_ptr<IRenderObject>> renderObjects;
 
+    filename = "Scenes/" + filename + ".json";
     std::string contents;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
     if (in) {

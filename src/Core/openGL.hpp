@@ -18,12 +18,12 @@ public:
 
     void LoadScene(std::string name);
 
-    static bool CreateInstance(int width, int height);
+    static bool CreateInstance(int width, int height, std::string scene);
     static void DeleteInstance();
     static OpenGL*& GetInstance();
 
 private:
-    OpenGL(int width, int height);
+    OpenGL(int width, int height, std::string scene);
     ~OpenGL();
 
 private:
