@@ -23,7 +23,7 @@ private:
 
 private:
     static Log m_log;
-    std::ofstream m_logFile;
+    std::fstream m_logFile;
 };
 
 #endif // _LOG_H
