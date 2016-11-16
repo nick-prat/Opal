@@ -41,7 +41,7 @@ void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
     if(object.lock() != nullptr) {
         m_objects.push_back(object);
     } else {
-        throw GenericException("Null param passed to attach render object");
+        throw generic_exception("Null param passed to attach render object");
     }
 }
 
@@ -57,7 +57,7 @@ void RenderChain::RenderObjectChain() {
             if(obj) {
                 obj->Render(m_display);
             }
-        } catch(GenericException& error) {
+        } catch(generic_exception& error) {
             error.PrintError();
         }
     }

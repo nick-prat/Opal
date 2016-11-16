@@ -29,7 +29,7 @@ bool OpenGL::CreateInstance(int width, int height, std::string scene) {
 
     try {
         m_openGL = new OpenGL(width, height, scene);
-    } catch (GenericException& error) {
+    } catch (generic_exception& error) {
         error.PrintError();
         delete m_openGL;
         m_openGL = nullptr;
@@ -56,7 +56,7 @@ OpenGL::OpenGL(int width, int height, std::string scene)
 
     // Create singleton instance of RenderChain
     if(!RenderChain::CreateInstance(m_display, false)) {
-        throw GenericException("Couldn't Create Instance of RenderChain");
+        throw generic_exception("Couldn't Create Instance of RenderChain");
     }
 
     // Log information about current context

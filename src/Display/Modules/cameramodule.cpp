@@ -10,7 +10,7 @@ GlutDisplay::CameraModule::CameraModule() {
     m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
     if(!InitCamera()) {
-        throw GenericException("Couldn't initialize camera!");
+        throw generic_exception("Couldn't initialize camera!");
     }
 }
 

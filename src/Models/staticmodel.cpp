@@ -14,7 +14,7 @@ StaticModel::StaticModel(const std::shared_ptr<Model3D> model)
         : m_model(model) {
 
     if(model == nullptr) {
-        throw GenericException("Null param passed to StaticModel constructor");
+        throw generic_exception("Null param passed to StaticModel constructor");
     }
 
     m_meshCount = m_model->GetMeshes().size();

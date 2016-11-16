@@ -40,7 +40,7 @@ Line::~Line() {
 
 void Line::Render(const std::shared_ptr<GlutDisplay> display) {
     if(m_shader == nullptr || display == nullptr) {
-        throw GenericException("Null param in render function");
+        throw generic_exception("Null param in render function");
     }
 
     m_shader->UseShader();

@@ -14,7 +14,7 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
         : m_numShaders(0), m_shaderProgram(0) {
 
     if(fileNames.size() != types.size() && fileNames.size() != 0 && types.size() != 0) {
-        throw GenericException("Couldn't initialize shader: incorrect information passed");
+        throw generic_exception("Couldn't initialize shader: incorrect information passed");
     }
 
     for(std::string& filename: fileNames) {
@@ -31,7 +31,7 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
 
         std::ifstream file(fileNames[i]);
         if(!file.is_open()) {
-            throw GenericException(std::string("Couldn't open file: ") + fileNames[i]);
+            throw generic_exception(std::string("Couldn't open file: ") + fileNames[i]);
         }
 
         std::stringstream buffer;
@@ -50,7 +50,7 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
         gl::glGetShaderiv(m_shaderObj[i], GL_COMPILE_STATUS, &success);
         if(success == GL_FALSE) {
             gl::glGetShaderInfoLog(m_shaderObj[i], sizeof(info), nullptr, info);
-            throw GenericException(info);
+            throw generic_exception(info);
         }
 
         gl::glAttachShader(m_shaderProgram, m_shaderObj[i]);
@@ -62,7 +62,7 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
     gl::glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
     if(success == GL_FALSE) {
         gl::glGetProgramInfoLog(m_shaderProgram, sizeof(info), nullptr, info);
-        throw GenericException(std::string("Shader IV didn't succeed ") + info);
+        throw generic_exception(std::string("Shader IV didn't succeed ") + info);
     }
 
     for(unsigned int i = 0; i < m_numShaders; i++) {
@@ -81,7 +81,7 @@ void Shader::UseShader() {
     if(status == GL_TRUE) {
         gl::glUseProgram(m_shaderProgram);
     } else {
-        throw GenericException("Couldn't validate program");
+        throw generic_exception("Couldn't validate program");
     }
 }
 
