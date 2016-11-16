@@ -5,12 +5,12 @@
 #include <thread>
 #include <fstream>
 
+#include <Utilities/exceptions.hpp>
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
 #include <Resources/resourceloader.hpp>
 
 using namespace gl;
-using Utilities::Exception;
 
 OpenGL* OpenGL::m_openGL = nullptr;
 
@@ -29,7 +29,7 @@ bool OpenGL::CreateInstance(int width, int height, std::string scene) {
 
     try {
         m_openGL = new OpenGL(width, height, scene);
-    } catch (Exception& error) {
+    } catch (GenericException& error) {
         error.PrintError();
         delete m_openGL;
         m_openGL = nullptr;
@@ -56,7 +56,7 @@ OpenGL::OpenGL(int width, int height, std::string scene)
 
     // Create singleton instance of RenderChain
     if(!RenderChain::CreateInstance(m_display, false)) {
-        throw Exception("Couldn't Create Instance of RenderChain");
+        throw GenericException("Couldn't Create Instance of RenderChain");
     }
 
     // Log information about current context

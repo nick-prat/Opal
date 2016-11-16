@@ -2,11 +2,10 @@
 #include <stdlib.h>
 #include <malloc.h>
 
-#include <Utilities/utilities.hpp>
+#include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 #include <Render/renderchain.hpp>
 
-using Utilities::Exception;
 
 RenderChain* RenderChain::m_renderChain = nullptr;
 
@@ -42,7 +41,7 @@ void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
     if(object.lock() != nullptr) {
         m_objects.push_back(object);
     } else {
-        throw Exception("Null param passed to attach render object");
+        throw GenericException("Null param passed to attach render object");
     }
 }
 
@@ -58,7 +57,7 @@ void RenderChain::RenderObjectChain() {
             if(obj) {
                 obj->Render(m_display);
             }
-        } catch(Exception& error) {
+        } catch(GenericException& error) {
             error.PrintError();
         }
     }

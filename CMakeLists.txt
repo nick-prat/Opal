@@ -33,6 +33,7 @@ set(SOURCE_FILES
     src/Resources/model3d.cpp
 
     # Utilities
+    src/Utilities/exceptions.cpp
     src/Utilities/utilities.cpp
     src/Utilities/log.cpp
 

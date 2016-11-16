@@ -23,14 +23,13 @@
 #include <assimp/postprocess.h>
 #include <json.hpp>
 
-#include <Utilities/utilities.hpp>
+#include <Utilities/exceptions.hpp>
 #include <Core/glapi.hpp>
 #include <Resources/model3d.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>
 
 using namespace gl;
-using namespace Utilities;
 using json = nlohmann::json;
 
 std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
@@ -51,7 +50,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         std::vector<std::vector<float>> vertsf = object["vertices"];
         for(std::vector<float> vert : vertsf) {
             if(vert.size() != 3) {
-                throw Exception("Vertex data is jumbled");
+                throw GenericException("Vertex data is jumbled");
             }
             verts.push_back(glm::vec3(vert[0], vert[1], vert[2]));
         }
@@ -60,7 +59,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         std::vector<uint> indicesf = object["indices"];
         for(uint index : indicesf) {
             if(index >= verts.size()) {
-                throw Exception("Index is out of range");
+                throw GenericException("Index is out of range");
             }
             indices.push_back(index);
         }
@@ -70,7 +69,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
             std::vector<std::vector<float>> normsf = object["normals"];
             for(std::vector<float> norm : normsf) {
                 if(norm.size() != 3) {
-                    throw Exception("Normal data is jumbled");
+                    throw GenericException("Normal data is jumbled");
                 }
                 norms.push_back(glm::vec3(norm[0], norm[1], norm[2]));
             }
@@ -86,7 +85,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
             std::vector<std::vector<float>> uvsf = object["uvs"];
             for(std::vector<float> uv : uvsf) {
                 if(uv.size() != 2) {
-                    throw Exception("UV data is jumbled");
+                    throw GenericException("UV data is jumbled");
                 }
                 uvs.push_back(glm::vec2(uv[0], uv[1]));
             }
@@ -111,17 +110,24 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
 
         rObject = std::make_shared<StaticModel>(std::make_shared<Model3D>(meshes, textures));
     } else {
-        throw Exception("Unknown data type");
+        throw GenericException("Unknown data type");
     }
 
     try {
         std::vector<float> scale = object["scale"];
+        if(scale.size() != 3) {
+            throw std::domain_error("scale size is not 3");
+        }
         rObject->Scale(glm::vec3(scale[0], scale[1], scale[2]));
     } catch (std::domain_error& error) {}
 
     try {
         std::vector<float> translation = object["translation"];
         rObject->Translate(glm::vec3(translation[0], translation[1], translation[2]));
+    } catch (std::domain_error& error) {}
+
+    try {
+        std::vector<float> rotation = object["rotation"];
     } catch (std::domain_error& error) {}
 
     return rObject;
@@ -134,21 +140,21 @@ std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
     if(head3f.size() == 3) {
         head = glm::vec3(head3f[0], head3f[1], head3f[2]);
     } else {
-        throw Exception("head element size is incorrect");
+        throw GenericException("head element size is incorrect");
     }
 
     std::vector<float> tail3f = object["tail"];
     if(tail3f.size() == 3) {
         tail = glm::vec3(tail3f[0], tail3f[1], tail3f[2]);
     } else {
-        throw Exception("tail element size is incorrect");
+        throw GenericException("tail element size is incorrect");
     }
 
     std::vector<float> color3f = object["color"];
     if(head3f.size() == 3) {
         color = glm::vec3(color3f[0], color3f[1], color3f[2]);
     } else {
-        throw Exception("color element size is incorrect");
+        throw GenericException("color element size is incorrect");
     }
 
     return std::make_shared<Line>(head, tail, color);
@@ -167,7 +173,7 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::strin
         in.read(&contents[0], contents.size());
         in.close();
     } else {
-        throw Exception("Couldn't load scene " + filename);
+        throw GenericException("Couldn't load scene " + filename);
     }
 
     try {
@@ -196,7 +202,7 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::strin
                 if(rObject != nullptr) {
                     renderObjects.push_back(rObject);
                 }
-            } catch (Exception& error) {
+            } catch (GenericException& error) {
                 std::cout << name << " : " << error.what() << std::endl;
             }
         }
@@ -213,17 +219,17 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
 
     if(!FreeImage_FIFSupportsReading(format)) {
-        throw Exception("FreeImage can't read from file: " + filename);
+        throw GenericException("FreeImage can't read from file: " + filename);
     }
 
     if(format == FIF_UNKNOWN) {
-        throw Exception("Unknown format for file: " + filename);
+        throw GenericException("Unknown format for file: " + filename);
     }
 
     img = FreeImage_Load(format, filename.c_str());
 
     if(!img) {
-        throw Exception("Couldn't load image data for file: " + filename);
+        throw GenericException("Couldn't load image data for file: " + filename);
     }
 
     if(FreeImage_GetBPP(img) != 32) {
@@ -240,7 +246,7 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
 
     if(bytes == nullptr) {
         FreeImage_Unload(img);
-        throw Exception("couldn't load image bytes for file: " + filename);
+        throw GenericException("couldn't load image bytes for file: " + filename);
     }
 
     GLuint glTexture;
@@ -257,7 +263,7 @@ std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool 
 
     if(!glIsTexture(glTexture)) {
         FreeImage_Unload(img);
-        throw Exception("texture is not valid for file: " + filename);
+        throw GenericException("texture is not valid for file: " + filename);
     }
 
     FreeImage_Unload(img);
@@ -313,7 +319,7 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
                 }
             }
         } else {
-            throw Exception("Node was missing faces, load cancled");
+            throw GenericException("Node was missing faces, load cancled");
         }
 
         glm::mat4x4 transformation;
@@ -356,7 +362,7 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
                 if(temp != nullptr) {
                     textures[name] = temp;
                 }
-            } catch (Exception& error) {
+            } catch (GenericException& error) {
                 error.PrintError();
             }
         }

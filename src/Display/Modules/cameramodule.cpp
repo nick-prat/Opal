@@ -2,9 +2,7 @@
 
 #include <iostream>
 
-#include <Utilities/utilities.hpp>
-
-using Utilities::Exception;
+#include <Utilities/exceptions.hpp>
 
 GlutDisplay::CameraModule::CameraModule() {
     m_viewMatrix = glm::mat4(1.0f);
@@ -12,7 +10,7 @@ GlutDisplay::CameraModule::CameraModule() {
     m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
     if(!InitCamera()) {
-        throw Exception("Couldn't initialize camera!");
+        throw GenericException("Couldn't initialize camera!");
     }
 }
 

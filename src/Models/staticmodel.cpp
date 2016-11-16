@@ -1,19 +1,20 @@
 #include "staticmodel.hpp"
 
 #include <memory>
+#include <iostream>
 
 #include <Utilities/utilities.hpp>
+#include <Utilities/exceptions.hpp>
 #include <Core/glapi.hpp>
 #include <Render/Textures/texture.hpp>
 
 using namespace gl;
-using Utilities::Exception;
 
 StaticModel::StaticModel(const std::shared_ptr<Model3D> model)
         : m_model(model) {
 
     if(model == nullptr) {
-        throw Exception("Null param passed to StaticModel constructor");
+        throw GenericException("Null param passed to StaticModel constructor");
     }
 
     m_meshCount = m_model->GetMeshes().size();

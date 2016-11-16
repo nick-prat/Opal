@@ -5,9 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <Core/glapi.hpp>
-#include <Utilities/utilities.hpp>
-
-using Utilities::Exception;
+#include <Utilities/exceptions.hpp>
 
 GlutDisplay::GlutDisplay() {
     m_inputModule = nullptr;
@@ -18,7 +16,7 @@ GlutDisplay::GlutDisplay(int width, int height)
     : m_projMatrix(glm::mat4(1.0f)) {
     if(!InitDisplay(width, height))
     {
-        throw Exception("Couldn't init display");
+        throw GenericException("Couldn't init display");
     }
 }
 
@@ -35,7 +33,7 @@ bool GlutDisplay::InitDisplay(int width, int height) {
         m_projMatrix = glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.1f, 100.0f);
         m_inputModule = std::make_shared<InputModule>();
         m_cameraModule = std::make_shared<CameraModule>();
-    } catch (Exception& error) {
+    } catch (GenericException& error) {
         error.PrintError();
         return false;
     }

@@ -16,7 +16,7 @@ Log::Log()
     stream << "./logs/" << 1900 + parts->tm_year << ":" << 1 + parts->tm_mon << ":" << parts->tm_mday << " - "
             << parts->tm_hour << ":" << parts->tm_min << ":" << parts->tm_sec;
     std::string filename = stream.str();
-    asd
+    
     m_logFile.open(filename, std::fstream::out);
     m_logFile << std::flush;
     if(!m_logFile.is_open()) {
