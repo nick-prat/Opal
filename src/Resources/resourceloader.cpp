@@ -344,7 +344,7 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
     }
 }
 
-std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) throw(bad_resource) {
+std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
     std::string filename = "Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
