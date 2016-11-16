@@ -5,8 +5,6 @@
  *      - Loads textures form TGA's
  *      - Loads models from 3ds
  *
- *  TODO Change all functions to throw errors instead of return values
- *
  */
 
 #include "resourceloader.hpp"
@@ -346,7 +344,7 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
     }
 }
 
-std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
+std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) throw(bad_resource) {
     std::string filename = "Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
@@ -356,9 +354,7 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
         aiProcess_SortByPType);
 
     if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE) {
-        std::cout << "Couldn't open model: " << filename << std::endl;
-        std::cout << "Assimp: " << importer.GetErrorString() << std::endl;
-        return nullptr;
+        throw bad_resource(importer.GetErrorString(), filename);
     }
 
     auto model = std::make_shared<Model3D>();

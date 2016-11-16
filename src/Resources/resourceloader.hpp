@@ -2,6 +2,7 @@
 #define OPENGL_ASSIMP_H
 
 #include <memory>
+#include <Utilities/exceptions.hpp>
 #include <Render/renderobject.hpp>
 #include <Render/Textures/texture.hpp>
 #include <Resources/model3d.hpp>
