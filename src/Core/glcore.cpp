@@ -105,10 +105,6 @@ void GLCore::DisplayFunc() {
 
     std::shared_ptr<InputController> inputController = m_display->GetInputController();
 
-    if(inputController->IsKeyPressed('f')) {
-        m_display->SetMousePosition(0.5f, 0.5f);
-    }
-
     if(m_display->GetInputController()->IsKeyPressed('q')) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
     }

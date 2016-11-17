@@ -64,8 +64,16 @@ uint GlutDisplay::GetHeight() const {
     return m_height;
 }
 
-void GlutDisplay::SetMousePosition(float x, float y) const {
+void GlutDisplay::SetCursorPosition(float x, float y) const {
     glm::clamp(x, 0.0f, 1.0f);
     glm::clamp(y, 0.0f, 1.0f);
     glutWarpPointer((int)(x * m_width), (int)(y * m_height));
+}
+
+void GlutDisplay::SetCursorVisible(bool visible) const {
+    if(visible) {
+        glutSetCursor(GLUT_CURSOR_NONE);
+    } else {
+        glutSetCursor(GLUT_CURSOR_INHERIT);
+    }
 }

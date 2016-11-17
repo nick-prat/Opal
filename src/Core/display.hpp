@@ -22,8 +22,8 @@ public:
     uint GetWidth() const;
     uint GetHeight() const;
 
-    void SetMousePosition(float x, float y) const;
-
+    void SetCursorPosition(float x, float y) const;
+    void SetCursorVisible(bool visible) const;
 
 private:
     uint m_width, m_height;
