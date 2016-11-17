@@ -22,6 +22,8 @@ public:
     uint GetWidth() const;
     uint GetHeight() const;
 
+    void PassiveMotionFunc(int x, int y);
+
     void SetCursorPosition(float x, float y) const;
     void SetCursorVisible(bool visible) const;
 
