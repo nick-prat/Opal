@@ -23,10 +23,13 @@ const char* generic_exception::what() const noexcept {
 
 bad_resource::bad_resource(const std::string& error, const std::string& resourcename)
         : generic_exception(error), m_resourcename(resourcename) {
-
 }
 
 bad_resource::~bad_resource() {}
+
+void bad_resource::PrintError() const {
+    std::cout << "[" << m_resourcename << "] " << m_error << std::endl;
+}
 
 std::string bad_resource::GetResourceName() const {
     return m_resourcename;

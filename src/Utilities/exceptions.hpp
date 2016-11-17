@@ -23,6 +23,7 @@ public:
     bad_resource(const std::string& error, const std::string& resourcename = "null");
     ~bad_resource();
 
+    void PrintError() const override;
     std::string GetResourceName() const;
 
 private:

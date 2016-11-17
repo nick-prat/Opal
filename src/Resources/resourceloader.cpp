@@ -121,7 +121,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
     try {
         std::vector<float> scale = object["scale"];
         if(scale.size() != 3) {
-            throw std::domain_error("scale data size is not 3");
+            throw bad_resource("Scale data size is not 3", name);
         }
         rObject->Scale(glm::vec3(scale[0], scale[1], scale[2]));
     } catch (std::domain_error& error) {}
@@ -129,7 +129,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
     try {
         std::vector<float> translation = object["translation"];
         if(translation.size() != 3) {
-            throw bad_resource("translation data size is not 3", name);
+            throw bad_resource("Translation data size is not 3", name);
         }
         rObject->Translate(glm::vec3(translation[0], translation[1], translation[2]));
     } catch (std::domain_error& error) {}
