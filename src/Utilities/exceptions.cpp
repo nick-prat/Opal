@@ -28,7 +28,7 @@ bad_resource::bad_resource(const std::string& error, const std::string& resource
 bad_resource::~bad_resource() {}
 
 void bad_resource::PrintError() const {
-    std::cout << "[" << m_resourcename << "] " << m_error << std::endl;
+    Log::error("[" + m_resourcename + "] " + m_error, Log::OUT_LOG_CONS);
 }
 
 std::string bad_resource::GetResourceName() const {

@@ -27,6 +27,8 @@ public:
     void SetCursorPosition(float x, float y) const;
     void SetCursorVisible(bool visible) const;
 
+    void SwapBuffers() const;
+
 private:
     uint m_width, m_height;
     std::shared_ptr<InputController> m_inputController;

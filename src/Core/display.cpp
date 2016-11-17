@@ -77,3 +77,7 @@ void GlutDisplay::SetCursorVisible(bool visible) const {
         glutSetCursor(GLUT_CURSOR_INHERIT);
     }
 }
+
+void GlutDisplay::SwapBuffers() const {
+    glutSwapBuffers();
+}
