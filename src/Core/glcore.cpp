@@ -103,23 +103,29 @@ void GLCore::DisplayFunc() {
     glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();
 
-    if(m_display->GetInputController()->IsKeyPressed('q')) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
+    std::shared_ptr<InputController> inputController = m_display->GetInputController();
+
+    if(inputController->IsKeyPressed('f')) {
+        m_display->SetMousePosition(0.5f, 0.5f);
     }
-    if(m_display->GetInputController()->IsKeyPressed('e')) {
+
+    if(m_display->GetInputController()->IsKeyPressed('q')) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
     }
-    if(m_display->GetInputController()->IsKeyPressed('w')) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
+    if(m_display->GetInputController()->IsKeyPressed('e')) {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
     }
-    if(m_display->GetInputController()->IsKeyPressed('s')) {
+    if(m_display->GetInputController()->IsKeyPressed('w')) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
     }
+    if(m_display->GetInputController()->IsKeyPressed('s')) {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
+    }
     if(m_display->GetInputController()->IsKeyPressed('a')) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
+        m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     }
     if(m_display->GetInputController()->IsKeyPressed('d')) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
     }
 
     if(m_display->GetInputController()->IsKeyPressed(' ')) {

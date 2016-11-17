@@ -10,18 +10,23 @@
 class GlutDisplay {
 public:
     GlutDisplay();
-    GlutDisplay(int width, int height);
+    GlutDisplay(uint width, uint height);
     ~GlutDisplay();
 
-    bool InitDisplay(int width, int height);
+    bool InitDisplay(uint width, uint height);
     void Destroy();
 
-    std::shared_ptr<InputController> GetInputController();
-    std::shared_ptr<Camera> GetCamera();
+    std::shared_ptr<InputController> GetInputController() const;
+    std::shared_ptr<Camera> GetCamera() const;
+    glm::mat4 GetProjectionMatrix() const;
+    uint GetWidth() const;
+    uint GetHeight() const;
 
-    glm::mat4 GetProjectionMatrix();
+    void SetMousePosition(float x, float y) const;
+
 
 private:
+    uint m_width, m_height;
     std::shared_ptr<InputController> m_inputController;
     std::shared_ptr<Camera> m_camera;
     glm::mat4 m_projMatrix;
