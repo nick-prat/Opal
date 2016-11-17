@@ -4,14 +4,14 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Display/display.hpp>
+#include <Core/display.hpp>
 #include <Render/renderchain.hpp>
 #include <Models/staticmodel.hpp>
 #include <Models/line.hpp>
 
 #include "glapi.hpp"
 
-class OpenGL {
+class GLCore {
 public:
     void DisplayFunc();
     void KeyboardFunc(unsigned char key, bool state, int x, int y);
@@ -20,14 +20,14 @@ public:
 
     static bool CreateInstance(int width, int height, std::string scene);
     static void DeleteInstance();
-    static OpenGL*& GetInstance();
+    static GLCore*& GetInstance();
 
 private:
-    OpenGL(int width, int height, std::string scene);
-    ~OpenGL();
+    GLCore(int width, int height, std::string scene);
+    ~GLCore();
 
 private:
-    static OpenGL* m_openGL;
+    static GLCore* m_glContext;
     std::vector<std::shared_ptr<IRenderObject>> m_renderObjects;
     std::shared_ptr<GlutDisplay> m_display;
     std::vector<std::shared_ptr<Line>> m_lines;

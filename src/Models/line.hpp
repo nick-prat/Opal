@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <memory>
 
-#include <Display/display.hpp>
+#include <Core/display.hpp>
 #include <Render/Shader/shader.hpp>
 #include <Render/renderobject.hpp>
 

@@ -22,7 +22,7 @@
 #include <iostream>
 
 #include <Utilities/exceptions.hpp>
-#include <Core/glapi.hpp>
+#include <glapi.hpp>
 #include <Resources/model3d.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>
@@ -147,7 +147,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
 std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
     glm::vec3 head, tail, color;
     std::string name;
-
+    
     try {
         name = object["name"];
     } catch (std::domain_error& error) {

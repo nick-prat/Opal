@@ -1,6 +1,6 @@
 #include "sampler.hpp"
 
-#include <Core/glapi.hpp>
+#include <glapi.hpp>
 
 using namespace gl;
 

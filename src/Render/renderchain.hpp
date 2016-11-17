@@ -4,7 +4,7 @@
 #include <memory>
 #include <list>
 
-#include <Display/display.hpp>
+#include <Core/display.hpp>
 #include <Render/renderobject.hpp>
 
 class RenderChain {

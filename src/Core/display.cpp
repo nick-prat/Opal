@@ -1,15 +1,14 @@
-#include "Display/display.hpp"
+#include "display.hpp"
 
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <Core/glapi.hpp>
+#include <glapi.hpp>
 #include <Utilities/exceptions.hpp>
 
-GlutDisplay::GlutDisplay() {
-    m_inputModule = nullptr;
-    m_projMatrix = glm::mat4(1.0f);
+GlutDisplay::GlutDisplay()
+        : m_inputController(nullptr), m_camera(nullptr), m_projMatrix(glm::mat4(1.0f)) {
 }
 
 GlutDisplay::GlutDisplay(int width, int height)
@@ -31,8 +30,8 @@ glm::mat4 GlutDisplay::GetProjectionMatrix() {
 bool GlutDisplay::InitDisplay(int width, int height) {
     try {
         m_projMatrix = glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.1f, 100.0f);
-        m_inputModule = std::make_shared<InputModule>();
-        m_cameraModule = std::make_shared<CameraModule>();
+        m_inputController = std::make_shared<InputController>();
+        m_camera = std::make_shared<Camera>();
     } catch (generic_exception& error) {
         error.PrintError();
         return false;
@@ -45,10 +44,10 @@ bool GlutDisplay::InitDisplay(int width, int height) {
 
 void GlutDisplay::Destroy() {}
 
-std::shared_ptr<GlutDisplay::InputModule> GlutDisplay::GetInputModule() {
-    return m_inputModule;
+std::shared_ptr<InputController> GlutDisplay::GetInputController() {
+    return m_inputController;
 }
 
-std::shared_ptr<GlutDisplay::CameraModule> GlutDisplay::GetCameraModule() {
-    return m_cameraModule;
+std::shared_ptr<Camera> GlutDisplay::GetCamera() {
+    return m_camera;
 }

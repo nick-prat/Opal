@@ -1,4 +1,6 @@
-#include <Core/openGL.hpp>
+#include <Core/glcore.hpp>
+
+#include <GL/freeglut.h>
 #include <iostream>
 
 int main(int argc, char **args)
@@ -24,23 +26,23 @@ int main(int argc, char **args)
 
     // Create GLUT callbacks
     glutDisplayFunc([]() -> void {
-        OpenGL::GetInstance()->DisplayFunc();
+        GLCore::GetInstance()->DisplayFunc();
     });
 
     glutIdleFunc([]() -> void {
-        OpenGL::GetInstance()->DisplayFunc();
+        GLCore::GetInstance()->DisplayFunc();
     });
 
     glutKeyboardFunc([](unsigned char key, int x, int y) -> void {
-        OpenGL::GetInstance()->KeyboardFunc(key, true, x, y);
+        GLCore::GetInstance()->KeyboardFunc(key, true, x, y);
     });
 
     glutKeyboardUpFunc([](unsigned char key, int x, int y) -> void {
-        OpenGL::GetInstance()->KeyboardFunc(key, false, x, y);
+        GLCore::GetInstance()->KeyboardFunc(key, false, x, y);
     });
 
     // Create singleton instance of OpenGL
-    if(!OpenGL::CreateInstance(width, height, scene))
+    if(!GLCore::CreateInstance(width, height, scene))
     {
         std::cout << "Couldn't Create Instance of OpenGL" << std::endl;
         return -1;
@@ -50,6 +52,6 @@ int main(int argc, char **args)
     glutMainLoop();
 
     // Destroy singletons
-    OpenGL::DeleteInstance();
+    GLCore::DeleteInstance();
     return 0;
 }

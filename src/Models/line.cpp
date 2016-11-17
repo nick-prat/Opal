@@ -4,7 +4,7 @@
 #include <string>
 #include <iostream>
 
-#include <Core/glapi.hpp>
+#include <glapi.hpp>
 #include <Utilities/exceptions.hpp>
 
 using namespace gl;
@@ -51,7 +51,7 @@ void Line::Render(const std::shared_ptr<GlutDisplay> display) {
         exit(-1);
     }
 
-    glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCameraModule()->GetViewMatrix() * GetWorld();
+    glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix() * GetWorld();
     glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
     GLint colorLocation = glGetUniformLocation(m_shader->GetProgram(), "gColor");

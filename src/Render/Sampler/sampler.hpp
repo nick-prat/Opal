@@ -1,7 +1,7 @@
 #ifndef _SAMPLER_H
 #define _SAMPLER_H
 
-#include <Core/glapi.hpp>
+#include <glapi.hpp>
 
 class Sampler
 {

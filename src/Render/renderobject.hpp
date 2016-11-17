@@ -7,7 +7,7 @@
 #include <memory>
 
 #include <Render/Shader/shader.hpp>
-#include <Display/display.hpp>
+#include <Core/display.hpp>
 
 class IRenderObject
 {

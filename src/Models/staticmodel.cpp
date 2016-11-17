@@ -5,7 +5,7 @@
 
 #include <Utilities/utilities.hpp>
 #include <Utilities/exceptions.hpp>
-#include <Core/glapi.hpp>
+#include <glapi.hpp>
 #include <Render/Textures/texture.hpp>
 
 using namespace gl;
@@ -79,7 +79,7 @@ void StaticModel::Render(const std::shared_ptr<GlutDisplay> display) {
             model = GetWorld();
         }
 
-        glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCameraModule()->GetViewMatrix() * model;
+        glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix() * model;
         glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
         glBindVertexArray(m_VAO[i]);

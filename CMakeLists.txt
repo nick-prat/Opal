@@ -10,11 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
 set(SOURCE_FILES
     # Root
     src/main.cpp
-
-    # Display
-    src/Display/display.cpp
-	src/Display/Modules/inputmodule.cpp
-    src/Display/Modules/cameramodule.cpp
+    src/glapi.cpp
 
     # Render
     src/Render/renderchain.cpp
@@ -25,7 +21,6 @@ set(SOURCE_FILES
 
     # Models
     src/Models/staticmodel.cpp
-	src/Models/sprite.cpp
 	src/Models/line.cpp
 
     # Resources
@@ -38,8 +33,10 @@ set(SOURCE_FILES
     src/Utilities/log.cpp
 
     # Core
-    src/Core/openGL.cpp
-    src/Core/glapi.cpp
+    src/Core/glcore.cpp
+    src/Core/display.cpp
+	src/Core/inputcontroller.cpp
+    src/Core/camera.cpp
 )
 
 add_executable(OpenGL ${SOURCE_FILES})

@@ -1,5 +1,6 @@
-#include "openGL.hpp"
+#include "glcore.hpp"
 
+#include <GL/freeglut.h>
 #include <chrono>
 #include <string>
 #include <thread>
@@ -12,40 +13,40 @@
 
 using namespace gl;
 
-OpenGL* OpenGL::m_openGL = nullptr;
+GLCore* GLCore::m_glContext = nullptr;
 
 // Static Functions
 
-void OpenGL::DeleteInstance() {
-    delete m_openGL;
-    m_openGL = nullptr;
+void GLCore::DeleteInstance() {
+    delete m_glContext;
+    m_glContext = nullptr;
 }
 
-bool OpenGL::CreateInstance(int width, int height, std::string scene) {
-    if(m_openGL != nullptr) {
-        std::cout << "OpenGL has already been created, destroy first";
+bool GLCore::CreateInstance(int width, int height, std::string scene) {
+    if(m_glContext != nullptr) {
+        std::cout << "GL Context has already been created, destroy first";
         return false;
     }
 
     try {
-        m_openGL = new OpenGL(width, height, scene);
+        m_glContext = new GLCore(width, height, scene);
     } catch (generic_exception& error) {
         error.PrintError();
-        delete m_openGL;
-        m_openGL = nullptr;
+        delete m_glContext;
+        m_glContext = nullptr;
         return false;
     }
 
     return true;
 }
 
-OpenGL*& OpenGL::GetInstance() {
-    return m_openGL;
+GLCore*& GLCore::GetInstance() {
+    return m_glContext;
 }
 
 // Non Static Functions
 
-OpenGL::OpenGL(int width, int height, std::string scene)
+GLCore::GLCore(int width, int height, std::string scene)
         : m_display(nullptr) {
 
     // Look up all GL functions for later use
@@ -74,18 +75,18 @@ OpenGL::OpenGL(int width, int height, std::string scene)
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
-    Log::info("OpenGL context created", Log::OUT_LOG);
+    Log::info("GL Context created", Log::OUT_LOG);
 }
 
-OpenGL::~OpenGL() {
+GLCore::~GLCore() {
     RenderChain::DeleteInstance();
 }
 
-void OpenGL::KeyboardFunc(unsigned char key, bool state, int x, int y) {
-    m_display->GetInputModule()->UpdateKey(key, state);
+void GLCore::KeyboardFunc(unsigned char key, bool state, int x, int y) {
+    m_display->GetInputController()->UpdateKey(key, state);
 }
 
-void OpenGL::DisplayFunc() {
+void GLCore::DisplayFunc() {
     auto start = std::chrono::high_resolution_clock::now();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -102,31 +103,31 @@ void OpenGL::DisplayFunc() {
     glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();
 
-    if(m_display->GetInputModule()->IsKeyPressed('q')) {
-        m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
+    if(m_display->GetInputController()->IsKeyPressed('q')) {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('e')) {
-        m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
+    if(m_display->GetInputController()->IsKeyPressed('e')) {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('w')) {
-        m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
+    if(m_display->GetInputController()->IsKeyPressed('w')) {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('s')) {
-        m_display->GetCameraModule()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
+    if(m_display->GetInputController()->IsKeyPressed('s')) {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('a')) {
-        m_display->GetCameraModule()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
+    if(m_display->GetInputController()->IsKeyPressed('a')) {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
     }
-    if(m_display->GetInputModule()->IsKeyPressed('d')) {
-        m_display->GetCameraModule()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
+    if(m_display->GetInputController()->IsKeyPressed('d')) {
+        m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     }
 
-    if(m_display->GetInputModule()->IsKeyPressed(' ')) {
+    if(m_display->GetInputController()->IsKeyPressed(' ')) {
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
 }
 
-void OpenGL::LoadScene(std::string name) {
+void GLCore::LoadScene(std::string name) {
     m_renderObjects = ResourceLoader::LoadScene(name);
     for(auto obj : m_renderObjects) {
         RenderChain::GetInstance()->AttachRenderObject(obj);

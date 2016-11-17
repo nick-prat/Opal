@@ -4,7 +4,7 @@
 #include <vector>
 #include <string>
 
-#include <Core/glapi.hpp>
+#include <glapi.hpp>
 
 class Shader {
 public:

@@ -1,7 +1,7 @@
 #ifndef _STATIC_MODEL_H
 #define _STATIC_MODEL_H
 
-#include <Display/display.hpp>
+#include <Core/display.hpp>
 #include <Resources/model3d.hpp>
 #include <Render/renderobject.hpp>
 #include <Render/Shader/shader.hpp>
