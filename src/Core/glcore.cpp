@@ -1,6 +1,5 @@
 #include "glcore.hpp"
 
-#include <GL/freeglut.h>
 #include <chrono>
 #include <string>
 #include <thread>
@@ -88,6 +87,7 @@ void GLCore::KeyboardFunc(unsigned char key, bool state, int x, int y) {
 
 void GLCore::DisplayFunc() {
     auto start = std::chrono::high_resolution_clock::now();
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     auto renderChain = RenderChain::GetInstance();
@@ -98,9 +98,10 @@ void GLCore::DisplayFunc() {
         Log::error("Render chain was null in render loop", Log::OUT_CONS);
     }
 
+    m_display->SwapBuffers();
+
     Utilities::PrintGLErrors();
 
-    glutSwapBuffers();
     auto finish = std::chrono::high_resolution_clock::now();
 
     std::shared_ptr<InputController> inputController = m_display->GetInputController();

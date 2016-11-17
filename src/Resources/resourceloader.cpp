@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include <Utilities/exceptions.hpp>
+#include <Utilities/log.hpp>
 #include <glapi.hpp>
 #include <Resources/model3d.hpp>
 #include <Models/line.hpp>
@@ -147,7 +148,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
 std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
     glm::vec3 head, tail, color;
     std::string name;
-    
+
     try {
         name = object["name"];
     } catch (std::domain_error& error) {
@@ -215,11 +216,11 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::strin
                     renderObjects.push_back(rObject);
                 }
             } catch (bad_resource& error) {
-                std::cout << "[" << error.GetResourceName() << "] " << error.GetError() << std::endl;
+                error.PrintError();
             }
         }
     } catch(std::exception& error) {
-        std::cout << "Parsing of " << filename << " failed : " << error.what() << std::endl;
+        Log::error("Parsing of " + filename + " failed: " + std::string(error.what()), Log::OUT_LOG_CONS);
     }
 
     return renderObjects;
@@ -373,7 +374,7 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
                     textures[name] = temp;
                 }
             } catch (bad_resource& error) {
-                std::cout << "[" << error.GetResourceName() << "] " << error.GetError() << std::endl;
+                error.PrintError();
             }
         }
     }
