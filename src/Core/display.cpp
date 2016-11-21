@@ -3,9 +3,8 @@
 #include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <GL/freeglut.h>
 
-#include <glapi.hpp>
+#include <GL/gl3w.h>
 #include <Utilities/exceptions.hpp>
 
 GlutDisplay::GlutDisplay()
@@ -67,17 +66,13 @@ uint GlutDisplay::GetHeight() const {
 void GlutDisplay::SetCursorPosition(float x, float y) const {
     glm::clamp(x, 0.0f, 1.0f);
     glm::clamp(y, 0.0f, 1.0f);
-    glutWarpPointer((int)(x * m_width), (int)(y * m_height));
 }
 
 void GlutDisplay::SetCursorVisible(bool visible) const {
     if(visible) {
-        glutSetCursor(GLUT_CURSOR_NONE);
     } else {
-        glutSetCursor(GLUT_CURSOR_INHERIT);
     }
 }
 
 void GlutDisplay::SwapBuffers() const {
-    glutSwapBuffers();
 }

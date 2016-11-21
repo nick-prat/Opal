@@ -23,12 +23,11 @@
 
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
-#include <glapi.hpp>
+#include <GL/gl3w.h>
 #include <Resources/model3d.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>
 
-using namespace gl;
 using json = nlohmann::json;
 
 std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {

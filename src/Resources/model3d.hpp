@@ -7,7 +7,7 @@
 #include <vector>
 #include <memory>
 
-#include <glapi.hpp>
+#include <GL/gl3w.h>
 #include <Render/Textures/texture.hpp>
 
 class Model3D

@@ -5,10 +5,8 @@
 
 #include <Utilities/utilities.hpp>
 #include <Utilities/exceptions.hpp>
-#include <glapi.hpp>
+#include <GL/gl3w.h>
 #include <Render/Textures/texture.hpp>
-
-using namespace gl;
 
 StaticModel::StaticModel(const std::shared_ptr<Model3D> model)
         : m_model(model) {
@@ -56,13 +54,13 @@ StaticModel::~StaticModel() {
 void StaticModel::Render(const std::shared_ptr<GlutDisplay> display) {
     m_shader->UseShader();
 
-    GLint worldLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gMVP");
+    GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
     if(worldLocation == -1) {
         std::cout << "Couldn't get MVP uniform loaction" << std::endl;
         exit(-1);
     }
 
-    GLint samplerLocation = gl::glGetUniformLocation(m_shader->GetProgram(), "gSampler");
+    GLint samplerLocation = glGetUniformLocation(m_shader->GetProgram(), "gSampler");
     if(samplerLocation == -1) {
         std::cout << "Couldn't get sampler uniform location" << std::endl;
         exit(-1);

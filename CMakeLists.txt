@@ -10,7 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
 set(SOURCE_FILES
     # Root
     src/main.cpp
-    src/glapi.cpp
+    src/gl3w.c
 
     # Render
     src/Render/renderchain.cpp
@@ -40,9 +40,9 @@ set(SOURCE_FILES
 )
 
 add_executable(OpenGL ${SOURCE_FILES})
+find_package(PkgConfig REQUIRED)
 find_package(Threads REQUIRED)
-find_package(OpenGL REQUIRED)
-find_package(GLUT REQUIRED)
 find_package(ASSIMP REQUIRED)
-include_directories( ${OPENGL_INCLUDE_DIRS} ${GLUT_INCLUDE_DIRS} ${ASSIMP_INCLUDE_DIR})
-target_link_libraries(OpenGL /usr/lib/libfreeimage.so ${OPENGL_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${GLUT_LIBRARIES} ${ASSIMP_LIBRARIES})
+pkg_search_module(GLFW REQUIRED glfw3)
+include_directories(${OPENGL_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIR} ${GLFW_INCLUDE_DIRECTORIES})
+target_link_libraries(OpenGL -ldl /usr/lib/libfreeimage.so ${OPENGL_gl_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ASSIMP_LIBRARIES})

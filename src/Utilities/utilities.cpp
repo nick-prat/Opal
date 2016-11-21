@@ -3,7 +3,7 @@
 #include <sstream>
 #include <iostream>
 
-#include <GL/glu.h>
+#include <GL/gl3w.h>
 
 void Utilities::PrintGLErrors()
 {
@@ -12,7 +12,7 @@ void Utilities::PrintGLErrors()
         GLenum glErr = glGetError();
         if(glErr != GL_NO_ERROR)
         {
-            std::cout << "~~  GLError (" << glErr << ") " << gluErrorString(glErr) << " ~~" << std::endl;
+            std::cout << "~~  GLError (" << glErr << ") " << glErr << " ~~" << std::endl;
         }
         else
         {

@@ -1,5 +1,6 @@
 #include "glcore.hpp"
 
+#include <GL/gl3w.h>
 #include <chrono>
 #include <string>
 #include <thread>
@@ -10,46 +11,8 @@
 #include <Utilities/log.hpp>
 #include <Resources/resourceloader.hpp>
 
-using namespace gl;
-
-GLCore* GLCore::m_glContext = nullptr;
-
-// Static Functions
-
-void GLCore::DeleteInstance() {
-    delete m_glContext;
-    m_glContext = nullptr;
-}
-
-bool GLCore::CreateInstance(int width, int height, std::string scene) {
-    if(m_glContext != nullptr) {
-        std::cout << "GL Context has already been created, destroy first";
-        return false;
-    }
-
-    try {
-        m_glContext = new GLCore(width, height, scene);
-    } catch (generic_exception& error) {
-        error.PrintError();
-        delete m_glContext;
-        m_glContext = nullptr;
-        return false;
-    }
-
-    return true;
-}
-
-GLCore*& GLCore::GetInstance() {
-    return m_glContext;
-}
-
-// Non Static Functions
-
 GLCore::GLCore(int width, int height, std::string scene)
         : m_display(nullptr) {
-
-    // Look up all GL functions for later use
-    InitAPI();
 
     // Create standard display with screen dimensions
     m_display = std::make_shared<GlutDisplay>(width, height);
