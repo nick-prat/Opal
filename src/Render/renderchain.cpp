@@ -6,35 +6,12 @@
 #include <Utilities/log.hpp>
 #include <Render/renderchain.hpp>
 
-
-RenderChain* RenderChain::m_renderChain = nullptr;
-
-RenderChain*& RenderChain::GetInstance() {
-    return m_renderChain;
-}
-
-bool RenderChain::CreateInstance(std::shared_ptr<Display> display, bool vol) {
-    if(m_renderChain != nullptr) {
-        Log::error("Render chian has already been created", Log::OUT_CONS);
-        return false;
-    }
-
-    m_renderChain = new RenderChain(display, vol);
-    return true;
-}
-
-void RenderChain::DeleteInstance() {
-    delete m_renderChain;
-    m_renderChain = nullptr;
-}
-
 RenderChain::RenderChain(std::shared_ptr<Display> display, bool vol)
         : m_display(display) {
     m_volatile = vol;
 }
 
 RenderChain::~RenderChain() {
-    delete m_renderChain;
 }
 
 void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {

@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <GL/gl3w.h>
+#include <GLFW/glfw3.h>
 #include <Utilities/exceptions.hpp>
 
 Display::Display()
@@ -72,7 +73,4 @@ void Display::SetCursorVisible(bool visible) const {
     if(visible) {
     } else {
     }
-}
-
-void Display::SwapBuffers() const {
 }

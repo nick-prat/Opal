@@ -19,16 +19,14 @@ GLCore::GLCore(int width, int height, std::string scene)
     m_display = std::make_shared<Display>(width, height);
 
     // Create singleton instance of RenderChain
-    if(!RenderChain::CreateInstance(m_display, false)) {
-        throw generic_exception("Couldn't Create Instance of RenderChain");
-    }
+    m_renderChain = std::make_shared<RenderChain>(m_display, false);
 
     // Log information about current context
     std::cout << std::endl;
     std::cout << "Information: " << std::endl;
     std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "\tDisplay Address: " << m_display << std::endl;
-    std::cout << "\tRender Chain Address: " << RenderChain::GetInstance() << std::endl;
+    std::cout << "\tRender Chain Address: " << m_renderChain << std::endl;
     std::cout << std::endl;
 
     LoadScene(scene);
@@ -42,7 +40,6 @@ GLCore::GLCore(int width, int height, std::string scene)
 }
 
 GLCore::~GLCore() {
-    RenderChain::DeleteInstance();
 }
 
 void GLCore::KeyboardFunc(int key, bool state) {
@@ -53,17 +50,7 @@ void GLCore::DisplayFunc() {
     auto start = std::chrono::high_resolution_clock::now();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    auto renderChain = RenderChain::GetInstance();
-
-    if(renderChain != nullptr) {
-        renderChain->RenderObjectChain();
-    } else {
-        Log::error("Render chain was null in render loop", Log::OUT_CONS);
-    }
-
-    m_display->SwapBuffers();
-
+    m_renderChain->RenderObjectChain();
     Utilities::PrintGLErrors();
 
     auto finish = std::chrono::high_resolution_clock::now();
@@ -97,6 +84,6 @@ void GLCore::DisplayFunc() {
 void GLCore::LoadScene(std::string name) {
     m_renderObjects = ResourceLoader::LoadScene(name);
     for(auto obj : m_renderObjects) {
-        RenderChain::GetInstance()->AttachRenderObject(obj);
+        m_renderChain->AttachRenderObject(obj);
     }
 }
