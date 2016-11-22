@@ -1,6 +1,7 @@
+#include <GL/gl3w.h>
+
 #include "glcore.hpp"
 
-#include <GL/gl3w.h>
 #include <chrono>
 #include <string>
 #include <thread>
@@ -44,7 +45,7 @@ GLCore::~GLCore() {
     RenderChain::DeleteInstance();
 }
 
-void GLCore::KeyboardFunc(unsigned char key, bool state) {
+void GLCore::KeyboardFunc(int key, bool state) {
     m_display->GetInputController()->UpdateKey(key, state);
 }
 
@@ -69,26 +70,26 @@ void GLCore::DisplayFunc() {
 
     std::shared_ptr<InputController> inputController = m_display->GetInputController();
 
-    if(m_display->GetInputController()->IsKeyPressed('q')) {
+    if(m_display->GetInputController()->IsKeyPressed(InputKey::Q)) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
     }
-    if(m_display->GetInputController()->IsKeyPressed('e')) {
+    if(m_display->GetInputController()->IsKeyPressed(InputKey::E)) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
     }
-    if(m_display->GetInputController()->IsKeyPressed('w')) {
+    if(m_display->GetInputController()->IsKeyPressed(InputKey::W)) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
     }
-    if(m_display->GetInputController()->IsKeyPressed('s')) {
+    if(m_display->GetInputController()->IsKeyPressed(InputKey::S)) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
     }
-    if(m_display->GetInputController()->IsKeyPressed('a')) {
+    if(m_display->GetInputController()->IsKeyPressed(InputKey::A)) {
         m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     }
-    if(m_display->GetInputController()->IsKeyPressed('d')) {
+    if(m_display->GetInputController()->IsKeyPressed(InputKey::D)) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
     }
 
-    if(m_display->GetInputController()->IsKeyPressed(' ')) {
+    if(m_display->GetInputController()->IsKeyPressed(InputKey::SPACE)) {
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
 }

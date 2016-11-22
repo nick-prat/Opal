@@ -1,11 +1,9 @@
-#include <Core/glcore.hpp>
-
 #include <GL/gl3w.h>
 #include <GLFW/glfw3.h>
-
 #include <iostream>
 
 #include <Utilities/exceptions.hpp>
+#include <Core/glcore.hpp>
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
     GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
@@ -14,7 +12,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
         glfwSetWindowShouldClose(window, GLFW_TRUE);
     }
 
-    std::cout << key << std::endl;
+    if(action == GLFW_PRESS) {
+        glCore->KeyboardFunc(key, true);
+    } else if(action == GLFW_RELEASE) {
+        glCore->KeyboardFunc(key, false);
+    }
 }
 
 void error_callback(int error, const char* desc) {

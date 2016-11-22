@@ -1,22 +1,25 @@
 #include "inputcontroller.hpp"
 
 InputController::InputController() {
-	for(int i = 0; i < 256; i++) {
-		m_keys[i] = false;
-	}
 }
 
 InputController::~InputController() {
 }
 
-bool InputController::IsKeyPressed(unsigned char key) const {
-	return m_keys[key];
+bool InputController::IsKeyPressed(InputKey key) const {
+	return m_pressedKeys.find(key) != m_pressedKeys.end();
 }
 
 glm::vec2 InputController::GetMouseLocation() const {
 	return glm::vec2(0.0f, 0.0f);
 }
 
-void InputController::UpdateKey(unsigned char key, bool pressed) {
-	m_keys[key] = pressed;
+void InputController::UpdateKey(int key, bool pressed) {
+	InputKey ikey = static_cast<InputKey>(key);
+
+	if(pressed && m_pressedKeys.find(ikey) == m_pressedKeys.end()) {
+		m_pressedKeys.insert(ikey);
+	} else if(m_pressedKeys.find(ikey) != m_pressedKeys.end()) {
+		m_pressedKeys.erase(ikey);
+	}
 }

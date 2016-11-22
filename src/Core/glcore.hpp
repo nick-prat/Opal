@@ -15,7 +15,7 @@ public:
     ~GLCore();
 
     void DisplayFunc();
-    void KeyboardFunc(unsigned char key, bool state);
+    void KeyboardFunc(int key, bool state);
 
     void LoadScene(std::string name);
 
