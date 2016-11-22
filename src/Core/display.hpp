@@ -7,11 +7,11 @@
 #include <Core/camera.hpp>
 #include <Core/inputcontroller.hpp>
 
-class GlutDisplay {
+class Display {
 public:
-    GlutDisplay();
-    GlutDisplay(uint width, uint height);
-    ~GlutDisplay();
+    Display();
+    Display(uint width, uint height);
+    ~Display();
 
     bool InitDisplay(uint width, uint height);
     void Destroy();

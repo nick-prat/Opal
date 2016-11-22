@@ -14,7 +14,7 @@ class IRenderObject
 public:
     IRenderObject();
     virtual ~IRenderObject();
-    virtual void Render(const std::shared_ptr<GlutDisplay> display) = 0;
+    virtual void Render(const std::shared_ptr<Display> display) = 0;
 
     void Translate(const glm::vec3& trans);
     void Rotate(const float& degrees, const glm::vec3& rotate);

@@ -15,7 +15,7 @@ GLCore::GLCore(int width, int height, std::string scene)
         : m_display(nullptr) {
 
     // Create standard display with screen dimensions
-    m_display = std::make_shared<GlutDisplay>(width, height);
+    m_display = std::make_shared<Display>(width, height);
 
     // Create singleton instance of RenderChain
     if(!RenderChain::CreateInstance(m_display, false)) {
@@ -44,7 +44,7 @@ GLCore::~GLCore() {
     RenderChain::DeleteInstance();
 }
 
-void GLCore::KeyboardFunc(unsigned char key, bool state, int x, int y) {
+void GLCore::KeyboardFunc(unsigned char key, bool state) {
     m_display->GetInputController()->UpdateKey(key, state);
 }
 

@@ -36,7 +36,7 @@ Line::~Line() {
     glDeleteBuffers(1, &m_IBO);
 }
 
-void Line::Render(const std::shared_ptr<GlutDisplay> display) {
+void Line::Render(const std::shared_ptr<Display> display) {
     if(m_shader == nullptr || display == nullptr) {
         throw generic_exception("Null param in render function");
     }

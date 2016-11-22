@@ -1,5 +1,5 @@
-#ifndef _OPENGL_OPENGL_H
-#define _OPENGL_OPENGL_H
+#ifndef _GLCORE_H
+#define _GLCORE_H
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -15,15 +15,15 @@ public:
     ~GLCore();
 
     void DisplayFunc();
-    void KeyboardFunc(unsigned char key, bool state, int x, int y);
+    void KeyboardFunc(unsigned char key, bool state);
 
     void LoadScene(std::string name);
 
 private:
     std::vector<std::shared_ptr<IRenderObject>> m_renderObjects;
-    std::shared_ptr<GlutDisplay> m_display;
+    std::shared_ptr<Display> m_display;
     std::vector<std::shared_ptr<Line>> m_lines;
     std::vector<std::shared_ptr<StaticModel>> m_staticModels;
 };
 
-#endif //OPENGL_OPENGL_H
+#endif // _GLCORE_H

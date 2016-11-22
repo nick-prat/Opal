@@ -51,7 +51,7 @@ StaticModel::~StaticModel() {
     glDeleteBuffers(m_IBO.size(), m_IBO.data());
 }
 
-void StaticModel::Render(const std::shared_ptr<GlutDisplay> display) {
+void StaticModel::Render(const std::shared_ptr<Display> display) {
     m_shader->UseShader();
 
     GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");

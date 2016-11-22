@@ -1,10 +1,8 @@
 /*
- *
  *  Resource loader, functions for loading all supported data types
- *      - Loads scene information from json
- *      - Loads textures form TGA's
- *      - Loads models from 3ds
- *
+ *      - Loads JSON scene information from jsoncpp (https://github.com/open-source-parsers/jsoncpp)
+ *      - Loads TGA textures via FreeImage
+ *      - Loads 3Ds models via Assimp
  */
 
 #include "resourceloader.hpp"

@@ -13,7 +13,7 @@ public:
     StaticModel(std::shared_ptr<Model3D> model);
     ~StaticModel();
 
-    void Render(const std::shared_ptr<GlutDisplay> display) override;
+    void Render(const std::shared_ptr<Display> display) override;
 
     std::shared_ptr<Model3D> GetModel();
 

@@ -13,7 +13,7 @@ RenderChain*& RenderChain::GetInstance() {
     return m_renderChain;
 }
 
-bool RenderChain::CreateInstance(std::shared_ptr<GlutDisplay> display, bool vol) {
+bool RenderChain::CreateInstance(std::shared_ptr<Display> display, bool vol) {
     if(m_renderChain != nullptr) {
         Log::error("Render chian has already been created", Log::OUT_CONS);
         return false;
@@ -28,7 +28,7 @@ void RenderChain::DeleteInstance() {
     m_renderChain = nullptr;
 }
 
-RenderChain::RenderChain(std::shared_ptr<GlutDisplay> display, bool vol)
+RenderChain::RenderChain(std::shared_ptr<Display> display, bool vol)
         : m_display(display) {
     m_volatile = vol;
 }

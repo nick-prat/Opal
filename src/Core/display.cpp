@@ -7,11 +7,11 @@
 #include <GL/gl3w.h>
 #include <Utilities/exceptions.hpp>
 
-GlutDisplay::GlutDisplay()
+Display::Display()
         : m_inputController(nullptr), m_camera(nullptr), m_projMatrix(glm::mat4(1.0f)) {
 }
 
-GlutDisplay::GlutDisplay(uint width, uint height)
+Display::Display(uint width, uint height)
     : m_projMatrix(glm::mat4(1.0f)) {
     if(!InitDisplay(width, height))
     {
@@ -19,11 +19,11 @@ GlutDisplay::GlutDisplay(uint width, uint height)
     }
 }
 
-GlutDisplay::~GlutDisplay() {
+Display::~Display() {
     Destroy();
 }
 
-bool GlutDisplay::InitDisplay(uint width, uint height) {
+bool Display::InitDisplay(uint width, uint height) {
 
     try {
         m_projMatrix = glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.1f, 100.0f);
@@ -41,38 +41,38 @@ bool GlutDisplay::InitDisplay(uint width, uint height) {
     return true;
 }
 
-void GlutDisplay::Destroy() {}
+void Display::Destroy() {}
 
-std::shared_ptr<InputController> GlutDisplay::GetInputController() const {
+std::shared_ptr<InputController> Display::GetInputController() const {
     return m_inputController;
 }
 
-std::shared_ptr<Camera> GlutDisplay::GetCamera() const {
+std::shared_ptr<Camera> Display::GetCamera() const {
     return m_camera;
 }
 
-glm::mat4 GlutDisplay::GetProjectionMatrix() const {
+glm::mat4 Display::GetProjectionMatrix() const {
     return m_projMatrix;
 }
 
-uint GlutDisplay::GetWidth() const {
+uint Display::GetWidth() const {
     return m_width;
 }
 
-uint GlutDisplay::GetHeight() const {
+uint Display::GetHeight() const {
     return m_height;
 }
 
-void GlutDisplay::SetCursorPosition(float x, float y) const {
+void Display::SetCursorPosition(float x, float y) const {
     glm::clamp(x, 0.0f, 1.0f);
     glm::clamp(y, 0.0f, 1.0f);
 }
 
-void GlutDisplay::SetCursorVisible(bool visible) const {
+void Display::SetCursorVisible(bool visible) const {
     if(visible) {
     } else {
     }
 }
 
-void GlutDisplay::SwapBuffers() const {
+void Display::SwapBuffers() const {
 }

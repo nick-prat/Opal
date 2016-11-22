@@ -13,7 +13,7 @@ public:
     Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color);
     ~Line();
 
-    void Render(const std::shared_ptr<GlutDisplay> display) override;
+    void Render(const std::shared_ptr<Display> display) override;
 
 private:
     uint m_indexCount;
