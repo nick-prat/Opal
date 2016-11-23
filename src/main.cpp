@@ -5,27 +5,6 @@
 #include <Utilities/exceptions.hpp>
 #include <Core/glcore.hpp>
 
-void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
-    if(glCore == nullptr) {
-        std::cout << "glCore was null in key_callback" << std::endl;
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-    }
-
-    if(action == GLFW_PRESS) {
-        glCore->KeyboardFunc(key, true);
-    } else if(action == GLFW_RELEASE) {
-        glCore->KeyboardFunc(key, false);
-    }
-}
-
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-}
-
-void ErrorCallback(int error, const char* desc) {
-    std::cout << "(" << error << ")" << " " << desc << std::endl;
-}
-
 int main(int argc, char **args)
 {
     if(argc != 2) {
@@ -40,7 +19,9 @@ int main(int argc, char **args)
     const int major = 3;
     const int minor = 3;
 
-    glfwSetErrorCallback(ErrorCallback);
+    glfwSetErrorCallback([] (int error, const char* desc) {
+        std::cout << "(" << error << ")" << " " << desc << std::endl;
+    });
 
     if(!glfwInit()) {
         std::cout << "Couldn't initialize GLFW3" << std::endl;
@@ -84,11 +65,6 @@ int main(int argc, char **args)
 
     glfwSetKeyCallback(window, [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
-        if(glCore == nullptr) {
-            std::cout << "glCore was null in key_callback" << std::endl;
-            glfwSetWindowShouldClose(window, GLFW_TRUE);
-        }
-
         if(action == GLFW_PRESS) {
             glCore->KeyboardFunc(key, true);
         } else if(action == GLFW_RELEASE) {
@@ -96,11 +72,12 @@ int main(int argc, char **args)
         }
     });
 
-    glfwSetCursorPosCallback(window, CursorPosCallback);
+    glfwSetCursorPosCallback(window, [] (GLFWwindow* window, double xpos, double ypos) {
+        GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+    });
+
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetWindowUserPointer(window, glCore);
-
-
 
     while(!glfwWindowShouldClose(window)) {
         glCore->DisplayFunc();

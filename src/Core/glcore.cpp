@@ -36,6 +36,26 @@ GLCore::GLCore(int width, int height, std::string scene)
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
+    auto inputController = m_display->GetInputController();
+    inputController->RegisterWhileKeyPressed(InputKey::A, [this]() {
+        m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
+    });
+    inputController->RegisterWhileKeyPressed(InputKey::S, [this]() {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
+    });
+    inputController->RegisterWhileKeyPressed(InputKey::D, [this]() {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
+    });
+    inputController->RegisterWhileKeyPressed(InputKey::W, [this]() {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
+    });
+    inputController->RegisterWhileKeyPressed(InputKey::Q, [this]() {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
+    });
+    inputController->RegisterWhileKeyPressed(InputKey::E, [this]() {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
+    });
+
     Log::info("GL Context created", Log::OUT_LOG);
 }
 
@@ -56,29 +76,11 @@ void GLCore::DisplayFunc() {
     auto finish = std::chrono::high_resolution_clock::now();
 
     std::shared_ptr<InputController> inputController = m_display->GetInputController();
-
-    if(m_display->GetInputController()->IsKeyPressed(InputKey::Q)) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
-    }
-    if(m_display->GetInputController()->IsKeyPressed(InputKey::E)) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
-    }
-    if(m_display->GetInputController()->IsKeyPressed(InputKey::W)) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
-    }
-    if(m_display->GetInputController()->IsKeyPressed(InputKey::S)) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
-    }
-    if(m_display->GetInputController()->IsKeyPressed(InputKey::A)) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
-    }
-    if(m_display->GetInputController()->IsKeyPressed(InputKey::D)) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
-    }
-
-    if(m_display->GetInputController()->IsKeyPressed(InputKey::SPACE)) {
+    if(inputController->IsKeyPressed(InputKey::SPACE)) {
         std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
     }
+
+    inputController->CallKeyLambdas();
 }
 
 void GLCore::LoadScene(std::string name) {

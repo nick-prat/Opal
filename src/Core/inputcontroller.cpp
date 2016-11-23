@@ -6,6 +6,27 @@ InputController::InputController() {
 InputController::~InputController() {
 }
 
+void InputController::ClearWhileKeyPressed() {
+    m_keyLambdas.clear();
+}
+
+void InputController::DeregisterWhileKeyPressed(InputKey key) {
+    m_keyLambdas.erase(key);
+}
+
+void InputController::RegisterWhileKeyPressed(InputKey key, const std::function<void(void)>& lambda) {
+    m_keyLambdas[key] = lambda;
+}
+
+void InputController::CallKeyLambdas() {
+    for(InputKey key : m_pressedKeys) {
+        auto lambda = m_keyLambdas.find(key);
+        if(lambda != m_keyLambdas.end()) {
+            lambda->second();
+        }
+    }
+}
+
 bool InputController::IsKeyPressed(InputKey key) const {
 	return m_pressedKeys.find(key) != m_pressedKeys.end();
 }
