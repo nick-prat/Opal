@@ -13,7 +13,7 @@
 #include <Resources/resourceloader.hpp>
 
 GLCore::GLCore(int width, int height, std::string scene)
-        : m_display(nullptr) {
+        : m_renderChain(nullptr), m_display(nullptr) {
 
     // Create standard display with screen dimensions
     m_display = std::make_shared<Display>(width, height);
@@ -57,18 +57,18 @@ GLCore::GLCore(int width, int height, std::string scene)
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
     });
 
-    inputController->RegisterOnKeyPressed(InputKey::SPACE, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 1.0f, 0.0f));
-    });
-
     Log::info("GL Context created", Log::OUT_LOG);
 }
 
 GLCore::~GLCore() {
 }
 
-void GLCore::KeyboardFunc(int key, bool state) {
+void GLCore::InputFunc(int key, bool state) {
     m_display->GetInputController()->UpdateKey(key, state);
+}
+
+void GLCore::MouseFunc(double xpos, double ypos) {
+    m_display->GetInputController()->UpdateMousePosition(xpos, ypos);
 }
 
 void GLCore::DisplayFunc() {

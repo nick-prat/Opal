@@ -63,17 +63,27 @@ int main(int argc, char **args)
         exit(-1);
     }
 
-    glfwSetKeyCallback(window, [] (GLFWwindow* window, int key, int scancode, int action, int mods) {
+    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
         if(action == GLFW_PRESS) {
-            glCore->KeyboardFunc(key, true);
+            glCore->InputFunc(key, true);
         } else if(action == GLFW_RELEASE) {
-            glCore->KeyboardFunc(key, false);
+            glCore->InputFunc(key, false);
         }
     });
 
-    glfwSetCursorPosCallback(window, [] (GLFWwindow* window, double xpos, double ypos) {
+    glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+        if(action == GLFW_PRESS) {
+            glCore->InputFunc(button, true);
+        } else if(action == GLFW_RELEASE) {
+            glCore->InputFunc(button, false);
+        }
+    });
+
+    glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
+        GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+        glCore->MouseFunc(xpos, ypos);
     });
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);

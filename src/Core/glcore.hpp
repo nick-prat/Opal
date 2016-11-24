@@ -15,14 +15,15 @@ public:
     ~GLCore();
 
     void DisplayFunc();
-    void KeyboardFunc(int key, bool state);
+    void InputFunc(int key, bool state);
+    void MouseFunc(double xpos, double ypos);
 
     void LoadScene(std::string name);
 
 private:
     std::shared_ptr<RenderChain> m_renderChain;
     std::shared_ptr<Display> m_display;
-    
+
     std::vector<std::shared_ptr<IRenderObject>> m_renderObjects;
     std::vector<std::shared_ptr<Line>> m_lines;
     std::vector<std::shared_ptr<StaticModel>> m_staticModels;
