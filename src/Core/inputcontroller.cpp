@@ -1,5 +1,7 @@
 #include "inputcontroller.hpp"
 
+#include <iostream>
+
 InputController::InputController() {
 }
 
@@ -7,22 +9,42 @@ InputController::~InputController() {
 }
 
 void InputController::ClearWhileKeyPressed() {
-    m_keyLambdas.clear();
+    m_whileKeyPressed.clear();
 }
 
 void InputController::DeregisterWhileKeyPressed(InputKey key) {
-    m_keyLambdas.erase(key);
+    m_whileKeyPressed.erase(key);
 }
 
 void InputController::RegisterWhileKeyPressed(InputKey key, const std::function<void(void)>& lambda) {
-    m_keyLambdas[key] = lambda;
+    m_whileKeyPressed[key] = lambda;
+}
+
+void InputController::ClearOnKeyPressed() {
+    m_onKeyPressed.clear();
+}
+
+void InputController::DeregisterOnKeyPressed(InputKey key) {
+    m_onKeyPressed.erase(key);
+}
+
+void InputController::RegisterOnKeyPressed(InputKey key, const std::function<void(void)>& lambda) {
+    m_onKeyPressed[key] = lambda;
 }
 
 void InputController::CallKeyLambdas() {
-    for(InputKey key : m_pressedKeys) {
-        auto lambda = m_keyLambdas.find(key);
-        if(lambda != m_keyLambdas.end()) {
+    for(auto& key : m_pressedKeys) {
+        auto lambda = m_whileKeyPressed.find(key.first);
+        if(lambda != m_whileKeyPressed.end()) {
             lambda->second();
+        }
+
+        if(key.second) {
+            key.second = false;
+            auto lambda = m_onKeyPressed.find(key.first);
+            if(lambda != m_onKeyPressed.end()) {
+                lambda->second();
+            }
         }
     }
 }
@@ -39,7 +61,7 @@ void InputController::UpdateKey(int key, bool pressed) {
 	InputKey ikey = static_cast<InputKey>(key);
 
 	if(pressed && m_pressedKeys.find(ikey) == m_pressedKeys.end()) {
-		m_pressedKeys.insert(ikey);
+		m_pressedKeys[ikey] = true;
 	} else if(m_pressedKeys.find(ikey) != m_pressedKeys.end()) {
 		m_pressedKeys.erase(ikey);
 	}

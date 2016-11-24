@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <functional>
+#include <mutex>
 #include <unordered_set>
 #include <unordered_map>
 
@@ -25,6 +26,11 @@ public:
     void ClearWhileKeyPressed();
     void DeregisterWhileKeyPressed(InputKey key);
     void RegisterWhileKeyPressed(InputKey key, const std::function<void(void)>& lambda);
+
+    void ClearOnKeyPressed();
+    void DeregisterOnKeyPressed(InputKey key);
+    void RegisterOnKeyPressed(InputKey key, const std::function<void(void)>& lambda);
+
     void CallKeyLambdas();
 
     bool IsKeyPressed(InputKey key) const;
@@ -32,8 +38,10 @@ public:
     void UpdateKey(int key, bool pressed);
 
 private:
-    std::unordered_set<InputKey> m_pressedKeys;
-    std::unordered_map<InputKey, std::function<void(void)>> m_keyLambdas;
+    std::unordered_map<InputKey, bool> m_pressedKeys;
+    std::unordered_map<InputKey, std::function<void(void)>> m_whileKeyPressed;
+    std::unordered_map<InputKey, std::function<void(void)>> m_onKeyPressed;
+    std::unordered_map<InputKey, std::function<void(void)>> m_onKeyReleased;
 };
 
 #endif // _INPUT_H

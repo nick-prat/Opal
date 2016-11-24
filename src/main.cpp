@@ -76,7 +76,7 @@ int main(int argc, char **args)
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
     });
 
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetWindowUserPointer(window, glCore);
 
     while(!glfwWindowShouldClose(window)) {

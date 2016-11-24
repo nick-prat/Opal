@@ -37,6 +37,7 @@ GLCore::GLCore(int width, int height, std::string scene)
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
     auto inputController = m_display->GetInputController();
+
     inputController->RegisterWhileKeyPressed(InputKey::A, [this]() {
         m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     });
@@ -54,6 +55,10 @@ GLCore::GLCore(int width, int height, std::string scene)
     });
     inputController->RegisterWhileKeyPressed(InputKey::E, [this]() {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
+    });
+
+    inputController->RegisterOnKeyPressed(InputKey::SPACE, [this]() {
+        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 1.0f, 0.0f));
     });
 
     Log::info("GL Context created", Log::OUT_LOG);
