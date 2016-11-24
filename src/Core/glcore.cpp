@@ -18,7 +18,7 @@ GLCore::GLCore(int width, int height, std::string scene)
     // Create standard display with screen dimensions
     m_display = std::make_shared<Display>(width, height);
 
-    // Create singleton instance of RenderChain
+    // Create instance of RenderChain
     m_renderChain = std::make_shared<RenderChain>(m_display, false);
 
     // Log information about current context

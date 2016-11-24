@@ -16,7 +16,7 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
     }
 
     for(std::string& filename: fileNames) {
-        filename = "./Shaders/" + filename;
+        filename = "Resources/Shaders/" + filename;
     }
 
     GLint success;
