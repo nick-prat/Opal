@@ -22,17 +22,11 @@ void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
 
 void RenderChain::RenderObjectChain(const Display* const display) {
     for(const auto& object : m_objects) {
-        std::shared_ptr<IRenderObject> obj;
         try {
-            obj = std::shared_ptr<IRenderObject>(object);
+            auto obj = std::shared_ptr<IRenderObject>(object);
+            obj->Render(display);
         } catch(std::bad_weak_ptr& error) {
-            continue;
-        }
-
-        try {
-            if(obj) {
-                obj->Render(display);
-            }
+            std::cout << error.what() << '\n';
         } catch(generic_exception& error) {
             error.PrintError();
         }

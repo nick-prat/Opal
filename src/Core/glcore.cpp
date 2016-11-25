@@ -18,12 +18,10 @@ GLCore::GLCore(int width, int height, std::string scene) {
     m_renderChain = std::make_unique<RenderChain>();
 
     // Log information about current context
-    std::cout << std::endl;
-    std::cout << "Information: " << std::endl;
-    std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "\tDisplay Address: " << m_display.get() << std::endl;
-    std::cout << "\tRender Chain Address: " << m_renderChain.get() << std::endl;
-    std::cout << std::endl;
+    std::cout << "\nInformation: \n";
+    std::cout << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
+    std::cout << "\tDisplay Address: " << m_display.get() << '\n';
+    std::cout << "\tRender Chain Address: " << m_renderChain.get() << "\n\n";
 
     LoadScene(scene);
 
@@ -72,16 +70,16 @@ void GLCore::DisplayFunc() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_renderChain->RenderObjectChain(m_display.get());
-    Utilities::PrintGLErrors();
 
     auto finish = std::chrono::high_resolution_clock::now();
 
     std::shared_ptr<InputController> inputController = m_display->GetInputController();
     if(inputController->IsKeyPressed(InputKey::SPACE)) {
-        std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << std::endl;
+        std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << '\n';
     }
 
     inputController->CallKeyLambdas();
+    Utilities::PrintGLErrors();
 }
 
 void GLCore::LoadScene(std::string name) {

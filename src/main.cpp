@@ -5,10 +5,9 @@
 #include <Utilities/exceptions.hpp>
 #include <Core/glcore.hpp>
 
-int main(int argc, char **args)
-{
+int main(int argc, char **args) {
     if(argc != 2) {
-        std::cout << "Arguments are invalid, use:\n\t" << args[0] << " [scene_name]" << std::endl;
+        std::cout << "Arguments are invalid, use:\n\t" << args[0] << " [scene_name]\n";
         exit(-1);
     }
 
@@ -24,7 +23,7 @@ int main(int argc, char **args)
     });
 
     if(!glfwInit()) {
-        std::cout << "Couldn't initialize GLFW3" << std::endl;
+        std::cout << "Couldn't initialize GLFW3\n";
         exit(-1);
     }
 
@@ -35,7 +34,7 @@ int main(int argc, char **args)
 
     GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
     if(!window) {
-        std::cout << "Couldn't create window" << std::endl;
+        std::cout << "Couldn't create window\n";
         glfwTerminate();
         exit(-1);
     }
@@ -43,13 +42,13 @@ int main(int argc, char **args)
     glfwMakeContextCurrent(window);
 
     if(gl3wInit() == -1) {
-        std::cout << "Couldn't initialize GL3W" << std::endl;
+        std::cout << "Couldn't initialize GL3W\n";
         glfwTerminate();
         exit(-1);
     }
 
     if(!gl3wIsSupported(major, minor)) {
-        std::cout << "Open GL " << major << "." << minor << " is unsupported" << std::endl;
+        std::cout << "Open GL " << major << "." << minor << " is unsupported\n";
         glfwTerminate();
         exit(-1);
     }
