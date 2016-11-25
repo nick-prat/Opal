@@ -6,9 +6,7 @@
 #include <Utilities/log.hpp>
 #include <Render/renderchain.hpp>
 
-RenderChain::RenderChain(std::shared_ptr<Display> display, bool vol)
-        : m_display(display) {
-    m_volatile = vol;
+RenderChain::RenderChain() {
 }
 
 RenderChain::~RenderChain() {
@@ -22,7 +20,7 @@ void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
     }
 }
 
-void RenderChain::RenderObjectChain() {
+void RenderChain::RenderObjectChain(const Display* const display) {
     for(std::weak_ptr<IRenderObject> object : m_objects) {
         auto obj = object.lock();
 
@@ -32,7 +30,7 @@ void RenderChain::RenderObjectChain() {
 
         try {
             if(obj) {
-                obj->Render(m_display);
+                obj->Render(display);
             }
         } catch(generic_exception& error) {
             error.PrintError();

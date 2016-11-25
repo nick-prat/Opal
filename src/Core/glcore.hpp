@@ -21,8 +21,8 @@ public:
     void LoadScene(std::string name);
 
 private:
-    std::shared_ptr<RenderChain> m_renderChain;
-    std::shared_ptr<Display> m_display;
+    std::unique_ptr<RenderChain> m_renderChain;
+    std::unique_ptr<Display> m_display;
 
     std::vector<std::shared_ptr<IRenderObject>> m_renderObjects;
     std::vector<std::shared_ptr<Line>> m_lines;

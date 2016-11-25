@@ -13,20 +13,14 @@
 #include <Resources/resourceloader.hpp>
 
 GLCore::GLCore(int width, int height, std::string scene)
-        : m_renderChain(nullptr), m_display(nullptr) {
-
-    // Create standard display with screen dimensions
-    m_display = std::make_shared<Display>(width, height);
-
-    // Create instance of RenderChain
-    m_renderChain = std::make_shared<RenderChain>(m_display, false);
+        : m_renderChain(std::make_unique<RenderChain>()), m_display(std::make_unique<Display>(width, height)) {
 
     // Log information about current context
     std::cout << std::endl;
     std::cout << "Information: " << std::endl;
     std::cout << "\tGL Version: " << glGetString(GL_VERSION) << std::endl;
-    std::cout << "\tDisplay Address: " << m_display << std::endl;
-    std::cout << "\tRender Chain Address: " << m_renderChain << std::endl;
+    std::cout << "\tDisplay Address: " << m_display.get() << std::endl;
+    std::cout << "\tRender Chain Address: " << m_renderChain.get() << std::endl;
     std::cout << std::endl;
 
     LoadScene(scene);
@@ -75,7 +69,7 @@ void GLCore::DisplayFunc() {
     auto start = std::chrono::high_resolution_clock::now();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    m_renderChain->RenderObjectChain();
+    m_renderChain->RenderObjectChain(m_display.get());
     Utilities::PrintGLErrors();
 
     auto finish = std::chrono::high_resolution_clock::now();

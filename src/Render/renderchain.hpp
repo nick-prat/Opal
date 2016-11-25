@@ -9,17 +9,13 @@
 
 class RenderChain {
 public:
-    RenderChain(std::shared_ptr<Display> display, bool vol);
+    RenderChain();
     ~RenderChain();
 
     void AttachRenderObject(std::weak_ptr<IRenderObject> object);
-    void RenderObjectChain();
-
-    void SetDisplay(std::shared_ptr<Display> display);
+    void RenderObjectChain(const Display* const display);
 
 private:
-    bool m_volatile;
-    std::shared_ptr<Display> m_display;
     std::list<std::weak_ptr<IRenderObject>> m_objects;
 };
 
