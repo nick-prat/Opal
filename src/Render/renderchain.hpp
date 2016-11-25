@@ -9,24 +9,13 @@
 
 class RenderChain {
 public:
-    void AttachRenderObject(std::weak_ptr<IRenderObject> object);
-    void RenderObjectChain();
-
-    static RenderChain*& GetInstance();
-    static bool CreateInstance(std::shared_ptr<GlutDisplay> display, bool vol = false);
-    static void DeleteInstance();
-
-    void SetDisplay(std::shared_ptr<GlutDisplay> display);
-
-private:
-    RenderChain(std::shared_ptr<GlutDisplay> display, bool vol);
+    RenderChain();
     ~RenderChain();
 
-private:
-    static RenderChain* m_renderChain;
+    void AttachRenderObject(std::weak_ptr<IRenderObject> object);
+    void RenderObjectChain(const Display* const display);
 
-    bool m_volatile;
-    std::shared_ptr<GlutDisplay> m_display;
+private:
     std::list<std::weak_ptr<IRenderObject>> m_objects;
 };
 

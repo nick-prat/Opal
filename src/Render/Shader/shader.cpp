@@ -8,8 +8,6 @@
 
 #include <Utilities/exceptions.hpp>
 
-using namespace gl;
-
 Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types)
         : m_numShaders(0), m_shaderProgram(0) {
 
@@ -18,16 +16,16 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
     }
 
     for(std::string& filename: fileNames) {
-        filename = "./Shaders/" + filename;
+        filename = "Resources/Shaders/" + filename;
     }
 
     GLint success;
     GLchar info[1024];
     m_numShaders = types.size();
 
-    m_shaderProgram = gl::glCreateProgram();
+    m_shaderProgram = glCreateProgram();
     for(unsigned int i = 0; i < m_numShaders; i++) {
-        m_shaderObj.push_back(gl::glCreateShader(types[i]));
+        m_shaderObj.push_back(glCreateShader(types[i]));
 
         std::ifstream file(fileNames[i]);
         if(!file.is_open()) {
@@ -44,42 +42,42 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
         GLint length[1];
         length[0]= (GLint)buffer.str().length();
 
-        gl::glShaderSource(m_shaderObj[i], 1, (const GLchar *const *) text, length);
-        gl::glCompileShader(m_shaderObj[i]);
+        glShaderSource(m_shaderObj[i], 1, (const GLchar *const *) text, length);
+        glCompileShader(m_shaderObj[i]);
 
-        gl::glGetShaderiv(m_shaderObj[i], GL_COMPILE_STATUS, &success);
+        glGetShaderiv(m_shaderObj[i], GL_COMPILE_STATUS, &success);
         if(success == GL_FALSE) {
-            gl::glGetShaderInfoLog(m_shaderObj[i], sizeof(info), nullptr, info);
+            glGetShaderInfoLog(m_shaderObj[i], sizeof(info), nullptr, info);
             throw generic_exception(info);
         }
 
-        gl::glAttachShader(m_shaderProgram, m_shaderObj[i]);
+        glAttachShader(m_shaderProgram, m_shaderObj[i]);
 
         delete[] text[0];
     }
 
-    gl::glLinkProgram(m_shaderProgram);
-    gl::glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
+    glLinkProgram(m_shaderProgram);
+    glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
     if(success == GL_FALSE) {
-        gl::glGetProgramInfoLog(m_shaderProgram, sizeof(info), nullptr, info);
+        glGetProgramInfoLog(m_shaderProgram, sizeof(info), nullptr, info);
         throw generic_exception(std::string("Shader IV didn't succeed ") + info);
     }
 
     for(unsigned int i = 0; i < m_numShaders; i++) {
-        gl::glDetachShader(m_shaderProgram, m_shaderObj[i]);
-        gl::glDeleteShader(m_shaderObj[i]);
+        glDetachShader(m_shaderProgram, m_shaderObj[i]);
+        glDeleteShader(m_shaderObj[i]);
     }
 }
 
 Shader::~Shader() {}
 
 void Shader::UseShader() {
-    gl::glValidateProgram(m_shaderProgram);
+    glValidateProgram(m_shaderProgram);
     GLint status = 0;
     glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, &status);
 
     if(status == GL_TRUE) {
-        gl::glUseProgram(m_shaderProgram);
+        glUseProgram(m_shaderProgram);
     } else {
         throw generic_exception("Couldn't validate program");
     }

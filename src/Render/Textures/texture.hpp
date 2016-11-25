@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include <glapi.hpp>
+#include <GL/gl3w.h>
 
 class Texture
 {

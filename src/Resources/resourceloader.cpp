@@ -1,10 +1,8 @@
 /*
- *
  *  Resource loader, functions for loading all supported data types
- *      - Loads scene information from json
- *      - Loads textures form TGA's
- *      - Loads models from 3ds
- *
+ *      - Loads JSON scene information from jsoncpp (https://github.com/open-source-parsers/jsoncpp)
+ *      - Loads TGA textures via FreeImage
+ *      - Loads 3Ds models via Assimp
  */
 
 #include "resourceloader.hpp"
@@ -23,12 +21,11 @@
 
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
-#include <glapi.hpp>
+#include <GL/gl3w.h>
 #include <Resources/model3d.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>
 
-using namespace gl;
 using json = nlohmann::json;
 
 std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
@@ -182,7 +179,7 @@ std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
 std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::string filename) {
     std::vector<std::shared_ptr<IRenderObject>> renderObjects;
 
-    filename = "Scenes/" + filename + ".json";
+    filename = "Resources/Scenes/" + filename + ".json";
     std::string contents;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
     if (in) {
@@ -228,7 +225,7 @@ std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::strin
 
 std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps) {
     FIBITMAP *img;
-    filename = "./Textures/" + filename + ".tga";
+    filename = "Resources/Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
 
     if(!FreeImage_FIFSupportsReading(format)) {
@@ -346,7 +343,7 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
 }
 
 std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
-    std::string filename = "Models/" + modelname + ".3ds";
+    std::string filename = "Resources/Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
         aiProcess_CalcTangentSpace |

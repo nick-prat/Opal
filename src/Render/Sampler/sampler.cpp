@@ -1,8 +1,6 @@
 #include "sampler.hpp"
 
-#include <glapi.hpp>
-
-using namespace gl;
+#include <GL/gl3w.h>
 
 Sampler::Sampler()
 {

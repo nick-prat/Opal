@@ -7,11 +7,11 @@
 #include <Core/camera.hpp>
 #include <Core/inputcontroller.hpp>
 
-class GlutDisplay {
+class Display {
 public:
-    GlutDisplay();
-    GlutDisplay(uint width, uint height);
-    ~GlutDisplay();
+    Display();
+    Display(uint width, uint height);
+    ~Display();
 
     bool InitDisplay(uint width, uint height);
     void Destroy();
@@ -26,8 +26,6 @@ public:
 
     void SetCursorPosition(float x, float y) const;
     void SetCursorVisible(bool visible) const;
-
-    void SwapBuffers() const;
 
 private:
     uint m_width, m_height;
