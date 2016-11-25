@@ -86,7 +86,7 @@ void GLCore::DisplayFunc() {
 
 void GLCore::LoadScene(std::string name) {
     m_renderObjects = ResourceLoader::LoadScene(name);
-    for(auto obj : m_renderObjects) {
+    for(const auto& obj : m_renderObjects) {
         m_renderChain->AttachRenderObject(obj);
     }
 }

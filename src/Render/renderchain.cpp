@@ -21,10 +21,11 @@ void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
 }
 
 void RenderChain::RenderObjectChain(const Display* const display) {
-    for(std::weak_ptr<IRenderObject> object : m_objects) {
-        auto obj = object.lock();
-
-        if(obj == nullptr) {
+    for(const auto& object : m_objects) {
+        std::shared_ptr<IRenderObject> obj;
+        try {
+            obj = std::shared_ptr<IRenderObject>(object);
+        } catch(std::bad_weak_ptr& error) {
             continue;
         }
 
