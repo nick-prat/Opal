@@ -12,8 +12,10 @@
 #include <Utilities/log.hpp>
 #include <Resources/resourceloader.hpp>
 
-GLCore::GLCore(int width, int height, std::string scene)
-        : m_renderChain(std::make_unique<RenderChain>()), m_display(std::make_unique<Display>(width, height)) {
+GLCore::GLCore(int width, int height, std::string scene) {
+
+    m_display = std::make_unique<Display>(width, height);
+    m_renderChain = std::make_unique<RenderChain>();
 
     // Log information about current context
     std::cout << std::endl;
