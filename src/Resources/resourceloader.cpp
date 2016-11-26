@@ -247,9 +247,13 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes) {
+void LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes) {
+    glm::mat4x4 transformation;
+    CopyaiMat(&node->mTransformation, transformation);
+    transformation = parentTransform * transformation;
+
     for(uint i = 0; i < node->mNumChildren; i++) {
-        LoadNode(scene, node->mChildren[i], meshes);
+        LoadNode(scene, node->mChildren[i], transformation, meshes);
     }
 
     for(uint i = 0; i < node->mNumMeshes; i++) {
@@ -259,7 +263,9 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
         for(uint j = 0; j < mesh->mNumVertices; j++) {
             Model3D::Vertex vertex;
 
-            vertex.position = glm::vec3(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z);
+            glm::vec4 position = glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f);
+            position = transformation * position;
+            vertex.position = glm::vec3(position.x, position.y, position.z);
 
             vertex.normal = (mesh->HasNormals())
                 ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z)
@@ -284,8 +290,6 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
             throw bad_resource("Node was missing faces, load cancled");
         }
 
-        glm::mat4x4 transformation;
-        CopyaiMat(&node->mTransformation, transformation);
         std::shared_ptr<Model3D::Mesh> rmesh = std::make_shared<Model3D::Mesh>(vertices, indices);
         rmesh->SetTransformation(transformation);
         rmesh->SetMatIndex(mesh->mMaterialIndex);
@@ -330,7 +334,7 @@ Model3D* ResourceLoader::LoadModel3D(std::string modelname) {
     model->SetTextures(textures);
 
     std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
-    LoadNode(scene, scene->mRootNode, meshes);
+    LoadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
 
     for(std::shared_ptr<Model3D::Mesh>& mesh : meshes) {
         aiString aName;
