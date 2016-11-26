@@ -4,9 +4,9 @@
             "type": "staticmodel",
             "name": "Bear",
             "filename": "bear",
-            "translation": [2.5, 0.0, 0.0],
+            "translation": [0.0, 0.0, 0.0],
             "rotation": [0.3, 0.1, 0.2],
-            "scale": [0.2, 0.2, 0.2]
+            "scale": [0.1, 0.1, 0.1]
         },
         {
             "type": "line",

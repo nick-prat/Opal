@@ -77,13 +77,6 @@ void StaticModel::Render(const Display* const display) {
     for(uint i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
 
-        /*glm::mat4 model;
-        if(m_model->GetMeshes()[i]->HasTransformation()) {
-            model = GetWorld() * m_model->GetMeshes()[i]->GetTransformation();
-        } else {
-            model = GetWorld();
-        }*/
-
         std::shared_ptr<Texture> texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
         if(texture != nullptr) {
             texture->Bind();

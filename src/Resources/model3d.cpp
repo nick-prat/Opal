@@ -29,6 +29,12 @@ void Model3D::SetTextures(const std::unordered_map<std::string, std::shared_ptr<
     m_textures = textures;
 }
 
+void Model3D::ApplyTransformation(const glm::mat4 &transform) {
+    for(auto& mesh : m_meshes) {
+        mesh->ApplyTransformation(transform);
+    }
+}
+
 void Model3D::PrintTextures() const {
     for(const auto texture : m_textures) {
         std::cout << texture.first << "->" << (texture.second->IsLoaded() ? "loaded" : "load failed") << ": " << texture.second->GetFileName() << '\n';
@@ -50,7 +56,8 @@ std::shared_ptr<Texture> Model3D::GetTexture(const std::string& key) const {
 
 // Model3D::Vertex
 
-Model3D::Vertex::Vertex() {}
+Model3D::Vertex::Vertex() {
+}
 
 Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
     : position(pos), normal(norm), texCoord(tex) {
@@ -60,21 +67,15 @@ Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
 // Model3D::Mesh
 
 Model3D::Mesh::Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices)
-: m_hasTransformation(false), m_matIndex(0), m_matName("null"), m_transformation(glm::mat4x4(1.0f)), m_indices(indices), m_vertices(vertices) {}
+: m_matIndex(0), m_matName("null"), m_indices(indices), m_vertices(vertices) {}
 
 Model3D::Mesh::~Mesh() {}
 
-bool Model3D::Mesh::HasTransformation() const {
-    return m_hasTransformation;
-}
-
-void Model3D::Mesh::SetTransformation(const glm::mat4x4& transformation) {
-    m_hasTransformation = true;
-    m_transformation = transformation;
-}
-
-glm::mat4x4 Model3D::Mesh::GetTransformation() const {
-    return m_transformation;
+void Model3D::Mesh::ApplyTransformation(const glm::mat4& transform) {
+    for(auto& vert : m_vertices) {
+        glm::vec4 pos = glm::vec4(vert.position, 1.0f) * transform;
+        vert.position = glm::vec3(pos.x, pos.y, pos.z);
+    }
 }
 
 std::vector<Model3D::Vertex> Model3D::Mesh::GetVertices() const {

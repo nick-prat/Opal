@@ -87,7 +87,7 @@ int main(int argc, char **args) {
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetWindowUserPointer(window, glCore);
-    
+    //glfwSwapInterval(0);
     double timer = glfwGetTime();
     unsigned long frames = 0;
 

@@ -115,12 +115,14 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
         throw bad_resource("Unknown data type", name);
     }
 
-    /*if(object.find("scale") != object.end()) {
+    glm::mat4 transform = glm::mat4(1.0f);
+
+    if(object.find("scale") != object.end()) {
         std::vector<float> scale = object["scale"];
         if(scale.size() != 3) {
             throw bad_resource("Scale data size is not 3", name);
         }
-        rObject->Scale(glm::vec3(scale[0], scale[1], scale[2]));
+        transform = glm::scale(transform, glm::vec3(scale[0], scale[1], scale[2]));
     }
 
     if(object.find("translation") != object.end()) {
@@ -128,7 +130,7 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
         if(translation.size() != 3) {
             throw bad_resource("Translation data size is not 3", name);
         }
-        rObject->Translate(glm::vec3(translation[0], translation[1], translation[2]));
+        transform = glm::translate(transform, glm::vec3(translation[0], translation[1], translation[2]));
     }
 
     if(object.find("rotation") != object.end()) {
@@ -136,8 +138,9 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
         if(rotation.size() != 3) {
             throw bad_resource("Rotation data size is not 3", name);
         }
-    }*/
+    }
 
+    model3D->ApplyTransformation(transform);
     return std::make_shared<StaticModel>(model3D);
 }
 
@@ -291,7 +294,6 @@ void LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransfor
         }
 
         std::shared_ptr<Model3D::Mesh> rmesh = std::make_shared<Model3D::Mesh>(vertices, indices);
-        rmesh->SetTransformation(transformation);
         rmesh->SetMatIndex(mesh->mMaterialIndex);
 
         meshes.push_back(rmesh);

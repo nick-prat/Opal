@@ -28,10 +28,8 @@ public:
         Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices);
         ~Mesh();
 
-        bool HasTransformation() const;
-        void SetTransformation(const glm::mat4x4& transformation);
+        void ApplyTransformation(const glm::mat4& transform);
 
-        glm::mat4x4 GetTransformation() const;
         std::vector<Vertex> GetVertices() const;
         std::vector<uint> GetIndices() const;
 
@@ -42,7 +40,6 @@ public:
         std::string GetMatName() const;
 
     private:
-        bool m_hasTransformation;
         uint m_matIndex;
         std::string m_matName;
         glm::mat4x4 m_transformation;
@@ -57,6 +54,8 @@ public:
     void AddMesh(std::shared_ptr<Mesh> mesh);
     void SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
     void SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>> textures);
+
+    void ApplyTransformation(const glm::mat4& transform);
 
     std::shared_ptr<Texture> GetTexture(const std::string& key) const;
     std::vector<std::shared_ptr<Mesh>> GetMeshes() const;
