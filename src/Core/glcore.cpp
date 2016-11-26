@@ -7,6 +7,7 @@
 #include <thread>
 #include <fstream>
 
+#include <Scene/scene.hpp>
 #include <Utilities/exceptions.hpp>
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
@@ -23,33 +24,12 @@ GLCore::GLCore(int width, int height, std::string scene) {
     std::cout << "\tDisplay Address: " << m_display.get() << '\n';
     std::cout << "\tRender Chain Address: " << m_renderChain.get() << "\n\n";
 
-    LoadScene(scene);
+    m_sceneController = std::make_unique<SceneController>(scene, m_display.get(), m_renderChain.get());
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
-
-    auto inputController = m_display->GetInputController();
-
-    inputController->RegisterWhileKeyPressed(InputKey::A, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::S, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::D, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::W, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::Q, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::E, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
-    });
 
     Log::info("GL Context created", Log::OUT_LOG);
 }
@@ -69,6 +49,7 @@ void GLCore::DisplayFunc() {
     auto start = std::chrono::high_resolution_clock::now();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    m_sceneController->Render();
     m_renderChain->RenderObjectChain(m_display.get());
 
     auto finish = std::chrono::high_resolution_clock::now();
@@ -80,11 +61,4 @@ void GLCore::DisplayFunc() {
 
     inputController->CallKeyLambdas();
     Utilities::PrintGLErrors();
-}
-
-void GLCore::LoadScene(std::string name) {
-    m_renderObjects = ResourceLoader::LoadScene(name);
-    for(const auto& obj : m_renderObjects) {
-        m_renderChain->AttachRenderObject(obj);
-    }
 }

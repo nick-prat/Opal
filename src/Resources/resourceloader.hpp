@@ -6,9 +6,11 @@
 #include <Render/renderobject.hpp>
 #include <Render/Textures/texture.hpp>
 #include <Resources/model3d.hpp>
+#include <json.hpp>
 
 namespace ResourceLoader {
-    std::vector<std::shared_ptr<IRenderObject>> LoadScene(std::string filename);
+    std::shared_ptr<IRenderObject> LoadModelJSON(nlohmann::json object);
+    std::shared_ptr<IRenderObject> LoadLineJSON(nlohmann::json object);
     std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
     std::shared_ptr<Model3D> LoadModel3D(std::string modelname);
 }

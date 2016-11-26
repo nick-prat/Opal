@@ -12,7 +12,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <FreeImage.h>
-#include <json.hpp>
 
 #include <memory>
 #include <vector>
@@ -28,19 +27,19 @@
 
 using json = nlohmann::json;
 
-std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
+std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
     std::string type = "";
     std::string name = "";
 
-    try {
+    if(object.find("datatype") != object.end()) {
         type = object["datatype"];
-    } catch (std::domain_error& error) {
+    } else {
         type = "normal";
     }
 
-    try {
+    if(object.find("name") != object.end()) {
         name = object["name"];
-    } catch (std::domain_error& error) {
+    } else {
         name = "null";
     }
 
@@ -68,7 +67,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         }
 
         std::vector<glm::vec3> norms;
-        try {
+        if(object.find("noramls") != object.end()) {
             std::vector<std::vector<float>> normsf = object["normals"];
             for(std::vector<float> norm : normsf) {
                 if(norm.size() != 3) {
@@ -76,7 +75,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
                 }
                 norms.push_back(glm::vec3(norm[0], norm[1], norm[2]));
             }
-        } catch (std::domain_error& error) {
+        } else {
             norms.clear();
             for(uint i = 0; i < verts.size(); i++) {
                 norms.push_back(glm::vec3(0.0f));
@@ -84,7 +83,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         }
 
         std::vector<glm::vec2> uvs;
-        try {
+        if(object.find("uvs") != object.end()) {
             std::vector<std::vector<float>> uvsf = object["uvs"];
             for(std::vector<float> uv : uvsf) {
                 if(uv.size() != 2) {
@@ -92,7 +91,7 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
                 }
                 uvs.push_back(glm::vec2(uv[0], uv[1]));
             }
-        } catch (std::domain_error& error) {
+        } else {
             uvs.clear();
             for(uint i = 0; i < verts.size(); i++) {
                 uvs.push_back(glm::vec2(0.0f));
@@ -116,39 +115,39 @@ std::shared_ptr<IRenderObject> LoadStaticModelJSON(json object) {
         throw bad_resource("Unknown data type", name);
     }
 
-    try {
+    if(object.find("scale") != object.end()) {
         std::vector<float> scale = object["scale"];
         if(scale.size() != 3) {
             throw bad_resource("Scale data size is not 3", name);
         }
         rObject->Scale(glm::vec3(scale[0], scale[1], scale[2]));
-    } catch (std::domain_error& error) {}
+    }
 
-    try {
+    if(object.find("translation") != object.end()) {
         std::vector<float> translation = object["translation"];
         if(translation.size() != 3) {
             throw bad_resource("Translation data size is not 3", name);
         }
         rObject->Translate(glm::vec3(translation[0], translation[1], translation[2]));
-    } catch (std::domain_error& error) {}
+    }
 
-    try {
+    if(object.find("rotation") != object.end()) {
         std::vector<float> rotation = object["rotation"];
         if(rotation.size() != 3) {
             throw bad_resource("Rotation data size is not 3", name);
         }
-    } catch (std::domain_error& error) {}
+    }
 
     return rObject;
 }
 
-std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
+std::shared_ptr<IRenderObject> ResourceLoader::LoadLineJSON(json object) {
     glm::vec3 head, tail, color;
     std::string name;
 
-    try {
+    if(object.find("name") != object.end()) {
         name = object["name"];
-    } catch (std::domain_error& error) {
+    } else {
         name = "null";
     }
 
@@ -174,53 +173,6 @@ std::shared_ptr<IRenderObject> LoadLineJSON(json object) {
     }
 
     return std::make_shared<Line>(head, tail, color);
-}
-
-std::vector<std::shared_ptr<IRenderObject>> ResourceLoader::LoadScene(std::string filename) {
-    std::vector<std::shared_ptr<IRenderObject>> renderObjects;
-
-    filename = "Resources/Scenes/" + filename + ".json";
-    std::string contents;
-    std::ifstream in(filename, std::ios::in | std::ios::binary);
-    if (in) {
-        in.seekg(0, std::ios::end);
-        contents.resize(in.tellg());
-        in.seekg(0, std::ios::beg);
-        in.read(&contents[0], contents.size());
-        in.close();
-    } else {
-        throw generic_exception(filename + " doesn't exist");
-    }
-
-    try {
-        json scene = json::parse(contents);
-        std::vector<json> objects = scene["staticObjects"];
-
-        for(json object : objects) {
-            std::string type = "";
-            std::string name = "";
-
-            try {
-                type = object["type"];
-
-                std::shared_ptr<IRenderObject> rObject;
-                if(type == "line") {
-                    rObject = LoadLineJSON(object);
-                } else if(type == "staticmodel") {
-                    rObject = LoadStaticModelJSON(object);
-                }
-                if(rObject != nullptr) {
-                    renderObjects.push_back(rObject);
-                }
-            } catch (bad_resource& error) {
-                error.PrintError();
-            }
-        }
-    } catch(std::exception& error) {
-        Log::error("Parsing of " + filename + " failed: " + std::string(error.what()), Log::OUT_LOG_CONS);
-    }
-
-    return renderObjects;
 }
 
 std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps) {
