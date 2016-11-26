@@ -8,8 +8,8 @@
 #include <GL/gl3w.h>
 #include <Render/Textures/texture.hpp>
 
-StaticModel::StaticModel(const std::shared_ptr<Model3D> model)
-        : m_model(model) {
+StaticModel::StaticModel(Model3D* const model)
+        : m_model(std::unique_ptr<const Model3D>(model)) {
 
     if(model == nullptr) {
         throw generic_exception("Null param passed to StaticModel constructor");
@@ -102,8 +102,4 @@ void StaticModel::Render(const Display* const display) {
     }
 
     Utilities::PrintGLErrors();
-}
-
-std::shared_ptr<Model3D> StaticModel::GetModel() {
-    return m_model;
 }

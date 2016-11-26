@@ -46,19 +46,8 @@ void GLCore::MouseFunc(double xpos, double ypos) {
 }
 
 void GLCore::DisplayFunc() {
-    auto start = std::chrono::high_resolution_clock::now();
-
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_sceneController->Render();
     m_renderChain->RenderObjectChain(m_display.get());
-
-    auto finish = std::chrono::high_resolution_clock::now();
-
-    std::shared_ptr<InputController> inputController = m_display->GetInputController();
-    if(inputController->IsKeyPressed(InputKey::SPACE)) {
-        std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << '\n';
-    }
-
-    inputController->CallKeyLambdas();
-    Utilities::PrintGLErrors();
+    m_display->GetInputController()->CallKeyLambdas();
 }

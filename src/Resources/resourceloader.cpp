@@ -43,10 +43,10 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
         name = "null";
     }
 
-    std::shared_ptr<IRenderObject> rObject;
+    Model3D* model3D;
 
     if(type == "normal") {
-        rObject = std::make_shared<StaticModel>(ResourceLoader::LoadModel3D(object["filename"]));
+        model3D = ResourceLoader::LoadModel3D(object["filename"]);
     } else if(type == "raw") {
         std::vector<glm::vec3> verts;
         std::vector<std::vector<float>> vertsf = object["vertices"];
@@ -110,12 +110,12 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
         std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
         textures["texture"] = ResourceLoader::LoadTexture(object["matname"], true);
 
-        rObject = std::make_shared<StaticModel>(std::make_shared<Model3D>(meshes, textures));
+        model3D = new Model3D(meshes, textures);
     } else {
         throw bad_resource("Unknown data type", name);
     }
 
-    if(object.find("scale") != object.end()) {
+    /*if(object.find("scale") != object.end()) {
         std::vector<float> scale = object["scale"];
         if(scale.size() != 3) {
             throw bad_resource("Scale data size is not 3", name);
@@ -136,9 +136,9 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
         if(rotation.size() != 3) {
             throw bad_resource("Rotation data size is not 3", name);
         }
-    }
+    }*/
 
-    return rObject;
+    return std::make_shared<StaticModel>(model3D);
 }
 
 std::shared_ptr<IRenderObject> ResourceLoader::LoadLineJSON(json object) {
@@ -294,7 +294,7 @@ void LoadNode(const aiScene* scene, const aiNode* node, std::vector<std::shared_
     }
 }
 
-std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
+Model3D* ResourceLoader::LoadModel3D(std::string modelname) {
     std::string filename = "Resources/Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
@@ -307,7 +307,7 @@ std::shared_ptr<Model3D> ResourceLoader::LoadModel3D(std::string modelname) {
         throw bad_resource(importer.GetErrorString(), filename);
     }
 
-    auto model = std::make_shared<Model3D>();
+    auto model = new Model3D();
 
     aiMaterial** materials = scene->mMaterials;
     std::unordered_map<std::string, std::shared_ptr<Texture>> textures;

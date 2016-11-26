@@ -14,18 +14,11 @@ class IRenderObject
 public:
     IRenderObject();
     virtual ~IRenderObject();
+
     virtual void Render(const Display* const display) = 0;
-
-    void Translate(const glm::vec3& trans);
-    void Rotate(const float& degrees, const glm::vec3& rotate);
-    void Scale(const glm::vec3& scale);
-
-    glm::mat4 GetWorld();
+    virtual glm::mat4 GetWorld();
 
 private:
-    glm::mat4 m_translate;
-    glm::mat4 m_scale;
-    glm::mat4 m_rotate;
     glm::mat4 m_world;
 
 };

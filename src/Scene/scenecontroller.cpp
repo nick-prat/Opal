@@ -48,6 +48,7 @@ SceneController::SceneController(std::string scenename, Display* display, Render
 
     m_scene = std::make_unique<Scene>();
     m_scene->AddEntity("George", ent);
+
     Start();
 }
 
@@ -134,7 +135,7 @@ void SceneController::InitLuaScripts() {
         .beginNamespace("Game")
             .beginClass<Entity>("Entity")
                 .addConstructor<void(*)(void)>()
-                .addProperty("Name", &Entity::GetName, &Entity::SetName)
+                .addProperty("name", &Entity::GetName, &Entity::SetName)
             .endClass()
             .beginClass<Scene>("Scene")
                 .addConstructor<void(*)(void)>()

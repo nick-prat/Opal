@@ -87,12 +87,19 @@ int main(int argc, char **args) {
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetWindowUserPointer(window, glCore);
+    
+    double timer = glfwGetTime();
+    unsigned long frames = 0;
 
     while(!glfwWindowShouldClose(window)) {
         glCore->DisplayFunc();
         glfwSwapBuffers(window);
         glfwPollEvents();
+        frames++;
     }
+
+    timer = glfwGetTime() - timer;
+    std::cout << "Average FPS: " << frames / timer << '\n';
 
     glfwTerminate();
     return 0;

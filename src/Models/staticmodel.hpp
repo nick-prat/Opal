@@ -7,22 +7,21 @@
 #include <Render/Shader/shader.hpp>
 #include <Render/Sampler/sampler.hpp>
 
-class StaticModel : public IRenderObject
-{
+class StaticModel : public IRenderObject {
 public:
-    StaticModel(std::shared_ptr<Model3D> model);
-    ~StaticModel();
+    StaticModel(Model3D* model);
+    virtual ~StaticModel();
 
     void Render(const Display* const display) override;
 
-    std::shared_ptr<Model3D> GetModel();
+protected:
+    const std::unique_ptr<const Model3D> m_model;
 
 private:
     Sampler m_sampler;
     uint m_meshCount;
     std::vector<GLsizei> m_indexCount;
     std::vector<GLuint> m_VAO, m_VBO, m_IBO;
-    const std::shared_ptr<Model3D> m_model;
     std::shared_ptr<Shader> m_shader;
 };
 
