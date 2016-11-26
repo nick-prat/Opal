@@ -12,7 +12,8 @@ public:
     StaticModel(Model3D* model);
     virtual ~StaticModel();
 
-    void Render(const Display* const display) override;
+    virtual void Render(const Display* const display) override;
+    virtual glm::mat4 GenerateMVP(const Display* const display) const;
 
 protected:
     const std::unique_ptr<const Model3D> m_model;

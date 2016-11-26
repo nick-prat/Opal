@@ -16,11 +16,6 @@ public:
     virtual ~IRenderObject();
 
     virtual void Render(const Display* const display) = 0;
-    virtual glm::mat4 GetWorld();
-
-private:
-    glm::mat4 m_world;
-
 };
 
 #endif // _RENDEROBJECT_H

@@ -51,14 +51,12 @@ StaticModel::~StaticModel() {
     glDeleteBuffers(m_IBO.size(), m_IBO.data());
 }
 
+glm::mat4 StaticModel::GenerateMVP(const Display* const display) const {
+    return display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix();
+}
+
 void StaticModel::Render(const Display* const display) {
     m_shader->UseShader();
-
-    GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
-    if(worldLocation == -1) {
-        std::cout << "Couldn't get MVP uniform loaction" << std::endl;
-        exit(-1);
-    }
 
     GLint samplerLocation = glGetUniformLocation(m_shader->GetProgram(), "gSampler");
     if(samplerLocation == -1) {
@@ -67,20 +65,24 @@ void StaticModel::Render(const Display* const display) {
     }
     glUniform1i(samplerLocation, 0);
 
+    GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
+    if(worldLocation == -1) {
+        std::cout << "Couldn't get MVP uniform loaction" << std::endl;
+        exit(-1);
+    }
+    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(GenerateMVP(display)));
+
     m_sampler.Bind();
 
     for(uint i = 0; i < m_meshCount; i++) {
-        glm::mat4 model;
+        glBindVertexArray(m_VAO[i]);
+
+        /*glm::mat4 model;
         if(m_model->GetMeshes()[i]->HasTransformation()) {
             model = GetWorld() * m_model->GetMeshes()[i]->GetTransformation();
         } else {
             model = GetWorld();
-        }
-
-        glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix() * model;
-        glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
-
-        glBindVertexArray(m_VAO[i]);
+        }*/
 
         std::shared_ptr<Texture> texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
         if(texture != nullptr) {

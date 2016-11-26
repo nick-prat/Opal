@@ -13,6 +13,7 @@ public:
     void Scale(const glm::vec3& scale);
 
     const Model3D* const GetModel();
+    glm::mat4 GetWorld() const;
 
 private:
     glm::mat4 m_translate;

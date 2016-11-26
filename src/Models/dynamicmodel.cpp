@@ -13,6 +13,10 @@ const Model3D* const DynamicModel::GetModel() {
     return m_model.get();
 }
 
+glm::mat4 DynamicModel::GetWorld() const {
+    return m_translate * m_rotate * m_scale;
+}
+
 void DynamicModel::Translate(const glm::vec3& trans)
 {
     m_translate = glm::translate(m_translate, trans);
