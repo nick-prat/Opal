@@ -266,8 +266,7 @@ void LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransfor
         for(uint j = 0; j < mesh->mNumVertices; j++) {
             Model3D::Vertex vertex;
 
-            glm::vec4 position = glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f);
-            position = transformation * position;
+            glm::vec4 position = transformation * glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f);
             vertex.position = glm::vec3(position.x, position.y, position.z);
 
             vertex.normal = (mesh->HasNormals())

@@ -73,7 +73,7 @@ Model3D::Mesh::~Mesh() {}
 
 void Model3D::Mesh::ApplyTransformation(const glm::mat4& transform) {
     for(auto& vert : m_vertices) {
-        glm::vec4 pos = glm::vec4(vert.position, 1.0f) * transform;
+        glm::vec4 pos = transform * glm::vec4(vert.position, 1.0f);
         vert.position = glm::vec3(pos.x, pos.y, pos.z);
     }
 }
