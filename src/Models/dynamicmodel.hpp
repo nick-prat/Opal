@@ -14,6 +14,7 @@ public:
 
     const Model3D* const GetModel();
     glm::mat4 GetWorld() const;
+    glm::mat4 GenerateMVP(const Display* const display) const override;
 
 private:
     glm::mat4 m_translate;
