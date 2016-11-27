@@ -41,6 +41,14 @@ void Model3D::PrintTextures() const {
     }
 }
 
+uint Model3D::GetFaceCount() const {
+    uint faceCount = 0;
+    for(const auto& mesh : m_meshes) {
+        faceCount += mesh->GetIndices().size() / 3;
+    }
+    return faceCount;
+}
+
 std::vector<std::shared_ptr<Model3D::Mesh>> Model3D::GetMeshes() const {
     return m_meshes;
 }

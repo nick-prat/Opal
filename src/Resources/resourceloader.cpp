@@ -347,6 +347,5 @@ Model3D* ResourceLoader::LoadModel3D(std::string modelname) {
     }
 
     model->SetMeshes(meshes);
-
     return model;
 }

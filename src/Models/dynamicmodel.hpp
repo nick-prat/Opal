@@ -12,7 +12,6 @@ public:
     void Rotate(const float& degrees, const glm::vec3& rotate);
     void Scale(const glm::vec3& scale);
 
-    const Model3D* const GetModel();
     glm::mat4 GetWorld() const;
     glm::mat4 GenerateMVP(const Display* const display) const override;
 

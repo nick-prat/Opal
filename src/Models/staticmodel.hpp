@@ -15,6 +15,8 @@ public:
     virtual void Render(const Display* const display) override;
     virtual glm::mat4 GenerateMVP(const Display* const display) const;
 
+    const Model3D* const GetModel();
+
 protected:
     const std::unique_ptr<const Model3D> m_model;
 

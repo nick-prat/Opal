@@ -59,6 +59,7 @@ public:
 
     std::shared_ptr<Texture> GetTexture(const std::string& key) const;
     std::vector<std::shared_ptr<Mesh>> GetMeshes() const;
+    uint GetFaceCount() const;
 
     void PrintTextures() const;
 

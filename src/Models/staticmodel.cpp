@@ -55,6 +55,10 @@ glm::mat4 StaticModel::GenerateMVP(const Display* const display) const {
     return display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix();
 }
 
+const Model3D* const StaticModel::GetModel() {
+    return m_model.get();
+}
+
 void StaticModel::Render(const Display* const display) {
     m_shader->UseShader();
 
