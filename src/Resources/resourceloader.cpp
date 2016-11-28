@@ -138,6 +138,11 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
         if(rotation.size() != 3) {
             throw bad_resource("Rotation data size is not 3", name);
         }
+        for(auto& degree : rotation) {
+            std::cout << degree << "\n";
+            degree = (degree < 0.0f ? 360 + degree : degree);
+        }
+        
         float degrees = *(std::max_element(rotation.begin(), rotation.end()));
         std::cout << degrees << '\n';
         if(degrees != 0.0f) {
