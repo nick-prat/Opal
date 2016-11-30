@@ -7,6 +7,7 @@
 #include <Utilities/log.hpp>
 #include <Utilities/exceptions.hpp>
 
+using namespace ResourceLoader;
 using json = nlohmann::json;
 
 SceneController::SceneController(std::string scenename, Display* display, RenderChain* renderChain)
@@ -88,9 +89,9 @@ void SceneController::InitScene() {
 
                     std::shared_ptr<IRenderObject> rObject;
                     if(type == "line") {
-                        rObject = ResourceLoader::LoadLineJSON(object);
+                        rObject = LoadLineJSON(object);
                     } else if(type == "staticmodel") {
-                        rObject = ResourceLoader::LoadModelJSON(object);
+                        rObject = LoadModelJSON(object);
                     }
                     if(rObject != nullptr) {
                         m_staticModels.push_back(rObject);
@@ -107,9 +108,9 @@ void SceneController::InitScene() {
             std::vector<json> objects = scene["dynamicObjects"];
             for(json object : objects) {
                 try {
-                    std::string type = object["type"];
                     std::string name = object["name"];
-
+                    std::string filename = object["filename"];
+                    m_dynamicModels[name] = std::make_unique<DynamicModel>(LoadModel3D(filename));
                 } catch (bad_resource& error) {
                     error.PrintError();
                 } catch (std::domain_error& error) {
@@ -117,8 +118,6 @@ void SceneController::InitScene() {
                 }
             }
         }
-
-
     } catch(std::exception& error) {
         Log::error("Parsing of " + filename + " failed: " + std::string(error.what()), Log::OUT_LOG_CONS);
     }
@@ -134,6 +133,7 @@ void SceneController::InitLuaScripts() {
         .beginNamespace("Game")
             .beginClass<Entity>("Entity")
                 .addConstructor<void(*)(void)>()
+                .addProperty("visible", &Entity::IsVisible, &Entity::SetVisible)
                 .addProperty("name", &Entity::GetName, &Entity::SetName)
             .endClass()
             .beginClass<Scene>("Scene")

@@ -1,18 +1,16 @@
 #include "dynamicmodel.hpp"
 
 DynamicModel::DynamicModel(Model3D* model3D)
-        : StaticModel(model3D) {
+        : StaticModel(model3D), m_visible(true) {
 }
 
 DynamicModel::~DynamicModel() {
 }
 
-const Model3D* const DynamicModel::GetModel() {
-    return m_model.get();
-}
-
-glm::mat4 DynamicModel::GetWorld() const {
-    return m_translate * m_rotate * m_scale;
+void DynamicModel::Render(const Display* const display) {
+    if(m_visible) {
+        StaticModel::Render(display);
+    }
 }
 
 glm::mat4 DynamicModel::GenerateMVP(const Display* const display) const {
@@ -32,4 +30,16 @@ void DynamicModel::Rotate(const float& degrees, const glm::vec3& rotate)
 void DynamicModel::Scale(const glm::vec3& scale)
 {
     m_scale = glm::scale(m_scale, scale);
+}
+
+void DynamicModel::SetVisible(const bool visible) {
+    m_visible = visible;
+}
+
+bool DynamicModel::IsVisible() const {
+    return m_visible;
+}
+
+glm::mat4 DynamicModel::GetWorld() const {
+    return m_translate * m_rotate * m_scale;
 }
