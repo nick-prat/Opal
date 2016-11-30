@@ -18,5 +18,7 @@ Entity* Scene::GetEntity(const std::string& name) const {
 }
 
 void Scene::AddEntity(const std::string& name, Entity* const ent) {
-    m_entities[name] = std::unique_ptr<Entity>(ent);
+    if(ent != nullptr) {
+        m_entities[name] = std::unique_ptr<Entity>(ent);
+    }
 }

@@ -8,10 +8,10 @@
 #include <Utilities/exceptions.hpp>
 
 using json = nlohmann::json;
-using namespace luabridge;
 
 SceneController::SceneController(std::string scenename, Display* display, RenderChain* renderChain)
-        :m_renderChain(renderChain), m_luaState(nullptr), m_display(display), m_scenename(scenename) {
+        :m_renderChain(renderChain), m_display(display), m_scene(std::make_unique<Scene>()), m_scenename(scenename) {
+
     InitScene();
     InitLuaScripts();
 
@@ -46,7 +46,6 @@ SceneController::SceneController(std::string scenename, Display* display, Render
     Entity* ent = new Entity;
     ent->SetName("George");
 
-    m_scene = std::make_unique<Scene>();
     m_scene->AddEntity("George", ent);
 
     Start();
@@ -131,7 +130,7 @@ void SceneController::InitLuaScripts() {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
 
-    getGlobalNamespace(m_luaState)
+    luabridge::getGlobalNamespace(m_luaState)
         .beginNamespace("Game")
             .beginClass<Entity>("Entity")
                 .addConstructor<void(*)(void)>()
@@ -139,14 +138,18 @@ void SceneController::InitLuaScripts() {
             .endClass()
             .beginClass<Scene>("Scene")
                 .addConstructor<void(*)(void)>()
+                .addFunction("AddEntity", &Scene::AddEntity)
                 .addFunction("GetEntity", &Scene::GetEntity)
             .endClass()
         .endNamespace();
 
+    luabridge::push(m_luaState, m_scene.get());
+    lua_setglobal(m_luaState, "Level");
+
     luaL_dofile(m_luaState, script.c_str());
 
-    m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
-    m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
+    m_startFunc = std::make_unique<luabridge::LuaRef>(luabridge::getGlobal(m_luaState, "Start"));
+    m_renderFunc = std::make_unique<luabridge::LuaRef>(luabridge::getGlobal(m_luaState, "GameLoop"));
 
     if(!m_startFunc->isFunction() || !m_renderFunc->isFunction()) {
         throw generic_exception("start and/or render function weren't found");
