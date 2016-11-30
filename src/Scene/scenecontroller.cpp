@@ -168,9 +168,12 @@ void SceneController::InitLuaScripts() {
     luaL_dofile(m_luaState, script.c_str());
 
     m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
-    m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
+    if(!m_startFunc->isFunction()) {
+        throw generic_exception("Start function wasn't found");
+    }
 
-    if(!m_startFunc->isFunction() || !m_renderFunc->isFunction()) {
-        throw generic_exception("start and/or render function weren't found");
+    m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
+    if(!m_renderFunc->isFunction()) {
+        throw generic_exception("Render function wasn't found");
     }
 }
