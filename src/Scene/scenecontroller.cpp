@@ -58,7 +58,7 @@ SceneController::~SceneController() {
 }
 
 void SceneController::Start() {
-    (*m_startFunc)(m_scene.get());
+    (*m_startFunc)();
 }
 
 void SceneController::Render() {
@@ -131,6 +131,24 @@ void SceneController::InitLuaScripts() {
     luaL_openlibs(m_luaState);
 
     getGlobalNamespace(m_luaState)
+        .beginClass<glm::vec2>("vec2")
+            .addConstructor<void(*)(float, float)>()
+            .addData("x", &glm::vec2::x)
+            .addData("y", &glm::vec2::y)
+        .endClass()
+        .beginClass<glm::vec3>("vec3")
+            .addConstructor<void(*)(float, float, float)>()
+            .addData("x", &glm::vec3::x)
+            .addData("y", &glm::vec3::y)
+            .addData("z", &glm::vec3::z)
+        .endClass()
+        .beginClass<glm::vec4>("vec4")
+            .addConstructor<void(*)(float, float, float, float)>()
+            .addData("x", &glm::vec4::x)
+            .addData("y", &glm::vec4::y)
+            .addData("z", &glm::vec4::z)
+            .addData("w", &glm::vec4::w)
+        .endClass()
         .beginNamespace("Game")
             .beginClass<Entity>("Entity")
                 .addConstructor<void(*)(void)>()
