@@ -7,6 +7,7 @@
 #include <Utilities/log.hpp>
 #include <Utilities/exceptions.hpp>
 
+using namespace luabridge;
 using namespace ResourceLoader;
 using json = nlohmann::json;
 
@@ -129,7 +130,7 @@ void SceneController::InitLuaScripts() {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
 
-    luabridge::getGlobalNamespace(m_luaState)
+    getGlobalNamespace(m_luaState)
         .beginNamespace("Game")
             .beginClass<Entity>("Entity")
                 .addConstructor<void(*)(void)>()
@@ -143,13 +144,13 @@ void SceneController::InitLuaScripts() {
             .endClass()
         .endNamespace();
 
-    luabridge::push(m_luaState, m_scene.get());
+    push(m_luaState, m_scene.get());
     lua_setglobal(m_luaState, "Level");
 
     luaL_dofile(m_luaState, script.c_str());
 
-    m_startFunc = std::make_unique<luabridge::LuaRef>(luabridge::getGlobal(m_luaState, "Start"));
-    m_renderFunc = std::make_unique<luabridge::LuaRef>(luabridge::getGlobal(m_luaState, "GameLoop"));
+    m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
+    m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
 
     if(!m_startFunc->isFunction() || !m_renderFunc->isFunction()) {
         throw generic_exception("start and/or render function weren't found");

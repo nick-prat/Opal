@@ -27,6 +27,7 @@ set(SOURCE_FILES
     src/Scene/scene.cpp
 
     # Models
+    src/Models/dynamicmodel.cpp
     src/Models/staticmodel.cpp
 	src/Models/line.cpp
 
