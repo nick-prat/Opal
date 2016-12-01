@@ -8,7 +8,15 @@
 #include <Render/renderchain.hpp>
 #include <Models/staticmodel.hpp>
 #include <Models/line.hpp>
-#include <Scene/scenecontroller.hpp>
+#include <Scene/scene.hpp>
+
+extern "C" {
+#include <lua.h>
+#include <lauxlib.h>
+#include <lualib.h>
+}
+
+#include <LuaBridge/LuaBridge.h>
 
 class GLCore {
 public:
@@ -20,12 +28,24 @@ public:
     void MouseFunc(double xpos, double ypos);
 
 private:
-    std::unique_ptr<RenderChain> m_renderChain;
-    std::unique_ptr<Display> m_display;
-    std::unique_ptr<SceneController> m_sceneController;
+    void InitScene();
+    void InitLuaScripts();
+    void InitControls();
+
+private:
+    std::string m_scenename;
+    std::unordered_map<std::string, std::shared_ptr<IRenderObject>> m_dynamicModels;
     std::vector<std::shared_ptr<IRenderObject>> m_renderObjects;
     std::vector<std::shared_ptr<Line>> m_lines;
-    std::vector<std::shared_ptr<StaticModel>> m_staticModels;
+    std::vector<std::shared_ptr<IRenderObject>> m_staticModels;
+
+    lua_State* m_luaState;
+
+    std::unique_ptr<Scene> m_scene;
+    std::unique_ptr<luabridge::LuaRef> m_startFunc;
+    std::unique_ptr<luabridge::LuaRef> m_renderFunc;
+    std::unique_ptr<RenderChain> m_renderChain;
+    std::unique_ptr<Display> m_display;
 };
 
 #endif // _GLCORE_H

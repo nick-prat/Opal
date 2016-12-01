@@ -23,7 +23,6 @@ set(SOURCE_FILES
     src/Entity/entity.cpp
 
     # Scene
-    src/Scene/scenecontroller.cpp
     src/Scene/scene.cpp
 
     # Models
