@@ -19,7 +19,7 @@ private:
     Log();
     ~Log();
 
-    void print(std::string, short output);
+    void print(std::string, short output, bool err);
 
 private:
     static Log m_log;
