@@ -2,12 +2,97 @@
 
 #include <iostream>
 
-Scene::Scene() {
+#include <Core/camera.hpp>
+#include <Utilities/exceptions.hpp>
 
+using namespace luabridge;
+
+Scene::Scene(Display* display, std::string scenename)
+        : m_display(display) {
+
+    m_luaState = luaL_newstate();
+    luaL_openlibs(m_luaState);
+
+    std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
+
+    getGlobalNamespace(m_luaState)
+        .beginClass<glm::vec2>("vec2")
+            .addConstructor<void(*)(float, float)>()
+            .addData("x", &glm::vec2::x)
+            .addData("y", &glm::vec2::y)
+        .endClass()
+        .beginClass<glm::vec3>("vec3")
+            .addConstructor<void(*)(float, float, float)>()
+            .addData("x", &glm::vec3::x)
+            .addData("y", &glm::vec3::y)
+            .addData("z", &glm::vec3::z)
+        .endClass()
+        .beginClass<glm::vec4>("vec4")
+            .addConstructor<void(*)(float, float, float, float)>()
+            .addData("x", &glm::vec4::x)
+            .addData("y", &glm::vec4::y)
+            .addData("z", &glm::vec4::z)
+            .addData("w", &glm::vec4::w)
+        .endClass()
+        .beginNamespace("Game")
+            .beginClass<Camera>("Camera")
+                .addFunction("MoveCamera", &Camera::MoveCamera)
+            .endClass()
+            .beginClass<Entity>("Entity")
+                .addConstructor<void(*)(void)>()
+                .addProperty("visible", &Entity::IsVisible, &Entity::SetVisible)
+                .addProperty("name", &Entity::GetName, &Entity::SetName)
+            .endClass()
+            .beginClass<Scene>("Scene")
+                .addFunction("BindFunctionToKey", &Scene::BindFunctionToKey)
+                .addFunction("GetCamera", &Scene::GetCamera)
+                .addFunction("AddEntity", &Scene::AddEntity)
+                .addFunction("GetEntity", &Scene::GetEntity)
+            .endClass()
+        .endNamespace();
+
+    push(m_luaState, this);
+    lua_setglobal(m_luaState, "Level");
+
+    luaL_dofile(m_luaState, script.c_str());
+
+    m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
+    if(!m_startFunc->isFunction()) {
+        throw generic_exception("Start function wasn't found");
+    }
+
+    m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
+    if(!m_renderFunc->isFunction()) {
+        throw generic_exception("Render function wasn't found");
+    }
+
+    Entity* ent = new Entity;
+    ent->SetName("George");
+
+    AddEntity("George", ent);
+
+    (*m_startFunc)();
 }
 
 Scene::~Scene() {
+    lua_close(m_luaState);
+}
 
+void Scene::GameLoop() {
+    (*m_renderFunc)();
+}
+
+void Scene::BindFunctionToKey(InputKey key, std::string function) {
+    LuaRef func = getGlobal(m_luaState, "Start");
+    if(!func.isFunction()) {
+        throw generic_exception("Start function wasn't found");
+    }
+}
+
+void Scene::AddEntity(const std::string& name, Entity* const ent) {
+    if(ent != nullptr) {
+        m_entities[name] = std::unique_ptr<Entity>(ent);
+    }
 }
 
 Entity* Scene::GetEntity(const std::string& name) const {
@@ -17,8 +102,6 @@ Entity* Scene::GetEntity(const std::string& name) const {
     return nullptr;
 }
 
-void Scene::AddEntity(const std::string& name, Entity* const ent) {
-    if(ent != nullptr) {
-        m_entities[name] = std::unique_ptr<Entity>(ent);
-    }
+Camera* Scene::GetCamera() const {
+    return m_display->GetCamera();
 }

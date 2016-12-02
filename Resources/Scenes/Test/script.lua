@@ -7,4 +7,9 @@ GameLoop = function()
     if ent ~= nil then
         --print(ent.name)
     end
+
+    local cam = Level:GetCamera()
+    if cam ~= nil then
+        --cam:MoveCamera(vec3(0.1, 0.0, 0.0))
+    end
 end

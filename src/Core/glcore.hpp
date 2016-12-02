@@ -29,7 +29,6 @@ public:
 
 private:
     void InitScene();
-    void InitLuaScripts();
     void InitControls();
 
 private:
@@ -39,11 +38,7 @@ private:
     std::vector<std::shared_ptr<Line>> m_lines;
     std::vector<std::shared_ptr<IRenderObject>> m_staticModels;
 
-    lua_State* m_luaState;
-
     std::unique_ptr<Scene> m_scene;
-    std::unique_ptr<luabridge::LuaRef> m_startFunc;
-    std::unique_ptr<luabridge::LuaRef> m_renderFunc;
     std::unique_ptr<RenderChain> m_renderChain;
     std::unique_ptr<Display> m_display;
 };

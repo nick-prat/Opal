@@ -16,8 +16,8 @@ public:
     bool InitDisplay(uint width, uint height);
     void Destroy();
 
-    std::shared_ptr<InputController> GetInputController() const;
-    std::shared_ptr<Camera> GetCamera() const;
+    InputController* GetInputController() const;
+    Camera* GetCamera() const;
     glm::mat4 GetProjectionMatrix() const;
     uint GetWidth() const;
     uint GetHeight() const;
@@ -29,8 +29,8 @@ public:
 
 private:
     uint m_width, m_height;
-    std::shared_ptr<InputController> m_inputController;
-    std::shared_ptr<Camera> m_camera;
+    std::unique_ptr<InputController> m_inputController;
+    std::unique_ptr<Camera> m_camera;
     glm::mat4 m_projMatrix;
 };
 
