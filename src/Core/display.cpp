@@ -28,8 +28,8 @@ bool Display::InitDisplay(uint width, uint height) {
 
     try {
         m_projMatrix = glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.1f, 100.0f);
-        m_inputController = std::make_shared<InputController>();
-        m_camera = std::make_shared<Camera>();
+        m_inputController = std::make_unique<InputController>();
+        m_camera = std::make_unique<Camera>();
     } catch (generic_exception& error) {
         error.PrintError();
         return false;
@@ -44,12 +44,12 @@ bool Display::InitDisplay(uint width, uint height) {
 
 void Display::Destroy() {}
 
-std::shared_ptr<InputController> Display::GetInputController() const {
-    return m_inputController;
+InputController* Display::GetInputController() const {
+    return m_inputController.get();
 }
 
-std::shared_ptr<Camera> Display::GetCamera() const {
-    return m_camera;
+Camera* Display::GetCamera() const {
+    return m_camera.get();
 }
 
 glm::mat4 Display::GetProjectionMatrix() const {
