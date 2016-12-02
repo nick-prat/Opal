@@ -18,6 +18,7 @@ Line::Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color)
     glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * verts.size(), verts.data(), GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
+    glEnableVertexAttribArray(0);
 
     std::vector<uint> indices = {0, 1};
     glGenBuffers(1, &m_IBO);
@@ -38,14 +39,14 @@ Line::~Line() {
 
 void Line::Render(const Display* const display) {
     if(m_shader == nullptr || display == nullptr) {
-        throw generic_exception("Null param in render function");
+        std::cout << "Null param in render function\n";
     }
 
     m_shader->UseShader();
 
     GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
     if(worldLocation == -1) {
-        std::cout << "Couldn't get MVP uniform loaction" << std::endl;
+        std::cout << "Couldn't get MVP uniform loaction\n";
         exit(-1);
     }
 
@@ -54,13 +55,11 @@ void Line::Render(const Display* const display) {
 
     GLint colorLocation = glGetUniformLocation(m_shader->GetProgram(), "gColor");
     if(colorLocation == -1) {
-        std::cout << "Couldn't get line color uniform location" << std::endl;
+        std::cout << "Couldn't get line color uniform location\n";
         exit(-1);
     }
     glUniform3fv(colorLocation, 1, (GLfloat*)&m_color);
 
     glBindVertexArray(m_VAO);
-    glEnableVertexAttribArray(0);
     glDrawElements(GL_LINES, (GLsizei)m_indexCount, GL_UNSIGNED_INT, nullptr);
-    glDisableVertexAttribArray(0);
 }

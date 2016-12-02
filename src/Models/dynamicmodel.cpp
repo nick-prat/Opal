@@ -7,10 +7,6 @@ DynamicModel::DynamicModel(Model3D* model3D)
 DynamicModel::~DynamicModel() {
 }
 
-const Model3D* const DynamicModel::GetModel() {
-    return m_model.get();
-}
-
 glm::mat4 DynamicModel::GetWorld() const {
     return m_translate * m_rotate * m_scale;
 }
