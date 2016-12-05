@@ -29,8 +29,6 @@ public:
 
 private:
     void InitScene(std::string scene);
-    void InitControls();
-
     void CloseScene();
 
 private:

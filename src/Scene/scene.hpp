@@ -20,6 +20,7 @@ public:
     Scene(Display* display, lua_State* luaState, std::string scenename);
     ~Scene();
 
+    void Start();
     void GameLoop();
     void BindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
     void AddEntity(const std::string& name, Entity* ent);

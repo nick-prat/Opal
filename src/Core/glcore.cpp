@@ -20,7 +20,6 @@ GLCore::GLCore(int width, int height, std::string scene) {
 
     m_display = std::make_unique<Display>(width, height);
     m_renderChain = std::make_unique<RenderChain>();
-    //m_scene = new Scene(m_display.get(), scene);
 
     // Log information about current context
     std::cout << "\nInformation: \n";
@@ -36,7 +35,6 @@ GLCore::GLCore(int width, int height, std::string scene) {
     Log::info("GL Context created", Log::OUT_LOG);
 
     InitScene(scene);
-    InitControls();
 
     for(const auto& object : m_staticModels) {
         m_renderChain->AttachRenderObject(object);
@@ -45,6 +43,8 @@ GLCore::GLCore(int width, int height, std::string scene) {
     for(const auto& object : m_dynamicModels) {
         m_renderChain->AttachRenderObject(object.second);
     }
+
+    m_scene->Start();
 }
 
 GLCore::~GLCore() {
@@ -128,28 +128,6 @@ void GLCore::InitScene(std::string scene) {
     } catch(std::exception& error) {
         Log::error("Parsing of " + filename + " failed: " + std::string(error.what()), Log::OUT_LOG_CONS);
     }
-}
-
-void GLCore::InitControls() {
-    /*auto inputController = m_display->GetInputController();
-    inputController->RegisterWhileKeyPressed(InputKey::A, [this](InputKey key) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::S, [this](InputKey key) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::D, [this](InputKey key) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::W, [this](InputKey key) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::Q, [this](InputKey key) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::E, [this](InputKey key) {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
-    });*/
 }
 
 void GLCore::CloseScene() {

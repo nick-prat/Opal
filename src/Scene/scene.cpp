@@ -63,17 +63,19 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
     if(!m_renderFunc->isFunction()) {
         throw generic_exception("Render function wasn't found");
     }
-
-    Entity* ent = new Entity;
-    ent->SetName("George");
-
-    AddEntity("George", ent);
-
-    (*m_startFunc)();
 }
 
 Scene::~Scene() {
 
+}
+
+void Scene::Start() {
+    Entity* ent = new Entity;
+    ent->SetName("George");
+
+    AddEntity("George", ent);
+    
+    (*m_startFunc)();
 }
 
 void Scene::GameLoop() {
