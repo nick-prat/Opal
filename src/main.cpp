@@ -3,11 +3,12 @@
 #include <iostream>
 
 #include <Utilities/exceptions.hpp>
+#include <Utilities/log.hpp>
 #include <Core/glcore.hpp>
 
 int main(int argc, char **args) {
     if(argc != 2) {
-        std::cout << "Arguments are invalid, use:\n\t" << args[0] << " [scene_name]\n";
+        Log::error(std::string("Arguments are invalid, use:\n\t") + args[0] + " [scene_name]\n", Log::OUT_CONS);
         exit(-1);
     }
 
