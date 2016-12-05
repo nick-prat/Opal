@@ -17,7 +17,7 @@ extern "C" {
 
 class Scene {
 public:
-    Scene(Display* display, std::string scenename);
+    Scene(Display* display, lua_State* luaState, std::string scenename);
     ~Scene();
 
     void GameLoop();

@@ -16,12 +16,11 @@
 using namespace ResourceLoader;
 using json = nlohmann::json;
 
-GLCore::GLCore(int width, int height, std::string scene)
-        : m_scenename(scene) {
+GLCore::GLCore(int width, int height, std::string scene) {
 
     m_display = std::make_unique<Display>(width, height);
     m_renderChain = std::make_unique<RenderChain>();
-    m_scene = std::make_unique<Scene>(m_display.get(), scene);
+    //m_scene = new Scene(m_display.get(), scene);
 
     // Log information about current context
     std::cout << "\nInformation: \n";
@@ -36,7 +35,7 @@ GLCore::GLCore(int width, int height, std::string scene)
 
     Log::info("GL Context created", Log::OUT_LOG);
 
-    InitScene();
+    InitScene(scene);
     InitControls();
 
     for(const auto& object : m_staticModels) {
@@ -49,7 +48,7 @@ GLCore::GLCore(int width, int height, std::string scene)
 }
 
 GLCore::~GLCore() {
-
+    CloseScene();
 }
 
 void GLCore::DisplayFunc() {
@@ -67,8 +66,13 @@ void GLCore::MouseFunc(double xpos, double ypos) {
     m_display->GetInputController()->UpdateMousePosition(xpos, ypos);
 }
 
-void GLCore::InitScene() {
-    std::string filename = "Resources/Scenes/" + m_scenename + "/scene.json";
+void GLCore::InitScene(std::string scene) {
+
+    m_luaState = luaL_newstate();
+    luaL_openlibs(m_luaState);
+    m_scene = std::make_unique<Scene>(m_display.get(), m_luaState, scene);
+
+    std::string filename = "Resources/Scenes/" + scene + "/scene.json";
     std::string contents;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
     if (in) {
@@ -146,4 +150,9 @@ void GLCore::InitControls() {
     inputController->RegisterWhileKeyPressed(InputKey::E, [this](InputKey key) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
     });*/
+}
+
+void GLCore::CloseScene() {
+    m_scene.reset(nullptr);
+    lua_close(m_luaState);
 }

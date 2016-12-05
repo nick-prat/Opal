@@ -102,6 +102,8 @@ int main(int argc, char **args) {
     timer = glfwGetTime() - timer;
     std::cout << "Average FPS: " << frames / timer << '\n';
 
+    glfwDestroyWindow(window);
     glfwTerminate();
+    delete glCore;
     return 0;
 }

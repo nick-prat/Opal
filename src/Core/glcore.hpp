@@ -28,8 +28,10 @@ public:
     void MouseFunc(double xpos, double ypos);
 
 private:
-    void InitScene();
+    void InitScene(std::string scene);
     void InitControls();
+
+    void CloseScene();
 
 private:
     std::string m_scenename;
@@ -41,6 +43,8 @@ private:
     std::unique_ptr<Scene> m_scene;
     std::unique_ptr<RenderChain> m_renderChain;
     std::unique_ptr<Display> m_display;
+
+    lua_State* m_luaState;
 };
 
 #endif // _GLCORE_H

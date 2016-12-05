@@ -13,9 +13,6 @@ public:
     Display(uint width, uint height);
     ~Display();
 
-    bool InitDisplay(uint width, uint height);
-    void Destroy();
-
     InputController* GetInputController() const;
     Camera* GetCamera() const;
     glm::mat4 GetProjectionMatrix() const;

@@ -13,36 +13,17 @@ Display::Display()
 }
 
 Display::Display(uint width, uint height)
-    : m_projMatrix(glm::mat4(1.0f)) {
-    if(!InitDisplay(width, height))
-    {
-        throw generic_exception("Couldn't init display");
-    }
+        : m_width(width), m_height(height), m_projMatrix(glm::mat4(1.0f)) {
+
+    m_projMatrix = glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.1f, 100.0f);
+    m_inputController = std::make_unique<InputController>();
+    m_camera = std::make_unique<Camera>();
+    glViewport(0, 0, width, height);
 }
 
 Display::~Display() {
-    Destroy();
+
 }
-
-bool Display::InitDisplay(uint width, uint height) {
-
-    try {
-        m_projMatrix = glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.1f, 100.0f);
-        m_inputController = std::make_unique<InputController>();
-        m_camera = std::make_unique<Camera>();
-    } catch (generic_exception& error) {
-        error.PrintError();
-        return false;
-    }
-
-    m_width = width;
-    m_height = height;
-    glViewport(0, 0, width, height);
-
-    return true;
-}
-
-void Display::Destroy() {}
 
 InputController* Display::GetInputController() const {
     return m_inputController.get();

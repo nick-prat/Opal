@@ -7,11 +7,8 @@
 
 using namespace luabridge;
 
-Scene::Scene(Display* display, std::string scenename)
-        : m_display(display) {
-
-    m_luaState = luaL_newstate();
-    luaL_openlibs(m_luaState);
+Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
+        : m_luaState(luaState), m_display(display) {
 
     std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
 
@@ -76,7 +73,7 @@ Scene::Scene(Display* display, std::string scenename)
 }
 
 Scene::~Scene() {
-    lua_close(m_luaState);
+
 }
 
 void Scene::GameLoop() {
@@ -84,11 +81,11 @@ void Scene::GameLoop() {
 }
 
 void Scene::BindFunctionToKey(int ikey, LuaRef function, bool repeat) {
-    InputKey key = (InputKey)ikey;
     if(!function.isFunction()) {
         throw generic_exception("function wasn't found");
     }
 
+    InputKey key = (InputKey)ikey;
     m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
     if(repeat) {
         m_display->GetInputController()->RegisterWhileKeyPressed(key, [this](InputKey key) {
