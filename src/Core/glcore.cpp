@@ -127,8 +127,8 @@ void GLCore::InitScene() {
 }
 
 void GLCore::InitControls() {
-    auto inputController = m_display->GetInputController();
-    /*inputController->RegisterWhileKeyPressed(InputKey::A, [this](InputKey key) {
+    /*auto inputController = m_display->GetInputController();
+    inputController->RegisterWhileKeyPressed(InputKey::A, [this](InputKey key) {
         m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     });
     inputController->RegisterWhileKeyPressed(InputKey::S, [this](InputKey key) {

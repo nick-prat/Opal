@@ -1,21 +1,14 @@
 Start = function()
-    Level:BindFunctionToKey(65, "OnKeyA")
-    Level:BindFunctionToKey(68, "OnKeyD")
-    Level:BindFunctionToKey(83, "OnKeyS")
-    Level:BindFunctionToKey(87, "OnKeyW")
-    local ent = Level:GetEntity("George")
+    Level:BindFunctionToKey(65, OnKeyA)
+    Level:BindFunctionToKey(68, OnKeyD)
+    Level:BindFunctionToKey(83, OnKeyS)
+    Level:BindFunctionToKey(87, OnKeyW)
+    Level:BindFunctionToKey(69, OnKeyE)
+    Level:BindFunctionToKey(81, OnKeyQ)
 end
 
 GameLoop = function()
-    local ent = Level:GetEntity("George")
-    if ent ~= nil then
-        --print(ent.name)
-    end
 
-    local cam = Level:GetCamera()
-    if cam ~= nil then
-        --cam:MoveCamera(vec3(0.1, 0.0, 0.0))
-    end
 end
 
 OnKeyA = function()
@@ -43,5 +36,19 @@ OnKeyS = function()
     local cam = Level:GetCamera()
     if cam ~= nil then
         cam:MoveCamera(vec3(0.0, 0.0, 0.1))
+    end
+end
+
+OnKeyQ = function()
+    local cam = Level:GetCamera()
+    if cam ~= nil then
+        cam:MoveCamera(vec3(0.0, -0.1, 0.0))
+    end
+end
+
+OnKeyE = function()
+    local cam = Level:GetCamera()
+    if cam ~= nil then
+        cam:MoveCamera(vec3(0.0, 0.1, 0.0))
     end
 end

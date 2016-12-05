@@ -82,12 +82,11 @@ void Scene::GameLoop() {
     (*m_renderFunc)();
 }
 
-void Scene::BindFunctionToKey(int ikey, std::string function) {
+void Scene::BindFunctionToKey(int ikey, LuaRef function) {
     InputKey key = (InputKey)ikey;
-    std::cout << "wassup\n";
-    m_luaKeyBinds[key] = std::make_unique<LuaRef>(getGlobal(m_luaState, function.c_str()));
+    m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
     if(!m_luaKeyBinds[key]->isFunction()) {
-        throw generic_exception(function + " function wasn't found");
+        throw generic_exception("function wasn't found");
     }
 
     m_display->GetInputController()->RegisterWhileKeyPressed(key, [this](InputKey key) {

@@ -21,7 +21,7 @@ public:
     ~Scene();
 
     void GameLoop();
-    void BindFunctionToKey(int key, std::string function);
+    void BindFunctionToKey(int key, luabridge::LuaRef function);
     void AddEntity(const std::string& name, Entity* ent);
 
     Entity* GetEntity(const std::string& name) const;
