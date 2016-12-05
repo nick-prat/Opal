@@ -82,16 +82,22 @@ void Scene::GameLoop() {
     (*m_renderFunc)();
 }
 
-void Scene::BindFunctionToKey(int ikey, LuaRef function) {
+void Scene::BindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     InputKey key = (InputKey)ikey;
-    m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
-    if(!m_luaKeyBinds[key]->isFunction()) {
+    if(!function.isFunction()) {
         throw generic_exception("function wasn't found");
     }
 
-    m_display->GetInputController()->RegisterWhileKeyPressed(key, [this](InputKey key) {
-        (*m_luaKeyBinds[key])();
-    });
+    m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
+    if(repeat) {
+        m_display->GetInputController()->RegisterWhileKeyPressed(key, [this](InputKey key) {
+            (*m_luaKeyBinds[key])();
+        });
+    } else {
+        m_display->GetInputController()->RegisterOnKeyPressed(key, [this](InputKey key) {
+            (*m_luaKeyBinds[key])();
+        });
+    }
 }
 
 void Scene::AddEntity(const std::string& name, Entity* const ent) {

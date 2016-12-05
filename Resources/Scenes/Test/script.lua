@@ -1,10 +1,10 @@
 Start = function()
-    Level:BindFunctionToKey(65, OnKeyA)
-    Level:BindFunctionToKey(68, OnKeyD)
-    Level:BindFunctionToKey(83, OnKeyS)
-    Level:BindFunctionToKey(87, OnKeyW)
-    Level:BindFunctionToKey(69, OnKeyE)
-    Level:BindFunctionToKey(81, OnKeyQ)
+    Level:BindFunctionToKey(65, OnKeyA, true)
+    Level:BindFunctionToKey(68, OnKeyD, true)
+    Level:BindFunctionToKey(83, OnKeyS, true)
+    Level:BindFunctionToKey(87, OnKeyW, true)
+    Level:BindFunctionToKey(69, OnKeyE, true)
+    Level:BindFunctionToKey(81, OnKeyQ, true)
 end
 
 GameLoop = function()
@@ -32,5 +32,5 @@ OnKeyQ = function()
 end
 
 OnKeyE = function()
-    Level:GetCamera()cam:MoveCamera(vec3(0.0, 0.1, 0.0))
+    Level:GetCamera():MoveCamera(vec3(0.0, 0.1, 0.0))
 end
