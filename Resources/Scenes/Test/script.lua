@@ -12,43 +12,25 @@ GameLoop = function()
 end
 
 OnKeyA = function()
-    local cam = Level:GetCamera()
-    if cam ~= nil then
-        cam:MoveCamera(vec3(-0.1, 0.0, 0.0))
-    end
+    Level:GetCamera():MoveCamera(vec3(-0.1, 0.0, 0.0))
 end
 
 OnKeyD = function()
-    local cam = Level:GetCamera()
-    if cam ~= nil then
-        cam:MoveCamera(vec3(0.1, 0.0, 0.0))
-    end
+    Level:GetCamera():MoveCamera(vec3(0.1, 0.0, 0.0))
 end
 
 OnKeyW = function()
-    local cam = Level:GetCamera()
-    if cam ~= nil then
-        cam:MoveCamera(vec3(0.0, 0.0, -0.1))
-    end
+    Level:GetCamera():MoveCamera(vec3(0.0, 0.0, -0.1))
 end
 
 OnKeyS = function()
-    local cam = Level:GetCamera()
-    if cam ~= nil then
-        cam:MoveCamera(vec3(0.0, 0.0, 0.1))
-    end
+    Level:GetCamera():MoveCamera(vec3(0.0, 0.0, 0.1))
 end
 
 OnKeyQ = function()
-    local cam = Level:GetCamera()
-    if cam ~= nil then
-        cam:MoveCamera(vec3(0.0, -0.1, 0.0))
-    end
+    Level:GetCamera():MoveCamera(vec3(0.0, -0.1, 0.0))
 end
 
 OnKeyE = function()
-    local cam = Level:GetCamera()
-    if cam ~= nil then
-        cam:MoveCamera(vec3(0.0, 0.1, 0.0))
-    end
+    Level:GetCamera()cam:MoveCamera(vec3(0.0, 0.1, 0.0))
 end
