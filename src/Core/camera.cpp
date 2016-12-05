@@ -26,5 +26,5 @@ void Camera::MoveCamera(glm::vec3 delta) {
 }
 
 void Camera::SetPosition(glm::vec3 position) {
-    m_position - position;
+    m_position = position;
 }
