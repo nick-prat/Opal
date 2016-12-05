@@ -27,11 +27,11 @@ public:
 
     void ClearWhileKeyPressed();
     void DeregisterWhileKeyPressed(const InputKey key);
-    void RegisterWhileKeyPressed(const InputKey key, const std::function<void(void)>& lambda);
+    void RegisterWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda);
 
     void ClearOnKeyPressed();
     void DeregisterOnKeyPressed(const InputKey key);
-    void RegisterOnKeyPressed(const InputKey key, const std::function<void(void)>& lambda);
+    void RegisterOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda);
 
     void CallKeyLambdas();
 
@@ -44,8 +44,8 @@ public:
 
 private:
     std::unordered_map<InputKey, bool> m_pressedKeys;
-    std::unordered_map<InputKey, std::function<void(void)>> m_whileKeyPressed;
-    std::unordered_map<InputKey, std::function<void(void)>> m_onKeyPressed;
+    std::unordered_map<InputKey, std::function<void(InputKey)>> m_whileKeyPressed;
+    std::unordered_map<InputKey, std::function<void(InputKey)>> m_onKeyPressed;
     double m_mouseX;
     double m_mouseY;
 };

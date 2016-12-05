@@ -13,7 +13,6 @@
 #include <Utilities/log.hpp>
 #include <Resources/resourceloader.hpp>
 
-using namespace luabridge;
 using namespace ResourceLoader;
 using json = nlohmann::json;
 
@@ -129,22 +128,22 @@ void GLCore::InitScene() {
 
 void GLCore::InitControls() {
     auto inputController = m_display->GetInputController();
-    inputController->RegisterWhileKeyPressed(InputKey::A, [this]() {
+    /*inputController->RegisterWhileKeyPressed(InputKey::A, [this](InputKey key) {
         m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
     });
-    inputController->RegisterWhileKeyPressed(InputKey::S, [this]() {
+    inputController->RegisterWhileKeyPressed(InputKey::S, [this](InputKey key) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
     });
-    inputController->RegisterWhileKeyPressed(InputKey::D, [this]() {
+    inputController->RegisterWhileKeyPressed(InputKey::D, [this](InputKey key) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
     });
-    inputController->RegisterWhileKeyPressed(InputKey::W, [this]() {
+    inputController->RegisterWhileKeyPressed(InputKey::W, [this](InputKey key) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
     });
-    inputController->RegisterWhileKeyPressed(InputKey::Q, [this]() {
+    inputController->RegisterWhileKeyPressed(InputKey::Q, [this](InputKey key) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
     });
-    inputController->RegisterWhileKeyPressed(InputKey::E, [this]() {
+    inputController->RegisterWhileKeyPressed(InputKey::E, [this](InputKey key) {
         m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
-    });
+    });*/
 }

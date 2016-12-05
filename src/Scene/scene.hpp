@@ -21,7 +21,7 @@ public:
     ~Scene();
 
     void GameLoop();
-    void BindFunctionToKey(InputKey key, std::string function);
+    void BindFunctionToKey(int key, std::string function);
     void AddEntity(const std::string& name, Entity* ent);
 
     Entity* GetEntity(const std::string& name) const;
@@ -29,6 +29,7 @@ public:
 
 private:
     std::unordered_map<std::string, std::unique_ptr<Entity>> m_entities;
+    std::unordered_map<InputKey, std::unique_ptr<luabridge::LuaRef>> m_luaKeyBinds;
     std::string m_scenename;
 
     std::unique_ptr<luabridge::LuaRef> m_startFunc;

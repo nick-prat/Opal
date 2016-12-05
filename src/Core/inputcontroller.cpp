@@ -15,7 +15,7 @@ void InputController::DeregisterWhileKeyPressed(const InputKey key) {
     m_whileKeyPressed.erase(key);
 }
 
-void InputController::RegisterWhileKeyPressed(const InputKey key, const std::function<void(void)>& lambda) {
+void InputController::RegisterWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_whileKeyPressed[key] = lambda;
 }
 
@@ -27,7 +27,7 @@ void InputController::DeregisterOnKeyPressed(const InputKey key) {
     m_onKeyPressed.erase(key);
 }
 
-void InputController::RegisterOnKeyPressed(const InputKey key, const std::function<void(void)>& lambda) {
+void InputController::RegisterOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_onKeyPressed[key] = lambda;
 }
 
@@ -35,14 +35,14 @@ void InputController::CallKeyLambdas() {
     for(auto& key : m_pressedKeys) {
         auto lambda = m_whileKeyPressed.find(key.first);
         if(lambda != m_whileKeyPressed.end()) {
-            lambda->second();
+            lambda->second(key.first);
         }
 
         if(key.second) {
             key.second = false;
             auto lambda = m_onKeyPressed.find(key.first);
             if(lambda != m_onKeyPressed.end()) {
-                lambda->second();
+                lambda->second(key.first);
             }
         }
     }
