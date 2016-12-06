@@ -12,24 +12,13 @@ RenderChain::RenderChain() {
 RenderChain::~RenderChain() {
 }
 
-void RenderChain::Attach(std::weak_ptr<IRenderObject> object) {
-    if(object.lock() != nullptr) {
-        m_objects.push_back(object);
-    } else {
-        throw generic_exception("Null param passed to attach render object");
-    }
+void RenderChain::Attach(IRenderObject* object) {
+    m_objects.push_back(object);
 }
 
 void RenderChain::Render(const Display* const display) {
     for(const auto& object : m_objects) {
-        try {
-            auto obj = std::shared_ptr<IRenderObject>(object);
-            obj->Render(display);
-        } catch(std::bad_weak_ptr& error) {
-            std::cout << error.what() << '\n';
-        } catch(generic_exception& error) {
-            error.PrintError();
-        }
+        object->Render(display);
     }
 }
 

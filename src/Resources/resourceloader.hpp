@@ -10,7 +10,7 @@
 
 namespace ResourceLoader {
     std::shared_ptr<IRenderObject> LoadModelJSON(nlohmann::json object);
-    std::shared_ptr<IRenderObject> LoadLineJSON(nlohmann::json object);
+    IRenderObject* LoadLineJSON(nlohmann::json object);
     std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
     Model3D* LoadModel3D(std::string modelname);
 }

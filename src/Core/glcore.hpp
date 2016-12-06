@@ -37,7 +37,7 @@ private:
     std::unordered_map<std::string, std::shared_ptr<IRenderObject>> m_dynamicModels;
     std::vector<std::shared_ptr<IRenderObject>> m_renderObjects;
     std::vector<std::shared_ptr<Line>> m_lines;
-    std::vector<std::shared_ptr<IRenderObject>> m_staticModels;
+    std::vector<std::unique_ptr<IRenderObject>> m_staticModels;
 
     std::unique_ptr<ResourceHandler> m_resourceHandler;
     std::unique_ptr<Scene> m_scene;

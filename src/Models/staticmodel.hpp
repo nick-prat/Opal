@@ -9,7 +9,7 @@
 
 class StaticModel : public IRenderObject {
 public:
-    StaticModel(Model3D* model);
+    StaticModel(const Model3D* const model);
     virtual ~StaticModel();
 
     virtual void Render(const Display* const display) override;
@@ -18,7 +18,7 @@ public:
     const Model3D* GetModel() const;
 
 protected:
-    const std::unique_ptr<const Model3D> m_model;
+    const Model3D* const m_model;
 
 private:
     Sampler m_sampler;

@@ -8,8 +8,8 @@
 #include <GL/gl3w.h>
 #include <Render/Textures/texture.hpp>
 
-StaticModel::StaticModel(Model3D* const model)
-        : m_model(std::unique_ptr<const Model3D>(model)) {
+StaticModel::StaticModel(const Model3D* const model)
+        : m_model(model) {
 
     if(model == nullptr) {
         throw generic_exception("Null param passed to StaticModel constructor");
@@ -60,7 +60,7 @@ glm::mat4 StaticModel::GenerateMVP(const Display* const display) const {
 }
 
 const Model3D* StaticModel::GetModel() const {
-    return m_model.get();
+    return m_model;
 }
 
 void StaticModel::Render(const Display* const display) {

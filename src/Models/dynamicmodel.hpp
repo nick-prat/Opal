@@ -5,7 +5,7 @@
 
 class DynamicModel : public StaticModel {
 public:
-    DynamicModel(Model3D* model3D);
+    DynamicModel(const Model3D* const model3D);
     ~DynamicModel();
 
     virtual void Render(const Display* const display) override;

@@ -142,7 +142,7 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
             std::cout << degree << "\n";
             degree = (degree < 0.0f ? 360 + degree : degree);
         }
-        
+
         float degrees = *(std::max_element(rotation.begin(), rotation.end()));
         std::cout << degrees << '\n';
         if(degrees != 0.0f) {
@@ -156,7 +156,7 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadModelJSON(json object) {
     return std::make_shared<StaticModel>(model3D);
 }
 
-std::shared_ptr<IRenderObject> ResourceLoader::LoadLineJSON(json object) {
+IRenderObject* ResourceLoader::LoadLineJSON(json object) {
     glm::vec3 head, tail, color;
     std::string name;
 
@@ -187,7 +187,7 @@ std::shared_ptr<IRenderObject> ResourceLoader::LoadLineJSON(json object) {
         throw bad_resource("color data size is not 3", name);
     }
 
-    return std::make_shared<Line>(head, tail, color);
+    return new Line(head, tail, color);
 }
 
 std::shared_ptr<Texture> ResourceLoader::LoadTexture(std::string filename, bool genMipMaps) {

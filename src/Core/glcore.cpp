@@ -39,11 +39,11 @@ GLCore::GLCore(int width, int height, std::string scene) {
     InitScene(scene);
 
     for(const auto& object : m_staticModels) {
-        m_renderChain->Attach(object);
+        m_renderChain->Attach(object.get());
     }
 
     for(const auto& object : m_dynamicModels) {
-        m_renderChain->Attach(object.second);
+        m_renderChain->Attach(object.second.get());
     }
 
     m_scene->Start();
@@ -90,20 +90,34 @@ void GLCore::InitScene(std::string scene) {
     try {
         json scene = json::parse(contents);
 
+        if(scene.find("resources") != scene.end()) {
+            std::vector<json> resources = scene["resources"];
+            for(json resource : resources) {
+                std::string type = resource["type"];
+                std::string name = resource["name"];
+                std::string filename = resource["filename"];
+
+                if(type == "model3d") {
+                    m_resourceHandler->AddResource(name, LoadModel3D(filename));
+                }
+            }
+        }
+
         if(scene.find("staticObjects") != scene.end()) {
             std::vector<json> objects = scene["staticObjects"];
             for(json object : objects) {
                 try {
                     std::string type = object["type"];
 
-                    std::shared_ptr<IRenderObject> rObject;
+                    IRenderObject* rObject = nullptr;
                     if(type == "line") {
                         rObject = LoadLineJSON(object);
                     } else if(type == "staticmodel") {
-                        rObject = LoadModelJSON(object);
+                        rObject = new StaticModel(m_resourceHandler->GetResource<Model3D>(object["filename"]));
                     }
+
                     if(rObject != nullptr) {
-                        m_staticModels.push_back(rObject);
+                        m_staticModels.push_back(std::unique_ptr<IRenderObject>(rObject));
                     }
                 } catch (bad_resource& error) {
                     error.PrintError();
@@ -119,7 +133,7 @@ void GLCore::InitScene(std::string scene) {
                 try {
                     std::string name = object["name"];
                     std::string filename = object["filename"];
-                    m_dynamicModels[name] = std::make_unique<DynamicModel>(LoadModel3D(filename));
+                    m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler->GetResource<Model3D>(filename));
                 } catch (bad_resource& error) {
                     error.PrintError();
                 } catch (std::domain_error& error) {

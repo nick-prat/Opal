@@ -1,6 +1,6 @@
 #include "dynamicmodel.hpp"
 
-DynamicModel::DynamicModel(Model3D* model3D)
+DynamicModel::DynamicModel(const Model3D* const model3D)
         : StaticModel(model3D), m_visible(true) {
 }
 
