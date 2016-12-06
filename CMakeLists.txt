@@ -31,6 +31,8 @@ set(SOURCE_FILES
 	src/Models/line.cpp
 
     # Resources
+    src/Resources/resource.cpp
+    src/Resources/resourcehandler.cpp
     src/Resources/resourceloader.cpp
     src/Resources/model3d.cpp
 

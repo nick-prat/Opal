@@ -1,4 +1,11 @@
 {
+    "resources": [
+        {
+            "type": "model",
+            "name": "Bear",
+            "filename": "bear"
+        }
+    ],
     "staticObjects": [
         {
             "type": "staticmodel",

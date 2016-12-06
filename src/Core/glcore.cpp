@@ -11,15 +11,24 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
+#include <Resources/model3d.hpp>
 #include <Resources/resourceloader.hpp>
 
 using namespace ResourceLoader;
 using json = nlohmann::json;
 
+class FakeResource : public Resource {
+public:
+    void Fart() {
+        std::cout << "fart\n";
+    }
+};
+
 GLCore::GLCore(int width, int height, std::string scene) {
 
     m_display = std::make_unique<Display>(width, height);
     m_renderChain = std::make_unique<RenderChain>();
+    m_resourceHandler = std::make_unique<ResourceHandler>();
 
     // Log information about current context
     std::cout << "\nInformation: \n";
@@ -37,11 +46,11 @@ GLCore::GLCore(int width, int height, std::string scene) {
     InitScene(scene);
 
     for(const auto& object : m_staticModels) {
-        m_renderChain->AttachRenderObject(object);
+        m_renderChain->Attach(object);
     }
 
     for(const auto& object : m_dynamicModels) {
-        m_renderChain->AttachRenderObject(object.second);
+        m_renderChain->Attach(object.second);
     }
 
     m_scene->Start();
@@ -53,7 +62,7 @@ GLCore::~GLCore() {
 
 void GLCore::DisplayFunc() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    m_renderChain->RenderObjectChain(m_display.get());
+    m_renderChain->Render(m_display.get());
     m_scene->GameLoop();
     m_display->GetInputController()->CallKeyLambdas();
 }
@@ -132,5 +141,6 @@ void GLCore::InitScene(std::string scene) {
 
 void GLCore::CloseScene() {
     m_scene.reset(nullptr);
+    m_renderChain->Clear();
     lua_close(m_luaState);
 }

@@ -8,9 +8,10 @@
 #include <memory>
 
 #include <GL/gl3w.h>
+#include <Resources/resource.hpp>
 #include <Render/Textures/texture.hpp>
 
-class Model3D
+class Model3D : public Resource
 {
 public:
     struct Vertex

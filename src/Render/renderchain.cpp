@@ -12,7 +12,7 @@ RenderChain::RenderChain() {
 RenderChain::~RenderChain() {
 }
 
-void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
+void RenderChain::Attach(std::weak_ptr<IRenderObject> object) {
     if(object.lock() != nullptr) {
         m_objects.push_back(object);
     } else {
@@ -20,7 +20,7 @@ void RenderChain::AttachRenderObject(std::weak_ptr<IRenderObject> object) {
     }
 }
 
-void RenderChain::RenderObjectChain(const Display* const display) {
+void RenderChain::Render(const Display* const display) {
     for(const auto& object : m_objects) {
         try {
             auto obj = std::shared_ptr<IRenderObject>(object);
@@ -31,4 +31,8 @@ void RenderChain::RenderObjectChain(const Display* const display) {
             error.PrintError();
         }
     }
+}
+
+void RenderChain::Clear() {
+    m_objects.clear();
 }

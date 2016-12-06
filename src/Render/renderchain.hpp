@@ -12,8 +12,9 @@ public:
     RenderChain();
     ~RenderChain();
 
-    void AttachRenderObject(std::weak_ptr<IRenderObject> object);
-    void RenderObjectChain(const Display* const display);
+    void Attach(std::weak_ptr<IRenderObject> object);
+    void Render(const Display* const display);
+    void Clear();
 
 private:
     std::list<std::weak_ptr<IRenderObject>> m_objects;

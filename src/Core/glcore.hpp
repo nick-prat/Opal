@@ -9,6 +9,7 @@
 #include <Models/staticmodel.hpp>
 #include <Models/line.hpp>
 #include <Scene/scene.hpp>
+#include <Resources/resourcehandler.hpp>
 
 extern "C" {
 #include <lua.h>
@@ -38,6 +39,7 @@ private:
     std::vector<std::shared_ptr<Line>> m_lines;
     std::vector<std::shared_ptr<IRenderObject>> m_staticModels;
 
+    std::unique_ptr<ResourceHandler> m_resourceHandler;
     std::unique_ptr<Scene> m_scene;
     std::unique_ptr<RenderChain> m_renderChain;
     std::unique_ptr<Display> m_display;
