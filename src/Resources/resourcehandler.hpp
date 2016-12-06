@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <Resources/resource.hpp>
+#include <Utilities/exceptions.hpp>
 
 class ResourceHandler {
 public:
@@ -17,10 +18,14 @@ public:
     template <typename T>
     T* GetResource(std::string resource) {
         auto res = m_resources.find(resource);
-        if(res == m_resources.end()) {
+        if(res == m_resources.end() || res->second.get() == nullptr) {
             return nullptr;
         }
-        return dynamic_cast<T*>(res->second.get());
+        auto ret = dynamic_cast<T*>(res->second.get());
+        if(ret == nullptr) {
+            throw bad_resource("invalid type conversion", resource);
+        }
+        return ret;
     }
 
 private:

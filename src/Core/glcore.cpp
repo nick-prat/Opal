@@ -17,13 +17,6 @@
 using namespace ResourceLoader;
 using json = nlohmann::json;
 
-class FakeResource : public Resource {
-public:
-    void Fart() {
-        std::cout << "fart\n";
-    }
-};
-
 GLCore::GLCore(int width, int height, std::string scene) {
 
     m_display = std::make_unique<Display>(width, height);
