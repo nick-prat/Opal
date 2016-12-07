@@ -1,9 +1,13 @@
+/*
+ *  Resource Handler: functions for loading all supported data types
+ *      - Loads JSON scene information from jsoncpp (https://github.com/open-source-parsers/jsoncpp)
+ *      - Loads TGA textures via FreeImage
+ *      - Loads 3Ds models via Assimp
+ */
+
 #include <Resources/resourcehandler.hpp>
 
 #include <glm/glm.hpp>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 #include <FreeImage.h>
 
 #include <memory>
@@ -35,13 +39,6 @@ void ResourceHandler::LoadResources() {
 void ResourceHandler::AddResource(std::string name, Resource* resource) {
     m_resources[name] = std::unique_ptr<Resource>(resource);
 }
-
-/*
- *  Resource loader, functions for loading all supported data types
- *      - Loads JSON scene information from jsoncpp (https://github.com/open-source-parsers/jsoncpp)
- *      - Loads TGA textures via FreeImage
- *      - Loads 3Ds models via Assimp
- */
 
 IRenderObject* ResourceHandler::GenerateModel(json object) {
     std::string name = "";
@@ -266,7 +263,7 @@ std::shared_ptr<Texture> ResourceHandler::LoadTexture(std::string filename, bool
     return texture;
 }
 
-void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
+void ResourceHandler::CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[0][0] = from->a1; to[1][0] = from->a2;
     to[2][0] = from->a3; to[3][0] = from->a4;
     to[0][1] = from->b1; to[1][1] = from->b2;
@@ -277,7 +274,7 @@ void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-void LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes) {
+void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes) {
     glm::mat4x4 transformation;
     CopyaiMat(&node->mTransformation, transformation);
     transformation = parentTransform * transformation;

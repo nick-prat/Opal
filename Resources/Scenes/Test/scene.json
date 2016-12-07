@@ -4,6 +4,21 @@
             "type": "model3d",
             "name": "Bear",
             "filename": "bear"
+        },
+        {
+            "type": "model3d",
+            "name": "Boar",
+            "filename": "boar"
+        },
+        {
+            "type": "model3d",
+            "name": "Deer",
+            "filename": "deer"
+        },
+        {
+            "type": "model3d",
+            "name": "Wolf",
+            "filename": "wolf"
         }
     ],
     "staticObjects": [

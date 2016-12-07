@@ -34,9 +34,9 @@ private:
 
 private:
     std::string m_scenename;
-    std::unordered_map<std::string, std::shared_ptr<IRenderObject>> m_dynamicModels;
-    std::vector<std::shared_ptr<IRenderObject>> m_renderObjects;
-    std::vector<std::shared_ptr<Line>> m_lines;
+    std::unordered_map<std::string, std::unique_ptr<IRenderObject>> m_dynamicModels;
+    std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;
+    std::vector<std::unique_ptr<Line>> m_lines;
     std::vector<std::unique_ptr<IRenderObject>> m_staticModels;
 
     std::unique_ptr<ResourceHandler> m_resourceHandler;

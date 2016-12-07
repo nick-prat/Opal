@@ -2,11 +2,11 @@
 
 #include <memory>
 #include <iostream>
+#include <GL/gl3w.h>
 
 #include <Utilities/utilities.hpp>
 #include <Utilities/exceptions.hpp>
-#include <GL/gl3w.h>
-#include <Render/Textures/texture.hpp>
+#include <Resources/texture.hpp>
 
 StaticModel::StaticModel(const Model3D* const model)
         : m_model(model) {

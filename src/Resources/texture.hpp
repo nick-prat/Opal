@@ -5,7 +5,9 @@
 
 #include <GL/gl3w.h>
 
-class Texture
+#include <Resources/resource.hpp>
+
+class Texture : public Resource
 {
 public:
     Texture();

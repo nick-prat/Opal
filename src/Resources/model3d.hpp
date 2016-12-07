@@ -9,7 +9,7 @@
 
 #include <GL/gl3w.h>
 #include <Resources/resource.hpp>
-#include <Render/Textures/texture.hpp>
+#include <Resources/texture.hpp>
 
 class Model3D : public Resource
 {
