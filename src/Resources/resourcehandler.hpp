@@ -4,8 +4,12 @@
 #include <unordered_map>
 #include <memory>
 
+#include <Render/Textures/texture.hpp>
+#include <Resources/model3d.hpp>
 #include <Resources/resource.hpp>
+#include <Render/renderobject.hpp>
 #include <Utilities/exceptions.hpp>
+#include <json.hpp>
 
 class ResourceHandler {
 public:
@@ -14,6 +18,12 @@ public:
 
     void LoadResources();
     void AddResource(std::string name, Resource* resource);
+
+    IRenderObject* GenerateModel(nlohmann::json obect);
+    IRenderObject* GenerateModel(nlohmann::json object, Model3D* model);
+    IRenderObject* LoadLineJSON(nlohmann::json object);
+    std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
+    Model3D* LoadModel3D(std::string modelname);
 
     template <typename T>
     T* GetResource(std::string resource) {

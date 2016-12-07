@@ -12,9 +12,7 @@
 #include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
 #include <Resources/model3d.hpp>
-#include <Resources/resourceloader.hpp>
 
-using namespace ResourceLoader;
 using json = nlohmann::json;
 
 GLCore::GLCore(int width, int height, std::string scene) {
@@ -98,7 +96,7 @@ void GLCore::InitScene(std::string scene) {
                 std::string filename = resource["filename"];
 
                 if(type == "model3d") {
-                    m_resourceHandler->AddResource(name, LoadModel3D(filename));
+                    m_resourceHandler->AddResource(name, m_resourceHandler->LoadModel3D(filename));
                 }
             }
         }
@@ -108,12 +106,14 @@ void GLCore::InitScene(std::string scene) {
             for(json object : objects) {
                 try {
                     std::string type = object["type"];
-
                     IRenderObject* rObject = nullptr;
+
                     if(type == "line") {
-                        rObject = LoadLineJSON(object);
+                        rObject = m_resourceHandler->LoadLineJSON(object);
                     } else if(type == "staticmodel") {
-                        rObject = new StaticModel(m_resourceHandler->GetResource<Model3D>(object["filename"]));
+                        rObject = m_resourceHandler->GenerateModel(object, m_resourceHandler->GetResource<Model3D>(object["filename"]));
+                    } else if(type == "rawstaticmodel") {
+                        rObject = m_resourceHandler->GenerateModel(object);
                     }
 
                     if(rObject != nullptr) {
