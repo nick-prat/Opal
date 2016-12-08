@@ -10,7 +10,7 @@ public:
 
     std::string GetType();
 
-private:
+protected:
     std::string m_type;
 };
 

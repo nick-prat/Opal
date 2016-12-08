@@ -2,22 +2,22 @@
     "resources": [
         {
             "type": "model3d",
-            "name": "Bear",
+            "resourcename": "m3d_bear",
             "filename": "bear"
         },
         {
             "type": "model3d",
-            "name": "Boar",
+            "resourcename": "m3d_boar",
             "filename": "boar"
         },
         {
             "type": "model3d",
-            "name": "Deer",
+            "resourcename": "m3d_deer",
             "filename": "deer"
         },
         {
             "type": "model3d",
-            "name": "Wolf",
+            "resourcename": "m3d_wolf",
             "filename": "wolf"
         }
     ],
@@ -25,7 +25,7 @@
         {
             "type": "staticmodel",
             "name": "Bear",
-            "filename": "Bear",
+            "resource": "m3d_deer",
             "translation": [15.0, 0.0, 0.0],
             "rotation": [0.0, 0.0, 0.0],
             "scale": [0.1, 0.1, 0.1]

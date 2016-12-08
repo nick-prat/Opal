@@ -92,7 +92,7 @@ void GLCore::InitScene(std::string scene) {
             std::vector<json> resources = scene["resources"];
             for(json resource : resources) {
                 std::string type = resource["type"];
-                std::string name = resource["name"];
+                std::string name = resource["resourcename"];
                 std::string filename = resource["filename"];
 
                 if(type == "model3d") {
@@ -111,7 +111,7 @@ void GLCore::InitScene(std::string scene) {
                     if(type == "line") {
                         rObject = m_resourceHandler->LoadLineJSON(object);
                     } else if(type == "staticmodel") {
-                        rObject = m_resourceHandler->GenerateModel(object, m_resourceHandler->GetResource<Model3D>(object["filename"]));
+                        rObject = m_resourceHandler->GenerateModel(object, m_resourceHandler->GetResource<Model3D>(object["resource"]));
                     } else if(type == "rawstaticmodel") {
                         rObject = m_resourceHandler->GenerateModel(object);
                     }
@@ -127,13 +127,13 @@ void GLCore::InitScene(std::string scene) {
             }
         }
 
+        // TODO Implement actual dynamic model loading
         if(scene.find("dynamicObjects") != scene.end()) {
             std::vector<json> objects = scene["dynamicObjects"];
             for(json object : objects) {
                 try {
-                    std::string name = object["name"];
-                    std::string filename = object["filename"];
-                    m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler->GetResource<Model3D>(filename));
+                    auto name = object["name"];
+                    m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler->GetResource<Model3D>(object["resource"]));
                 } catch (bad_resource& error) {
                     error.PrintError();
                 } catch (std::domain_error& error) {

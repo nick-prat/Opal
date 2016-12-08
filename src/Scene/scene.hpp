@@ -23,8 +23,8 @@ public:
     void Start();
     void GameLoop();
     void BindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
-    void AddEntity(const std::string& name, Entity* ent);
-
+    void AddEntity(const std::string& name, Entity* const ent);
+    Entity* Spawn(const std::string& name, const std::string& type, const std::string& resource, glm::vec3 location);
     Entity* GetEntity(const std::string& name) const;
     Camera* GetCamera() const;
 

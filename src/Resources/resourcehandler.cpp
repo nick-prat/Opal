@@ -40,6 +40,8 @@ void ResourceHandler::AddResource(std::string name, Resource* resource) {
     m_resources[name] = std::unique_ptr<Resource>(resource);
 }
 
+// TODO Pass json objects by const ref
+
 IRenderObject* ResourceHandler::GenerateModel(json object) {
     std::string name = "";
     std::vector<glm::vec3> verts;
@@ -203,6 +205,7 @@ IRenderObject* ResourceHandler::LoadLineJSON(json object) {
 }
 
 std::shared_ptr<Texture> ResourceHandler::LoadTexture(std::string filename, bool genMipMaps) {
+    // TODO Add textures to resources, make sure they aren't loaded twice
     FIBITMAP *img;
     filename = "Resources/Textures/" + filename + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());

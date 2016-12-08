@@ -74,7 +74,7 @@ void Scene::Start() {
     ent->SetName("George");
 
     AddEntity("George", ent);
-    
+
     (*m_startFunc)();
 }
 
@@ -98,6 +98,11 @@ void Scene::BindFunctionToKey(int ikey, LuaRef function, bool repeat) {
             (*m_luaKeyBinds[key])();
         });
     }
+}
+
+Entity* Scene::Spawn(const std::string& name, const std::string& type, const std::string& resource, glm::vec3 location) {
+    // TODO Spawn an entity with the given resource and name at location
+    return nullptr;
 }
 
 void Scene::AddEntity(const std::string& name, Entity* const ent) {
