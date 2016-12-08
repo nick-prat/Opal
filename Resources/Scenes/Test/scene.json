@@ -25,7 +25,7 @@
         {
             "type": "staticmodel",
             "name": "Bear",
-            "resource": "m3d_deer",
+            "resource": "m3d_bear",
             "translation": [15.0, 0.0, 0.0],
             "rotation": [0.0, 0.0, 0.0],
             "scale": [0.1, 0.1, 0.1]

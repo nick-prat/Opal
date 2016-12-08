@@ -22,10 +22,10 @@ public:
     void LoadResources();
     void AddResource(std::string name, Resource* resource);
 
-    IRenderObject* GenerateModel(nlohmann::json obect);
-    IRenderObject* GenerateModel(nlohmann::json object, Model3D* model);
-    IRenderObject* LoadLineJSON(nlohmann::json object);
-    std::shared_ptr<Texture> LoadTexture(std::string filename, bool genMipMaps);
+    IRenderObject* GenerateModel(const nlohmann::json& obect);
+    IRenderObject* GenerateModel(const nlohmann::json& object, Model3D* model);
+    IRenderObject* LoadLineJSON(const nlohmann::json& object);
+    Texture* LoadTexture(std::string name, bool genMipMaps);
     Model3D* LoadModel3D(std::string modelname);
 
     template <typename T = IRenderObject>

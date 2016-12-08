@@ -40,9 +40,7 @@ void ResourceHandler::AddResource(std::string name, Resource* resource) {
     m_resources[name] = std::unique_ptr<Resource>(resource);
 }
 
-// TODO Pass json objects by const ref
-
-IRenderObject* ResourceHandler::GenerateModel(json object) {
+IRenderObject* ResourceHandler::GenerateModel(const json& object) {
     std::string name = "";
     std::vector<glm::vec3> verts;
     std::vector<std::vector<float>> vertsf = object["vertices"];
@@ -110,13 +108,13 @@ IRenderObject* ResourceHandler::GenerateModel(json object) {
     meshes.push_back(std::make_shared<Model3D::Mesh>(vertices, indices));
     meshes[0]->SetMatName("texture");
 
-    std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
+    std::unordered_map<std::string, Texture*> textures;
     textures["texture"] = LoadTexture(object["matname"], true);
 
     return GenerateModel(object, new Model3D(meshes, textures));
 }
 
-IRenderObject* ResourceHandler::GenerateModel(json object, Model3D* model3d) {
+IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model3d) {
     std::string name = "";
 
     if(object.find("name") != object.end()) {
@@ -170,7 +168,7 @@ IRenderObject* ResourceHandler::GenerateModel(json object, Model3D* model3d) {
     return static_cast<IRenderObject*>(new StaticModel(model3d));
 }
 
-IRenderObject* ResourceHandler::LoadLineJSON(json object) {
+IRenderObject* ResourceHandler::LoadLineJSON(const json& object) {
     glm::vec3 head, tail, color;
     std::string name;
 
@@ -204,10 +202,15 @@ IRenderObject* ResourceHandler::LoadLineJSON(json object) {
     return new Line(head, tail, color);
 }
 
-std::shared_ptr<Texture> ResourceHandler::LoadTexture(std::string filename, bool genMipMaps) {
-    // TODO Add textures to resources, make sure they aren't loaded twice
+Texture* ResourceHandler::LoadTexture(std::string name, bool genMipMaps) {
+    auto resourcename = "tex_" + name;
+    if(m_resources.find(resourcename) != m_resources.end()) {
+        auto res = m_resources.find(resourcename);
+        return GetResource<Texture>(res->first);
+    }
+
     FIBITMAP *img;
-    filename = "Resources/Textures/" + filename + ".tga";
+    auto filename = "Resources/Textures/" + name + ".tga";
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
 
     if(!FreeImage_FIFSupportsReading(format)) {
@@ -260,9 +263,10 @@ std::shared_ptr<Texture> ResourceHandler::LoadTexture(std::string filename, bool
 
     FreeImage_Unload(img);
 
-    std::shared_ptr<Texture> texture = std::make_shared<Texture>();
-    texture->SetFileName(filename);
+    Texture* texture = new Texture();
+    texture->SetFileName(resourcename);
     texture->SetTexture(glTexture);
+    m_resources[resourcename] = std::unique_ptr<Texture>(texture);
     return texture;
 }
 
@@ -342,7 +346,7 @@ Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
     auto model = new Model3D();
 
     aiMaterial** materials = scene->mMaterials;
-    std::unordered_map<std::string, std::shared_ptr<Texture>> textures;
+    std::unordered_map<std::string, Texture*> textures;
     for(uint i = 0; i < scene->mNumMaterials; i++) {
         aiString aName;
         materials[i]->Get(AI_MATKEY_NAME, aName);
@@ -350,7 +354,7 @@ Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
 
         if(textures.find(name) == textures.end()) {
             try {
-                std::shared_ptr<Texture> temp = LoadTexture(modelname + "/" + name, true);
+                auto temp = LoadTexture(modelname + "/" + name, true);
                 if(temp != nullptr) {
                     textures[name] = temp;
                 }

@@ -8,7 +8,7 @@ Model3D::Model3D() {
 
 }
 
-Model3D::Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, std::shared_ptr<Texture>> textures)
+Model3D::Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, Texture*> textures)
     :  m_textures(textures), m_meshes(meshes) {
 
 }
@@ -25,7 +25,7 @@ void Model3D::SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes) {
     m_meshes = meshes;
 }
 
-void Model3D::SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>> textures) {
+void Model3D::SetTextures(const std::unordered_map<std::string, Texture*> textures) {
     m_textures = textures;
 }
 
@@ -53,7 +53,7 @@ std::vector<std::shared_ptr<Model3D::Mesh>> Model3D::GetMeshes() const {
     return m_meshes;
 }
 
-std::shared_ptr<Texture> Model3D::GetTexture(const std::string& key) const {
+Texture* Model3D::GetTexture(const std::string& key) const {
     auto tex = m_textures.find(key);
     if(tex != m_textures.end())
     {

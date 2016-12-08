@@ -85,7 +85,7 @@ void StaticModel::Render(const Display* const display) {
     for(uint i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
 
-        std::shared_ptr<Texture> texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
+        auto texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
         if(texture != nullptr) {
             texture->Bind();
         } else {
