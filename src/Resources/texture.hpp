@@ -7,7 +7,7 @@
 
 #include <Resources/resource.hpp>
 
-class Texture : public Resource
+class Texture : public IResource
 {
 public:
     Texture();

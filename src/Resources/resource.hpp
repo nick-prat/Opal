@@ -3,10 +3,10 @@
 
 #include <string>
 
-class Resource {
+class IResource {
 public:
-    Resource();
-    virtual ~Resource();
+    IResource();
+    virtual ~IResource();
 
     std::string GetType();
 

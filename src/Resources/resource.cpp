@@ -1,14 +1,14 @@
 #include <Resources/resource.hpp>
 
-Resource::Resource()
+IResource::IResource()
         : m_type("undefined") {
 
 }
 
-Resource::~Resource() {
+IResource::~IResource() {
 
 }
 
-std::string Resource::GetType() {
+std::string IResource::GetType() {
     return m_type;
 }

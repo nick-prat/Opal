@@ -1,5 +1,5 @@
-#ifndef _3DMODEL_H
-#define _3DMODEL_H
+#ifndef _MODEL3D_H
+#define _MODEL3D_H
 
 #include <glm/glm.hpp>
 #include <string>
@@ -11,7 +11,7 @@
 #include <Resources/resource.hpp>
 #include <Resources/texture.hpp>
 
-class Model3D : public Resource
+class Model3D : public IResource
 {
 public:
     struct Vertex
@@ -70,4 +70,4 @@ private:
 
 };
 
-#endif // _3DMODEL_H
+#endif // _MODEL3D_H
