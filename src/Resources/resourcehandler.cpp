@@ -36,8 +36,8 @@ void ResourceHandler::LoadResources() {
 
 }
 
-void ResourceHandler::AddResource(std::string name, Resource* resource) {
-    m_resources[name] = std::unique_ptr<Resource>(resource);
+void ResourceHandler::AddResource(std::string name, IResource* resource) {
+    m_resources[name] = std::unique_ptr<IResource>(resource);
 }
 
 IRenderObject* ResourceHandler::GenerateModel(const json& object) {
@@ -151,12 +151,10 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model
             throw bad_resource("Rotation data size is not 3", name);
         }
         for(auto& degree : rotation) {
-            std::cout << degree << "\n";
             degree = (degree < 0.0f ? 360 + degree : degree);
         }
 
         float degrees = *(std::max_element(rotation.begin(), rotation.end()));
-        std::cout << degrees << '\n';
         if(degrees != 0.0f) {
             std::cout << rotation[0] / degrees << rotation[1] / degrees << rotation[2] / degrees << '\n';
             glm::vec3 amount = glm::vec3(rotation[0] / degrees, rotation[1] / degrees, rotation[2] / degrees);

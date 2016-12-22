@@ -20,7 +20,7 @@ public:
     ~ResourceHandler();
 
     void LoadResources();
-    void AddResource(std::string name, Resource* resource);
+    void AddResource(std::string name, IResource* resource);
 
     IRenderObject* GenerateModel(const nlohmann::json& obect);
     IRenderObject* GenerateModel(const nlohmann::json& object, Model3D* model);
@@ -46,7 +46,7 @@ private:
     void LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes);
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<Resource>> m_resources;
+    std::unordered_map<std::string, std::unique_ptr<IResource>> m_resources;
 };
 
 #endif // _RESOURCE_HANDLER_H

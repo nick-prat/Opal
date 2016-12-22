@@ -7,8 +7,8 @@
 
 using namespace luabridge;
 
-Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
-        : m_luaState(luaState), m_display(display) {
+Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHandler, std::string scenename)
+        :m_display(display), m_luaState(luaState), m_resourceHandler(resourceHandler) {
 
     std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
 
@@ -100,9 +100,26 @@ void Scene::BindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     }
 }
 
-Entity* Scene::Spawn(const std::string& name, const std::string& type, const std::string& resource, glm::vec3 location) {
-    // TODO Spawn an entity with the given resource and name at location
+Entity* Scene::Spawn(const std::string& name, glm::vec3 location) {
+    // TODO Spawn an invisible entity
     return nullptr;
+}
+
+Entity* Scene::Spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
+    // TODO Spawn an entity with the given resource and name at location
+    auto res = m_resourceHandler->GetResource<Model3D>(resource);
+    if(res == nullptr) {
+        throw bad_resource("resource doesn't exist", resource);
+    }
+
+    if(m_entities.find(name) != m_entities.end()) {
+        return m_entities[name].get();
+    }
+
+    // TODO Find location to store unqiue pointers of dynamic models that are spawned in real time
+    auto ent = new Entity();
+    m_entities[name] = std::unique_ptr<Entity>(ent);
+    return ent;
 }
 
 void Scene::AddEntity(const std::string& name, Entity* const ent) {

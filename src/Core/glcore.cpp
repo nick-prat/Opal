@@ -70,7 +70,7 @@ void GLCore::InitScene(std::string scene) {
 
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
-    m_scene = std::make_unique<Scene>(m_display.get(), m_luaState, scene);
+    m_scene = std::make_unique<Scene>(m_display.get(), m_luaState, m_resourceHandler.get(), scene);
 
     std::string filename = "Resources/Scenes/" + scene + "/scene.json";
     std::string contents;

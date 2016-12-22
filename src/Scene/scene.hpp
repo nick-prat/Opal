@@ -14,17 +14,20 @@ extern "C" {
 
 #include <Core/display.hpp>
 #include <Entity/entity.hpp>
+#include <Resources/resourcehandler.hpp>
 
 class Scene {
 public:
-    Scene(Display* display, lua_State* luaState, std::string scenename);
+    Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHandler, std::string scenename);
     ~Scene();
 
     void Start();
     void GameLoop();
     void BindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
     void AddEntity(const std::string& name, Entity* const ent);
-    Entity* Spawn(const std::string& name, const std::string& type, const std::string& resource, glm::vec3 location);
+
+    Entity* Spawn(const std::string& name, glm::vec3 location);
+    Entity* Spawn(const std::string& name, const std::string& resource, glm::vec3 location);
     Entity* GetEntity(const std::string& name) const;
     Camera* GetCamera() const;
 
@@ -36,8 +39,9 @@ private:
     std::unique_ptr<luabridge::LuaRef> m_startFunc;
     std::unique_ptr<luabridge::LuaRef> m_renderFunc;
 
-    lua_State* m_luaState;
     Display* m_display;
+    lua_State* m_luaState;
+    ResourceHandler* m_resourceHandler;
 };
 
 #endif // _SCENE_H

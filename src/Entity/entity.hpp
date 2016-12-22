@@ -6,18 +6,22 @@
 class Entity {
 public:
     Entity();
+    Entity(DynamicModel* model);
     ~Entity();
 
+    void UnbindModel();
+    void BindModel(DynamicModel* model);
+
     void SetVisible(const bool visible);
-    void SetRenderObject(const std::shared_ptr<DynamicModel> renderObject);
     void SetName(const std::string& name);
 
     bool IsVisible() const;
     std::string GetName() const;
+    DynamicModel* GetModel() const;
 
 private:
     std::string m_name;
-    std::shared_ptr<DynamicModel> m_renderObject;
+    DynamicModel* m_model;
 };
 
 #endif // _ENTITY_H
