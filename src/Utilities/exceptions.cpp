@@ -10,7 +10,7 @@ generic_exception::~generic_exception() {
 }
 
 void generic_exception::PrintError() const {
-    Log::error(m_error, Log::OUT_LOG | Log::OUT_CONS);
+    Log::error(m_error, Log::OUT_LOG_CONS);
 }
 
 std::string generic_exception::GetError() const {

@@ -7,13 +7,32 @@
 class Log
 {
 public:
-    const static short OUT_CONS = 0x0001;
-    const static short OUT_LOG = 0x0010;
-    const static short OUT_LOG_CONS = 0x0011;
+    enum OutputMode {
+        OUT_CONS = 0x0001,
+        OUT_LOG = 0x0010,
+        OUT_LOG_CONS = 0x0011
+    };
 
-    static void debug(std::string text, short showInConsole = OUT_CONS);
-    static void error(std::string text, short showInConsole = OUT_LOG_CONS);
-    static void info(std::string text, short showInConsole = OUT_LOG_CONS);
+    static void debug(std::string text, OutputMode showInConsole = OUT_CONS);
+    static void error(std::string text, OutputMode showInConsole = OUT_LOG_CONS);
+    static void info(std::string text, OutputMode showInConsole = OUT_LOG_CONS);
+
+    static Log& GetLog();
+
+    template<typename T>
+    Log& operator<<(T value) {
+        if(m_output & OUT_CONS)
+        {
+            std::cout << value;
+        }
+
+        if(m_output & OUT_LOG)
+        {
+            m_logFile << value;
+        }
+        return m_log;
+    }
+    Log& operator<<(OutputMode value);
 
 private:
     Log();
@@ -23,6 +42,7 @@ private:
 
 private:
     static Log m_log;
+    OutputMode m_output;
     std::fstream m_logFile;
 };
 

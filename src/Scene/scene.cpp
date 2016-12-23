@@ -4,6 +4,7 @@
 
 #include <Core/camera.hpp>
 #include <Utilities/exceptions.hpp>
+#include <Utilities/log.hpp>
 
 using namespace luabridge;
 
@@ -119,8 +120,14 @@ Entity* Scene::Spawn(const std::string& name, const std::string& resource, glm::
 }
 
 void Scene::AddEntity(const std::string& name, Entity* const ent) {
+    if(m_entities.find(name) != m_entities.end()) {
+        Log::error(name + " entity attempted to be added a second time, skipped");
+    }
+
     if(ent != nullptr) {
         m_entities[name] = std::unique_ptr<Entity>(ent);
+    } else {
+        Log::error(name + " entity was null, skipped");
     }
 }
 

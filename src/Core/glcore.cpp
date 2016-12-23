@@ -22,10 +22,10 @@ GLCore::GLCore(int width, int height, std::string scene) {
     m_resourceHandler = std::make_unique<ResourceHandler>();
 
     // Log information about current context
-    std::cout << "\nInformation: \n";
-    std::cout << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
-    std::cout << "\tDisplay Address: " << m_display.get() << '\n';
-    std::cout << "\tRender Chain Address: " << m_renderChain.get() << "\n\n";
+    Log::GetLog() << "\nInformation: \n";
+    Log::GetLog() << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
+    Log::GetLog() << "\tDisplay Address: " << m_display.get() << '\n';
+    Log::GetLog() << "\tRender Chain Address: " << m_renderChain.get() << "\n\n";
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
