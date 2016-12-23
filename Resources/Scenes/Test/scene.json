@@ -7,11 +7,6 @@
         },
         {
             "type": "model3d",
-            "resourcename": "m3d_boar",
-            "filename": "boar"
-        },
-        {
-            "type": "model3d",
             "resourcename": "m3d_deer",
             "filename": "deer"
         },

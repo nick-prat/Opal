@@ -26,7 +26,6 @@ public:
     void BindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
     void AddEntity(const std::string& name, Entity* const ent);
 
-    Entity* Spawn(const std::string& name, glm::vec3 location);
     Entity* Spawn(const std::string& name, const std::string& resource, glm::vec3 location);
     Entity* GetEntity(const std::string& name) const;
     Camera* GetCamera() const;
