@@ -32,7 +32,7 @@ GLCore::GLCore(int width, int height, std::string scene) {
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
-    Log::info("GL Context created", Log::OUT_LOG);
+    Log::GetLog() << Log::OUT_LOG << "GL Context created" << Log::OUT_LOG_CONS;
 
     InitScene(scene);
 

@@ -20,11 +20,11 @@ int main(int argc, char **args) {
     const int minor = 3;
 
     glfwSetErrorCallback([] (int error, const char* desc) {
-        std::cout << "(" << error << ")" << " " << desc << std::endl;
+        Log::GetErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
 
     if(!glfwInit()) {
-        std::cout << "Couldn't initialize GLFW3\n";
+        Log::error("Couldn't initialize GLFW3\n");
         exit(-1);
     }
 
@@ -35,7 +35,7 @@ int main(int argc, char **args) {
 
     GLFWwindow* window = glfwCreateWindow(width, height, title, nullptr, nullptr);
     if(!window) {
-        std::cout << "Couldn't create window\n";
+        Log::error("Couldn't create window\n");
         glfwTerminate();
         exit(-1);
     }

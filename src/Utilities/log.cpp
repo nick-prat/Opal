@@ -41,11 +41,6 @@ void Log::error(std::string text, OutputMode output)
     m_log.print("ERROR: " + text, output, true);
 }
 
-void Log::info(std::string text, OutputMode output)
-{
-    m_log.print(text, output, false);
-}
-
 void Log::print(std::string text, short output, bool err)
 {
     if(output & OUT_CONS)
@@ -60,6 +55,12 @@ void Log::print(std::string text, short output, bool err)
 }
 
 Log& Log::GetLog() {
+    m_log.m_errorLog = false;
+    return m_log;
+}
+
+Log& Log::GetErrorLog() {
+    m_log.m_errorLog = true;
     return m_log;
 }
 

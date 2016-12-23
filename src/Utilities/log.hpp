@@ -15,15 +15,15 @@ public:
 
     static void debug(std::string text, OutputMode showInConsole = OUT_CONS);
     static void error(std::string text, OutputMode showInConsole = OUT_LOG_CONS);
-    static void info(std::string text, OutputMode showInConsole = OUT_LOG_CONS);
 
     static Log& GetLog();
+    static Log& GetErrorLog();
 
     template<typename T>
     Log& operator<<(T value) {
         if(m_output & OUT_CONS)
         {
-            std::cout << value;
+            (m_errorLog ? std::cerr : std::cout) << value;
         }
 
         if(m_output & OUT_LOG)
@@ -43,6 +43,7 @@ private:
 private:
     static Log m_log;
     OutputMode m_output;
+    bool m_errorLog;
     std::fstream m_logFile;
 };
 
