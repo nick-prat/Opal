@@ -20,7 +20,7 @@ int main(int argc, char **args) {
     const int minor = 3;
 
     glfwSetErrorCallback([] (int error, const char* desc) {
-        Log::GetErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
+        Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
 
     if(!glfwInit()) {
@@ -66,24 +66,24 @@ int main(int argc, char **args) {
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
         if(action == GLFW_PRESS) {
-            glCore->InputFunc(key, true);
+            glCore->inputFunc(key, true);
         } else if(action == GLFW_RELEASE) {
-            glCore->InputFunc(key, false);
+            glCore->inputFunc(key, false);
         }
     });
 
     glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
         if(action == GLFW_PRESS) {
-            glCore->InputFunc(button, true);
+            glCore->inputFunc(button, true);
         } else if(action == GLFW_RELEASE) {
-            glCore->InputFunc(button, false);
+            glCore->inputFunc(button, false);
         }
     });
 
     glfwSetCursorPosCallback(window, [](GLFWwindow* window, double xpos, double ypos) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
-        glCore->MouseFunc(xpos, ypos);
+        glCore->mouseFunc(xpos, ypos);
     });
 
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -93,7 +93,7 @@ int main(int argc, char **args) {
     unsigned long frames = 0;
 
     while(!glfwWindowShouldClose(window)) {
-        glCore->DisplayFunc();
+        glCore->displayFunc();
         glfwSwapBuffers(window);
         glfwPollEvents();
         frames++;

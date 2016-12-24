@@ -54,12 +54,12 @@ void Log::print(std::string text, short output, bool err)
     }
 }
 
-Log& Log::GetLog() {
+Log& Log::getLog() {
     m_log.m_errorLog = false;
     return m_log;
 }
 
-Log& Log::GetErrorLog() {
+Log& Log::getErrorLog() {
     m_log.m_errorLog = true;
     return m_log;
 }

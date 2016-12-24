@@ -16,8 +16,8 @@ public:
     static void debug(std::string text, OutputMode showInConsole = OUT_CONS);
     static void error(std::string text, OutputMode showInConsole = OUT_LOG_CONS);
 
-    static Log& GetLog();
-    static Log& GetErrorLog();
+    static Log& getLog();
+    static Log& getErrorLog();
 
     template<typename T>
     Log& operator<<(T value) {
