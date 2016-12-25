@@ -22,19 +22,19 @@ GLCore::GLCore(int width, int height, std::string scene) {
     m_resourceHandler = std::make_unique<ResourceHandler>();
 
     // Log information about current context
-    std::cout << "\nInformation: \n";
-    std::cout << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
-    std::cout << "\tDisplay Address: " << m_display.get() << '\n';
-    std::cout << "\tRender Chain Address: " << m_renderChain.get() << "\n\n";
+    Log::getLog() << "\nInformation: \n";
+    Log::getLog() << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
+    Log::getLog() << "\tDisplay Address: " << m_display.get() << '\n';
+    Log::getLog() << "\tRender Chain Address: " << m_renderChain.get() << "\n\n";
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
     glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
 
-    Log::info("GL Context created", Log::OUT_LOG);
+    Log::getLog() << Log::OUT_LOG << "GL Context created" << Log::OUT_LOG_CONS;
 
-    InitScene(scene);
+    initScene(scene);
 
     for(const auto& object : m_staticModels) {
         m_renderChain->Attach(object.get());
@@ -49,25 +49,25 @@ GLCore::GLCore(int width, int height, std::string scene) {
 }
 
 GLCore::~GLCore() {
-    CloseScene();
+    closeScene();
 }
 
-void GLCore::DisplayFunc() {
+void GLCore::displayFunc() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_renderChain->Render(m_display.get());
     m_scene->GameLoop();
     m_display->GetInputController()->CallKeyLambdas();
 }
 
-void GLCore::InputFunc(int key, bool state) {
+void GLCore::inputFunc(int key, bool state) {
     m_display->GetInputController()->UpdateKey(key, state);
 }
 
-void GLCore::MouseFunc(double xpos, double ypos) {
+void GLCore::mouseFunc(double xpos, double ypos) {
     m_display->GetInputController()->UpdateMousePosition(xpos, ypos);
 }
 
-void GLCore::InitScene(std::string scene) {
+void GLCore::initScene(std::string scene) {
 
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
@@ -147,7 +147,7 @@ void GLCore::InitScene(std::string scene) {
     }
 }
 
-void GLCore::CloseScene() {
+void GLCore::closeScene() {
     m_scene.reset(nullptr);
     m_renderChain->Clear();
     lua_close(m_luaState);

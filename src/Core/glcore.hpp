@@ -24,13 +24,13 @@ public:
     GLCore(int width, int height, std::string scene);
     ~GLCore();
 
-    void DisplayFunc();
-    void InputFunc(int key, bool state);
-    void MouseFunc(double xpos, double ypos);
+    void displayFunc();
+    void inputFunc(int key, bool state);
+    void mouseFunc(double xpos, double ypos);
 
 private:
-    void InitScene(std::string scene);
-    void CloseScene();
+    void initScene(std::string scene);
+    void closeScene();
 
 private:
     std::string m_scenename;

@@ -6,6 +6,7 @@ Start = function()
     Level:BindFunctionToKey(69, OnKeyE, true)
     Level:BindFunctionToKey(81, OnKeyQ, true)
     Level:BindFunctionToKey(32, OnKeySpace, false)
+    --Level:Spawn("test", "m3d_bear", vec3(0.0, 0.0, 0.0));
 end
 
 GameLoop = function()

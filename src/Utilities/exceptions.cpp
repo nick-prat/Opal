@@ -10,7 +10,7 @@ generic_exception::~generic_exception() {
 }
 
 void generic_exception::PrintError() const {
-    Log::error(m_error, Log::OUT_LOG | Log::OUT_CONS);
+    Log::error(m_error, Log::OUT_LOG_CONS);
 }
 
 std::string generic_exception::GetError() const {
@@ -28,7 +28,7 @@ bad_resource::bad_resource(const std::string& error, const std::string& resource
 bad_resource::~bad_resource() {}
 
 void bad_resource::PrintError() const {
-    Log::error("[" + m_resourcename + "] " + m_error, Log::OUT_LOG_CONS);
+    Log::error("[" + m_resourcename + "] " + m_error + '\n', Log::OUT_LOG_CONS);
 }
 
 std::string bad_resource::GetResourceName() const {

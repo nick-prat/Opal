@@ -4,6 +4,7 @@
 
 #include <Core/camera.hpp>
 #include <Utilities/exceptions.hpp>
+#include <Utilities/log.hpp>
 
 using namespace luabridge;
 
@@ -46,6 +47,7 @@ Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHan
                 .addFunction("GetCamera", &Scene::GetCamera)
                 .addFunction("AddEntity", &Scene::AddEntity)
                 .addFunction("GetEntity", &Scene::GetEntity)
+                .addFunction("Spawn", &Scene::Spawn)
             .endClass()
         .endNamespace();
 
@@ -100,16 +102,11 @@ void Scene::BindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     }
 }
 
-Entity* Scene::Spawn(const std::string& name, glm::vec3 location) {
-    // TODO Spawn an invisible entity
-    return nullptr;
-}
-
 Entity* Scene::Spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
     // TODO Spawn an entity with the given resource and name at location
     auto res = m_resourceHandler->GetResource<Model3D>(resource);
     if(res == nullptr) {
-        throw bad_resource("resource doesn't exist", resource);
+        throw bad_resource("resource isn't a model or doesn't exist", resource);
     }
 
     if(m_entities.find(name) != m_entities.end()) {
@@ -123,8 +120,14 @@ Entity* Scene::Spawn(const std::string& name, const std::string& resource, glm::
 }
 
 void Scene::AddEntity(const std::string& name, Entity* const ent) {
+    if(m_entities.find(name) != m_entities.end()) {
+        Log::error(name + " entity attempted to be added a second time, skipped");
+    }
+
     if(ent != nullptr) {
         m_entities[name] = std::unique_ptr<Entity>(ent);
+    } else {
+        Log::error(name + " entity was null, skipped");
     }
 }
 
