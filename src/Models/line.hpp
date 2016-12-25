@@ -13,7 +13,7 @@ public:
     Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color);
     ~Line();
 
-    void Render(const Display* const display) override;
+    void render(const Display* const display) override;
 
 private:
     uint m_indexCount;

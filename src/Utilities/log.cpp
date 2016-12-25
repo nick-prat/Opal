@@ -20,7 +20,7 @@ Log::Log()
     m_logFile.open(filename, std::fstream::out);
     m_logFile << std::flush;
     if(!m_logFile.is_open()) {
-        Log::error("Couldn't open log file", Log::OUT_CONS);
+        Log::error("Couldn't open log file\n", Log::OUT_CONS);
     }
 
     m_output = Log::OUT_LOG_CONS;

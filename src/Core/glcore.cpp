@@ -44,8 +44,8 @@ GLCore::GLCore(int width, int height, std::string scene) {
         m_renderChain->Attach(object.second.get());
     }
 
-    Log::GetLog() << IRenderObject::GetNumRenderObjects();
-    m_scene->Start();
+    Log::getLog() << "\nRenderObject count: " << IRenderObject::getNumRenderObjects() << '\n';
+    m_scene->start();
 }
 
 GLCore::~GLCore() {
@@ -55,7 +55,7 @@ GLCore::~GLCore() {
 void GLCore::displayFunc() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_renderChain->Render(m_display.get());
-    m_scene->GameLoop();
+    m_scene->gameLoop();
     m_display->GetInputController()->CallKeyLambdas();
 }
 

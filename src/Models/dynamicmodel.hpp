@@ -8,7 +8,7 @@ public:
     DynamicModel(const Model3D* const model3D);
     ~DynamicModel();
 
-    virtual void Render(const Display* const display) override;
+    virtual void render(const Display* const display) override;
     glm::mat4 GenerateMVP(const Display* const display) const override;
 
     void Translate(const glm::vec3& trans);

@@ -11,10 +11,10 @@ IRenderObject::~IRenderObject() {
 
 }
 
-int IRenderObject::GetNumRenderObjects() {
+int IRenderObject::getNumRenderObjects() {
     return m_numRenderObjects;
 }
 
-int IRenderObject::GetTag() {
+int IRenderObject::getTag() {
     return m_tag;
 }

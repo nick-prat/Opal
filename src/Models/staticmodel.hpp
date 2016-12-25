@@ -12,7 +12,7 @@ public:
     StaticModel(const Model3D* const model);
     virtual ~StaticModel();
 
-    virtual void Render(const Display* const display) override;
+    virtual void render(const Display* const display) override;
     virtual glm::mat4 GenerateMVP(const Display* const display) const;
 
     const Model3D* GetModel() const;

@@ -15,10 +15,10 @@ public:
     IRenderObject();
     virtual ~IRenderObject();
 
-    virtual void Render(const Display* const display) = 0;
+    virtual void render(const Display* const display) = 0;
 
-    static int GetNumRenderObjects();
-    int GetTag();
+    static int getNumRenderObjects();
+    int getTag();
 
 private:
     static int m_numRenderObjects;

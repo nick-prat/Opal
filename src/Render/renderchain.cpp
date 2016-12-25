@@ -18,7 +18,7 @@ void RenderChain::Attach(IRenderObject* object) {
 
 void RenderChain::Render(const Display* const display) {
     for(const auto& object : m_objects) {
-        object->Render(display);
+        object->render(display);
     }
 }
 

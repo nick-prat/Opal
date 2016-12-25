@@ -21,14 +21,14 @@ public:
     Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHandler, std::string scenename);
     ~Scene();
 
-    void Start();
-    void GameLoop();
-    void BindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
-    void AddEntity(const std::string& name, Entity* const ent);
+    void start();
+    void gameLoop();
+    void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
+    void addEntity(const std::string& name, Entity* const ent);
 
-    Entity* Spawn(const std::string& name, const std::string& resource, glm::vec3 location);
-    Entity* GetEntity(const std::string& name) const;
-    Camera* GetCamera() const;
+    Entity* spawn(const std::string& name, const std::string& resource, glm::vec3 location);
+    Entity* getEntity(const std::string& name) const;
+    Camera* getCamera() const;
 
 private:
     std::unordered_map<std::string, std::unique_ptr<Entity>> m_entities;

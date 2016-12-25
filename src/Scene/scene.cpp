@@ -43,11 +43,11 @@ Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHan
                 .addProperty("name", &Entity::GetName, &Entity::SetName)
             .endClass()
             .beginClass<Scene>("Scene")
-                .addFunction("BindFunctionToKey", &Scene::BindFunctionToKey)
-                .addFunction("GetCamera", &Scene::GetCamera)
-                .addFunction("AddEntity", &Scene::AddEntity)
-                .addFunction("GetEntity", &Scene::GetEntity)
-                .addFunction("Spawn", &Scene::Spawn)
+                .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
+                .addFunction("GetCamera", &Scene::getCamera)
+                .addFunction("AddEntity", &Scene::addEntity)
+                .addFunction("GetEntity", &Scene::getEntity)
+                .addFunction("Spawn", &Scene::spawn)
             .endClass()
         .endNamespace();
 
@@ -71,20 +71,20 @@ Scene::~Scene() {
 
 }
 
-void Scene::Start() {
+void Scene::start() {
     Entity* ent = new Entity;
     ent->SetName("George");
 
-    AddEntity("George", ent);
+    addEntity("George", ent);
 
     (*m_startFunc)();
 }
 
-void Scene::GameLoop() {
+void Scene::gameLoop() {
     (*m_renderFunc)();
 }
 
-void Scene::BindFunctionToKey(int ikey, LuaRef function, bool repeat) {
+void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     if(!function.isFunction()) {
         throw generic_exception("function wasn't found");
     }
@@ -102,7 +102,7 @@ void Scene::BindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     }
 }
 
-Entity* Scene::Spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
+Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
     // TODO Spawn an entity with the given resource and name at location
     auto res = m_resourceHandler->GetResource<Model3D>(resource);
     if(res == nullptr) {
@@ -119,7 +119,7 @@ Entity* Scene::Spawn(const std::string& name, const std::string& resource, glm::
     return ent;
 }
 
-void Scene::AddEntity(const std::string& name, Entity* const ent) {
+void Scene::addEntity(const std::string& name, Entity* const ent) {
     if(m_entities.find(name) != m_entities.end()) {
         Log::error(name + " entity attempted to be added a second time, skipped");
     }
@@ -131,13 +131,13 @@ void Scene::AddEntity(const std::string& name, Entity* const ent) {
     }
 }
 
-Entity* Scene::GetEntity(const std::string& name) const {
+Entity* Scene::getEntity(const std::string& name) const {
     if(m_entities.find(name) != m_entities.end()) {
         return (*m_entities.find(name)).second.get();
     }
     return nullptr;
 }
 
-Camera* Scene::GetCamera() const {
+Camera* Scene::getCamera() const {
     return m_display->GetCamera();
 }

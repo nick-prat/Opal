@@ -37,7 +37,7 @@ Line::~Line() {
     glDeleteBuffers(1, &m_IBO);
 }
 
-void Line::Render(const Display* const display) {
+void Line::render(const Display* const display) {
     if(m_shader == nullptr || display == nullptr) {
         std::cout << "Null param in render function\n";
     }

@@ -7,9 +7,9 @@ DynamicModel::DynamicModel(const Model3D* const model3D)
 DynamicModel::~DynamicModel() {
 }
 
-void DynamicModel::Render(const Display* const display) {
+void DynamicModel::render(const Display* const display) {
     if(m_visible) {
-        StaticModel::Render(display);
+        StaticModel::render(display);
     }
 }
 
