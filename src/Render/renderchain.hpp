@@ -12,9 +12,10 @@ public:
     RenderChain();
     ~RenderChain();
 
-    void Attach(IRenderObject* object);
-    void Render(const Display* const display);
-    void Clear();
+    void attach(IRenderObject* object);
+    void detach(int tag);
+    void render(const Display* const display);
+    void clear();
 
 private:
     std::list<IRenderObject*> m_objects;

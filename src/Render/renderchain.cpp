@@ -12,16 +12,24 @@ RenderChain::RenderChain() {
 RenderChain::~RenderChain() {
 }
 
-void RenderChain::Attach(IRenderObject* object) {
+void RenderChain::attach(IRenderObject* object) {
     m_objects.push_back(object);
 }
 
-void RenderChain::Render(const Display* const display) {
+void RenderChain::detach(int tag) {
+    for(const auto& object : m_objects) {
+        if(object->getTag() == tag) {
+            m_objects.remove(object);
+        }
+    }
+}
+
+void RenderChain::render(const Display* const display) {
     for(const auto& object : m_objects) {
         object->render(display);
     }
 }
 
-void RenderChain::Clear() {
+void RenderChain::clear() {
     m_objects.clear();
 }

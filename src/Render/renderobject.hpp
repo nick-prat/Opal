@@ -21,6 +21,7 @@ public:
     int getTag();
 
 private:
+    static int m_tagCounter;
     static int m_numRenderObjects;
     int m_tag;
 };

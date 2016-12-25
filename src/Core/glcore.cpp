@@ -37,14 +37,15 @@ GLCore::GLCore(int width, int height, std::string scene) {
     initScene(scene);
 
     for(const auto& object : m_staticModels) {
-        m_renderChain->Attach(object.get());
+        m_renderChain->attach(object.get());
     }
 
     for(const auto& object : m_dynamicModels) {
-        m_renderChain->Attach(object.second.get());
+        m_renderChain->attach(object.second.get());
     }
 
     Log::getLog() << "\nRenderObject count: " << IRenderObject::getNumRenderObjects() << '\n';
+    m_renderChain->detach(0);
     m_scene->start();
 }
 
@@ -54,7 +55,7 @@ GLCore::~GLCore() {
 
 void GLCore::displayFunc() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    m_renderChain->Render(m_display.get());
+    m_renderChain->render(m_display.get());
     m_scene->gameLoop();
     m_display->GetInputController()->CallKeyLambdas();
 }
@@ -149,6 +150,6 @@ void GLCore::initScene(std::string scene) {
 
 void GLCore::closeScene() {
     m_scene.reset(nullptr);
-    m_renderChain->Clear();
+    m_renderChain->clear();
     lua_close(m_luaState);
 }
