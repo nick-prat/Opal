@@ -44,6 +44,7 @@ GLCore::GLCore(int width, int height, std::string scene) {
         m_renderChain->Attach(object.second.get());
     }
 
+    Log::GetLog() << IRenderObject::GetNumRenderObjects();
     m_scene->Start();
 }
 

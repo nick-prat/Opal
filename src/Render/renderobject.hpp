@@ -16,6 +16,13 @@ public:
     virtual ~IRenderObject();
 
     virtual void Render(const Display* const display) = 0;
+
+    static int GetNumRenderObjects();
+    int GetTag();
+
+private:
+    static int m_numRenderObjects;
+    int m_tag;
 };
 
 #endif // _RENDEROBJECT_H
