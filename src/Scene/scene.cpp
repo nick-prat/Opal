@@ -34,8 +34,8 @@ Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHan
         .endClass()
         .beginNamespace("Game")
             .beginClass<Camera>("Camera")
-                .addFunction("MoveCamera", &Camera::MoveCamera)
-                .addFunction("SetCamera", &Camera::SetPosition)
+                .addFunction("MoveCamera", &Camera::moveCamera)
+                .addFunction("SetCamera", &Camera::setPosition)
             .endClass()
             .beginClass<Entity>("Entity")
                 .addConstructor<void(*)(void)>()
@@ -92,11 +92,11 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     InputKey key = (InputKey)ikey;
     m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
     if(repeat) {
-        m_display->GetInputController()->RegisterWhileKeyPressed(key, [this](InputKey key) {
+        m_display->getInputController()->registerWhileKeyPressed(key, [this](InputKey key) {
             (*m_luaKeyBinds[key])();
         });
     } else {
-        m_display->GetInputController()->RegisterOnKeyPressed(key, [this](InputKey key) {
+        m_display->getInputController()->registerOnKeyPressed(key, [this](InputKey key) {
             (*m_luaKeyBinds[key])();
         });
     }
@@ -139,5 +139,5 @@ Entity* Scene::getEntity(const std::string& name) const {
 }
 
 Camera* Scene::getCamera() const {
-    return m_display->GetCamera();
+    return m_display->getCamera();
 }

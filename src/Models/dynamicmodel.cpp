@@ -7,14 +7,14 @@ DynamicModel::DynamicModel(const Model3D* const model3D)
 DynamicModel::~DynamicModel() {
 }
 
-void DynamicModel::render(const Display* const display) {
+void DynamicModel::render(const Display* const display) const {
     if(m_visible) {
         StaticModel::render(display);
     }
 }
 
 glm::mat4 DynamicModel::generateMVP(const Display* const display) const {
-    return display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix() * getWorld();
+    return display->getProjectionMatrix() * display->getCamera()->getViewMatrix() * getWorld();
 }
 
 void DynamicModel::translate(const glm::vec3& trans)

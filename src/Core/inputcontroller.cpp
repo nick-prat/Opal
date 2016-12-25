@@ -7,31 +7,31 @@ InputController::InputController()
 InputController::~InputController() {
 }
 
-void InputController::ClearWhileKeyPressed() {
+void InputController::clearWhileKeyPressed() {
     m_whileKeyPressed.clear();
 }
 
-void InputController::DeregisterWhileKeyPressed(const InputKey key) {
+void InputController::deregisterWhileKeyPressed(const InputKey key) {
     m_whileKeyPressed.erase(key);
 }
 
-void InputController::RegisterWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
+void InputController::registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_whileKeyPressed[key] = lambda;
 }
 
-void InputController::ClearOnKeyPressed() {
+void InputController::clearOnKeyPressed() {
     m_onKeyPressed.clear();
 }
 
-void InputController::DeregisterOnKeyPressed(const InputKey key) {
+void InputController::deregisterOnKeyPressed(const InputKey key) {
     m_onKeyPressed.erase(key);
 }
 
-void InputController::RegisterOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
+void InputController::registerOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_onKeyPressed[key] = lambda;
 }
 
-void InputController::CallKeyLambdas() {
+void InputController::callKeyLambdas() {
     for(auto& key : m_pressedKeys) {
         auto lambda = m_whileKeyPressed.find(key.first);
         if(lambda != m_whileKeyPressed.end()) {
@@ -48,24 +48,24 @@ void InputController::CallKeyLambdas() {
     }
 }
 
-void InputController::UpdateMousePosition(const double xpos, const double ypos) {
+void InputController::updateMousePosition(const double xpos, const double ypos) {
     m_mouseX = xpos;
     m_mouseY = ypos;
 }
 
-std::pair<double, double> InputController::GetMousePosition() const {
+std::pair<double, double> InputController::getMousePosition() const {
     return std::pair<double, double>(m_mouseX, m_mouseY);
 }
 
-bool InputController::IsKeyPressed(const InputKey key) const {
+bool InputController::isKeyPressed(const InputKey key) const {
 	return m_pressedKeys.find(key) != m_pressedKeys.end();
 }
 
-glm::vec2 InputController::GetMouseLocation() const {
+glm::vec2 InputController::getMouseLocation() const {
 	return glm::vec2(0.0f, 0.0f);
 }
 
-void InputController::UpdateKey(const int key, const bool pressed) {
+void InputController::updateKey(const int key, const bool pressed) {
 	InputKey ikey = static_cast<InputKey>(key);
 
 	if(pressed && m_pressedKeys.find(ikey) == m_pressedKeys.end()) {

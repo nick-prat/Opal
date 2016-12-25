@@ -56,15 +56,15 @@ void GLCore::displayFunc() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     m_renderChain->render(m_display.get());
     m_scene->gameLoop();
-    m_display->GetInputController()->CallKeyLambdas();
+    m_display->getInputController()->callKeyLambdas();
 }
 
 void GLCore::inputFunc(int key, bool state) {
-    m_display->GetInputController()->UpdateKey(key, state);
+    m_display->getInputController()->updateKey(key, state);
 }
 
 void GLCore::mouseFunc(double xpos, double ypos) {
-    m_display->GetInputController()->UpdateMousePosition(xpos, ypos);
+    m_display->getInputController()->updateMousePosition(xpos, ypos);
 }
 
 void GLCore::initScene(std::string scene) {

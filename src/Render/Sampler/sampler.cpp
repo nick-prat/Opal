@@ -12,23 +12,15 @@ Sampler::Sampler()
     glSamplerParameteri(m_sampler, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-Sampler::~Sampler()
-{
-    Unload();
+Sampler::~Sampler() {
+    glDeleteSamplers(1, &m_sampler);
 }
 
-void Sampler::Bind() const
-{
+void Sampler::bind() const {
     glBindSampler(0, m_sampler);
 }
 
-void Sampler::SetParams(int magnification, int minification)
-{
+void Sampler::setParams(int magnification, int minification) {
     m_magnification = magnification;
     m_minification = minification;
-}
-
-void Sampler::Unload()
-{
-    glDeleteSamplers(1, &m_sampler);
 }

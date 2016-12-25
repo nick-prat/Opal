@@ -8,16 +8,14 @@ public:
     Camera();
     ~Camera();
 
-    bool InitCamera();
-    void Destroy();
+    bool initCamera();
+    void destroy();
 
-    glm::mat4 GetViewMatrix();
-    void MoveCamera(glm::vec3 delta);
-    void RotateCamera(glm::vec3 rotation);
+    glm::mat4 getViewMatrix();
+    void moveCamera(glm::vec3 delta);
+    void rotateCamera(glm::vec3 rotation);
 
-    void SetPosition(glm::vec3 position);
-
-    protected:
+    void setPosition(glm::vec3 position);
 
 private:
     glm::mat4 m_viewMatrix;

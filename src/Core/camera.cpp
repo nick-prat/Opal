@@ -14,17 +14,17 @@ Camera::Camera() {
 Camera::~Camera() {
 }
 
-glm::mat4 Camera::GetViewMatrix() {
+glm::mat4 Camera::getViewMatrix() {
     return glm::lookAt(m_position, m_position + m_direction, m_up);
 }
 
-void Camera::RotateCamera(glm::vec3 rotation) {
+void Camera::rotateCamera(glm::vec3 rotation) {
 }
 
-void Camera::MoveCamera(glm::vec3 delta) {
+void Camera::moveCamera(glm::vec3 delta) {
     m_position += delta;
 }
 
-void Camera::SetPosition(glm::vec3 position) {
+void Camera::setPosition(glm::vec3 position) {
     m_position = position;
 }

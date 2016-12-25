@@ -37,23 +37,23 @@ Line::~Line() {
     glDeleteBuffers(1, &m_IBO);
 }
 
-void Line::render(const Display* const display) {
+void Line::render(const Display* const display) const {
     if(m_shader == nullptr || display == nullptr) {
         std::cout << "Null param in render function\n";
     }
 
-    m_shader->UseShader();
+    m_shader->useShader();
 
-    GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
+    GLint worldLocation = glGetUniformLocation(m_shader->getProgram(), "gMVP");
     if(worldLocation == -1) {
         std::cout << "Couldn't get MVP uniform loaction\n";
         exit(-1);
     }
 
-    glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix();
+    glm::mat4 mvp = display->getProjectionMatrix() * display->getCamera()->getViewMatrix();
     glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
 
-    GLint colorLocation = glGetUniformLocation(m_shader->GetProgram(), "gColor");
+    GLint colorLocation = glGetUniformLocation(m_shader->getProgram(), "gColor");
     if(colorLocation == -1) {
         std::cout << "Couldn't get line color uniform location\n";
         exit(-1);

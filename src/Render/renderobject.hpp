@@ -15,7 +15,7 @@ public:
     IRenderObject();
     virtual ~IRenderObject();
 
-    virtual void render(const Display* const display) = 0;
+    virtual void render(const Display* const display) const = 0;
 
     static int getNumRenderObjects();
 

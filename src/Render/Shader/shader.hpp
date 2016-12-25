@@ -11,8 +11,8 @@ public:
     Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types);
     ~Shader();
 
-    void UseShader();
-    GLuint GetProgram();
+    void useShader();
+    GLuint getProgram();
 
 private:
     ulong m_numShaders;

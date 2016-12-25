@@ -14,8 +14,9 @@ public:
 
     void attach(IRenderObject* object);
     void detach(IRenderObject* object);
-    void render(const Display* const display);
+    void render(const Display* const display) const;
     void clear();
+    int getRenderCount() const;
 
 private:
     std::list<IRenderObject*> m_objects;

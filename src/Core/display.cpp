@@ -25,32 +25,33 @@ Display::~Display() {
 
 }
 
-InputController* Display::GetInputController() const {
+InputController* Display::getInputController() const {
     return m_inputController.get();
 }
 
-Camera* Display::GetCamera() const {
+Camera* Display::getCamera() const {
     return m_camera.get();
 }
 
-glm::mat4 Display::GetProjectionMatrix() const {
+glm::mat4 Display::getProjectionMatrix() const {
     return m_projMatrix;
 }
 
-uint Display::GetWidth() const {
+uint Display::getWidth() const {
     return m_width;
 }
 
-uint Display::GetHeight() const {
+uint Display::getHeight() const {
     return m_height;
 }
 
-void Display::SetCursorPosition(float x, float y) const {
+void Display::setCursorPosition(float x, float y) const {
     glm::clamp(x, 0.0f, 1.0f);
     glm::clamp(y, 0.0f, 1.0f);
 }
 
-void Display::SetCursorVisible(bool visible) const {
+void Display::setCursorVisible(bool visible) const {
+    // TODO Is this function is worth implementing?
     if(visible) {
     } else {
     }

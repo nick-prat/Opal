@@ -71,7 +71,7 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
 
 Shader::~Shader() {}
 
-void Shader::UseShader() {
+void Shader::useShader() {
     glValidateProgram(m_shaderProgram);
     GLint status = 0;
     glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, &status);
@@ -83,6 +83,6 @@ void Shader::UseShader() {
     }
 }
 
-GLuint Shader::GetProgram() {
+GLuint Shader::getProgram() {
     return m_shaderProgram;
 }

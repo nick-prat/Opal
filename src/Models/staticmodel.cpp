@@ -56,31 +56,31 @@ StaticModel::~StaticModel() {
 }
 
 glm::mat4 StaticModel::generateMVP(const Display* const display) const {
-    return display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix();
+    return display->getProjectionMatrix() * display->getCamera()->getViewMatrix();
 }
 
 const Model3D* StaticModel::getModel() const {
     return m_model;
 }
 
-void StaticModel::render(const Display* const display) {
-    m_shader->UseShader();
+void StaticModel::render(const Display* const display) const {
+    m_shader->useShader();
 
-    GLint samplerLocation = glGetUniformLocation(m_shader->GetProgram(), "gSampler");
+    GLint samplerLocation = glGetUniformLocation(m_shader->getProgram(), "gSampler");
     if(samplerLocation == -1) {
         std::cout << "Couldn't get sampler uniform location" << std::endl;
         exit(-1);
     }
     glUniform1i(samplerLocation, 0);
 
-    GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
+    GLint worldLocation = glGetUniformLocation(m_shader->getProgram(), "gMVP");
     if(worldLocation == -1) {
         std::cout << "Couldn't get MVP uniform loaction" << std::endl;
         exit(-1);
     }
     glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
-    m_sampler.Bind();
+    m_sampler.bind();
 
     for(uint i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);

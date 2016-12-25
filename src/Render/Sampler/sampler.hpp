@@ -3,15 +3,13 @@
 
 #include <GL/gl3w.h>
 
-class Sampler
-{
+class Sampler {
 public:
     Sampler();
     ~Sampler();
 
-    void Bind() const;
-    void SetParams(int magnification, int minification);
-    void Unload();
+    void bind() const;
+    void setParams(int magnification, int minification);
 
 private:
     GLuint m_sampler;

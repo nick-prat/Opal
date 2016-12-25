@@ -20,7 +20,7 @@ void RenderChain::detach(IRenderObject* object) {
     m_objects.remove(object);
 }
 
-void RenderChain::render(const Display* const display) {
+void RenderChain::render(const Display* const display) const {
     for(const auto& object : m_objects) {
         object->render(display);
     }
@@ -28,4 +28,8 @@ void RenderChain::render(const Display* const display) {
 
 void RenderChain::clear() {
     m_objects.clear();
+}
+
+int RenderChain::getRenderCount() const {
+    return m_objects.size();
 }

@@ -13,16 +13,16 @@ public:
     Display(uint width, uint height);
     ~Display();
 
-    InputController* GetInputController() const;
-    Camera* GetCamera() const;
-    glm::mat4 GetProjectionMatrix() const;
-    uint GetWidth() const;
-    uint GetHeight() const;
+    InputController* getInputController() const;
+    Camera* getCamera() const;
+    glm::mat4 getProjectionMatrix() const;
+    uint getWidth() const;
+    uint getHeight() const;
 
-    void PassiveMotionFunc(int x, int y);
+    void passiveMotionFunc(int x, int y);
 
-    void SetCursorPosition(float x, float y) const;
-    void SetCursorVisible(bool visible) const;
+    void setCursorPosition(float x, float y) const;
+    void setCursorVisible(bool visible) const;
 
 private:
     uint m_width, m_height;
