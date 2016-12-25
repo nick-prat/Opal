@@ -9,15 +9,15 @@ public:
     Entity(DynamicModel* model);
     ~Entity();
 
-    void UnbindModel();
-    void BindModel(DynamicModel* model);
+    void unbindModel();
+    void bindModel(DynamicModel* model);
 
-    void SetVisible(const bool visible);
-    void SetName(const std::string& name);
+    void setVisible(const bool visible);
+    void setName(const std::string& name);
 
-    bool IsVisible() const;
-    std::string GetName() const;
-    DynamicModel* GetModel() const;
+    bool isVisible() const;
+    std::string getName() const;
+    DynamicModel* getModel() const;
 
 private:
     std::string m_name;

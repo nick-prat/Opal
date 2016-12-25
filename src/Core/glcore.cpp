@@ -45,7 +45,6 @@ GLCore::GLCore(int width, int height, std::string scene) {
     }
 
     Log::getLog() << "\nRenderObject count: " << IRenderObject::getNumRenderObjects() << '\n';
-    m_renderChain->detach(0);
     m_scene->start();
 }
 
@@ -84,7 +83,7 @@ void GLCore::initScene(std::string scene) {
         in.read(&contents[0], contents.size());
         in.close();
     } else {
-        throw generic_exception(filename + " doesn't exist");
+        throw GenericException(filename + " doesn't exist");
     }
 
     try {
@@ -121,8 +120,8 @@ void GLCore::initScene(std::string scene) {
                     if(rObject != nullptr) {
                         m_staticModels.push_back(std::unique_ptr<IRenderObject>(rObject));
                     }
-                } catch (bad_resource& error) {
-                    error.PrintError();
+                } catch (BadResource& error) {
+                    error.printError();
                 } catch (std::domain_error& error) {
                     std::cout << error.what() << '\n';
                 }
@@ -136,8 +135,8 @@ void GLCore::initScene(std::string scene) {
                 try {
                     auto name = object["name"];
                     m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler->GetResource<Model3D>(object["resource"]));
-                } catch (bad_resource& error) {
-                    error.PrintError();
+                } catch (BadResource& error) {
+                    error.printError();
                 } catch (std::domain_error& error) {
                     std::cout << error.what() << '\n';
                 }

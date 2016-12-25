@@ -13,15 +13,15 @@ public:
     Texture();
     ~Texture();
 
-    void SetFileName(const std::string filename);
-    std::string GetFileName() const;
+    void setFileName(const std::string filename);
+    std::string getFileName() const;
 
-    void SetTexture(const GLuint glTexture);
+    void setTexture(const GLuint glTexture);
 
-    void Bind() const;
+    void bind() const;
 
-    bool IsLoaded() const;
-    void Unload();
+    bool isLoaded() const;
+    void unload();
 
 private:
     GLuint m_glTexture;

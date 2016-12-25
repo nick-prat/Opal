@@ -9,16 +9,16 @@ public:
     ~DynamicModel();
 
     virtual void render(const Display* const display) override;
-    glm::mat4 GenerateMVP(const Display* const display) const override;
+    glm::mat4 generateMVP(const Display* const display) const override;
 
-    void Translate(const glm::vec3& trans);
-    void Rotate(const float& degrees, const glm::vec3& rotate);
-    void Scale(const glm::vec3& scale);
+    void translate(const glm::vec3& trans);
+    void rotate(const float& degrees, const glm::vec3& rotate);
+    void scale(const glm::vec3& scale);
 
-    void SetVisible(const bool visible);
+    void setVisible(const bool visible);
 
-    bool IsVisible() const;
-    glm::mat4 GetWorld() const;
+    bool isVisible() const;
+    glm::mat4 getWorld() const;
 
 private:
     bool m_visible;

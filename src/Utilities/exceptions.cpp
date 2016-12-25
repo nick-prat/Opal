@@ -2,35 +2,35 @@
 
 #include <Utilities/log.hpp>
 
-generic_exception::generic_exception(const std::string& error) {
+GenericException::GenericException(const std::string& error) {
     m_error = error;
 }
 
-generic_exception::~generic_exception() {
+GenericException::~GenericException() {
 }
 
-void generic_exception::PrintError() const {
+void GenericException::printError() const {
     Log::error(m_error, Log::OUT_LOG_CONS);
 }
 
-std::string generic_exception::GetError() const {
+std::string GenericException::getError() const {
     return m_error;
 }
 
-const char* generic_exception::what() const noexcept {
+const char* GenericException::what() const noexcept {
     return m_error.c_str();
 }
 
-bad_resource::bad_resource(const std::string& error, const std::string& resourcename)
-        : generic_exception(error), m_resourcename(resourcename) {
+BadResource::BadResource(const std::string& error, const std::string& resourcename)
+        : GenericException(error), m_resourcename(resourcename) {
 }
 
-bad_resource::~bad_resource() {}
+BadResource::~BadResource() {}
 
-void bad_resource::PrintError() const {
+void BadResource::printError() const {
     Log::error("[" + m_resourcename + "] " + m_error + '\n', Log::OUT_LOG_CONS);
 }
 
-std::string bad_resource::GetResourceName() const {
+std::string BadResource::getResourceName() const {
     return m_resourcename;
 }

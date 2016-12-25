@@ -57,8 +57,8 @@ int main(int argc, char **args) {
     GLCore* glCore;
     try {
         glCore = new GLCore(width, height, scene);
-    } catch(generic_exception& error) {
-        error.PrintError();
+    } catch(GenericException& error) {
+        error.printError();
         glfwTerminate();
         exit(-1);
     }

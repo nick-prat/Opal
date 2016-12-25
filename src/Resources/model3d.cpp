@@ -4,12 +4,12 @@
 
 // Model3D
 
-Model3D::Model3D() {
-
+Model3D::Model3D()
+        : IResource("model3d") {
 }
 
 Model3D::Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, Texture*> textures)
-    :  m_textures(textures), m_meshes(meshes) {
+        :  IResource("model3d"), m_textures(textures), m_meshes(meshes) {
 
 }
 
@@ -37,7 +37,7 @@ void Model3D::ApplyTransformation(const glm::mat4 &transform) {
 
 void Model3D::PrintTextures() const {
     for(const auto texture : m_textures) {
-        std::cout << texture.first << "->" << (texture.second->IsLoaded() ? "loaded" : "load failed") << ": " << texture.second->GetFileName() << '\n';
+        std::cout << texture.first << "->" << (texture.second->isLoaded() ? "loaded" : "load failed") << ": " << texture.second->getFileName() << '\n';
     }
 }
 

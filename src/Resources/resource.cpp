@@ -1,7 +1,7 @@
 #include <Resources/resource.hpp>
 
-IResource::IResource()
-        : m_type("undefined") {
+IResource::IResource(const std::string& type)
+        : m_type(type) {
 
 }
 
@@ -9,6 +9,6 @@ IResource::~IResource() {
 
 }
 
-std::string IResource::GetType() {
+std::string IResource::getType() {
     return m_type;
 }

@@ -18,12 +18,9 @@ public:
     virtual void render(const Display* const display) = 0;
 
     static int getNumRenderObjects();
-    int getTag();
 
 private:
-    static int m_tagCounter;
     static int m_numRenderObjects;
-    int m_tag;
 };
 
 #endif // _RENDEROBJECT_H

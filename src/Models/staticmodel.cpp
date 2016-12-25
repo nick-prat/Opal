@@ -12,7 +12,7 @@ StaticModel::StaticModel(const Model3D* const model)
         : m_model(model) {
 
     if(model == nullptr) {
-        throw generic_exception("Null param passed to StaticModel constructor");
+        throw GenericException("Null param passed to StaticModel constructor");
     }
 
     m_meshCount = m_model->GetMeshes().size();
@@ -55,11 +55,11 @@ StaticModel::~StaticModel() {
     glDeleteBuffers(m_IBO.size(), m_IBO.data());
 }
 
-glm::mat4 StaticModel::GenerateMVP(const Display* const display) const {
+glm::mat4 StaticModel::generateMVP(const Display* const display) const {
     return display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix();
 }
 
-const Model3D* StaticModel::GetModel() const {
+const Model3D* StaticModel::getModel() const {
     return m_model;
 }
 
@@ -78,7 +78,7 @@ void StaticModel::render(const Display* const display) {
         std::cout << "Couldn't get MVP uniform loaction" << std::endl;
         exit(-1);
     }
-    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(GenerateMVP(display)));
+    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
     m_sampler.Bind();
 
@@ -87,7 +87,7 @@ void StaticModel::render(const Display* const display) {
 
         auto texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
         if(texture != nullptr) {
-            texture->Bind();
+            texture->bind();
         } else {
             std::cout << "Couldn't get material " << m_model->GetMeshes()[i]->GetMatName() << std::endl;
             exit(-1);

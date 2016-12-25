@@ -13,33 +13,33 @@ void DynamicModel::render(const Display* const display) {
     }
 }
 
-glm::mat4 DynamicModel::GenerateMVP(const Display* const display) const {
-    return display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix() * GetWorld();
+glm::mat4 DynamicModel::generateMVP(const Display* const display) const {
+    return display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix() * getWorld();
 }
 
-void DynamicModel::Translate(const glm::vec3& trans)
+void DynamicModel::translate(const glm::vec3& trans)
 {
     m_translate = glm::translate(m_translate, trans);
 }
 
-void DynamicModel::Rotate(const float& degrees, const glm::vec3& rotate)
+void DynamicModel::rotate(const float& degrees, const glm::vec3& rotate)
 {
     m_rotate = glm::rotate(m_rotate, degrees, rotate);
 }
 
-void DynamicModel::Scale(const glm::vec3& scale)
+void DynamicModel::scale(const glm::vec3& scale)
 {
     m_scale = glm::scale(m_scale, scale);
 }
 
-void DynamicModel::SetVisible(const bool visible) {
+void DynamicModel::setVisible(const bool visible) {
     m_visible = visible;
 }
 
-bool DynamicModel::IsVisible() const {
+bool DynamicModel::isVisible() const {
     return m_visible;
 }
 
-glm::mat4 DynamicModel::GetWorld() const {
+glm::mat4 DynamicModel::getWorld() const {
     return m_translate * m_rotate * m_scale;
 }

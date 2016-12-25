@@ -5,12 +5,12 @@
 
 class IResource {
 public:
-    IResource();
     virtual ~IResource();
-
-    std::string GetType();
+    
+    std::string getType();
 
 protected:
+    IResource(const std::string& type);
     std::string m_type;
 };
 

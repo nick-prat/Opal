@@ -39,8 +39,8 @@ Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHan
             .endClass()
             .beginClass<Entity>("Entity")
                 .addConstructor<void(*)(void)>()
-                .addProperty("visible", &Entity::IsVisible, &Entity::SetVisible)
-                .addProperty("name", &Entity::GetName, &Entity::SetName)
+                .addProperty("visible", &Entity::isVisible, &Entity::setVisible)
+                .addProperty("name", &Entity::getName, &Entity::setName)
             .endClass()
             .beginClass<Scene>("Scene")
                 .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
@@ -58,12 +58,12 @@ Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHan
 
     m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
     if(!m_startFunc->isFunction()) {
-        throw generic_exception("Start function wasn't found");
+        throw GenericException("Start function wasn't found");
     }
 
     m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
     if(!m_renderFunc->isFunction()) {
-        throw generic_exception("Render function wasn't found");
+        throw GenericException("Render function wasn't found");
     }
 }
 
@@ -73,7 +73,7 @@ Scene::~Scene() {
 
 void Scene::start() {
     Entity* ent = new Entity;
-    ent->SetName("George");
+    ent->setName("George");
 
     addEntity("George", ent);
 
@@ -86,7 +86,7 @@ void Scene::gameLoop() {
 
 void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     if(!function.isFunction()) {
-        throw generic_exception("function wasn't found");
+        throw GenericException("function wasn't found");
     }
 
     InputKey key = (InputKey)ikey;
@@ -106,7 +106,7 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
     // TODO Spawn an entity with the given resource and name at location
     auto res = m_resourceHandler->GetResource<Model3D>(resource);
     if(res == nullptr) {
-        throw bad_resource("resource isn't a model or doesn't exist", resource);
+        throw BadResource("resource isn't a model or doesn't exist", resource);
     }
 
     if(m_entities.find(name) != m_entities.end()) {

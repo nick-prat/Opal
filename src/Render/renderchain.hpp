@@ -13,7 +13,7 @@ public:
     ~RenderChain();
 
     void attach(IRenderObject* object);
-    void detach(int tag);
+    void detach(IRenderObject* object);
     void render(const Display* const display);
     void clear();
 

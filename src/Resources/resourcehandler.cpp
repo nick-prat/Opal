@@ -53,7 +53,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object) {
 
     for(std::vector<float> vert : vertsf) {
         if(vert.size() != 3) {
-            throw bad_resource("Vertex data size is not 3", name);
+            throw BadResource("Vertex data size is not 3", name);
         }
         verts.push_back(glm::vec3(vert[0], vert[1], vert[2]));
     }
@@ -62,7 +62,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object) {
     std::vector<uint> indicesf = object["indices"];
     for(uint index : indicesf) {
         if(index >= verts.size()) {
-            throw bad_resource("Index is out of range", name);
+            throw BadResource("Index is out of range", name);
         }
         indices.push_back(index);
     }
@@ -72,7 +72,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object) {
         std::vector<std::vector<float>> normsf = object["normals"];
         for(std::vector<float> norm : normsf) {
             if(norm.size() != 3) {
-                throw bad_resource("Normal data size is not 3", name);
+                throw BadResource("Normal data size is not 3", name);
             }
             norms.push_back(glm::vec3(norm[0], norm[1], norm[2]));
         }
@@ -88,7 +88,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object) {
         std::vector<std::vector<float>> uvsf = object["uvs"];
         for(std::vector<float> uv : uvsf) {
             if(uv.size() != 2) {
-                throw bad_resource("UV data size is not 2", name);
+                throw BadResource("UV data size is not 2", name);
             }
             uvs.push_back(glm::vec2(uv[0], uv[1]));
         }
@@ -124,7 +124,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model
     }
 
     if(model3d == nullptr) {
-        throw bad_resource("Model3D was null for ", name);
+        throw BadResource("Model3D was null for ", name);
     }
 
     glm::mat4 transform = glm::mat4(1.0f);
@@ -132,7 +132,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model
     if(object.find("scale") != object.end()) {
         std::vector<float> scale = object["scale"];
         if(scale.size() != 3) {
-            throw bad_resource("Scale data size is not 3", name);
+            throw BadResource("Scale data size is not 3", name);
         }
         transform = glm::scale(transform, glm::vec3(scale[0], scale[1], scale[2]));
     }
@@ -140,7 +140,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model
     if(object.find("translation") != object.end()) {
         std::vector<float> translation = object["translation"];
         if(translation.size() != 3) {
-            throw bad_resource("Translation data size is not 3", name);
+            throw BadResource("Translation data size is not 3", name);
         }
         transform = glm::translate(transform, glm::vec3(translation[0], translation[1], translation[2]));
     }
@@ -148,7 +148,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model
     if(object.find("rotation") != object.end()) {
         std::vector<float> rotation = object["rotation"];
         if(rotation.size() != 3) {
-            throw bad_resource("Rotation data size is not 3", name);
+            throw BadResource("Rotation data size is not 3", name);
         }
         for(auto& degree : rotation) {
             degree = (degree < 0.0f ? 360 + degree : degree);
@@ -180,21 +180,21 @@ IRenderObject* ResourceHandler::LoadLineJSON(const json& object) {
     if(head3f.size() == 3) {
         head = glm::vec3(head3f[0], head3f[1], head3f[2]);
     } else {
-        throw bad_resource("head data size is not 3", name);
+        throw BadResource("head data size is not 3", name);
     }
 
     std::vector<float> tail3f = object["tail"];
     if(tail3f.size() == 3) {
         tail = glm::vec3(tail3f[0], tail3f[1], tail3f[2]);
     } else {
-        throw bad_resource("tail data size is not 3", name);
+        throw BadResource("tail data size is not 3", name);
     }
 
     std::vector<float> color3f = object["color"];
     if(head3f.size() == 3) {
         color = glm::vec3(color3f[0], color3f[1], color3f[2]);
     } else {
-        throw bad_resource("color data size is not 3", name);
+        throw BadResource("color data size is not 3", name);
     }
 
     return new Line(head, tail, color);
@@ -212,17 +212,17 @@ Texture* ResourceHandler::LoadTexture(std::string name, bool genMipMaps) {
     FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
 
     if(!FreeImage_FIFSupportsReading(format)) {
-        throw bad_resource("FreeImage can't read from file", filename);
+        throw BadResource("FreeImage can't read from file", filename);
     }
 
     if(format == FIF_UNKNOWN) {
-        throw bad_resource("Unknown format", filename);
+        throw BadResource("Unknown format", filename);
     }
 
     img = FreeImage_Load(format, filename.c_str());
 
     if(!img) {
-        throw bad_resource("Couldn't load image data", filename);
+        throw BadResource("Couldn't load image data", filename);
     }
 
     if(FreeImage_GetBPP(img) != 32) {
@@ -239,7 +239,7 @@ Texture* ResourceHandler::LoadTexture(std::string name, bool genMipMaps) {
 
     if(bytes == nullptr) {
         FreeImage_Unload(img);
-        throw bad_resource("couldn't load image bytes", filename);
+        throw BadResource("couldn't load image bytes", filename);
     }
 
     GLuint glTexture;
@@ -256,14 +256,14 @@ Texture* ResourceHandler::LoadTexture(std::string name, bool genMipMaps) {
 
     if(!glIsTexture(glTexture)) {
         FreeImage_Unload(img);
-        throw bad_resource("texture is not valid", filename);
+        throw BadResource("texture is not valid", filename);
     }
 
     FreeImage_Unload(img);
 
     Texture* texture = new Texture();
-    texture->SetFileName(resourcename);
-    texture->SetTexture(glTexture);
+    texture->setFileName(resourcename);
+    texture->setTexture(glTexture);
     m_resources[resourcename] = std::unique_ptr<Texture>(texture);
     return texture;
 }
@@ -318,7 +318,7 @@ void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::ma
                 }
             }
         } else {
-            throw bad_resource("Node was missing faces, load cancled");
+            throw BadResource("Node was missing faces, load cancled");
         }
 
         std::shared_ptr<Model3D::Mesh> rmesh = std::make_shared<Model3D::Mesh>(vertices, indices);
@@ -338,7 +338,7 @@ Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
         aiProcess_SortByPType);
 
     if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE) {
-        throw bad_resource(importer.GetErrorString(), filename);
+        throw BadResource(importer.GetErrorString(), filename);
     }
 
     auto model = new Model3D();
@@ -356,8 +356,8 @@ Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
                 if(temp != nullptr) {
                     textures[name] = temp;
                 }
-            } catch (bad_resource& error) {
-                error.PrintError();
+            } catch (BadResource& error) {
+                error.printError();
             }
         }
     }

@@ -5,54 +5,44 @@
 #include <Utilities/utilities.hpp>
 
 Texture::Texture()
-    : m_glTexture(-1), m_loaded(false), m_filename("invalid")
-{}
+    : IResource("texture"), m_glTexture(-1), m_loaded(false), m_filename("invalid") {
 
-Texture::~Texture()
-{
-    Unload();
 }
 
-void Texture::SetFileName(const std::string filename)
-{
+Texture::~Texture() {
+    unload();
+}
+
+void Texture::setFileName(const std::string filename) {
     m_filename = filename;
 }
 
-std::string Texture::GetFileName() const
-{
+std::string Texture::getFileName() const {
     return m_filename;
 }
 
-void Texture::SetTexture(const GLuint glTexture)
-{
+void Texture::setTexture(const GLuint glTexture) {
     m_glTexture = glTexture;
     m_loaded = true;
 }
 
-void Texture::Bind() const
-{
-    if(m_loaded && glIsTexture(m_glTexture))
-    {
+void Texture::bind() const {
+    if(m_loaded && glIsTexture(m_glTexture)) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_glTexture);
-    }
-    else
-    {
+    } else {
         std::cout << "(" << m_glTexture << ") Trying to bind texture that doesn't exist " << m_filename << std::endl;
         Utilities::PrintGLErrors();
     }
 }
 
-void Texture::Unload()
-{
-    if(m_loaded)
-    {
+void Texture::unload() {
+    if(m_loaded) {
         glDeleteTextures(1, &m_glTexture);
         m_glTexture = 0;
     }
 }
 
-bool Texture::IsLoaded() const
-{
+bool Texture::isLoaded() const {
     return m_loaded;
 }

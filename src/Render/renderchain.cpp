@@ -16,12 +16,8 @@ void RenderChain::attach(IRenderObject* object) {
     m_objects.push_back(object);
 }
 
-void RenderChain::detach(int tag) {
-    for(const auto& object : m_objects) {
-        if(object->getTag() == tag) {
-            m_objects.remove(object);
-        }
-    }
+void RenderChain::detach(IRenderObject* object) {
+    m_objects.remove(object);
 }
 
 void RenderChain::render(const Display* const display) {

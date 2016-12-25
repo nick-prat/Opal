@@ -36,7 +36,7 @@ public:
         }
         auto ret = dynamic_cast<T*>(res->second.get());
         if(ret == nullptr) {
-            throw bad_resource("invalid type conversion", resource);
+            throw BadResource("invalid type conversion", resource);
         }
         return ret;
     }
