@@ -3,6 +3,7 @@
 
 #include <unordered_map>
 #include <string>
+#include <list>
 
 extern "C" {
 #include <lua.h>
@@ -14,6 +15,8 @@ extern "C" {
 
 #include <Core/display.hpp>
 #include <Entity/entity.hpp>
+#include <Render/renderobject.hpp>
+#include <Render/renderchain.hpp>
 #include <Resources/resourcehandler.hpp>
 
 class Scene {
@@ -33,10 +36,12 @@ public:
 private:
     std::unordered_map<std::string, std::unique_ptr<Entity>> m_entities;
     std::unordered_map<InputKey, std::unique_ptr<luabridge::LuaRef>> m_luaKeyBinds;
+    std::list<std::unique_ptr<IRenderObject>> m_renderObjects;
     std::string m_scenename;
 
     std::unique_ptr<luabridge::LuaRef> m_startFunc;
     std::unique_ptr<luabridge::LuaRef> m_renderFunc;
+    std::unique_ptr<RenderChain> m_renderChain;
 
     Display* m_display;
     lua_State* m_luaState;

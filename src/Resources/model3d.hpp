@@ -1,6 +1,8 @@
 #ifndef _MODEL3D_H
 #define _MODEL3D_H
 
+// TODO Format to camelCase
+
 #include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>

@@ -34,14 +34,9 @@ private:
 
 private:
     std::string m_scenename;
-    std::unordered_map<std::string, std::unique_ptr<IRenderObject>> m_dynamicModels;
-    std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;
-    std::vector<std::unique_ptr<Line>> m_lines;
-    std::vector<std::unique_ptr<IRenderObject>> m_staticModels;
 
     std::unique_ptr<ResourceHandler> m_resourceHandler;
     std::unique_ptr<Scene> m_scene;
-    std::unique_ptr<RenderChain> m_renderChain;
     std::unique_ptr<Display> m_display;
 
     lua_State* m_luaState;

@@ -1,5 +1,7 @@
 #include "dynamicmodel.hpp"
 
+#include <Utilities/log.hpp>
+
 DynamicModel::DynamicModel(const Model3D* const model3D)
         : StaticModel(model3D), m_visible(true) {
 }

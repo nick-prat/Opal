@@ -7,11 +7,16 @@
 #include <Utilities/log.hpp>
 
 using namespace luabridge;
+using json = nlohmann::json;
+
+// TODO Implement scene closing
 
 Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHandler, std::string scenename)
         :m_display(display), m_luaState(luaState), m_resourceHandler(resourceHandler) {
 
+    m_renderChain = std::make_unique<RenderChain>();
     std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
+    std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
     getGlobalNamespace(m_luaState)
         .beginClass<glm::vec2>("vec2")
@@ -65,10 +70,85 @@ Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHan
     if(!m_renderFunc->isFunction()) {
         throw GenericException("Render function wasn't found");
     }
+
+    std::string contents;
+    std::ifstream in(filename, std::ios::in | std::ios::binary);
+    if (in) {
+        in.seekg(0, std::ios::end);
+        contents.resize(in.tellg());
+        in.seekg(0, std::ios::beg);
+        in.read(&contents[0], contents.size());
+        in.close();
+    } else {
+        throw GenericException(filename + " doesn't exist");
+    }
+
+    try {
+        json scene = json::parse(contents);
+
+        if(scene.find("resources") != scene.end()) {
+            std::vector<json> resources = scene["resources"];
+            for(json resource : resources) {
+                std::string type = resource["type"];
+                std::string name = resource["resourcename"];
+                std::string filename = resource["filename"];
+
+                if(type == "model3d") {
+                    m_resourceHandler->AddResource(name, m_resourceHandler->LoadModel3D(filename));
+                }
+            }
+        }
+
+        if(scene.find("staticObjects") != scene.end()) {
+            std::vector<json> objects = scene["staticObjects"];
+            for(json object : objects) {
+                try {
+                    std::string type = object["type"];
+                    IRenderObject* rObject = nullptr;
+
+                    if(type == "line") {
+                        rObject = m_resourceHandler->LoadLineJSON(object);
+                    } else if(type == "staticmodel") {
+                        rObject = m_resourceHandler->GenerateModel(object, m_resourceHandler->GetResource<Model3D>(object["resource"]));
+                    } else if(type == "rawstaticmodel") {
+                        rObject = m_resourceHandler->GenerateModel(object);
+                    }
+
+                    if(rObject != nullptr) {
+                        m_renderObjects.push_back(std::unique_ptr<IRenderObject>(rObject));
+                    }
+                } catch (BadResource& error) {
+                    error.printError();
+                } catch (std::domain_error& error) {
+                    std::cout << error.what() << '\n';
+                }
+            }
+        }
+
+        // TODO Implement actual dynamic model loading
+        if(scene.find("dynamicObjects") != scene.end()) {
+            std::vector<json> objects = scene["dynamicObjects"];
+            for(json object : objects) {
+                try {
+                    auto name = object["name"];
+                    //m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler->GetResource<Model3D>(object["resource"]));
+                } catch (BadResource& error) {
+                    error.printError();
+                } catch (std::domain_error& error) {
+                    std::cout << error.what() << '\n';
+                }
+            }
+        }
+    } catch(std::exception& error) {
+        Log::error("Parsing of " + filename + " failed: " + std::string(error.what()), Log::OUT_LOG_CONS);
+    }
+
+    for(const auto& obj : m_renderObjects) {
+        m_renderChain->attach(obj.get());
+    }
 }
 
 Scene::~Scene() {
-
 }
 
 void Scene::start() {
@@ -81,6 +161,7 @@ void Scene::start() {
 }
 
 void Scene::gameLoop() {
+    m_renderChain->render(m_display);
     (*m_renderFunc)();
 }
 
@@ -103,7 +184,6 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
 }
 
 Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
-    // TODO Spawn an entity with the given resource and name at location
     auto res = m_resourceHandler->GetResource<Model3D>(resource);
     if(res == nullptr) {
         throw BadResource("resource isn't a model or doesn't exist", resource);
@@ -113,8 +193,11 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
         return m_entities[name].get();
     }
 
-    // TODO Find location to store unqiue pointers of dynamic models that are spawned in real time
     auto ent = new Entity();
+    auto dyn = new DynamicModel(res);
+    ent->bindModel(dyn);
+    m_renderObjects.push_back(std::unique_ptr<IRenderObject>(dyn));
+    m_renderChain->attach(dyn);
     m_entities[name] = std::unique_ptr<Entity>(ent);
     return ent;
 }
