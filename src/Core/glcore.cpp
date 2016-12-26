@@ -31,8 +31,6 @@ GLCore::GLCore(int width, int height, std::string scene) {
     Log::getLog() << Log::OUT_LOG << "GL Context created" << Log::OUT_LOG_CONS;
 
     initScene(scene);
-
-    Log::getLog() << "\nRenderObject count: " << IRenderObject::getNumRenderObjects() << '\n';
     m_scene->start();
 }
 
