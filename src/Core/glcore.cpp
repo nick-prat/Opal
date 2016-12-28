@@ -16,12 +16,11 @@
 GLCore::GLCore(int width, int height, std::string scene) {
 
     m_display = std::make_unique<Display>(width, height);
-    m_resourceHandler = std::make_unique<ResourceHandler>();
 
     // Log information about current context
     Log::getLog() << "\nInformation: \n";
     Log::getLog() << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
-    Log::getLog() << "\tDisplay Address: " << m_display.get() << '\n';
+    Log::getLog() << "\tDisplay Address: " << m_display.get() << "\n\n";
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -55,7 +54,7 @@ void GLCore::mouseFunc(double xpos, double ypos) {
 void GLCore::initScene(std::string scene) {
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
-    m_scene = std::make_unique<Scene>(m_display.get(), m_luaState, m_resourceHandler.get(), scene);
+    m_scene = std::make_unique<Scene>(m_display.get(), m_luaState, scene);
 }
 
 void GLCore::closeScene() {

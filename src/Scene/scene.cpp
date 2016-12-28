@@ -11,10 +11,12 @@ using json = nlohmann::json;
 
 // TODO Implement scene closing
 
-Scene::Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHandler, std::string scenename)
-        :m_display(display), m_luaState(luaState), m_resourceHandler(resourceHandler) {
+Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
+        : m_display(display), m_luaState(luaState) {
 
     m_renderChain = std::make_unique<RenderChain>();
+    m_resourceHandler = std::make_unique<ResourceHandler>();
+
     std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
@@ -184,6 +186,7 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
 }
 
 // TODO This spawns the entity and model but it won't get rendered, not sure why
+// TODO Add support for blank entities
 Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
     auto res = m_resourceHandler->GetResource<Model3D>(resource);
     if(res == nullptr) {
@@ -191,15 +194,19 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
     }
 
     if(m_entities.find(name) != m_entities.end()) {
+        Log::getErrorLog() << "Attempting to spawn entity with name that has already been registered\n";
         return m_entities[name].get();
     }
 
-    auto ent = new Entity();
     auto dyn = new DynamicModel(res);
-    ent->bindModel(dyn);
-    m_renderObjects.push_back(std::unique_ptr<IRenderObject>(dyn));
+    dyn->translate(location);
     m_renderChain->attach(dyn);
+    m_renderObjects.push_back(std::unique_ptr<IRenderObject>(dyn));
+
+    auto ent = new Entity();
+    ent->bindModel(dyn);
     m_entities[name] = std::unique_ptr<Entity>(ent);
+
     return ent;
 }
 

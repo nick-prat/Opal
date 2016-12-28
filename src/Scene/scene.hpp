@@ -21,7 +21,7 @@ extern "C" {
 
 class Scene {
 public:
-    Scene(Display* display, lua_State* luaState, ResourceHandler* resourceHandler, std::string scenename);
+    Scene(Display* display, lua_State* luaState, std::string scenename);
     ~Scene();
 
     void start();
@@ -42,10 +42,10 @@ private:
     std::unique_ptr<luabridge::LuaRef> m_startFunc;
     std::unique_ptr<luabridge::LuaRef> m_renderFunc;
     std::unique_ptr<RenderChain> m_renderChain;
+    std::unique_ptr<ResourceHandler> m_resourceHandler;
 
     Display* m_display;
     lua_State* m_luaState;
-    ResourceHandler* m_resourceHandler;
 };
 
 #endif // _SCENE_H

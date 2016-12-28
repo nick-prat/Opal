@@ -32,10 +32,6 @@ ResourceHandler::~ResourceHandler() {
 
 }
 
-void ResourceHandler::LoadResources() {
-
-}
-
 void ResourceHandler::AddResource(std::string name, IResource* resource) {
     m_resources[name] = std::unique_ptr<IResource>(resource);
 }
@@ -162,6 +158,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model
         }
     }
 
+    // TODO This causes models to be transformed multiple times if they're loaded more then once in scene.json
     model3d->ApplyTransformation(transform);
     return static_cast<IRenderObject*>(new StaticModel(model3d));
 }
