@@ -9,9 +9,6 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 
-// TODO Implement function to return uniform location
-// TODO Implement function to register uniform variables, so they can be found in useShader
-
 Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types)
         : m_numShaders(0), m_shaderProgram(0) {
 
