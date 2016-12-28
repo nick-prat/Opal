@@ -66,20 +66,6 @@ const Model3D* StaticModel::getModel() const {
 }
 
 void StaticModel::render(const Display* const display) const {
-    /*GLint samplerLocation = glGetUniformLocation(m_shader->getProgram(), "gSampler");
-    if(samplerLocation == -1) {
-        std::cout << "Couldn't get sampler uniform location" << std::endl;
-        exit(-1);
-    }
-    glUniform1i(samplerLocation, 0);
-
-    GLint worldLocation = glGetUniformLocation(m_shader->getProgram(), "gMVP");
-    if(worldLocation == -1) {
-        std::cout << "Couldn't get MVP uniform loaction" << std::endl;
-        exit(-1);
-    }
-    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(generateMVP(display)));*/
-
     glUniform1i(m_shader->getUniformLocation("gSampler"), 0);
     glUniformMatrix4fv(m_shader->getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
