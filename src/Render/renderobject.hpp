@@ -18,6 +18,10 @@ public:
     virtual void render(const Display* const display) const = 0;
 
     static int getNumRenderObjects();
+    Shader* getShader();
+
+protected:
+    std::unique_ptr<Shader> m_shader;
 
 private:
     static int m_numRenderObjects;

@@ -8,7 +8,7 @@
 #include <Utilities/exceptions.hpp>
 
 Line::Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color)
-        : m_indexCount(2), m_VAO(0), m_VBO(0), m_tail(tail), m_head(head), m_color(color), m_shader(nullptr) {
+        : m_indexCount(2), m_VAO(0), m_VBO(0), m_tail(tail), m_head(head), m_color(color) {
 
     glGenVertexArrays(1, &m_VAO);
     glBindVertexArray(m_VAO);
@@ -38,12 +38,6 @@ Line::~Line() {
 }
 
 void Line::render(const Display* const display) const {
-    if(m_shader == nullptr || display == nullptr) {
-        std::cout << "Null param in render function\n";
-    }
-
-    m_shader->useShader();
-
     GLint worldLocation = glGetUniformLocation(m_shader->getProgram(), "gMVP");
     if(worldLocation == -1) {
         std::cout << "Couldn't get MVP uniform loaction\n";

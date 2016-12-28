@@ -25,7 +25,6 @@ private:
     uint m_meshCount;
     std::vector<GLsizei> m_indexCount;
     std::vector<GLuint> m_VAO, m_VBO, m_IBO;
-    std::shared_ptr<Shader> m_shader;
 };
 
 #endif // _STATIC_MODEL_H

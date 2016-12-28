@@ -21,7 +21,6 @@ private:
     glm::vec3 m_tail;
     glm::vec3 m_head;
     glm::vec3 m_color;
-    std::unique_ptr<Shader> m_shader;
 };
 
 #endif

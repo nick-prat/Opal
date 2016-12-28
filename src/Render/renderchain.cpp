@@ -13,16 +13,34 @@ RenderChain::~RenderChain() {
 }
 
 void RenderChain::attach(IRenderObject* object) {
-    m_objects.push_back(object);
+    if(object == nullptr) {
+        Log::getErrorLog() << "Null object attached to render chain\n";
+        return;
+    }
+
+    auto shader = object->getShader();
+    if(shader == nullptr) {
+        Log::getErrorLog() << "Render object has null shader\n";
+        return;
+    }
+
+    if(m_objects.find(object->getShader()) == m_objects.end()) {
+        m_objects[shader] = std::list<IRenderObject*>();
+    }
+    m_objects[shader].push_back(object);
 }
 
 void RenderChain::detach(IRenderObject* object) {
-    m_objects.remove(object);
+    m_objects[object->getShader()].remove(object);
 }
 
+// TODO Render obects in order of shaders, minimizing calls to glUseProgram
 void RenderChain::render(const Display* const display) const {
-    for(const auto& object : m_objects) {
-        object->render(display);
+    for(const auto& shader : m_objects) {
+        shader.first->useShader();
+        for(const auto& object : shader.second) {
+            object->render(display);
+        }
     }
 }
 

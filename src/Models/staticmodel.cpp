@@ -64,8 +64,6 @@ const Model3D* StaticModel::getModel() const {
 }
 
 void StaticModel::render(const Display* const display) const {
-    m_shader->useShader();
-
     GLint samplerLocation = glGetUniformLocation(m_shader->getProgram(), "gSampler");
     if(samplerLocation == -1) {
         std::cout << "Couldn't get sampler uniform location" << std::endl;

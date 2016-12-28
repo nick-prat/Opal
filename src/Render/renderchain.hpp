@@ -1,11 +1,12 @@
 #ifndef _RENDERCHAIN_H
 #define _RENDERCHAIN_H
 
-#include <memory>
 #include <list>
+#include <unordered_map>
 
 #include <Core/display.hpp>
 #include <Render/renderobject.hpp>
+#include <Render/Shader/shader.hpp>
 
 class RenderChain {
 public:
@@ -19,7 +20,7 @@ public:
     int getRenderCount() const;
 
 private:
-    std::list<IRenderObject*> m_objects;
+    std::unordered_map<Shader*, std::list<IRenderObject*>> m_objects;
 };
 
 #endif // _RENDERCHAIN_H

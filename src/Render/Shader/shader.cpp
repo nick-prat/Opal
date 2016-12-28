@@ -8,6 +8,9 @@
 
 #include <Utilities/exceptions.hpp>
 
+// TODO Implement function to return uniform location
+// TODO Implement function to register uniform variables, so they can be found in useShader
+
 Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types)
         : m_numShaders(0), m_shaderProgram(0) {
 
@@ -67,20 +70,20 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
         glDetachShader(m_shaderProgram, m_shaderObj[i]);
         glDeleteShader(m_shaderObj[i]);
     }
+
+    glValidateProgram(m_shaderProgram);
+    GLint status = 0;
+    glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, &status);
+    if(status != GL_TRUE) {
+        throw GenericException("Couldn't validate program");
+    }
 }
 
 Shader::~Shader() {}
 
+// TODO Find uniform locations when a program on this call
 void Shader::useShader() {
-    glValidateProgram(m_shaderProgram);
-    GLint status = 0;
-    glGetProgramiv(m_shaderProgram, GL_VALIDATE_STATUS, &status);
-
-    if(status == GL_TRUE) {
-        glUseProgram(m_shaderProgram);
-    } else {
-        throw GenericException("Couldn't validate program");
-    }
+    glUseProgram(m_shaderProgram);
 }
 
 GLuint Shader::getProgram() {
