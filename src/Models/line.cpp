@@ -29,6 +29,8 @@ Line::Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color)
     std::vector<std::string> files = {"line_vs.glsl", "line_fs.glsl"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
     m_shader = std::make_unique<Shader>(files, types);
+    m_shader->registerUniform("gMVP");
+    m_shader->registerUniform("gColor");
 }
 
 Line::~Line() {
@@ -38,21 +40,9 @@ Line::~Line() {
 }
 
 void Line::render(const Display* const display) const {
-    GLint worldLocation = glGetUniformLocation(m_shader->getProgram(), "gMVP");
-    if(worldLocation == -1) {
-        std::cout << "Couldn't get MVP uniform loaction\n";
-        exit(-1);
-    }
-
-    glm::mat4 mvp = display->getProjectionMatrix() * display->getCamera()->getViewMatrix();
-    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
-
-    GLint colorLocation = glGetUniformLocation(m_shader->getProgram(), "gColor");
-    if(colorLocation == -1) {
-        std::cout << "Couldn't get line color uniform location\n";
-        exit(-1);
-    }
-    glUniform3fv(colorLocation, 1, (GLfloat*)&m_color);
+    glUniformMatrix4fv(m_shader->getUniformLocation("gMVP"), 1, GL_FALSE,
+            glm::value_ptr(display->getProjectionMatrix() * display->getCamera()->getViewMatrix()));
+    glUniform3fv(m_shader->getUniformLocation("gColor"), 1, (GLfloat*)&m_color);
 
     glBindVertexArray(m_VAO);
     glDrawElements(GL_LINES, (GLsizei)m_indexCount, GL_UNSIGNED_INT, nullptr);

@@ -34,7 +34,6 @@ void RenderChain::detach(IRenderObject* object) {
     m_objects[object->getShader()].remove(object);
 }
 
-// TODO Render obects in order of shaders, minimizing calls to glUseProgram
 void RenderChain::render(const Display* const display) const {
     for(const auto& shader : m_objects) {
         shader.first->useShader();

@@ -7,6 +7,7 @@
 #include <cstring>
 
 #include <Utilities/exceptions.hpp>
+#include <Utilities/log.hpp>
 
 // TODO Implement function to return uniform location
 // TODO Implement function to register uniform variables, so they can be found in useShader
@@ -81,9 +82,24 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
 
 Shader::~Shader() {}
 
-// TODO Find uniform locations when a program on this call
 void Shader::useShader() {
     glUseProgram(m_shaderProgram);
+    for(auto& uniform : m_uniformLocations) {
+        uniform.second = glGetUniformLocation(m_shaderProgram, uniform.first.c_str());
+    }
+}
+
+void Shader::registerUniform(const std::string& name) {
+    m_uniformLocations[name] = -1;
+}
+
+GLint Shader::getUniformLocation(const std::string& name) {
+    auto uniform = m_uniformLocations[name];
+    if(uniform == -1) {
+        Log::getErrorLog() << "Uniform " << name << " coudln't be found\n";
+        return -1;
+    }
+    return uniform;
 }
 
 GLuint Shader::getProgram() {

@@ -47,6 +47,8 @@ StaticModel::StaticModel(const Model3D* const model)
     std::vector<std::string> files = {"staticmodel_vs.glsl", "staticmodel_fs.glsl"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
     m_shader = std::make_unique<Shader>(files, types);
+    m_shader->registerUniform("gSampler");
+    m_shader->registerUniform("gMVP");
 }
 
 StaticModel::~StaticModel() {
@@ -64,7 +66,7 @@ const Model3D* StaticModel::getModel() const {
 }
 
 void StaticModel::render(const Display* const display) const {
-    GLint samplerLocation = glGetUniformLocation(m_shader->getProgram(), "gSampler");
+    /*GLint samplerLocation = glGetUniformLocation(m_shader->getProgram(), "gSampler");
     if(samplerLocation == -1) {
         std::cout << "Couldn't get sampler uniform location" << std::endl;
         exit(-1);
@@ -76,7 +78,10 @@ void StaticModel::render(const Display* const display) const {
         std::cout << "Couldn't get MVP uniform loaction" << std::endl;
         exit(-1);
     }
-    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
+    glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(generateMVP(display)));*/
+
+    glUniform1i(m_shader->getUniformLocation("gSampler"), 0);
+    glUniformMatrix4fv(m_shader->getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
     m_sampler.bind();
 
