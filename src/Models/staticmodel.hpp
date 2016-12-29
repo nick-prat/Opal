@@ -1,11 +1,16 @@
 #ifndef _STATIC_MODEL_H
 #define _STATIC_MODEL_H
 
-#include <Core/display.hpp>
-#include <Resources/model3d.hpp>
+#include <vector>
+#include <memory>
+#include <glm/glm.hpp>
+#include <GL/gl3w.h>
+
 #include <Render/renderobject.hpp>
-#include <Render/Shader/shader.hpp>
-#include <Render/Sampler/sampler.hpp>
+
+class Model3D;
+class Display;
+class Sampler;
 
 class StaticModel : public IRenderObject {
 public:
@@ -21,10 +26,11 @@ protected:
     const Model3D* const m_model;
 
 private:
-    Sampler m_sampler;
-    uint m_meshCount;
+    std::unique_ptr<Sampler> m_sampler;
     std::vector<GLsizei> m_indexCount;
     std::vector<GLuint> m_VAO, m_VBO, m_IBO;
+
+    uint m_meshCount;
 };
 
 #endif // _STATIC_MODEL_H

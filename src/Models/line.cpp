@@ -2,10 +2,10 @@
 
 #include <vector>
 #include <string>
-#include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
-#include <GL/gl3w.h>
-#include <Utilities/exceptions.hpp>
+#include <Render/Shader/shader.hpp>
+#include <Core/display.hpp>
 
 Line::Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color)
         : m_indexCount(2), m_VAO(0), m_VBO(0), m_tail(tail), m_head(head), m_color(color) {

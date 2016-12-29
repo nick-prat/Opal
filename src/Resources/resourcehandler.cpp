@@ -8,16 +8,17 @@
 #include <Resources/resourcehandler.hpp>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/transform.hpp>
 #include <FreeImage.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 
 #include <memory>
 #include <vector>
 #include <fstream>
-#include <iostream>
 
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
-#include <GL/gl3w.h>
 #include <Resources/model3d.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>

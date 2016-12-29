@@ -1,15 +1,19 @@
 #include "staticmodel.hpp"
 
 #include <memory>
-#include <iostream>
 #include <GL/gl3w.h>
+#include <glm/gtc/type_ptr.hpp>
 
-#include <Utilities/utilities.hpp>
+#include <Utilities/log.hpp>
 #include <Utilities/exceptions.hpp>
+#include <Render/Sampler/sampler.hpp>
+#include <Render/Shader/shader.hpp>
+#include <Core/display.hpp>
 #include <Resources/texture.hpp>
+#include <Resources/model3d.hpp>
 
 StaticModel::StaticModel(const Model3D* const model)
-        : m_model(model) {
+        : m_model(model), m_sampler(std::make_unique<Sampler>()) {
 
     if(model == nullptr) {
         throw GenericException("Null param passed to StaticModel constructor");
@@ -69,7 +73,7 @@ void StaticModel::render(const Display* const display) const {
     glUniform1i(m_shader->getUniformLocation("gSampler"), 0);
     glUniformMatrix4fv(m_shader->getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
-    m_sampler.bind();
+    m_sampler->bind();
 
     for(uint i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
@@ -78,12 +82,10 @@ void StaticModel::render(const Display* const display) const {
         if(texture != nullptr) {
             texture->bind();
         } else {
-            std::cout << "Couldn't get material " << m_model->GetMeshes()[i]->GetMatName() << std::endl;
+            Log::getErrorLog() << "Couldn't get material " << m_model->GetMeshes()[i]->GetMatName() << '\n';
             exit(-1);
         }
 
         glDrawElements(GL_TRIANGLES, (GLsizei)m_indexCount.data()[i], GL_UNSIGNED_INT, nullptr);
     }
-
-    Utilities::PrintGLErrors();
 }

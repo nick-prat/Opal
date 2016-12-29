@@ -4,9 +4,9 @@
 #include <list>
 #include <unordered_map>
 
-#include <Core/display.hpp>
-#include <Render/renderobject.hpp>
-#include <Render/Shader/shader.hpp>
+class Display;
+class IRenderObject;
+class Shader;
 
 class RenderChain {
 public:

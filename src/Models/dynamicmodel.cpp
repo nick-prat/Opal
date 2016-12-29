@@ -1,5 +1,8 @@
 #include "dynamicmodel.hpp"
 
+#include <glm/gtx/transform.hpp>
+
+#include <Core/display.hpp>
 #include <Utilities/log.hpp>
 
 DynamicModel::DynamicModel(const Model3D* const model3D)

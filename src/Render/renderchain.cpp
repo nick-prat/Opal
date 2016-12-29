@@ -1,10 +1,8 @@
-#include <iostream>
-#include <stdlib.h>
-#include <malloc.h>
-
-#include <Utilities/exceptions.hpp>
-#include <Utilities/log.hpp>
 #include <Render/renderchain.hpp>
+
+#include <Utilities/log.hpp>
+#include <Render/Shader/shader.hpp>
+#include <Render/renderobject.hpp>
 
 RenderChain::RenderChain() {
 }
@@ -35,9 +33,9 @@ void RenderChain::detach(IRenderObject* object) {
 }
 
 void RenderChain::render(const Display* const display) const {
-    for(const auto& shader : m_objects) {
-        shader.first->useShader();
-        for(const auto& object : shader.second) {
+    for(const auto& pair : m_objects) {
+        pair.first->useShader();
+        for(const auto& object : pair.second) {
             object->render(display);
         }
     }

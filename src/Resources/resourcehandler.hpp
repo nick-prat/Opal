@@ -3,11 +3,10 @@
 
 #include <unordered_map>
 #include <memory>
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
 
-#include <Resources//texture.hpp>
+#include <assimp/scene.h>
+
+#include <Resources/texture.hpp>
 #include <Resources/model3d.hpp>
 #include <Resources/resource.hpp>
 #include <Render/renderobject.hpp>

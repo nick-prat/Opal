@@ -2,11 +2,11 @@
 #define _LINE_H
 
 #include <glm/glm.hpp>
-#include <memory>
+#include <GL/gl3w.h>
 
-#include <Core/display.hpp>
-#include <Render/Shader/shader.hpp>
 #include <Render/renderobject.hpp>
+
+class Display;
 
 class Line : public IRenderObject {
 public:
