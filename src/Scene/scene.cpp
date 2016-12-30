@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <Core/camera.hpp>
+#include <Models/dynamicmodel.hpp>
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 

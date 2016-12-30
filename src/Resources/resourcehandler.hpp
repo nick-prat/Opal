@@ -3,15 +3,18 @@
 
 #include <unordered_map>
 #include <memory>
-
+#include <vector>
 #include <assimp/scene.h>
-
-#include <Resources/texture.hpp>
-#include <Resources/model3d.hpp>
-#include <Resources/resource.hpp>
-#include <Render/renderobject.hpp>
-#include <Utilities/exceptions.hpp>
+#include <glm/glm.hpp>
 #include <json.hpp>
+
+#include <Utilities/exceptions.hpp>
+#include <Resources/model3d.hpp>
+
+
+class IRenderObject;
+class IResource;
+class Texture;
 
 class ResourceHandler {
 public:

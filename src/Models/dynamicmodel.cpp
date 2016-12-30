@@ -3,6 +3,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include <Core/display.hpp>
+#include <Core/camera.hpp>
 #include <Utilities/log.hpp>
 
 DynamicModel::DynamicModel(const Model3D* const model3D)

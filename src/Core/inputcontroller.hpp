@@ -3,7 +3,6 @@
 
 #include <glm/glm.hpp>
 #include <functional>
-#include <mutex>
 #include <unordered_map>
 
 enum class InputKey : int {

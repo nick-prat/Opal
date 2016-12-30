@@ -1,12 +1,12 @@
 #include "display.hpp"
 
-#include <iostream>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
 #include <GL/gl3w.h>
-#include <GLFW/glfw3.h>
+
 #include <Utilities/exceptions.hpp>
+#include <Core/camera.hpp>
+#include <Core/inputcontroller.hpp>
 
 Display::Display()
         : m_inputController(nullptr), m_camera(nullptr), m_projMatrix(glm::mat4(1.0f)) {

@@ -1,17 +1,11 @@
+#include "glcore.hpp"
 #include <GL/gl3w.h>
 
-#include "glcore.hpp"
-
-#include <chrono>
 #include <string>
-#include <thread>
-#include <fstream>
 
 #include <Scene/scene.hpp>
 #include <Utilities/exceptions.hpp>
-#include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
-#include <Resources/model3d.hpp>
 
 GLCore::GLCore(int width, int height, std::string scene) {
 

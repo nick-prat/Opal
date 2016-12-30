@@ -1,15 +1,7 @@
 #ifndef _GLCORE_H
 #define _GLCORE_H
 
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <Core/display.hpp>
-#include <Render/renderchain.hpp>
-#include <Models/staticmodel.hpp>
-#include <Models/line.hpp>
-#include <Scene/scene.hpp>
-#include <Resources/resourcehandler.hpp>
+#include <memory>
 
 extern "C" {
 #include <lua.h>
@@ -17,7 +9,9 @@ extern "C" {
 #include <lualib.h>
 }
 
-#include <LuaBridge/LuaBridge.h>
+class ResourceHandler;
+class Scene;
+class Display;
 
 class GLCore {
 public:

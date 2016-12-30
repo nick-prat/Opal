@@ -1,5 +1,7 @@
 #include "entity.hpp"
 
+#include <Models/dynamicmodel.hpp>
+
 Entity::Entity()
         : m_model(nullptr) {
 }

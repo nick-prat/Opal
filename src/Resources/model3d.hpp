@@ -1,17 +1,15 @@
 #ifndef _MODEL3D_H
 #define _MODEL3D_H
 
-// TODO Format to camelCase
-
 #include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include <memory>
 
-#include <GL/gl3w.h>
 #include <Resources/resource.hpp>
-#include <Resources/texture.hpp>
+
+class Texture;
 
 class Model3D : public IResource
 {
@@ -31,16 +29,16 @@ public:
         Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices);
         ~Mesh();
 
-        void ApplyTransformation(const glm::mat4& transform);
+        void applyTransformation(const glm::mat4& transform);
 
-        std::vector<Vertex> GetVertices() const;
-        std::vector<uint> GetIndices() const;
+        std::vector<Vertex> getVertices() const;
+        std::vector<uint> getIndices() const;
 
-        void SetMatIndex(const uint matIndex);
-        uint GetMatIndex() const;
+        void setMatIndex(const uint matIndex);
+        uint getMatIndex() const;
 
-        void SetMatName(const std::string matName);
-        std::string GetMatName() const;
+        void setMatName(const std::string matName);
+        std::string getMatName() const;
 
     private:
         uint m_matIndex;
@@ -54,17 +52,17 @@ public:
     Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, Texture*> textures);
     ~Model3D();
 
-    void AddMesh(std::shared_ptr<Mesh> mesh);
-    void SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
-    void SetTextures(const std::unordered_map<std::string, Texture*> textures);
+    void addMesh(std::shared_ptr<Mesh> mesh);
+    void setMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
+    void setTextures(const std::unordered_map<std::string, Texture*> textures);
 
-    void ApplyTransformation(const glm::mat4& transform);
+    void applyTransformation(const glm::mat4& transform);
 
-    Texture* GetTexture(const std::string& key) const;
-    std::vector<std::shared_ptr<Mesh>> GetMeshes() const;
-    uint GetFaceCount() const;
+    Texture* getTexture(const std::string& key) const;
+    std::vector<std::shared_ptr<Mesh>> getMeshes() const;
+    uint getFaceCount() const;
 
-    void PrintTextures() const;
+    void printTextures() const;
 
 private:
     std::unordered_map<std::string, Texture*> m_textures;

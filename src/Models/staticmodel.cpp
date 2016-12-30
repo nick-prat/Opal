@@ -9,6 +9,7 @@
 #include <Render/Sampler/sampler.hpp>
 #include <Render/Shader/shader.hpp>
 #include <Core/display.hpp>
+#include <Core/camera.hpp>
 #include <Resources/texture.hpp>
 #include <Resources/model3d.hpp>
 
@@ -19,10 +20,10 @@ StaticModel::StaticModel(const Model3D* const model)
         throw GenericException("Null param passed to StaticModel constructor");
     }
 
-    m_meshCount = m_model->GetMeshes().size();
+    m_meshCount = m_model->getMeshes().size();
 
     for(uint i = 0; i < m_meshCount; i++) {
-        std::shared_ptr<Model3D::Mesh> mesh = m_model->GetMeshes()[i];
+        std::shared_ptr<Model3D::Mesh> mesh = m_model->getMeshes()[i];
         GLuint vbo, vao, ibo;
 
         glGenVertexArrays(1, &vao);
@@ -31,7 +32,7 @@ StaticModel::StaticModel(const Model3D* const model)
 
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->GetVertices().size(), mesh->GetVertices().data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->getVertices().size(), mesh->getVertices().data(), GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
@@ -43,8 +44,8 @@ StaticModel::StaticModel(const Model3D* const model)
 
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->GetIndices().size(), mesh->GetIndices().data(), GL_STATIC_DRAW);
-        m_indexCount.push_back(mesh->GetIndices().size());
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->getIndices().size(), mesh->getIndices().data(), GL_STATIC_DRAW);
+        m_indexCount.push_back(mesh->getIndices().size());
         m_IBO.push_back(ibo);
     }
 
@@ -78,11 +79,11 @@ void StaticModel::render(const Display* const display) const {
     for(uint i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
 
-        auto texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
+        auto texture = m_model->getTexture(m_model->getMeshes()[i]->getMatName());
         if(texture != nullptr) {
             texture->bind();
         } else {
-            Log::getErrorLog() << "Couldn't get material " << m_model->GetMeshes()[i]->GetMatName() << '\n';
+            Log::getErrorLog() << "Couldn't get material " << m_model->getMeshes()[i]->getMatName() << '\n';
             exit(-1);
         }
 

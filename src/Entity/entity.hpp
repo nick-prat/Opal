@@ -1,7 +1,9 @@
 #ifndef _ENTITY_H
 #define _ENTITY_H
 
-#include <Models/dynamicmodel.hpp>
+#include <string>
+
+class DynamicModel;
 
 class Entity {
 public:

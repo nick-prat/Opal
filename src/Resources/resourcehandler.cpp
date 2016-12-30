@@ -12,14 +12,13 @@
 #include <FreeImage.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
-
 #include <memory>
 #include <vector>
 #include <fstream>
 
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
-#include <Resources/model3d.hpp>
+#include <Resources/texture.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>
 
@@ -103,7 +102,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object) {
 
     std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
     meshes.push_back(std::make_shared<Model3D::Mesh>(vertices, indices));
-    meshes[0]->SetMatName("texture");
+    meshes[0]->setMatName("texture");
 
     std::unordered_map<std::string, Texture*> textures;
     textures["texture"] = LoadTexture(object["matname"], true);
@@ -160,7 +159,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model
     }
 
     // TODO This causes models to be transformed multiple times if they're loaded more then once in scene.json
-    model3d->ApplyTransformation(transform);
+    model3d->applyTransformation(transform);
     return static_cast<IRenderObject*>(new StaticModel(model3d));
 }
 
@@ -320,7 +319,7 @@ void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::ma
         }
 
         std::shared_ptr<Model3D::Mesh> rmesh = std::make_shared<Model3D::Mesh>(vertices, indices);
-        rmesh->SetMatIndex(mesh->mMaterialIndex);
+        rmesh->setMatIndex(mesh->mMaterialIndex);
 
         meshes.push_back(rmesh);
     }
@@ -359,20 +358,20 @@ Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
             }
         }
     }
-    model->SetTextures(textures);
+    model->setTextures(textures);
 
     std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
     LoadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
 
     for(std::shared_ptr<Model3D::Mesh>& mesh : meshes) {
         aiString aName;
-        uint index = mesh->GetMatIndex();
+        uint index = mesh->getMatIndex();
         if(index < scene->mNumMaterials) {
-            materials[mesh->GetMatIndex()]->Get(AI_MATKEY_NAME, aName);
-            mesh->SetMatName(std::string(aName.C_Str()));
+            materials[mesh->getMatIndex()]->Get(AI_MATKEY_NAME, aName);
+            mesh->setMatName(std::string(aName.C_Str()));
         }
     }
 
-    model->SetMeshes(meshes);
+    model->setMeshes(meshes);
     return model;
 }

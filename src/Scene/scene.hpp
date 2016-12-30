@@ -14,6 +14,7 @@ extern "C" {
 #include <LuaBridge/LuaBridge.h>
 
 #include <Core/display.hpp>
+#include <Core/inputcontroller.hpp>
 #include <Entity/entity.hpp>
 #include <Render/renderobject.hpp>
 #include <Render/renderchain.hpp>

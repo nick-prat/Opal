@@ -4,8 +4,8 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-#include <Core/camera.hpp>
-#include <Core/inputcontroller.hpp>
+class Camera;
+class InputController;
 
 class Display {
 public:
