@@ -11,7 +11,6 @@
 #include <Utilities/exceptions.hpp>
 #include <Resources/model3d.hpp>
 
-
 class IRenderObject;
 class IResource;
 class Texture;
