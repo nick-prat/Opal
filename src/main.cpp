@@ -8,7 +8,7 @@
 
 int main(int argc, char **args) {
     if(argc != 2) {
-        Log::error(std::string("Arguments are invalid, use:\n\t") + args[0] + " [scene_name]\n", Log::OUT_CONS);
+        Log::getErrorLog() << "Arguments are invalid, use:\n\t" << args[0] << " [scene_name]\n";
         exit(-1);
     }
 
@@ -63,7 +63,7 @@ int main(int argc, char **args) {
         exit(-1);
     }
 
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
+    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
         if(action == GLFW_PRESS) {
             glCore->inputFunc(key, true);
@@ -72,7 +72,7 @@ int main(int argc, char **args) {
         }
     });
 
-    glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int mods) {
+    glfwSetMouseButtonCallback(window, [](GLFWwindow* window, int button, int action, int /*mods*/) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
         if(action == GLFW_PRESS) {
             glCore->inputFunc(button, true);

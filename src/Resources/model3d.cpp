@@ -1,7 +1,5 @@
 #include "model3d.hpp"
 
-// TODO format to camelCase
-
 #include <iostream>
 
 #include <Resources/texture.hpp>
