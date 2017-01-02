@@ -123,7 +123,7 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
                 } catch (BadResource& error) {
                     error.printError();
                 } catch (std::domain_error& error) {
-                    std::cout << error.what() << '\n';
+                    Log::getErrorLog() << error.what() << '\n';
                 }
             }
         }
@@ -138,7 +138,7 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
                 } catch (BadResource& error) {
                     error.printError();
                 } catch (std::domain_error& error) {
-                    std::cout << error.what() << '\n';
+                    Log::getErrorLog() << error.what() << '\n';
                 }
             }
         }

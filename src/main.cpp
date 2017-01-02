@@ -43,13 +43,13 @@ int main(int argc, char **args) {
     glfwMakeContextCurrent(window);
 
     if(gl3wInit() == -1) {
-        std::cout << "Couldn't initialize GL3W\n";
+        Log::error("Couldn't initialize GL3W\n");
         glfwTerminate();
         exit(-1);
     }
 
     if(!gl3wIsSupported(major, minor)) {
-        std::cout << "Open GL " << major << "." << minor << " is unsupported\n";
+        Log::getErrorLog() << "Open GL " << major << "." << minor << " is unsupported\n";
         glfwTerminate();
         exit(-1);
     }
@@ -100,7 +100,7 @@ int main(int argc, char **args) {
     }
 
     timer = glfwGetTime() - timer;
-    std::cout << "Average FPS: " << frames / timer << '\n';
+    Log::getLog() << "Average FPS: " << frames / timer << '\n';
 
     delete glCore;
     glfwDestroyWindow(window);

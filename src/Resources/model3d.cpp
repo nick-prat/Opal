@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include <Resources/texture.hpp>
+#include <Utilities/log.hpp>
 
 // Model3D
 
@@ -39,7 +40,7 @@ void Model3D::applyTransformation(const glm::mat4 &transform) {
 
 void Model3D::printTextures() const {
     for(const auto texture : m_textures) {
-        std::cout << texture.first << "->" << (texture.second->isLoaded() ? "loaded" : "load failed") << ": " << texture.second->getFileName() << '\n';
+        Log::getLog() << texture.first << "->" << (texture.second->isLoaded() ? "loaded" : "load failed") << ": " << texture.second->getFileName() << '\n';
     }
 }
 

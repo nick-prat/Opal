@@ -152,7 +152,6 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model
 
         float degrees = *(std::max_element(rotation.begin(), rotation.end()));
         if(degrees != 0.0f) {
-            std::cout << rotation[0] / degrees << rotation[1] / degrees << rotation[2] / degrees << '\n';
             glm::vec3 amount = glm::vec3(rotation[0] / degrees, rotation[1] / degrees, rotation[2] / degrees);
             transform = glm::rotate(transform, degrees, amount);
         }

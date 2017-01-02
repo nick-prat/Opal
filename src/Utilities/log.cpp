@@ -38,7 +38,7 @@ void Log::debug(std::string text, OutputMode output)
 
 void Log::error(std::string text, OutputMode output)
 {
-    m_log.print("ERROR: " + text, output, true);
+    m_log.print(text, output, true);
 }
 
 void Log::print(std::string text, short output, bool err)

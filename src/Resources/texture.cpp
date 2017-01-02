@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#include <Utilities/utilities.hpp>
+#include <Utilities/log.hpp>
 
 Texture::Texture()
     : IResource("texture"), m_glTexture(-1), m_loaded(false), m_filename("invalid") {
@@ -31,8 +31,7 @@ void Texture::bind() const {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, m_glTexture);
     } else {
-        std::cout << "(" << m_glTexture << ") Trying to bind texture that doesn't exist " << m_filename << std::endl;
-        Utilities::PrintGLErrors();
+        Log::getErrorLog() << "(" << m_glTexture << ") Trying to bind texture that doesn't exist " << m_filename << '\n';
     }
 }
 
