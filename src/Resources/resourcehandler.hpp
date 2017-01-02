@@ -44,7 +44,7 @@ public:
 
 private:
     void CopyaiMat(const aiMatrix4x4* from, glm::mat4& to);
-    void LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes);
+    void LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<Model3D::Mesh*>& meshes);
 
 private:
     std::unordered_map<std::string, std::unique_ptr<IResource>> m_resources;

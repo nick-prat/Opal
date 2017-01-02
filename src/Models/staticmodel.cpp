@@ -12,6 +12,7 @@
 #include <Core/camera.hpp>
 #include <Resources/texture.hpp>
 #include <Resources/model3d.hpp>
+#include <Models/dynamicmodel.hpp>
 
 StaticModel::StaticModel(const Model3D* const model)
         : m_model(model), m_sampler(std::make_unique<Sampler>()) {
@@ -20,10 +21,10 @@ StaticModel::StaticModel(const Model3D* const model)
         throw GenericException("Null param passed to StaticModel constructor");
     }
 
-    m_meshCount = m_model->getMeshes().size();
+    m_meshCount = m_model->getMeshCount();
 
     for(uint i = 0; i < m_meshCount; i++) {
-        std::shared_ptr<Model3D::Mesh> mesh = m_model->getMeshes()[i];
+        auto mesh = m_model->getMesh(i);
         GLuint vbo, vao, ibo;
 
         glGenVertexArrays(1, &vao);
@@ -79,11 +80,11 @@ void StaticModel::render(const Display* const display) const {
     for(uint i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
 
-        auto texture = m_model->getTexture(m_model->getMeshes()[i]->getMatName());
+        auto texture = m_model->getTexture(m_model->getMesh(i)->getMatName());
         if(texture != nullptr) {
             texture->bind();
         } else {
-            Log::getErrorLog() << "Couldn't get material " << m_model->getMeshes()[i]->getMatName() << '\n';
+            Log::getErrorLog() << "Couldn't get material " << m_model->getMesh(i)->getMatName() << '\n';
             exit(-1);
         }
 

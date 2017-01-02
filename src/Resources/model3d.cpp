@@ -11,25 +11,16 @@ Model3D::Model3D()
         : IResource("model3d") {
 }
 
-Model3D::Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, Texture*> textures)
-        :  IResource("model3d"), m_textures(textures), m_meshes(meshes) {
-
-}
-
 Model3D::~Model3D() {
 
 }
 
-void Model3D::addMesh(std::shared_ptr<Mesh> mesh) {
-    m_meshes.push_back(mesh);
+void Model3D::addMesh(Mesh* mesh) {
+    m_meshes.push_back(std::unique_ptr<Mesh>(mesh));
 }
 
-void Model3D::setMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes) {
-    m_meshes = meshes;
-}
-
-void Model3D::setTextures(const std::unordered_map<std::string, Texture*> textures) {
-    m_textures = textures;
+void Model3D::addTexture(const std::string& name, Texture* texture) {
+    m_textures[name] = texture;
 }
 
 void Model3D::applyTransformation(const glm::mat4 &transform) {
@@ -44,6 +35,10 @@ void Model3D::printTextures() const {
     }
 }
 
+uint Model3D::getMeshCount() const {
+    return m_meshes.size();
+}
+
 uint Model3D::getFaceCount() const {
     uint faceCount = 0;
     for(const auto& mesh : m_meshes) {
@@ -52,8 +47,8 @@ uint Model3D::getFaceCount() const {
     return faceCount;
 }
 
-std::vector<std::shared_ptr<Model3D::Mesh>> Model3D::getMeshes() const {
-    return m_meshes;
+Model3D::Mesh* Model3D::getMesh(uint index) const {
+    return m_meshes[index].get();
 }
 
 Texture* Model3D::getTexture(const std::string& key) const {
