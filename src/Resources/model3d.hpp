@@ -49,24 +49,23 @@ public:
     };
 
     Model3D();
-    Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, Texture*> textures);
     ~Model3D();
 
-    void addMesh(std::shared_ptr<Mesh> mesh);
-    void setMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
-    void setTextures(const std::unordered_map<std::string, Texture*> textures);
+    void addMesh(Mesh* mesh);
+    void addTexture(const std::string& name, Texture* texture);
 
     void applyTransformation(const glm::mat4& transform);
 
     Texture* getTexture(const std::string& key) const;
-    std::vector<std::shared_ptr<Mesh>> getMeshes() const;
+    Mesh* getMesh(uint index) const;
+    uint getMeshCount() const;
     uint getFaceCount() const;
 
     void printTextures() const;
 
 private:
     std::unordered_map<std::string, Texture*> m_textures;
-    std::vector<std::shared_ptr<Mesh>> m_meshes;
+    std::vector<std::unique_ptr<Mesh>> m_meshes;
 
 };
 

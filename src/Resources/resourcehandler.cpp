@@ -100,14 +100,16 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object) {
         vertices.push_back(Model3D::Vertex(verts[i], norms[i], uvs[i]));
     }
 
-    std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
-    meshes.push_back(std::make_shared<Model3D::Mesh>(vertices, indices));
-    meshes[0]->setMatName("texture");
+    auto mesh = new Model3D::Mesh(vertices, indices);
+    mesh->setMatName("texture");
 
-    std::unordered_map<std::string, Texture*> textures;
-    textures["texture"] = LoadTexture(object["matname"], true);
+    auto texture = LoadTexture(object["matname"], true);
 
-    return GenerateModel(object, new Model3D(meshes, textures));
+    auto model = new Model3D();
+    model->addMesh(mesh);
+    model->addTexture("texture", texture);
+
+    return GenerateModel(object, model);
 }
 
 IRenderObject* ResourceHandler::GenerateModel(const json& object, const Model3D* const model3d) {
@@ -275,7 +277,7 @@ void ResourceHandler::CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<std::shared_ptr<Model3D::Mesh>>& meshes) {
+void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<Model3D::Mesh*>& meshes) {
     glm::mat4x4 transformation;
     CopyaiMat(&node->mTransformation, transformation);
     transformation = parentTransform * transformation;
@@ -317,7 +319,7 @@ void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::ma
             throw BadResource("Node was missing faces, load cancled");
         }
 
-        std::shared_ptr<Model3D::Mesh> rmesh = std::make_shared<Model3D::Mesh>(vertices, indices);
+        auto rmesh = new Model3D::Mesh(vertices, indices);
         rmesh->setMatIndex(mesh->mMaterialIndex);
 
         meshes.push_back(rmesh);
@@ -340,37 +342,33 @@ Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
     auto model = new Model3D();
 
     aiMaterial** materials = scene->mMaterials;
-    std::unordered_map<std::string, Texture*> textures;
     for(uint i = 0; i < scene->mNumMaterials; i++) {
         aiString aName;
         materials[i]->Get(AI_MATKEY_NAME, aName);
         std::string name = std::string(aName.C_Str());
 
-        if(textures.find(name) == textures.end()) {
-            try {
-                auto temp = LoadTexture(modelname + "/" + name, true);
-                if(temp != nullptr) {
-                    textures[name] = temp;
-                }
-            } catch (BadResource& error) {
-                error.printError();
+        try {
+            auto temp = LoadTexture(modelname + "/" + name, true);
+            if(temp != nullptr) {
+                model->addTexture(name, temp);
             }
+        } catch (BadResource& error) {
+            error.printError();
         }
     }
-    model->setTextures(textures);
 
-    std::vector<std::shared_ptr<Model3D::Mesh>> meshes;
+    std::vector<Model3D::Mesh*> meshes;
     LoadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
 
-    for(std::shared_ptr<Model3D::Mesh>& mesh : meshes) {
+    for(auto& mesh : meshes) {
         aiString aName;
         uint index = mesh->getMatIndex();
         if(index < scene->mNumMaterials) {
             materials[mesh->getMatIndex()]->Get(AI_MATKEY_NAME, aName);
             mesh->setMatName(std::string(aName.C_Str()));
         }
+        model->addMesh(mesh);
     }
 
-    model->setMeshes(meshes);
     return model;
 }
