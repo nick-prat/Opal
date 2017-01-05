@@ -24,7 +24,7 @@ public:
     void AddResource(std::string name, IResource* resource);
 
     IRenderObject* GenerateModel(const nlohmann::json& obect);
-    IRenderObject* GenerateModel(const nlohmann::json& object, Model3D* model);
+    IRenderObject* GenerateModel(const nlohmann::json& object, const Model3D* const model);
     IRenderObject* LoadLineJSON(const nlohmann::json& object);
     Texture* LoadTexture(std::string name, bool genMipMaps);
     Model3D* LoadModel3D(std::string modelname);

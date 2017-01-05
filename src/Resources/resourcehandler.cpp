@@ -110,7 +110,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object) {
     return GenerateModel(object, new Model3D(meshes, textures));
 }
 
-IRenderObject* ResourceHandler::GenerateModel(const json& object, Model3D* model3d) {
+IRenderObject* ResourceHandler::GenerateModel(const json& object, const Model3D* const model3d) {
     std::string name = "";
 
     if(object.find("name") != object.end()) {
