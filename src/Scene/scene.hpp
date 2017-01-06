@@ -16,9 +16,10 @@ extern "C" {
 #include <Core/display.hpp>
 #include <Core/inputcontroller.hpp>
 #include <Entity/entity.hpp>
-#include <Render/renderobject.hpp>
-#include <Render/renderchain.hpp>
-#include <Resources/resourcehandler.hpp>
+
+class IRenderObject;
+class ResourceHandler;
+class RenderChain;
 
 class Scene {
 public:
@@ -33,6 +34,10 @@ public:
     Entity* spawn(const std::string& name, const std::string& resource, glm::vec3 location);
     Entity* getEntity(const std::string& name) const;
     Camera* getCamera() const;
+
+private:
+    void buildLuaNamespace();
+    void registerLuaFunctions();
 
 private:
     std::unordered_map<std::string, std::unique_ptr<Entity>> m_entities;

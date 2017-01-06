@@ -52,11 +52,11 @@ public:
     ~Model3D();
 
     void addMesh(Mesh* mesh);
-    void addTexture(const std::string& name, Texture* texture);
+    void addTexture(const std::string& name, const Texture* const texture);
 
     void applyTransformation(const glm::mat4& transform);
 
-    Texture* getTexture(const std::string& key) const;
+    const Texture* getTexture(const std::string& key) const;
     Mesh* getMesh(uint index) const;
     uint getMeshCount() const;
     uint getFaceCount() const;
@@ -64,7 +64,7 @@ public:
     void printTextures() const;
 
 private:
-    std::unordered_map<std::string, Texture*> m_textures;
+    std::unordered_map<std::string, const Texture*> m_textures;
     std::vector<std::unique_ptr<Mesh>> m_meshes;
 
 };

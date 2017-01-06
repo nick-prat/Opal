@@ -32,8 +32,8 @@ ResourceHandler::~ResourceHandler() {
 
 }
 
-void ResourceHandler::AddResource(std::string name, IResource* resource) {
-    m_resources[name] = std::unique_ptr<IResource>(resource);
+void ResourceHandler::AddResource(const std::string& name, const IResource* const resource) {
+    m_resources[name] = std::unique_ptr<const IResource>(resource);
 }
 
 IRenderObject* ResourceHandler::GenerateModel(const json& object) {
@@ -160,7 +160,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, const Model3D*
     }
 
     // TODO This causes models to be transformed multiple times if they're loaded more then once in scene.json
-    model3d->applyTransformation(transform);
+    //model3d->applyTransformation(transform);
     return static_cast<IRenderObject*>(new StaticModel(model3d));
 }
 
@@ -198,7 +198,7 @@ IRenderObject* ResourceHandler::LoadLineJSON(const json& object) {
     return new Line(head, tail, color);
 }
 
-Texture* ResourceHandler::LoadTexture(std::string name, bool genMipMaps) {
+const Texture* ResourceHandler::LoadTexture(std::string name, bool genMipMaps) {
     auto resourcename = "tex_" + name;
     if(m_resources.find(resourcename) != m_resources.end()) {
         auto res = m_resources.find(resourcename);
@@ -326,7 +326,7 @@ void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::ma
     }
 }
 
-Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
+const Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
     std::string filename = "Resources/Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),

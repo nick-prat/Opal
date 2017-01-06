@@ -19,7 +19,7 @@ void Model3D::addMesh(Mesh* mesh) {
     m_meshes.push_back(std::unique_ptr<Mesh>(mesh));
 }
 
-void Model3D::addTexture(const std::string& name, Texture* texture) {
+void Model3D::addTexture(const std::string& name, const Texture* const texture) {
     m_textures[name] = texture;
 }
 
@@ -51,7 +51,7 @@ Model3D::Mesh* Model3D::getMesh(uint index) const {
     return m_meshes[index].get();
 }
 
-Texture* Model3D::getTexture(const std::string& key) const {
+const Texture* Model3D::getTexture(const std::string& key) const {
     auto tex = m_textures.find(key);
     if(tex != m_textures.end())
     {

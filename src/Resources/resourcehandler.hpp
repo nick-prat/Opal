@@ -21,21 +21,21 @@ public:
     ~ResourceHandler();
 
     void LoadResources();
-    void AddResource(std::string name, IResource* resource);
+    void AddResource(const std::string& name, const IResource* const resource);
 
     IRenderObject* GenerateModel(const nlohmann::json& obect);
     IRenderObject* GenerateModel(const nlohmann::json& object, const Model3D* const model);
     IRenderObject* LoadLineJSON(const nlohmann::json& object);
-    Texture* LoadTexture(std::string name, bool genMipMaps);
-    Model3D* LoadModel3D(std::string modelname);
+    const Texture* LoadTexture(std::string name, bool genMipMaps);
+    const Model3D* LoadModel3D(std::string modelname);
 
     template <typename T = IRenderObject>
-    T* GetResource(std::string resource) {
+    const T* GetResource(const std::string& resource) {
         auto res = m_resources.find(resource);
         if(res == m_resources.end() || res->second.get() == nullptr) {
             return nullptr;
         }
-        auto ret = dynamic_cast<T*>(res->second.get());
+        auto ret = dynamic_cast<const T*>(res->second.get());
         if(ret == nullptr) {
             throw BadResource("invalid type conversion", resource);
         }
@@ -47,7 +47,7 @@ private:
     void LoadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<Model3D::Mesh*>& meshes);
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<IResource>> m_resources;
+    std::unordered_map<std::string, std::unique_ptr<const IResource>> m_resources;
 };
 
 #endif // _RESOURCE_HANDLER_H

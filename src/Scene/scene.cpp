@@ -6,6 +6,9 @@
 #include <Models/dynamicmodel.hpp>
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
+#include <Render/renderobject.hpp>
+#include <Render/renderchain.hpp>
+#include <Resources/resourcehandler.hpp>
 
 using namespace luabridge;
 using json = nlohmann::json;
@@ -21,58 +24,11 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
     std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
-    getGlobalNamespace(m_luaState)
-        .beginClass<glm::vec2>("vec2")
-            .addConstructor<void(*)(float, float)>()
-            .addData("x", &glm::vec2::x)
-            .addData("y", &glm::vec2::y)
-        .endClass()
-        .beginClass<glm::vec3>("vec3")
-            .addConstructor<void(*)(float, float, float)>()
-            .addData("x", &glm::vec3::x)
-            .addData("y", &glm::vec3::y)
-            .addData("z", &glm::vec3::z)
-        .endClass()
-        .beginClass<glm::vec4>("vec4")
-            .addConstructor<void(*)(float, float, float, float)>()
-            .addData("x", &glm::vec4::x)
-            .addData("y", &glm::vec4::y)
-            .addData("z", &glm::vec4::z)
-            .addData("w", &glm::vec4::w)
-        .endClass()
-        .beginNamespace("Game")
-            .beginClass<Camera>("Camera")
-                .addFunction("MoveCamera", &Camera::moveCamera)
-                .addFunction("SetCamera", &Camera::setPosition)
-            .endClass()
-            .beginClass<Entity>("Entity")
-                .addConstructor<void(*)(void)>()
-                .addProperty("visible", &Entity::isVisible, &Entity::setVisible)
-                .addProperty("name", &Entity::getName, &Entity::setName)
-            .endClass()
-            .beginClass<Scene>("Scene")
-                .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
-                .addFunction("GetCamera", &Scene::getCamera)
-                .addFunction("AddEntity", &Scene::addEntity)
-                .addFunction("GetEntity", &Scene::getEntity)
-                .addFunction("Spawn", &Scene::spawn)
-            .endClass()
-        .endNamespace();
-
-    push(m_luaState, this);
-    lua_setglobal(m_luaState, "Level");
+    buildLuaNamespace();
 
     luaL_dofile(m_luaState, script.c_str());
 
-    m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
-    if(!m_startFunc->isFunction()) {
-        throw GenericException("Start function wasn't found");
-    }
-
-    m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
-    if(!m_renderFunc->isFunction()) {
-        throw GenericException("Render function wasn't found");
-    }
+    registerLuaFunctions();
 
     std::string contents;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
@@ -152,6 +108,61 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
 }
 
 Scene::~Scene() {
+}
+
+void Scene::buildLuaNamespace() {
+    getGlobalNamespace(m_luaState)
+        .beginClass<glm::vec2>("vec2")
+            .addConstructor<void(*)(float, float)>()
+            .addData("x", &glm::vec2::x)
+            .addData("y", &glm::vec2::y)
+        .endClass()
+        .beginClass<glm::vec3>("vec3")
+            .addConstructor<void(*)(float, float, float)>()
+            .addData("x", &glm::vec3::x)
+            .addData("y", &glm::vec3::y)
+            .addData("z", &glm::vec3::z)
+        .endClass()
+        .beginClass<glm::vec4>("vec4")
+            .addConstructor<void(*)(float, float, float, float)>()
+            .addData("x", &glm::vec4::x)
+            .addData("y", &glm::vec4::y)
+            .addData("z", &glm::vec4::z)
+            .addData("w", &glm::vec4::w)
+        .endClass()
+        .beginNamespace("Game")
+            .beginClass<Camera>("Camera")
+                .addFunction("MoveCamera", &Camera::moveCamera)
+                .addFunction("SetCamera", &Camera::setPosition)
+            .endClass()
+            .beginClass<Entity>("Entity")
+                .addConstructor<void(*)(void)>()
+                .addProperty("visible", &Entity::isVisible, &Entity::setVisible)
+                .addProperty("name", &Entity::getName, &Entity::setName)
+            .endClass()
+            .beginClass<Scene>("Scene")
+                .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
+                .addFunction("GetCamera", &Scene::getCamera)
+                .addFunction("AddEntity", &Scene::addEntity)
+                .addFunction("GetEntity", &Scene::getEntity)
+                .addFunction("Spawn", &Scene::spawn)
+            .endClass()
+        .endNamespace();
+
+    push(m_luaState, this);
+    lua_setglobal(m_luaState, "Level");
+}
+
+void Scene::registerLuaFunctions() {
+    m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
+    if(!m_startFunc->isFunction()) {
+        throw GenericException("Start function wasn't found");
+    }
+
+    m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
+    if(!m_renderFunc->isFunction()) {
+        throw GenericException("Render function wasn't found");
+    }
 }
 
 void Scene::start() {
