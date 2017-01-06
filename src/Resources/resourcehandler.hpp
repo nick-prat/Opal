@@ -13,6 +13,7 @@
 
 class IRenderObject;
 class IResource;
+class Shader;
 class Texture;
 
 // NOTE What is this responsible for doing?
@@ -23,14 +24,14 @@ public:
     ResourceHandler();
     ~ResourceHandler();
 
-    void LoadResources();
     void AddResource(const std::string& name, const IResource* const resource);
 
     IRenderObject* GenerateModel(const nlohmann::json& obect);
     IRenderObject* GenerateModel(const nlohmann::json& object, const Model3D* const model);
-    IRenderObject* LoadLineJSON(const nlohmann::json& object);
-    const Texture* LoadTexture(std::string name, bool genMipMaps);
-    const Model3D* LoadModel3D(std::string modelname);
+    IRenderObject* GenerateLine(const nlohmann::json& object);
+    const Shader* LoadShader(const nlohmann::json& object);
+    const Texture* LoadTexture(const std::string& name, bool genMipMaps);
+    const Model3D* LoadModel3D(const std::string& modelname);
 
     template <typename T = IRenderObject>
     const T* GetResource(const std::string& resource) {

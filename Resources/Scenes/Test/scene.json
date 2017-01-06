@@ -14,6 +14,18 @@
             "type": "model3d",
             "resourcename": "m3d_wolf",
             "filename": "wolf"
+        },
+        {
+            "type": "shader",
+            "resourcename": "shader_staticmodel",
+            "types": [
+                "fragment",
+                "vertex"
+            ],
+            "uniforms": [
+                "gSampler",
+                "gMVP"
+            ]
         }
     ],
     "staticObjects": [
@@ -21,6 +33,7 @@
             "type": "staticmodel",
             "name": "Bear",
             "resource": "m3d_bear",
+            "shader": "shader_staticmodel",
             "translation": [15.0, 0.0, 0.0],
             "rotation": [0.0, 0.0, 0.0],
             "scale": [0.1, 0.1, 0.1]

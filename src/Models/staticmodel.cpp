@@ -7,12 +7,11 @@
 #include <Utilities/log.hpp>
 #include <Utilities/exceptions.hpp>
 #include <Render/Sampler/sampler.hpp>
-#include <Render/Shader/shader.hpp>
 #include <Core/display.hpp>
 #include <Core/camera.hpp>
+#include <Resources/shader.hpp>
 #include <Resources/texture.hpp>
 #include <Resources/model3d.hpp>
-#include <Models/dynamicmodel.hpp>
 
 // NOTE Can i make this process faster?
 // NOTE Why should i have a seperate class for dynamic and static models

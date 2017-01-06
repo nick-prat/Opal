@@ -4,7 +4,7 @@
 #include <string>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Render/Shader/shader.hpp>
+#include <Resources/shader.hpp>
 #include <Core/display.hpp>
 #include <Core/camera.hpp>
 

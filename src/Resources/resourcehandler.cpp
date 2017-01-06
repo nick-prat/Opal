@@ -19,6 +19,7 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 #include <Resources/texture.hpp>
+#include <Resources/shader.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>
 
@@ -162,7 +163,7 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, const Model3D*
     return static_cast<IRenderObject*>(new StaticModel(model3d, transform));
 }
 
-IRenderObject* ResourceHandler::LoadLineJSON(const json& object) {
+IRenderObject* ResourceHandler::GenerateLine(const json& object) {
     glm::vec3 head, tail, color;
     std::string name;
 
@@ -196,7 +197,7 @@ IRenderObject* ResourceHandler::LoadLineJSON(const json& object) {
     return new Line(head, tail, color);
 }
 
-const Texture* ResourceHandler::LoadTexture(std::string name, bool genMipMaps) {
+const Texture* ResourceHandler::LoadTexture(const std::string& name, bool genMipMaps) {
     auto resourcename = "tex_" + name;
     if(m_resources.find(resourcename) != m_resources.end()) {
         auto res = m_resources.find(resourcename);
@@ -264,6 +265,58 @@ const Texture* ResourceHandler::LoadTexture(std::string name, bool genMipMaps) {
     return texture;
 }
 
+// TODO Implement shader loading from json file
+const Shader* ResourceHandler::LoadShader(const json& object) {
+    return nullptr;
+}
+
+const Model3D* ResourceHandler::LoadModel3D(const std::string& modelname) {
+    std::string filename = "Resources/Models/" + modelname + ".3ds";
+    Assimp::Importer importer;
+    const aiScene* scene = importer.ReadFile(filename.c_str(),
+        aiProcess_CalcTangentSpace |
+        aiProcess_Triangulate |
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_SortByPType);
+
+    if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE) {
+        throw BadResource(importer.GetErrorString(), filename);
+    }
+
+    auto model = new Model3D();
+
+    aiMaterial** materials = scene->mMaterials;
+    for(uint i = 0; i < scene->mNumMaterials; i++) {
+        aiString aName;
+        materials[i]->Get(AI_MATKEY_NAME, aName);
+        std::string name = std::string(aName.C_Str());
+
+        try {
+            auto temp = LoadTexture(modelname + "/" + name, true);
+            if(temp != nullptr) {
+                model->addTexture(name, temp);
+            }
+        } catch (BadResource& error) {
+            error.printError();
+        }
+    }
+
+    std::vector<Model3D::Mesh*> meshes;
+    LoadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
+
+    for(auto& mesh : meshes) {
+        aiString aName;
+        uint index = mesh->getMatIndex();
+        if(index < scene->mNumMaterials) {
+            materials[mesh->getMatIndex()]->Get(AI_MATKEY_NAME, aName);
+            mesh->setMatName(std::string(aName.C_Str()));
+        }
+        model->addMesh(mesh);
+    }
+
+    return model;
+}
+
 void ResourceHandler::CopyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[0][0] = from->a1; to[1][0] = from->a2;
     to[2][0] = from->a3; to[3][0] = from->a4;
@@ -322,51 +375,4 @@ void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::ma
 
         meshes.push_back(rmesh);
     }
-}
-
-const Model3D* ResourceHandler::LoadModel3D(std::string modelname) {
-    std::string filename = "Resources/Models/" + modelname + ".3ds";
-    Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filename.c_str(),
-        aiProcess_CalcTangentSpace |
-        aiProcess_Triangulate |
-        aiProcess_JoinIdenticalVertices |
-        aiProcess_SortByPType);
-
-    if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE) {
-        throw BadResource(importer.GetErrorString(), filename);
-    }
-
-    auto model = new Model3D();
-
-    aiMaterial** materials = scene->mMaterials;
-    for(uint i = 0; i < scene->mNumMaterials; i++) {
-        aiString aName;
-        materials[i]->Get(AI_MATKEY_NAME, aName);
-        std::string name = std::string(aName.C_Str());
-
-        try {
-            auto temp = LoadTexture(modelname + "/" + name, true);
-            if(temp != nullptr) {
-                model->addTexture(name, temp);
-            }
-        } catch (BadResource& error) {
-            error.printError();
-        }
-    }
-
-    std::vector<Model3D::Mesh*> meshes;
-    LoadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
-
-    for(auto& mesh : meshes) {
-        aiString aName;
-        uint index = mesh->getMatIndex();
-        if(index < scene->mNumMaterials) {
-            materials[mesh->getMatIndex()]->Get(AI_MATKEY_NAME, aName);
-            mesh->setMatName(std::string(aName.C_Str()));
-        }
-        model->addMesh(mesh);
-    }
-
-    return model;
 }

@@ -15,7 +15,6 @@ set(SOURCE_FILES
     # Render
     src/Render/renderchain.cpp
     src/Render/renderobject.cpp
-    src/Render/Shader/shader.cpp
     src/Render/Sampler/sampler.cpp
 
     # Entity
@@ -30,6 +29,7 @@ set(SOURCE_FILES
 	src/Models/line.cpp
 
     # Resources
+    src/Resources/shader.cpp
     src/Resources/texture.cpp
     src/Resources/resource.cpp
     src/Resources/resourcehandler.cpp

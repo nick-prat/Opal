@@ -47,13 +47,13 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
     }
 
     try {
-        json scene = json::parse(contents);
+        const json scene = json::parse(contents);
 
         // TODO Implement texture loading
         // NOTE What other types of resources might i want to load on scene start
         if(scene.find("resources") != scene.end()) {
             std::vector<json> resources = scene["resources"];
-            for(json resource : resources) {
+            for(const json& resource : resources) {
                 std::string type = resource["type"];
                 std::string name = resource["resourcename"];
                 std::string filename = resource["filename"];
@@ -66,14 +66,14 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
 
         if(scene.find("staticObjects") != scene.end()) {
             std::vector<json> objects = scene["staticObjects"];
-            for(json object : objects) {
+            for(const json& object : objects) {
                 try {
                     std::string type = object["type"];
                     IRenderObject* rObject = nullptr;
 
                     // NOTE Are there other types of render obects i might want to load?
                     if(type == "line") {
-                        rObject = m_resourceHandler->LoadLineJSON(object);
+                        rObject = m_resourceHandler->GenerateLine(object);
                     } else if(type == "staticmodel") {
                         rObject = m_resourceHandler->GenerateModel(object, m_resourceHandler->GetResource<Model3D>(object["resource"]));
                     } else if(type == "rawstaticmodel") {
@@ -95,7 +95,7 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
         // NOTE What is "actual dynamic loading"?
         if(scene.find("dynamicObjects") != scene.end()) {
             std::vector<json> objects = scene["dynamicObjects"];
-            for(json object : objects) {
+            for(const json& object : objects) {
                 try {
                     auto name = object["name"];
                     //m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler->GetResource<Model3D>(object["resource"]));
