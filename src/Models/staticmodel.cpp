@@ -14,8 +14,8 @@
 #include <Resources/model3d.hpp>
 #include <Models/dynamicmodel.hpp>
 
-StaticModel::StaticModel(const Model3D* const model)
-        : m_model(model), m_sampler(std::make_unique<Sampler>()) {
+StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
+        : m_model(model), m_world(world), m_sampler(std::make_unique<Sampler>()) {
 
     if(model == nullptr) {
         throw GenericException("Null param passed to StaticModel constructor");
@@ -64,7 +64,7 @@ StaticModel::~StaticModel() {
 }
 
 glm::mat4 StaticModel::generateMVP(const Display* const display) const {
-    return display->getProjectionMatrix() * display->getCamera()->getViewMatrix();
+    return display->getProjectionMatrix() * display->getCamera()->getViewMatrix() * m_world;
 }
 
 const Model3D* StaticModel::getModel() const {

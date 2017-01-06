@@ -14,7 +14,7 @@ class Sampler;
 
 class StaticModel : public IRenderObject {
 public:
-    StaticModel(const Model3D* const model);
+    StaticModel(const Model3D* const model, const glm::mat4& world);
     virtual ~StaticModel();
 
     virtual void render(const Display* const display) const override;
@@ -26,6 +26,7 @@ protected:
     const Model3D* const m_model;
 
 private:
+    const glm::mat4 m_world;
     std::unique_ptr<Sampler> m_sampler;
     std::vector<GLsizei> m_indexCount;
     std::vector<GLuint> m_VAO, m_VBO, m_IBO;

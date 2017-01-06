@@ -197,8 +197,6 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     }
 }
 
-// TODO This spawns the entity and model but it won't get rendered, not sure why
-// TODO Add support for blank entities
 Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
     auto res = m_resourceHandler->GetResource<Model3D>(resource);
     if(res == nullptr) {

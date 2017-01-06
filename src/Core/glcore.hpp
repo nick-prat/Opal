@@ -29,7 +29,6 @@ private:
 private:
     std::string m_scenename;
 
-    std::unique_ptr<ResourceHandler> m_resourceHandler;
     std::unique_ptr<Scene> m_scene;
     std::unique_ptr<Display> m_display;
 

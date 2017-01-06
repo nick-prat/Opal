@@ -7,7 +7,7 @@
 #include <Utilities/log.hpp>
 
 DynamicModel::DynamicModel(const Model3D* const model3D)
-        : StaticModel(model3D), m_visible(true), m_translate(glm::mat4(1.0f)), m_scale(glm::mat4(1.0f)), m_rotate(glm::mat4(1.0f)) {
+        : StaticModel(model3D, glm::mat4(1.0f)), m_visible(true), m_translate(glm::mat4(1.0f)), m_scale(glm::mat4(1.0f)), m_rotate(glm::mat4(1.0f)) {
 }
 
 void DynamicModel::render(const Display* const display) const {
