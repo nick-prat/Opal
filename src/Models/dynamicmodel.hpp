@@ -3,6 +3,8 @@
 
 #include <Models/staticmodel.hpp>
 
+// Implement some way of convering a static model to a dynamic model and vice versa
+
 class DynamicModel : public StaticModel {
 public:
     DynamicModel(const Model3D* const model3D);

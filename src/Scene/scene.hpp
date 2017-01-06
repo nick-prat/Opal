@@ -23,7 +23,7 @@ class RenderChain;
 
 class Scene {
 public:
-    Scene(Display* display, lua_State* luaState, std::string scenename);
+    Scene(const Display* const display, lua_State* luaState, std::string scenename);
     ~Scene();
 
     void start();
@@ -47,10 +47,12 @@ private:
 
     std::unique_ptr<luabridge::LuaRef> m_startFunc;
     std::unique_ptr<luabridge::LuaRef> m_renderFunc;
+
+    // NOTE Is it possible/useful have multiple render chains, and if so why?
     std::unique_ptr<RenderChain> m_renderChain;
     std::unique_ptr<ResourceHandler> m_resourceHandler;
 
-    Display* m_display;
+    const Display* const m_display;
     lua_State* m_luaState;
 };
 

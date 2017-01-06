@@ -7,6 +7,9 @@
 
 #include <GL/gl3w.h>
 
+// NOTE What else are shader's capable of? Do i need to implement more functions in this wrapper?
+// TODO Implement lighting in shaders
+
 class Shader {
 public:
     Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types);

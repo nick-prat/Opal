@@ -6,6 +6,9 @@
 class Shader;
 class Display;
 
+// NOTE Is there any other data I need to track for render objects?
+// NOTE Are there any other functions every render object *should* have?
+
 class IRenderObject
 {
 public:

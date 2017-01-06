@@ -4,6 +4,9 @@
 #include <Render/Shader/shader.hpp>
 #include <Render/renderobject.hpp>
 
+// NOTE What is the validity of this process?
+// NOTE How can i make this class thread safe
+
 RenderChain::RenderChain() {
 }
 
@@ -32,6 +35,8 @@ void RenderChain::detach(IRenderObject* object) {
     m_objects[object->getShader()].remove(object);
 }
 
+// NOTE Am i able to further optimize this process?
+// NOTE Research more on open gl state changes, and their performance hits
 void RenderChain::render(const Display* const display) const {
     for(const auto& pair : m_objects) {
         pair.first->useShader();
@@ -41,6 +46,7 @@ void RenderChain::render(const Display* const display) const {
     }
 }
 
+// NOTE This removes everything from the render chain, is it better to recreate an instance of this object?
 void RenderChain::clear() {
     m_objects.clear();
 }

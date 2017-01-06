@@ -3,10 +3,12 @@
 
 #include <string>
 
+// NOTE Is there any data on resources i should track?
+
 class IResource {
 public:
     virtual ~IResource();
-    
+
     std::string getType();
 
 protected:

@@ -11,9 +11,11 @@
 
 class Texture;
 
+// NOTE Are there model types that aren't 3D, if so implement them
 class Model3D : public IResource
 {
 public:
+    // NOTE Does a vertex struct need any functions?
     struct Vertex
     {
         Vertex();
@@ -23,6 +25,7 @@ public:
         glm::vec2 texCoord;
     };
 
+    // NOTE Should a mesh be a POD structure?
     class Mesh
     {
     public:
@@ -51,9 +54,11 @@ public:
     Model3D();
     ~Model3D();
 
+    // NOTE Add meshes and texture is not possible in resource handler, so should I have these functions?
     void addMesh(Mesh* mesh);
     void addTexture(const std::string& name, const Texture* const texture);
 
+    // NOTE Is this function useful still?
     void applyTransformation(const glm::mat4& transform);
 
     const Texture* getTexture(const std::string& key) const;
@@ -65,6 +70,8 @@ public:
 
 private:
     std::unordered_map<std::string, const Texture*> m_textures;
+
+    // NOTE It might be useful to have these as obect's not pointers for easier copying
     std::vector<std::unique_ptr<Mesh>> m_meshes;
 
 };

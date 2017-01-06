@@ -5,6 +5,8 @@
 
 class DynamicModel;
 
+// NOTE What defines an entity vs a static object?
+
 class Entity {
 public:
     Entity();

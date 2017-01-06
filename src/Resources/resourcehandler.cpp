@@ -159,7 +159,6 @@ IRenderObject* ResourceHandler::GenerateModel(const json& object, const Model3D*
         }
     }
 
-    // TODO This causes models to be transformed multiple times if they're loaded more then once in scene.json
     return static_cast<IRenderObject*>(new StaticModel(model3d, transform));
 }
 

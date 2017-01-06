@@ -8,6 +8,8 @@
 
 class Display;
 
+// NOTE Are lines actually very useful?
+
 class Line : public IRenderObject {
 public:
     Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color);

@@ -7,9 +7,11 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 
+// TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])
+
 GLCore::GLCore(int width, int height, std::string scene) {
 
-    m_display = std::make_unique<Display>(width, height);
+    m_display = std::make_unique<const Display>(width, height);
 
     // Log information about current context
     Log::getLog() << "\nInformation: \n";

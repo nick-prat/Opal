@@ -27,10 +27,8 @@ private:
     void closeScene();
 
 private:
-    std::string m_scenename;
-
     std::unique_ptr<Scene> m_scene;
-    std::unique_ptr<Display> m_display;
+    std::unique_ptr<const Display> m_display;
 
     lua_State* m_luaState;
 };

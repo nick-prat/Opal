@@ -45,14 +45,13 @@ uint Display::getHeight() const {
     return m_height;
 }
 
+// TODO Implement set cursor position
 void Display::setCursorPosition(float x, float y) const {
     glm::clamp(x, 0.0f, 1.0f);
     glm::clamp(y, 0.0f, 1.0f);
 }
 
+// TODO Implement set cursor visible
 void Display::setCursorVisible(bool visible) const {
-    // TODO Is this function is worth implementing?
-    if(visible) {
-    } else {
-    }
+
 }

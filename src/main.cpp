@@ -6,6 +6,9 @@
 #include <Utilities/log.hpp>
 #include <Core/glcore.hpp>
 
+// TODO Ensure const correctness is follwed in whole project
+// TODO Implement some sort of collsion detection (bullet physics library?)
+
 int main(int argc, char **args) {
     if(argc != 2) {
         Log::getErrorLog() << "Arguments are invalid, use:\n\t" << args[0] << " [scene_name]\n";

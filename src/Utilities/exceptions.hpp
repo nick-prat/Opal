@@ -4,6 +4,8 @@
 #include <exception>
 #include <string>
 
+// NOTE Are there other exceptions that I might need to implement?
+
 class GenericException : public std::exception {
 public:
     GenericException(const std::string& error);

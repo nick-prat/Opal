@@ -5,6 +5,9 @@
 #include <functional>
 #include <unordered_map>
 
+// NOTE Shoudl i have different mouse input modes?
+
+// TODO Implement all keys
 enum class InputKey : int {
     A = 65,
     S = 83,

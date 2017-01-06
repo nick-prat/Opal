@@ -11,7 +11,7 @@ public:
     bool initCamera();
     void destroy();
 
-    glm::mat4 getViewMatrix();
+    glm::mat4 getViewMatrix() const;
     void moveCamera(glm::vec3 delta);
     void rotateCamera(glm::vec3 rotation);
 

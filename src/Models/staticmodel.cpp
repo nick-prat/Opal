@@ -14,6 +14,8 @@
 #include <Resources/model3d.hpp>
 #include <Models/dynamicmodel.hpp>
 
+// NOTE Can i make this process faster?
+// NOTE Why should i have a seperate class for dynamic and static models
 StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
         : m_model(model), m_world(world), m_sampler(std::make_unique<Sampler>()) {
 
@@ -50,6 +52,7 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
         m_IBO.push_back(ibo);
     }
 
+    // NOTE This creates a new shader for every statid model (and consequently every dynamic model)
     std::vector<std::string> files = {"staticmodel_vs.glsl", "staticmodel_fs.glsl"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
     m_shader = std::make_unique<Shader>(files, types);

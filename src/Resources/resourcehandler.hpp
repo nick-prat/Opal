@@ -15,6 +15,9 @@ class IRenderObject;
 class IResource;
 class Texture;
 
+// NOTE What is this responsible for doing?
+// NOTE Shoudl shaders be controlled here?
+
 class ResourceHandler {
 public:
     ResourceHandler();

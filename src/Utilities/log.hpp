@@ -4,6 +4,8 @@
 #include <fstream>
 #include <iostream>
 
+// NOTE Is this thread safe?
+
 class Log
 {
 public:

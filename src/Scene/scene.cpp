@@ -14,8 +14,12 @@ using namespace luabridge;
 using json = nlohmann::json;
 
 // TODO Implement scene closing
+// TODO Implement some sort of multithreading in lua (coroutines?)
 
-Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
+// NOTE How slow is calling lua functions?
+// NOTE What should lua be capable of doing?
+
+Scene::Scene(const Display* const display, lua_State* luaState, std::string scenename)
         : m_display(display), m_luaState(luaState) {
 
     m_renderChain = std::make_unique<RenderChain>();
@@ -45,6 +49,8 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
     try {
         json scene = json::parse(contents);
 
+        // TODO Implement texture loading
+        // NOTE What other types of resources might i want to load on scene start
         if(scene.find("resources") != scene.end()) {
             std::vector<json> resources = scene["resources"];
             for(json resource : resources) {
@@ -65,6 +71,7 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
                     std::string type = object["type"];
                     IRenderObject* rObject = nullptr;
 
+                    // NOTE Are there other types of render obects i might want to load?
                     if(type == "line") {
                         rObject = m_resourceHandler->LoadLineJSON(object);
                     } else if(type == "staticmodel") {
@@ -85,6 +92,7 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
         }
 
         // TODO Implement actual dynamic model loading
+        // NOTE What is "actual dynamic loading"?
         if(scene.find("dynamicObjects") != scene.end()) {
             std::vector<json> objects = scene["dynamicObjects"];
             for(json object : objects) {
@@ -107,9 +115,12 @@ Scene::Scene(Display* display, lua_State* luaState, std::string scenename)
     }
 }
 
+// NOTE Make sure scene is 100% closed when *this* is deleted
 Scene::~Scene() {
 }
 
+// TODO Implement entity transformation functions
+// NOTE What other functions are necessary to expose to lua?
 void Scene::buildLuaNamespace() {
     getGlobalNamespace(m_luaState)
         .beginClass<glm::vec2>("vec2")
@@ -153,6 +164,7 @@ void Scene::buildLuaNamespace() {
     lua_setglobal(m_luaState, "Level");
 }
 
+// NOTE Are there other necessary function the engine might want to call?
 void Scene::registerLuaFunctions() {
     m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
     if(!m_startFunc->isFunction()) {
@@ -165,20 +177,18 @@ void Scene::registerLuaFunctions() {
     }
 }
 
+// Is this the best way to do it?
 void Scene::start() {
-    Entity* ent = new Entity;
-    ent->setName("George");
-
-    addEntity("George", ent);
-
     (*m_startFunc)();
 }
 
+// NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
     m_renderChain->render(m_display);
     (*m_renderFunc)();
 }
 
+// TODO Find some way to expose what keys are pressed to lua
 void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     if(!function.isFunction()) {
         throw GenericException("function wasn't found");
@@ -197,6 +207,7 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     }
 }
 
+// NOTE Do i want to be able to easily destroy an entity?
 Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
     auto res = m_resourceHandler->GetResource<Model3D>(resource);
     if(res == nullptr) {
@@ -220,6 +231,7 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
     return ent;
 }
 
+// NOTE What is the purpose of this?
 void Scene::addEntity(const std::string& name, Entity* const ent) {
     if(m_entities.find(name) != m_entities.end()) {
         Log::error(name + " entity attempted to be added a second time, skipped");
@@ -232,6 +244,7 @@ void Scene::addEntity(const std::string& name, Entity* const ent) {
     }
 }
 
+// TODO Expand on the capabilites of an entity, ie. how does the user interact with them?
 Entity* Scene::getEntity(const std::string& name) const {
     if(m_entities.find(name) != m_entities.end()) {
         return (*m_entities.find(name)).second.get();

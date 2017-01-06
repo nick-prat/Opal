@@ -27,6 +27,7 @@ Line::Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), indices.data(), GL_STATIC_DRAW);
     m_indexCount = indices.size();
 
+    // TODO This creates a new shader for every line
     std::vector<std::string> files = {"line_vs.glsl", "line_fs.glsl"};
     std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
     m_shader = std::make_unique<Shader>(files, types);
