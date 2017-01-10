@@ -267,6 +267,7 @@ const Texture* ResourceHandler::LoadTexture(const std::string& name, bool genMip
 
 // TODO Implement shader loading from json file
 const Shader* ResourceHandler::LoadShader(const json& object) {
+
     return nullptr;
 }
 
@@ -302,7 +303,15 @@ const Model3D* ResourceHandler::LoadModel3D(const std::string& modelname) {
     }
 
     std::vector<Model3D::Mesh*> meshes;
-    LoadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
+    try {
+        LoadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
+    } catch(BadResource& error) {
+        error.printError();
+        for(const auto& mesh : meshes) {
+            delete mesh;
+        }
+        throw BadResource(modelname, "failed to load model nodes");
+    }
 
     for(auto& mesh : meshes) {
         aiString aName;
@@ -372,7 +381,6 @@ void ResourceHandler::LoadNode(const aiScene* scene, const aiNode* node, glm::ma
 
         auto rmesh = new Model3D::Mesh(vertices, indices);
         rmesh->setMatIndex(mesh->mMaterialIndex);
-
         meshes.push_back(rmesh);
     }
 }
