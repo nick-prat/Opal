@@ -48,21 +48,7 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
 
     try {
         const json scene = json::parse(contents);
-
-        // TODO Implement texture loading
-        // NOTE What other types of resources might i want to load on scene start
-        if(scene.find("resources") != scene.end()) {
-            std::vector<json> resources = scene["resources"];
-            for(const json& resource : resources) {
-                std::string type = resource["type"];
-                std::string name = resource["resourcename"];
-                std::string filename = resource["filename"];
-
-                if(type == "model3d") {
-                    m_resourceHandler->AddResource(name, m_resourceHandler->LoadModel3D(filename));
-                }
-            }
-        }
+        m_resourceHandler->loadResources(scene);
 
         if(scene.find("staticObjects") != scene.end()) {
             std::vector<json> objects = scene["staticObjects"];
@@ -73,11 +59,11 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
 
                     // NOTE Are there other types of render obects i might want to load?
                     if(type == "line") {
-                        rObject = m_resourceHandler->GenerateLine(object);
+                        rObject = m_resourceHandler->generateLine(object);
                     } else if(type == "staticmodel") {
-                        rObject = m_resourceHandler->GenerateModel(object, m_resourceHandler->GetResource<Model3D>(object["resource"]));
+                        rObject = m_resourceHandler->generateModel(object, m_resourceHandler->getResource<Model3D>(object["resource"]));
                     } else if(type == "rawstaticmodel") {
-                        rObject = m_resourceHandler->GenerateModel(object);
+                        rObject = m_resourceHandler->generateModel(object);
                     }
 
                     if(rObject != nullptr) {
@@ -209,7 +195,7 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
 
 // NOTE Do i want to be able to easily destroy an entity?
 Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
-    auto res = m_resourceHandler->GetResource<Model3D>(resource);
+    auto res = m_resourceHandler->getResource<Model3D>(resource);
     if(res == nullptr) {
         throw BadResource("resource isn't a model or doesn't exist", resource);
     }
@@ -221,6 +207,7 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
 
     auto dyn = new DynamicModel(res);
     dyn->translate(location);
+    dyn->bindShader(m_resourceHandler->getShader("shader_staticmodel"));
     m_renderChain->attach(dyn);
     m_renderObjects.push_back(std::unique_ptr<IRenderObject>(dyn));
 

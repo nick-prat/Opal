@@ -18,10 +18,11 @@ public:
     virtual void render(const Display* const display) const = 0;
 
     static int getNumRenderObjects();
+    void bindShader(Shader* shader);
     Shader* getShader();
 
 protected:
-    std::unique_ptr<Shader> m_shader;
+    Shader* m_shader;
 
 private:
     static int m_numRenderObjects;

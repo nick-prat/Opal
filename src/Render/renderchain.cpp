@@ -38,9 +38,7 @@ void RenderChain::detach(IRenderObject* object) {
 // NOTE Am i able to further optimize this process?
 // NOTE Research more on open gl state changes, and their performance hits
 void RenderChain::render(const Display* const display) const {
-    auto c = 1;
     for(const auto& pair : m_objects) {
-        Log::getLog() << "Shader " << c++ << '\n';
         pair.first->useShader();
         for(const auto& object : pair.second) {
             object->render(display);

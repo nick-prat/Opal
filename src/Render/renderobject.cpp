@@ -17,6 +17,10 @@ int IRenderObject::getNumRenderObjects() {
     return m_numRenderObjects;
 }
 
+void IRenderObject::bindShader(Shader* shader) {
+    m_shader = shader;
+}
+
 Shader* IRenderObject::getShader() {
-    return m_shader.get();
+    return m_shader;
 }

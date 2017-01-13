@@ -50,13 +50,6 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
         m_indexCount.push_back(mesh->getIndices().size());
         m_IBO.push_back(ibo);
     }
-
-    // NOTE This creates a new shader for every statid model (and consequently every dynamic model)
-    std::vector<std::string> files = {"staticmodel_vs.glsl", "staticmodel_fs.glsl"};
-    std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
-    m_shader = std::make_unique<Shader>(files, types);
-    m_shader->registerUniform("gSampler");
-    m_shader->registerUniform("gMVP");
 }
 
 StaticModel::~StaticModel() {
