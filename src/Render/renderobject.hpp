@@ -8,6 +8,7 @@ class Display;
 
 // NOTE Is there any other data I need to track for render objects?
 // NOTE Are there any other functions every render object *should* have?
+// NOTE Should shaders be able to be bound, or should any model only link to one shader?
 
 class IRenderObject
 {

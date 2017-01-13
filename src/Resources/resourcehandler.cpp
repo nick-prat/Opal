@@ -39,13 +39,17 @@ void ResourceHandler::loadResources(const json& scene) {
     if(scene.find("resources") != scene.end()) {
         std::vector<json> resources = scene["resources"];
         for(const json& resource : resources) {
-            std::string type = resource["type"];
-            std::string name = resource["resourcename"];
+            try {
+                std::string type = resource["type"];
+                std::string name = resource["resourcename"];
 
-            if(type == "model3d") {
-                m_resources[name] = std::unique_ptr<const IResource>(loadModel3D(resource["filename"]));
-            } else if(type == "shader") {
-                m_shaders[name] = std::unique_ptr<Shader>(loadShader(resource));
+                if(type == "model3d") {
+                    m_resources[name] = std::unique_ptr<const IResource>(loadModel3D(resource["filename"]));
+                } else if(type == "shader") {
+                    m_shaders[name] = std::unique_ptr<Shader>(loadShader(resource));
+                }
+            } catch(std::domain_error& error) {
+                Log::getErrorLog() << error.what() << '\n';
             }
         }
     }
@@ -168,9 +172,6 @@ IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D*
         if(rotation.size() != 3) {
             throw BadResource("Rotation data size is not 3", name);
         }
-        for(auto& degree : rotation) {
-            degree = (degree < 0.0f ? 360 + degree : degree);
-        }
 
         float degrees = *(std::max_element(rotation.begin(), rotation.end()));
         if(degrees != 0.0f) {
@@ -182,7 +183,7 @@ IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D*
     std::string shadername = object["shader"];
     auto shader = m_shaders.find(shadername);
     if(shader == m_shaders.end()) {
-        throw BadResource(name, "requested unknown shader");
+        throw BadResource("requested unknown shader " + shadername, name);
     }
 
     auto model = new StaticModel(model3d, transform);
@@ -224,7 +225,7 @@ IRenderObject* ResourceHandler::generateLine(const json& object) {
     std::string shadername = object["shader"];
     auto shader = m_shaders.find(shadername);
     if(shader == m_shaders.end()) {
-        throw BadResource(name, "requested unknown shader");
+        throw BadResource("requested unknown shader " + shadername, name);
     }
 
     auto line = new Line(head, tail, color);
@@ -232,13 +233,12 @@ IRenderObject* ResourceHandler::generateLine(const json& object) {
     return line;
 }
 
-// TODO Implement shader loading from json file
 Shader* ResourceHandler::loadShader(const json& object) {
     std::string name = object["resourcename"];
     std::string filename = object["filename"];
     std::vector<std::string> files = object["types"];
     if(files.size() == 0) {
-        throw BadResource(name, "types is empty");
+        throw BadResource("types is empty", name);
     }
 
     std::vector<GLenum> types;
@@ -368,10 +368,11 @@ const Model3D* ResourceHandler::loadModel3D(const std::string& modelname) {
         loadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
     } catch(BadResource& error) {
         error.printError();
+        delete model;
         for(const auto& mesh : meshes) {
             delete mesh;
         }
-        throw BadResource(modelname, "failed to load model nodes");
+        throw BadResource("failed to load model nodes", modelname);
     }
 
     for(auto& mesh : meshes) {

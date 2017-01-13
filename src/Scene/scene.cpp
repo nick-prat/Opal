@@ -93,7 +93,7 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
             }
         }
     } catch(std::exception& error) {
-        Log::error("Parsing of " + filename + " failed: " + std::string(error.what()), Log::OUT_LOG_CONS);
+        Log::getErrorLog() << "Parsing of " << filename << " failed: " << error.what() << '\n';
     }
 
     for(const auto& obj : m_renderObjects) {

@@ -17,7 +17,6 @@ class Shader;
 class Texture;
 
 // NOTE What is this responsible for doing?
-// NOTE Should shaders be controlled here?
 
 class ResourceHandler {
 public:
