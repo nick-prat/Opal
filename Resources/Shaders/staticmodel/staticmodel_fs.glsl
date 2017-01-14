@@ -6,9 +6,9 @@ in vec2 texCoord;
 out vec4 FragColor;
 
 uniform sampler2D gSampler;
+uniform vec3 gAmbientColor;
+uniform float gAmbientIntensity;
 
 void main() {
-    //FragColor = color;
-    FragColor = texture2D(gSampler, texCoord);
-    //FragColor = mix(texture2D(gSampler, texCoord), color, 0.9);
+    FragColor = texture2D(gSampler, texCoord) * vec4(gAmbientColor.xyz, 1.0f) * gAmbientIntensity;
 }

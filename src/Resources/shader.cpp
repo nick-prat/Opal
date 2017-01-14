@@ -75,6 +75,18 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
     if(status != GL_TRUE) {
         throw GenericException("Couldn't validate program");
     }
+
+    GLint location;
+    location = glGetUniformLocation(m_shaderProgram, "gAmbientColor");
+    if(location != -1) {
+        std::cout << "Couldn't find light\n";
+        registerUniform("gAmbientColor");
+    }
+    location = glGetUniformLocation(m_shaderProgram, "gAmbientIntensity");
+    if(location != -1) {
+        std::cout << "Couldn't find intensity\n";
+        registerUniform("gAmbientIntensity");
+    }
 }
 
 Shader::~Shader() {}
@@ -82,7 +94,8 @@ Shader::~Shader() {}
 void Shader::useShader() {
     glUseProgram(m_shaderProgram);
     for(auto& uniform : m_uniformLocations) {
-        uniform.second = glGetUniformLocation(m_shaderProgram, uniform.first.c_str());
+        auto i = glGetUniformLocation(m_shaderProgram, uniform.first.c_str());
+        uniform.second = i;
     }
 }
 
@@ -93,7 +106,6 @@ void Shader::registerUniform(const std::string& name) {
 GLint Shader::getUniformLocation(const std::string& name) const {
     auto uniform = m_uniformLocations.find(name);
     if(uniform == m_uniformLocations.end()) {
-        Log::getErrorLog() << "Uniform " << name << " coudln't be found\n";
         return -1;
     }
     return uniform->second;
