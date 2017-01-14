@@ -236,7 +236,7 @@ void Scene::addEntity(const std::string& name, Entity* const ent) {
 // TODO Expand on the capabilites of an entity, ie. how does the user interact with them?
 Entity* Scene::getEntity(const std::string& name) const {
     if(m_entities.find(name) != m_entities.end()) {
-        return (*m_entities.find(name)).second.get();
+        return m_entities.find(name)->second.get();
     }
     return nullptr;
 }
