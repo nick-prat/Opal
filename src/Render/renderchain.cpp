@@ -1,5 +1,7 @@
 #include <Render/renderchain.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
+
 #include <Utilities/log.hpp>
 #include <Resources/shader.hpp>
 #include <Render/renderobject.hpp>
@@ -40,6 +42,14 @@ void RenderChain::detach(IRenderObject* object) {
 void RenderChain::render(const Display* const display) const {
     for(const auto& pair : m_objects) {
         pair.first->useShader();
+
+        GLint ambientColorLocation = pair.first->getUniformLocation("gAmbientColor");
+        GLint ambientIntensityLocation = pair.first->getUniformLocation("gAmbientIntensity");
+        if(ambientColorLocation != -1 && ambientIntensityLocation != -1) {
+            glUniform3fv(ambientColorLocation, 1, glm::value_ptr(m_ambientColor));
+            glUniform1f(ambientIntensityLocation, m_ambientIntensity);
+        }
+
         for(const auto& object : pair.second) {
             object->render(display);
         }
@@ -53,4 +63,12 @@ void RenderChain::clear() {
 
 int RenderChain::getRenderCount() const {
     return m_objects.size();
+}
+
+void RenderChain::setAmbientColor(const glm::vec3& color) {
+    m_ambientColor = color;
+}
+
+void RenderChain::setAmbientIntensity(const float intensity) {
+    m_ambientIntensity = intensity;
 }

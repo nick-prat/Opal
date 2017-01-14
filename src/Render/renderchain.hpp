@@ -2,6 +2,7 @@
 #define _RENDERCHAIN_H
 
 #include <list>
+#include <glm/glm.hpp>
 #include <unordered_map>
 
 class Display;
@@ -19,7 +20,12 @@ public:
     void clear();
     int getRenderCount() const;
 
+    void setAmbientColor(const glm::vec3& color);
+    void setAmbientIntensity(const float intensity);
+
 private:
+    glm::vec3 m_ambientColor;
+    float m_ambientIntensity;
     std::unordered_map<Shader*, std::list<IRenderObject*>> m_objects;
 };
 

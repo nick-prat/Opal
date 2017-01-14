@@ -23,6 +23,8 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
         : m_display(display), m_luaState(luaState) {
 
     m_renderChain = std::make_unique<RenderChain>();
+    m_renderChain->setAmbientColor(glm::vec3(1.0f, 0.6f, 0.1f));
+    m_renderChain->setAmbientIntensity(1.0f);
     m_resourceHandler = std::make_unique<ResourceHandler>();
 
     std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
