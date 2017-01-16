@@ -18,7 +18,7 @@ public:
     void render(const Display* const display) const override;
 
 private:
-    uint m_indexCount;
+    unsigned int m_indexCount;
     GLuint m_VAO, m_VBO, m_IBO;
     glm::vec3 m_tail;
     glm::vec3 m_head;

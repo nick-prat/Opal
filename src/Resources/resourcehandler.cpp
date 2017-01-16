@@ -79,8 +79,8 @@ IRenderObject* ResourceHandler::generateModel(const json& object) {
     }
 
     std::vector<GLuint> indices;
-    std::vector<uint> indicesf = object["indices"];
-    for(const uint& index : indicesf) {
+    std::vector<unsigned int> indicesf = object["indices"];
+    for(const unsigned int& index : indicesf) {
         if(index >= verts.size()) {
             throw BadResource("Index is out of range", name);
         }
@@ -98,7 +98,7 @@ IRenderObject* ResourceHandler::generateModel(const json& object) {
         }
     } else {
         norms.clear();
-        for(uint i = 0; i < verts.size(); i++) {
+        for(unsigned int i = 0; i < verts.size(); i++) {
             norms.push_back(glm::vec3(0.0f));
         }
     }
@@ -114,13 +114,13 @@ IRenderObject* ResourceHandler::generateModel(const json& object) {
         }
     } else {
         uvs.clear();
-        for(uint i = 0; i < verts.size(); i++) {
+        for(unsigned int i = 0; i < verts.size(); i++) {
             uvs.push_back(glm::vec2(0.0f));
         }
     }
 
     std::vector<Model3D::Vertex> vertices;
-    for(uint i = 0; i < verts.size(); i++) {
+    for(unsigned int i = 0; i < verts.size(); i++) {
         vertices.push_back(Model3D::Vertex(verts[i], norms[i], uvs[i]));
     }
 
@@ -348,7 +348,7 @@ const Model3D* ResourceHandler::loadModel3D(const std::string& modelname) {
     auto model = new Model3D();
 
     aiMaterial** materials = scene->mMaterials;
-    for(uint i = 0; i < scene->mNumMaterials; i++) {
+    for(unsigned int i = 0; i < scene->mNumMaterials; i++) {
         aiString aName;
         materials[i]->Get(AI_MATKEY_NAME, aName);
         std::string name = std::string(aName.C_Str());
@@ -377,7 +377,7 @@ const Model3D* ResourceHandler::loadModel3D(const std::string& modelname) {
 
     for(auto& mesh : meshes) {
         aiString aName;
-        uint index = mesh->getMatIndex();
+        unsigned int index = mesh->getMatIndex();
         if(index < scene->mNumMaterials) {
             materials[mesh->getMatIndex()]->Get(AI_MATKEY_NAME, aName);
             mesh->setMatName(std::string(aName.C_Str()));
@@ -404,15 +404,15 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
     copyaiMat(&node->mTransformation, transformation);
     transformation = parentTransform * transformation;
 
-    for(uint i = 0; i < node->mNumChildren; i++) {
+    for(unsigned int i = 0; i < node->mNumChildren; i++) {
         loadNode(scene, node->mChildren[i], transformation, meshes);
     }
 
-    for(uint i = 0; i < node->mNumMeshes; i++) {
+    for(unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         std::vector<Model3D::Vertex> vertices;
 
-        for(uint j = 0; j < mesh->mNumVertices; j++) {
+        for(unsigned int j = 0; j < mesh->mNumVertices; j++) {
             Model3D::Vertex vertex;
 
             glm::vec4 position = transformation * glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f);
@@ -429,11 +429,11 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
             vertices.push_back(vertex);
         }
 
-        std::vector<uint> indices;
+        std::vector<unsigned int> indices;
         if(mesh->HasFaces()) {
-            for(uint j = 0; j < mesh->mNumFaces; j++) {
+            for(unsigned int j = 0; j < mesh->mNumFaces; j++) {
                 aiFace face = mesh->mFaces[j];
-                for(uint k = 0; k < face.mNumIndices; k++) {
+                for(unsigned int k = 0; k < face.mNumIndices; k++) {
                     indices.push_back(face.mIndices[k]);
                 }
             }

@@ -31,7 +31,7 @@ private:
     std::vector<GLsizei> m_indexCount;
     std::vector<GLuint> m_VAO, m_VBO, m_IBO;
 
-    uint m_meshCount;
+    unsigned int m_meshCount;
 };
 
 #endif // _STATIC_MODEL_H

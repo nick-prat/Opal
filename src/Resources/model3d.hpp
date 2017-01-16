@@ -29,25 +29,25 @@ public:
     class Mesh
     {
     public:
-        Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices);
+        Mesh(const std::vector<Vertex> vertices, const std::vector<unsigned int> indices);
         ~Mesh();
 
         void applyTransformation(const glm::mat4& transform);
 
         std::vector<Vertex> getVertices() const;
-        std::vector<uint> getIndices() const;
+        std::vector<unsigned int> getIndices() const;
 
-        void setMatIndex(const uint matIndex);
-        uint getMatIndex() const;
+        void setMatIndex(const unsigned int matIndex);
+        unsigned int getMatIndex() const;
 
         void setMatName(const std::string matName);
         std::string getMatName() const;
 
     private:
-        uint m_matIndex;
+        unsigned int m_matIndex;
         std::string m_matName;
         glm::mat4x4 m_transformation;
-        std::vector<uint> m_indices;
+        std::vector<unsigned int> m_indices;
         std::vector<Vertex> m_vertices;
     };
 
@@ -62,9 +62,9 @@ public:
     void applyTransformation(const glm::mat4& transform);
 
     const Texture* getTexture(const std::string& key) const;
-    Mesh* getMesh(uint index) const;
-    uint getMeshCount() const;
-    uint getFaceCount() const;
+    Mesh* getMesh(unsigned int index) const;
+    unsigned int getMeshCount() const;
+    unsigned int getFaceCount() const;
 
     void printTextures() const;
 

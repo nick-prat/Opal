@@ -24,7 +24,7 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
 
     m_meshCount = m_model->getMeshCount();
 
-    for(uint i = 0; i < m_meshCount; i++) {
+    for(unsigned int i = 0; i < m_meshCount; i++) {
         auto mesh = m_model->getMesh(i);
         GLuint vbo, vao, ibo;
 
@@ -46,7 +46,7 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
 
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->getIndices().size(), mesh->getIndices().data(), GL_STATIC_DRAW);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh->getIndices().size(), mesh->getIndices().data(), GL_STATIC_DRAW);
         m_indexCount.push_back(mesh->getIndices().size());
         m_IBO.push_back(ibo);
     }
@@ -72,7 +72,7 @@ void StaticModel::render(const Display* const display) const {
 
     m_sampler->bind();
 
-    for(uint i = 0; i < m_meshCount; i++) {
+    for(unsigned int i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
 
         auto texture = m_model->getTexture(m_model->getMesh(i)->getMatName());

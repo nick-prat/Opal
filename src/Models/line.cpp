@@ -21,10 +21,10 @@ Line::Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), 0);
     glEnableVertexAttribArray(0);
 
-    std::vector<uint> indices = {0, 1};
+    std::vector<unsigned int> indices = {0, 1};
     glGenBuffers(1, &m_IBO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * indices.size(), indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * indices.size(), indices.data(), GL_STATIC_DRAW);
     m_indexCount = indices.size();
 }
 

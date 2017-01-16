@@ -12,7 +12,7 @@ Display::Display()
         : m_inputController(nullptr), m_camera(nullptr), m_projMatrix(glm::mat4(1.0f)) {
 }
 
-Display::Display(uint width, uint height)
+Display::Display(unsigned int width, unsigned int height)
         : m_width(width), m_height(height), m_projMatrix(glm::mat4(1.0f)) {
 
     m_projMatrix = glm::perspective(glm::radians(60.0f), (float) width / (float) height, 0.1f, 100.0f);
@@ -37,11 +37,11 @@ glm::mat4 Display::getProjectionMatrix() const {
     return m_projMatrix;
 }
 
-uint Display::getWidth() const {
+unsigned int Display::getWidth() const {
     return m_width;
 }
 
-uint Display::getHeight() const {
+unsigned int Display::getHeight() const {
     return m_height;
 }
 

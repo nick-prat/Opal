@@ -35,19 +35,19 @@ void Model3D::printTextures() const {
     }
 }
 
-uint Model3D::getMeshCount() const {
+unsigned int Model3D::getMeshCount() const {
     return m_meshes.size();
 }
 
-uint Model3D::getFaceCount() const {
-    uint faceCount = 0;
+unsigned int Model3D::getFaceCount() const {
+    unsigned int faceCount = 0;
     for(const auto& mesh : m_meshes) {
         faceCount += mesh->getIndices().size() / 3;
     }
     return faceCount;
 }
 
-Model3D::Mesh* Model3D::getMesh(uint index) const {
+Model3D::Mesh* Model3D::getMesh(unsigned int index) const {
     return m_meshes[index].get();
 }
 
@@ -72,7 +72,7 @@ Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
 
 // Model3D::Mesh
 
-Model3D::Mesh::Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices)
+Model3D::Mesh::Mesh(const std::vector<Vertex> vertices, const std::vector<unsigned int> indices)
 : m_matIndex(0), m_matName("null"), m_indices(indices), m_vertices(vertices) {}
 
 Model3D::Mesh::~Mesh() {}
@@ -88,15 +88,15 @@ std::vector<Model3D::Vertex> Model3D::Mesh::getVertices() const {
     return m_vertices;
 }
 
-std::vector<uint> Model3D::Mesh::getIndices() const {
+std::vector<unsigned int> Model3D::Mesh::getIndices() const {
     return m_indices;
 }
 
-void Model3D::Mesh::setMatIndex(const uint matIndex) {
+void Model3D::Mesh::setMatIndex(const unsigned int matIndex) {
     m_matIndex = matIndex;
 }
 
-uint Model3D::Mesh::getMatIndex() const {
+unsigned int Model3D::Mesh::getMatIndex() const {
     return m_matIndex;
 }
 
