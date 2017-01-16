@@ -23,8 +23,6 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
         : m_display(display), m_luaState(luaState) {
 
     m_renderChain = std::make_unique<RenderChain>();
-    m_renderChain->setAmbientColor(glm::vec3(1.0f, 0.6f, 0.1f));
-    m_renderChain->setAmbientIntensity(1.0f);
     m_resourceHandler = std::make_unique<ResourceHandler>();
 
     std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
@@ -140,6 +138,8 @@ void Scene::buildLuaNamespace() {
                 .addProperty("name", &Entity::getName, &Entity::setName)
             .endClass()
             .beginClass<Scene>("Scene")
+                .addFunction("SetAmbientIntensity", &Scene::setAmbientIntensity)
+                .addFunction("SetAmbientColor", &Scene::setAmbientColor)
                 .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
                 .addFunction("GetCamera", &Scene::getCamera)
                 .addFunction("AddEntity", &Scene::addEntity)
@@ -193,6 +193,14 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
             (*m_luaKeyBinds[key])();
         });
     }
+}
+
+void Scene::setAmbientIntensity(float intensity) {
+    m_renderChain->setAmbientIntensity(intensity);
+}
+
+void Scene::setAmbientColor(const glm::vec3 &color) {
+    m_renderChain->setAmbientColor(color);
 }
 
 // NOTE Do i want to be able to easily destroy an entity?

@@ -31,6 +31,8 @@ public:
     void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
     void addEntity(const std::string& name, Entity* const ent);
 
+    void setAmbientIntensity(float intensity);
+    void setAmbientColor(const glm::vec3& color);
     Entity* spawn(const std::string& name, const std::string& resource, glm::vec3 location);
     Entity* getEntity(const std::string& name) const;
     Camera* getCamera() const;
