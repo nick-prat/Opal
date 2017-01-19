@@ -8,7 +8,8 @@
 
 // NOTE How can i make this class thread safe
 
-RenderChain::RenderChain() {
+RenderChain::RenderChain()
+        : m_ambientColor(glm::vec3(1.0f, 1.0f, 1.0f)), m_ambientIntensity(1.0f) {
 }
 
 RenderChain::~RenderChain() {
