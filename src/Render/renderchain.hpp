@@ -24,8 +24,7 @@ public:
     void setAmbientIntensity(const float intensity);
 
 private:
-    glm::vec3 m_ambientColor;
-    float m_ambientIntensity;
+    glm::vec4 m_ambientColor;
     std::unordered_map<Shader*, std::list<IRenderObject*>> m_objects;
 };
 
