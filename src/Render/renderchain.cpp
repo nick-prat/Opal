@@ -8,7 +8,8 @@
 
 // NOTE How can i make this class thread safe
 
-RenderChain::RenderChain() {
+RenderChain::RenderChain()
+        : m_ambientColor(glm::vec3(1.0f, 1.0f, 1.0f)), m_ambientIntensity(1.0f) {
 }
 
 RenderChain::~RenderChain() {
@@ -42,11 +43,9 @@ void RenderChain::render(const Display* const display) const {
     for(const auto& pair : m_objects) {
         pair.first->useShader();
 
-        GLint ambientColorLocation = pair.first->getUniformLocation("gAmbientColor");
-        GLint ambientIntensityLocation = pair.first->getUniformLocation("gAmbientIntensity");
-        if(ambientColorLocation != -1 && ambientIntensityLocation != -1) {
-            glUniform3fv(ambientColorLocation, 1, glm::value_ptr(m_ambientColor));
-            glUniform1f(ambientIntensityLocation, m_ambientIntensity);
+        GLint ambientLightLocation = pair.first->getUniformLocation("gAmbientLight");
+        if(ambientLightLocation != -1) {
+            glUniform4f(ambientLightLocation, m_ambientColor.r, m_ambientColor.g, m_ambientColor.b, m_ambientIntensity);
         }
 
         for(const auto& object : pair.second) {
