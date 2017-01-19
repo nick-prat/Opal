@@ -64,9 +64,11 @@ int RenderChain::getRenderCount() const {
 }
 
 void RenderChain::setAmbientColor(const glm::vec3& color) {
-    m_ambientColor = color;
+    m_ambientColor.r = color.r;
+    m_ambientColor.g = color.g;
+    m_ambientColor.b = color.b;
 }
 
 void RenderChain::setAmbientIntensity(const float intensity) {
-    m_ambientIntensity = intensity;
+    m_ambientColor. = intensity;
 }
