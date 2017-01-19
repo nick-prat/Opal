@@ -9,7 +9,7 @@
 // NOTE How can i make this class thread safe
 
 RenderChain::RenderChain()
-        : m_ambientColor(glm::vec3(1.0f, 1.0f, 1.0f)), m_ambientIntensity(1.0f) {
+        : m_ambientColor(glm::vec4(1.0f)) {
 }
 
 RenderChain::~RenderChain() {
@@ -45,7 +45,7 @@ void RenderChain::render(const Display* const display) const {
 
         GLint ambientLightLocation = pair.first->getUniformLocation("gAmbientLight");
         if(ambientLightLocation != -1) {
-            glUniform4f(ambientLightLocation, m_ambientColor.r, m_ambientColor.g, m_ambientColor.b, m_ambientIntensity);
+            glUniform4fv(ambientLightLocation, 1, glm::value_ptr(m_ambientColor));
         }
 
         for(const auto& object : pair.second) {
@@ -69,5 +69,5 @@ void RenderChain::setAmbientColor(const glm::vec3& color) {
 }
 
 void RenderChain::setAmbientIntensity(const float intensity) {
-    m_ambientColor. = intensity;
+    m_ambientColor.a = intensity;
 }
