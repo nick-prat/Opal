@@ -25,7 +25,7 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
     m_renderChain = std::make_unique<RenderChain>();
     m_resourceHandler = std::make_unique<ResourceHandler>();
 
-    std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
+    std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
     buildLuaNamespace();
