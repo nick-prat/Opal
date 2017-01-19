@@ -77,8 +77,7 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
     }
 
     // TODO Implement global lighting
-    registerUniform("gAmbientColor");
-    registerUniform("gAmbientIntensity");
+    registerUniform("gAmbientLight");
 }
 
 Shader::~Shader() {}

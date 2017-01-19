@@ -21,7 +21,7 @@ Start = function()
     Level:BindFunctionToKey(32, OnKeySpace, false);
 
     Level:Spawn("test", "m3d_bear", vec3(0.0, 0.0, 0.0));
-    
+
     Level:SetAmbientColor(vec3(colorR, colorG, colorB));
     Level:SetAmbientIntensity(intensity);
 end
