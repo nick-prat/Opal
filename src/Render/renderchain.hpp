@@ -48,10 +48,6 @@ public:
     GLint getUniformLocation(const std::string& name) const;
 
 private:
-    void useShader();
-    void render(const Display* const display) const;
-
-private:
     ulong m_numShaders;
     GLuint m_shaderProgram;
     std::list<IRenderObject*> m_renderObjects;

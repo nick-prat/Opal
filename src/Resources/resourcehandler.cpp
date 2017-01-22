@@ -187,7 +187,7 @@ IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D*
     }
 
     auto model = new StaticModel(model3d, transform);
-    model->bindShader(shader->second.get());
+    shader->second->attachRenderObject(model);
     return model;
 }
 
@@ -229,7 +229,7 @@ IRenderObject* ResourceHandler::generateLine(const json& object) {
     }
 
     auto line = new Line(head, tail, color);
-    line->bindShader(shader->second.get());
+    shader->second->attachRenderObject(line);
     return line;
 }
 
@@ -447,6 +447,14 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
     }
 }
 
-Shader* ResourceHandler::getShader(const std::string& shader) {
-    return m_shaders[shader].get();
+const std::unordered_map<std::string, std::unique_ptr<Shader>>& ResourceHandler::getShaders() const {
+    return m_shaders;
+}
+
+Shader* ResourceHandler::getShader(const std::string& shader) const {
+    auto ret = m_shaders.find(shader);
+    if(ret != m_shaders.end()) {
+        return ret->second.get();
+    }
+    throw BadResource("Couldn't find shader", shader);
 }

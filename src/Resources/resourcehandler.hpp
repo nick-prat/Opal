@@ -33,7 +33,8 @@ public:
     const Texture* loadTexture(const std::string& name, bool genMipMaps);
     const Model3D* loadModel3D(const std::string& modelname);
 
-    Shader* getShader(const std::string& shader);
+    const std::unordered_map<std::string, std::unique_ptr<Shader>>& getShaders() const;
+    Shader* getShader(const std::string& shader) const;
 
     template <typename T = IRenderObject>
     const T* getResource(const std::string& resource) {

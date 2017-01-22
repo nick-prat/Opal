@@ -96,8 +96,8 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
         Log::getErrorLog() << "Parsing of " << filename << " failed: " << error.what() << '\n';
     }
 
-    for(const auto& obj : m_renderObjects) {
-        m_renderChain->attach(obj.get());
+    for(const auto& shader : m_resourceHandler->getShaders()) {
+        m_renderChain->attachShader(shader.second.get());
     }
 }
 
@@ -215,10 +215,10 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
         return m_entities[name].get();
     }
 
+    auto shader = m_resourceHandler->getShader("shader_staticmodel");
     auto dyn = new DynamicModel(res);
     dyn->translate(location);
-    dyn->bindShader(m_resourceHandler->getShader("shader_staticmodel"));
-    m_renderChain->attach(dyn);
+    shader->attachRenderObject(dyn);
     m_renderObjects.push_back(std::unique_ptr<IRenderObject>(dyn));
 
     auto ent = new Entity();

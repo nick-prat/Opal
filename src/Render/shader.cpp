@@ -98,10 +98,6 @@ void Shader::detachRenderObject(IRenderObject* object) {
     m_renderObjects.remove(object);
 }
 
-void Shader::useShader() {
-    glUseProgram(m_shaderProgram);
-}
-
 void Shader::registerUniform(const std::string& name) {
     auto loc = glGetUniformLocation(m_shaderProgram, name.c_str());
     if(loc != -1) {

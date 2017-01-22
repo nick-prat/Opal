@@ -26,13 +26,15 @@ void RenderChain::detachShader(Shader* shader) {
 // NOTE Research more on open gl state changes, and their performance hits
 void RenderChain::render(const Display* const display) const {
     for(const auto& shader : m_shaders) {
+        glUseProgram(shader->m_shaderProgram);
+
         GLint ambientLightLocation = shader->getUniformLocation("gAmbientLight");
         if(ambientLightLocation != -1) {
             glUniform4fv(ambientLightLocation, 1, glm::value_ptr(m_ambientColor));
         }
 
         for(const auto& object : shader->m_renderObjects) {
-            object->render(display);
+            object->render(shader, display);
         }
     }
 }

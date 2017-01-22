@@ -4,8 +4,7 @@
 
 int IRenderObject::m_numRenderObjects = 0;
 
-IRenderObject::IRenderObject()
-        : m_shader(nullptr) {
+IRenderObject::IRenderObject() {
     m_numRenderObjects++;
 }
 
@@ -15,12 +14,4 @@ IRenderObject::~IRenderObject() {
 
 int IRenderObject::getNumRenderObjects() {
     return m_numRenderObjects;
-}
-
-void IRenderObject::bindShader(Shader* shader) {
-    m_shader = shader;
-}
-
-Shader* IRenderObject::getShader() {
-    return m_shader;
 }
