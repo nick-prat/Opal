@@ -19,7 +19,7 @@ public:
 
     static int getNumRenderObjects();
     void bindShader(Shader* shader);
-    Shader* getShader();
+    Shader* getShaderName();
 
 protected:
     Shader* m_shader;

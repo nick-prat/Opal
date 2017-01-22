@@ -1,10 +1,11 @@
-#include "shader.hpp"
+#include "renderchain.hpp"
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <string>
 #include <cstring>
+#include <list>
 
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
@@ -23,10 +24,12 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
     GLint success;
     GLchar info[1024];
     m_numShaders = types.size();
-
     m_shaderProgram = glCreateProgram();
+
+    std::vector<GLuint> shaderObj;
+    shaderObj.reserve(m_numShaders);
     for(unsigned int i = 0; i < m_numShaders; i++) {
-        m_shaderObj.push_back(glCreateShader(types[i]));
+        shaderObj.push_back(glCreateShader(types[i]));
 
         std::ifstream file(fileNames[i]);
         if(!file.is_open()) {
@@ -43,16 +46,16 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
         GLint length[1];
         length[0]= (GLint)buffer.str().length();
 
-        glShaderSource(m_shaderObj[i], 1, (const GLchar *const *) text, length);
-        glCompileShader(m_shaderObj[i]);
+        glShaderSource(shaderObj[i], 1, (const GLchar *const *) text, length);
+        glCompileShader(shaderObj[i]);
 
-        glGetShaderiv(m_shaderObj[i], GL_COMPILE_STATUS, &success);
+        glGetShaderiv(shaderObj[i], GL_COMPILE_STATUS, &success);
         if(success == GL_FALSE) {
-            glGetShaderInfoLog(m_shaderObj[i], sizeof(info), nullptr, info);
+            glGetShaderInfoLog(shaderObj[i], sizeof(info), nullptr, info);
             throw GenericException(info);
         }
 
-        glAttachShader(m_shaderProgram, m_shaderObj[i]);
+        glAttachShader(m_shaderProgram, shaderObj[i]);
 
         delete[] text[0];
     }
@@ -65,8 +68,8 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
     }
 
     for(unsigned int i = 0; i < m_numShaders; i++) {
-        glDetachShader(m_shaderProgram, m_shaderObj[i]);
-        glDeleteShader(m_shaderObj[i]);
+        glDetachShader(m_shaderProgram, shaderObj[i]);
+        glDeleteShader(shaderObj[i]);
     }
 
     glValidateProgram(m_shaderProgram);
@@ -81,6 +84,19 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
 }
 
 Shader::~Shader() {}
+
+void Shader::attachRenderObject(IRenderObject* object) {
+    if(object == nullptr) {
+        Log::getErrorLog() << "Null object atempted attached to render chain\n";
+        return;
+    }
+
+    m_renderObjects.push_back(object);
+}
+
+void Shader::detachRenderObject(IRenderObject* object) {
+    m_renderObjects.remove(object);
+}
 
 void Shader::useShader() {
     glUseProgram(m_shaderProgram);
@@ -101,8 +117,4 @@ GLint Shader::getUniformLocation(const std::string& name) const {
         return -1;
     }
     return uniform->second;
-}
-
-GLuint Shader::getProgram() const {
-    return m_shaderProgram;
 }

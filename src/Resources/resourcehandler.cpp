@@ -19,7 +19,7 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 #include <Resources/texture.hpp>
-#include <Resources/shader.hpp>
+#include <Render/renderchain.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>
 

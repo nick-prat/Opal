@@ -1,6 +1,6 @@
 #include "renderobject.hpp"
 
-#include <Resources/shader.hpp>
+#include <Render/renderchain.hpp>
 
 int IRenderObject::m_numRenderObjects = 0;
 
