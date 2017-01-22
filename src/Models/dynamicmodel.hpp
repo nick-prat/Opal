@@ -9,7 +9,6 @@ class DynamicModel : public StaticModel {
 public:
     DynamicModel(const Model3D* const model3D);
 
-    virtual void render(const Display* const display) const override;
     glm::mat4 generateMVP(const Display* const display) const override;
 
     void translate(const glm::vec3& trans);
@@ -20,6 +19,9 @@ public:
 
     bool isVisible() const;
     glm::mat4 getWorld() const;
+
+protected:
+    virtual void render(const Shader* const shader, const Display* const display) const override;
 
 private:
     bool m_visible;

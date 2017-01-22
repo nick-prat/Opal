@@ -4,7 +4,7 @@
 #include <string>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Resources/shader.hpp>
+#include <Render/renderchain.hpp>
 #include <Core/display.hpp>
 #include <Core/camera.hpp>
 
@@ -34,10 +34,10 @@ Line::~Line() {
     glDeleteBuffers(1, &m_IBO);
 }
 
-void Line::render(const Display* const display) const {
-    glUniformMatrix4fv(m_shader->getUniformLocation("gMVP"), 1, GL_FALSE,
+void Line::render(const Shader* const shader, const Display* const display) const {
+    glUniformMatrix4fv(shader->getUniformLocation("gMVP"), 1, GL_FALSE,
             glm::value_ptr(display->getProjectionMatrix() * display->getCamera()->getViewMatrix()));
-    glUniform3fv(m_shader->getUniformLocation("gColor"), 1, (GLfloat*)&m_color);
+    glUniform3fv(shader->getUniformLocation("gColor"), 1, (GLfloat*)&m_color);
 
     glBindVertexArray(m_VAO);
     glDrawElements(GL_LINES, (GLsizei)m_indexCount, GL_UNSIGNED_INT, nullptr);

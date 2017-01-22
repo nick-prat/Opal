@@ -2,6 +2,7 @@
 #define _RENDEROBJECT_H
 
 #include <memory>
+#include <Render/renderchain.hpp>
 
 class Shader;
 class Display;
@@ -11,18 +12,15 @@ class Display;
 
 class IRenderObject
 {
+    friend class RenderChain;
 public:
     IRenderObject();
     virtual ~IRenderObject();
 
-    virtual void render(const Display* const display) const = 0;
-
     static int getNumRenderObjects();
-    void bindShader(Shader* shader);
-    Shader* getShader();
 
 protected:
-    Shader* m_shader;
+    virtual void render(const Shader* const shader, const Display* const display) const = 0;
 
 private:
     static int m_numRenderObjects;
