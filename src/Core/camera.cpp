@@ -36,3 +36,11 @@ void Camera::moveCamera(glm::vec3 delta) {
 void Camera::setPosition(glm::vec3 position) {
     m_position = position;
 }
+
+glm::vec3 Camera::getPosition() const {
+    return m_position;
+}
+
+glm::vec3 Camera::getDirection() const {
+    return m_direction;
+}

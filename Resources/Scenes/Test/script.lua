@@ -1,6 +1,10 @@
 require("Resources.Scenes.Test.inputs")
 
+local Game = {};
+
 Start = function()
+    Game.Level = Level;
+    Game.Camera = Level:GetCamera();
     Level:BindFunctionToKey(65, OnKeyA, true);
     Level:BindFunctionToKey(68, OnKeyD, true);
     Level:BindFunctionToKey(83, OnKeyS, true);

@@ -131,6 +131,8 @@ void Scene::buildLuaNamespace() {
             .beginClass<Camera>("Camera")
                 .addFunction("MoveCamera", &Camera::moveCamera)
                 .addFunction("SetCamera", &Camera::setPosition)
+                .addFunction("GetPosition", &Camera::getPosition)
+                .addFunction("GetDirection", &Camera::getDirection)
             .endClass()
             .beginClass<Entity>("Entity")
                 .addConstructor<void(*)(void)>()
