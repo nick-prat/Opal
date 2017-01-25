@@ -25,7 +25,7 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
     m_renderChain = std::make_unique<RenderChain>();
     m_resourceHandler = std::make_unique<ResourceHandler>();
 
-    std::string script =  "Resources/Scenes/" + scenename + "/script.lua";
+    std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
     buildLuaNamespace();
@@ -96,8 +96,8 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
         Log::getErrorLog() << "Parsing of " << filename << " failed: " << error.what() << '\n';
     }
 
-    for(const auto& obj : m_renderObjects) {
-        m_renderChain->attach(obj.get());
+    for(const auto& shader : m_resourceHandler->getShaders()) {
+        m_renderChain->attachShader(shader.second.get());
     }
 }
 
@@ -138,6 +138,9 @@ void Scene::buildLuaNamespace() {
                 .addConstructor<void(*)(void)>()
                 .addProperty("visible", &Entity::isVisible, &Entity::setVisible)
                 .addProperty("name", &Entity::getName, &Entity::setName)
+                .addFunction("Scale", &Entity::scale)
+                .addFunction("Translate", &Entity::translate)
+                .addFunction("Rotate", &Entity::rotate)
             .endClass()
             .beginClass<Scene>("Scene")
                 .addFunction("SetAmbientIntensity", &Scene::setAmbientIntensity)
@@ -217,10 +220,10 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
         return m_entities[name].get();
     }
 
+    auto shader = m_resourceHandler->getShader("shader_staticmodel");
     auto dyn = new DynamicModel(res);
     dyn->translate(location);
-    dyn->bindShader(m_resourceHandler->getShader("shader_staticmodel"));
-    m_renderChain->attach(dyn);
+    shader->attachRenderObject(dyn);
     m_renderObjects.push_back(std::unique_ptr<IRenderObject>(dyn));
 
     auto ent = new Entity();

@@ -17,10 +17,12 @@ public:
     StaticModel(const Model3D* const model, const glm::mat4& world);
     virtual ~StaticModel();
 
-    virtual void render(const Display* const display) const override;
     virtual glm::mat4 generateMVP(const Display* const display) const;
 
     const Model3D* getModel() const;
+
+protected:
+    virtual void render(const Shader* const shader, const Display* const display) const override;
 
 protected:
     const Model3D* const m_model;

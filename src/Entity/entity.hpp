@@ -1,6 +1,7 @@
 #ifndef _ENTITY_H
 #define _ENTITY_H
 
+#include <glm/glm.hpp>
 #include <string>
 
 class DynamicModel;
@@ -23,7 +24,12 @@ public:
     std::string getName() const;
     DynamicModel* getModel() const;
 
+    void translate(const glm::vec3& trans);
+    void rotate(const float& degrees, const glm::vec3& rotate);
+    void scale(const glm::vec3& scale);
+
 private:
+    glm::vec3 m_location;
     std::string m_name;
     DynamicModel* m_model;
 };

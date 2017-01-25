@@ -15,7 +15,8 @@ public:
     Line(glm::vec3 tail, glm::vec3 head, glm::vec3 color);
     ~Line();
 
-    void render(const Display* const display) const override;
+protected:
+    void render(const Shader* const shader, const Display* const display) const override;
 
 private:
     unsigned int m_indexCount;

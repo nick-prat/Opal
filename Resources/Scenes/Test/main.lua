@@ -21,7 +21,8 @@ Start = function()
     Level:BindFunctionToKey(76, OnKeyL, true);
     Level:BindFunctionToKey(32, OnKeySpace, false);
 
-    Level:Spawn("test", "m3d_bear", vec3(0.0, 0.0, 0.0));
+    local bear = Level:Spawn("test", "m3d_bear", vec3(0.0, 0.0, 0.0));
+    bear:Scale(vec3(0.1, 0.1, 0.1));
 end
 
 GameLoop = function()

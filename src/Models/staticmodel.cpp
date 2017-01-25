@@ -9,7 +9,7 @@
 #include <Render/Sampler/sampler.hpp>
 #include <Core/display.hpp>
 #include <Core/camera.hpp>
-#include <Resources/shader.hpp>
+#include <Render/renderchain.hpp>
 #include <Resources/texture.hpp>
 #include <Resources/model3d.hpp>
 
@@ -66,9 +66,9 @@ const Model3D* StaticModel::getModel() const {
     return m_model;
 }
 
-void StaticModel::render(const Display* const display) const {
-    glUniform1i(m_shader->getUniformLocation("gSampler"), 0);
-    glUniformMatrix4fv(m_shader->getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
+void StaticModel::render(const Shader* const shader, const Display* const display) const {
+    glUniform1i(shader->getUniformLocation("gSampler"), 0);
+    glUniformMatrix4fv(shader->getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
     m_sampler->bind();
 
