@@ -1,10 +1,8 @@
 require("Resources.Scenes.Test.inputs")
 
-local Game = {};
+local entCount = 0;
 
 Start = function()
-    Game.Level = Level;
-    Game.Camera = Level:GetCamera();
     Level:BindFunctionToKey(65, OnKeyA, true);
     Level:BindFunctionToKey(68, OnKeyD, true);
     Level:BindFunctionToKey(83, OnKeyS, true);
@@ -19,12 +17,25 @@ Start = function()
     Level:BindFunctionToKey(75, OnKeyK, true);
     Level:BindFunctionToKey(79, OnKeyO, true);
     Level:BindFunctionToKey(76, OnKeyL, true);
+    Level:BindFunctionToKey(90, OnKeyZ, false);
     Level:BindFunctionToKey(32, OnKeySpace, false);
 
-    local bear = Level:Spawn("test", "m3d_bear", vec3(0.0, 0.0, 0.0));
+    local bear = Level:Spawn("test" .. entCount, "m3d_bear", vec3(3.0, 0.0, 0.0));
+    entCount = entCount + 1;
     bear:Scale(vec3(0.1, 0.1, 0.1));
 end
 
 GameLoop = function()
 
+end
+
+OnKeyZ = function()
+    local pos = Level:GetCamera():GetPosition();
+    local dir = Level:GetCamera():GetDirection();
+    pos.x = pos.x + dir.x * 2;
+    pos.y = pos.y + dir.y * 2;
+    pos.z = pos.z + dir.z * 2;
+    local ent = Level:Spawn("test" .. entCount, "m3d_deer", pos);
+    entCount = entCount + 1;
+    ent:Scale(vec3(0.1, 0.1, 0.1));
 end
