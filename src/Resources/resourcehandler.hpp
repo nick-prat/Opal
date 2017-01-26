@@ -16,8 +16,6 @@ class IResource;
 class Shader;
 class Texture;
 
-// NOTE What is this responsible for doing?
-
 class ResourceHandler {
 public:
     ResourceHandler();
