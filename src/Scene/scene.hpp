@@ -35,6 +35,7 @@ public:
     void setAmbientColor(const glm::vec3& color);
     Entity* spawn(const std::string& name, const std::string& resource, glm::vec3 location);
     Entity* getEntity(const std::string& name) const;
+    int getEntityCount() const;
     Camera* getCamera() const;
 
 private:

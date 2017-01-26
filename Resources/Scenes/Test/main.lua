@@ -17,6 +17,7 @@ Start = function()
     Level:BindFunctionToKey(75, OnKeyK, true);
     Level:BindFunctionToKey(79, OnKeyO, true);
     Level:BindFunctionToKey(76, OnKeyL, true);
+    Level:BindFunctionToKey(88, OnKeyX, false);
     Level:BindFunctionToKey(90, OnKeyZ, false);
     Level:BindFunctionToKey(32, OnKeySpace, false);
 
@@ -27,6 +28,10 @@ end
 
 GameLoop = function()
 
+end
+
+OnKeyX = function()
+    print("Entity count: " .. Level:GetEntityCount());
 end
 
 OnKeyZ = function()

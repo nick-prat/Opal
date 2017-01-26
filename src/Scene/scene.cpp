@@ -149,6 +149,7 @@ void Scene::buildLuaNamespace() {
                 .addFunction("GetCamera", &Scene::getCamera)
                 .addFunction("AddEntity", &Scene::addEntity)
                 .addFunction("GetEntity", &Scene::getEntity)
+                .addFunction("GetEntityCount", &Scene::getEntityCount)
                 .addFunction("Spawn", &Scene::spawn)
             .endClass()
         .endNamespace();
@@ -252,6 +253,10 @@ Entity* Scene::getEntity(const std::string& name) const {
         return m_entities.find(name)->second.get();
     }
     return nullptr;
+}
+
+int Scene::getEntityCount() const {
+    return m_entities.size();
 }
 
 Camera* Scene::getCamera() const {
