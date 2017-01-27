@@ -105,7 +105,6 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
 Scene::~Scene() {
 }
 
-// TODO Implement entity transformation functions
 // NOTE What other functions are necessary to expose to lua?
 void Scene::buildLuaNamespace() {
     getGlobalNamespace(m_luaState)
