@@ -10,7 +10,7 @@
 #include <Render/renderchain.hpp>
 #include <Resources/resourcehandler.hpp>
 
-using namespace luabridge;
+using luabridge::LuaRef;
 using json = nlohmann::json;
 
 // TODO Implement scene closing
@@ -107,7 +107,7 @@ Scene::~Scene() {
 
 // NOTE What other functions are necessary to expose to lua?
 void Scene::buildLuaNamespace() {
-    getGlobalNamespace(m_luaState)
+    luabridge::getGlobalNamespace(m_luaState)
         .beginClass<glm::vec2>("vec2")
             .addConstructor<void(*)(float, float)>()
             .addData("x", &glm::vec2::x)
@@ -153,18 +153,17 @@ void Scene::buildLuaNamespace() {
             .endClass()
         .endNamespace();
 
-    push(m_luaState, this);
-    lua_setglobal(m_luaState, "Level");
+    luabridge::setGlobal(m_luaState, this, "Level");
 }
 
 // NOTE Are there other necessary function the engine might want to call?
 void Scene::registerLuaFunctions() {
-    m_startFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "Start"));
+    m_startFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState, "Start"));
     if(!m_startFunc->isFunction()) {
         throw GenericException("Start function wasn't found");
     }
 
-    m_renderFunc = std::make_unique<LuaRef>(getGlobal(m_luaState, "GameLoop"));
+    m_renderFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState, "GameLoop"));
     if(!m_renderFunc->isFunction()) {
         throw GenericException("Render function wasn't found");
     }
