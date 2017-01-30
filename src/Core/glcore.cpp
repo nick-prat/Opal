@@ -12,6 +12,10 @@
 GLCore::GLCore(int width, int height, std::string title)
         : m_currentScene(nullptr) {
 
+    glfwSetErrorCallback([](int error, const char* desc) {
+        Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
+    });
+
     if(!glfwInit()) {
         Log::error("Couldn't initialize GLFW3\n");
         exit(-1);
@@ -47,7 +51,6 @@ GLCore::GLCore(int width, int height, std::string title)
     }
 
     glfwSetWindowUserPointer(m_window, this);
-    glfwSwapInterval(1);
 
     glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
@@ -98,6 +101,18 @@ GLCore::~GLCore() {
 
 bool GLCore::shouldClose() const {
     return glfwWindowShouldClose(m_window);
+}
+
+void GLCore::setClearColor(const glm::vec4& color) {
+    glClearColor(color.x, color.y, color.z, color.w);
+}
+
+void GLCore::setVsync(bool enabled) {
+    if(enabled) {
+        glfwSwapInterval(1);
+    } else {
+        glfwSwapInterval(0);
+    }
 }
 
 GLFWwindow* GLCore::getWindow() const {

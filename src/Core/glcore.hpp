@@ -2,6 +2,7 @@
 #define _GLCORE_H
 
 #include <memory>
+#include <glm/glm.hpp>
 
 extern "C" {
 #include <lua.h>
@@ -22,9 +23,11 @@ public:
 
     bool shouldClose() const;
 
+    void setClearColor(const glm::vec4& color);
+    void setVsync(bool enabled);
+
     GLFWwindow* getWindow() const;
     Display* getDisplay() const;
-
     Scene* getCurrentScene() const;
     Scene* createScene(const std::string& scenename);
     void startScene(Scene* scene);

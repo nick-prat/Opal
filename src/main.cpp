@@ -20,10 +20,6 @@ int main(int argc, char **args) {
     const int width = 1024;
     const int height = 576;
 
-    glfwSetErrorCallback([](int error, const char* desc) {
-        Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
-    });
-
     std::unique_ptr<GLCore> glCore;
     try {
         glCore = std::unique_ptr<GLCore>(new GLCore(width, height, title));
@@ -32,6 +28,7 @@ int main(int argc, char **args) {
         glfwTerminate();
         exit(-1);
     }
+    glCore->setVsync(true);
 
     std::unique_ptr<Scene> scene = std::unique_ptr<Scene>(glCore->createScene(scenename));
     glCore->startScene(scene.get());
