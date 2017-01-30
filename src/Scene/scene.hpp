@@ -23,7 +23,7 @@ class RenderChain;
 
 class Scene {
 public:
-    Scene(const Display* const display, lua_State* luaState, std::string scenename);
+    Scene(const Display* const display, std::string scenename);
     ~Scene();
 
     void start();

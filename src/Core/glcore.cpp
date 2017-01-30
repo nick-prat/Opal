@@ -9,7 +9,8 @@
 
 // TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])
 
-GLCore::GLCore(int width, int height, std::string title) {
+GLCore::GLCore(int width, int height, std::string title)
+        : m_currentScene(nullptr) {
 
     if(!glfwInit()) {
         Log::error("Couldn't initialize GLFW3\n");
@@ -71,6 +72,9 @@ GLCore::GLCore(int width, int height, std::string title) {
         glCore->mouseFunc(xpos, ypos);
     });
 
+    // NOTE You can set input mode with this
+    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
     m_display = std::make_unique<const Display>(width, height);
 
     // Log information about current context
@@ -88,24 +92,38 @@ GLCore::GLCore(int width, int height, std::string title) {
 }
 
 GLCore::~GLCore() {
-    closeScene();
     glfwDestroyWindow(m_window);
     glfwTerminate();
+}
+
+bool GLCore::shouldClose() const {
+    return glfwWindowShouldClose(m_window);
 }
 
 GLFWwindow* GLCore::getWindow() const {
     return m_window;
 }
 
-void GLCore::startScene(const std::string& scene) {
-    initScene(scene);
-    m_scene->start();
+Scene* GLCore::createScene(const std::string& scenename) {
+    auto timer = glfwGetTime();
+    auto scene = new Scene(m_display.get(), scenename);
+    Log::getLog() << "Scene creation for " << scenename << " in " << glfwGetTime() - timer << " seconds\n";
+    return scene;
+}
+
+void GLCore::startScene(Scene* scene) {
+    m_currentScene = scene;
+    m_currentScene->start();
 }
 
 void GLCore::displayFunc() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    m_scene->gameLoop();
+    if(m_currentScene != nullptr) {
+        m_currentScene->gameLoop();
+    }
     m_display->getInputController()->callKeyLambdas();
+    glfwSwapBuffers(m_window);
+    glfwPollEvents();
 }
 
 void GLCore::inputFunc(int key, bool state) {
@@ -114,15 +132,4 @@ void GLCore::inputFunc(int key, bool state) {
 
 void GLCore::mouseFunc(double xpos, double ypos) {
     m_display->getInputController()->updateMousePosition(xpos, ypos);
-}
-
-void GLCore::initScene(std::string scene) {
-    m_luaState = luaL_newstate();
-    luaL_openlibs(m_luaState);
-    m_scene = std::make_unique<Scene>(m_display.get(), m_luaState, scene);
-}
-
-void GLCore::closeScene() {
-    m_scene.reset(nullptr);
-    lua_close(m_luaState);
 }

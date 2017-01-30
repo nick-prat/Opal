@@ -4,6 +4,7 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 #include <Core/glcore.hpp>
+#include <Scene/scene.hpp>
 
 // TODO Ensure const correctness is follwed in whole project
 // TODO Implement some sort of collsion detection (bullet physics library?)
@@ -14,12 +15,12 @@ int main(int argc, char **args) {
         exit(-1);
     }
 
-    std::string scene = args[1];
+    std::string scenename = args[1];
     const char* title = "OpenGL Project";
     const int width = 1024;
     const int height = 576;
 
-    glfwSetErrorCallback([] (int error, const char* desc) {
+    glfwSetErrorCallback([](int error, const char* desc) {
         Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
 
@@ -32,17 +33,14 @@ int main(int argc, char **args) {
         exit(-1);
     }
 
-    glCore->startScene(scene);
+    std::unique_ptr<Scene> scene = std::unique_ptr<Scene>(glCore->createScene(scenename));
+    glCore->startScene(scene.get());
 
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    auto window = glCore->getWindow();
     double timer = glfwGetTime();
     unsigned long frames = 0;
 
-    while(!glfwWindowShouldClose(window)) {
+    while(!glCore->shouldClose()) {
         glCore->displayFunc();
-        glfwSwapBuffers(window);
-        glfwPollEvents();
         frames++;
     }
 

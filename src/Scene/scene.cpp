@@ -19,8 +19,11 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-Scene::Scene(const Display* const display, lua_State* luaState, std::string scenename)
-        : m_display(display), m_luaState(luaState) {
+Scene::Scene(const Display* const display, std::string scenename)
+        : m_display(display) {
+
+    m_luaState = luaL_newstate();
+    luaL_openlibs(m_luaState);
 
     m_renderChain = std::make_unique<RenderChain>();
     m_resourceHandler = std::make_unique<ResourceHandler>();
@@ -101,8 +104,14 @@ Scene::Scene(const Display* const display, lua_State* luaState, std::string scen
     }
 }
 
-// NOTE Make sure scene is 100% closed when *this* is deleted
+// NOTE This is annoying, luaref's need to be deleted before lua scene
 Scene::~Scene() {
+    m_startFunc.reset(nullptr);
+    m_renderFunc.reset(nullptr);
+    for(auto& pair : m_luaKeyBinds) {
+        pair.second.reset(nullptr);
+    }
+    lua_close(m_luaState);
 }
 
 // NOTE What other functions are necessary to expose to lua?

@@ -20,20 +20,23 @@ public:
     GLCore(int width, int height, std::string scene);
     ~GLCore();
 
-    GLFWwindow* getWindow() const;
+    bool shouldClose() const;
 
-    void startScene(const std::string& scene);
+    GLFWwindow* getWindow() const;
+    Display* getDisplay() const;
+
+    Scene* getCurrentScene() const;
+    Scene* createScene(const std::string& scenename);
+    void startScene(Scene* scene);
+
     void displayFunc();
     void inputFunc(int key, bool state);
     void mouseFunc(double xpos, double ypos);
 
 private:
-    void initScene(std::string scene);
-    void closeScene();
-
-private:
-    std::unique_ptr<Scene> m_scene;
     std::unique_ptr<const Display> m_display;
+
+    Scene* m_currentScene;
     GLFWwindow* m_window;
     lua_State* m_luaState;
 };
