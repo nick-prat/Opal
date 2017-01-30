@@ -4,33 +4,28 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-#include <Core/camera.hpp>
-#include <Core/inputcontroller.hpp>
+class Camera;
+class InputController;
 
 class Display {
 public:
     Display();
-    Display(uint width, uint height);
+    Display(unsigned int width, unsigned int height);
     ~Display();
 
-    bool InitDisplay(uint width, uint height);
-    void Destroy();
+    InputController* getInputController() const;
+    Camera* getCamera() const;
+    glm::mat4 getProjectionMatrix() const;
+    unsigned int getWidth() const;
+    unsigned int getHeight() const;
 
-    std::shared_ptr<InputController> GetInputController() const;
-    std::shared_ptr<Camera> GetCamera() const;
-    glm::mat4 GetProjectionMatrix() const;
-    uint GetWidth() const;
-    uint GetHeight() const;
-
-    void PassiveMotionFunc(int x, int y);
-
-    void SetCursorPosition(float x, float y) const;
-    void SetCursorVisible(bool visible) const;
+    void setCursorPosition(float x, float y) const;
+    void setCursorVisible(bool visible) const;
 
 private:
-    uint m_width, m_height;
-    std::shared_ptr<InputController> m_inputController;
-    std::shared_ptr<Camera> m_camera;
+    unsigned int m_width, m_height;
+    std::unique_ptr<InputController> m_inputController;
+    std::unique_ptr<Camera> m_camera;
     glm::mat4 m_projMatrix;
 };
 

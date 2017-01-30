@@ -1,9 +1,8 @@
 #include "utilities.hpp"
 
-#include <sstream>
-#include <iostream>
-
 #include <GL/gl3w.h>
+
+#include <Utilities/log.hpp>
 
 void Utilities::PrintGLErrors()
 {
@@ -12,7 +11,7 @@ void Utilities::PrintGLErrors()
         GLenum glErr = glGetError();
         if(glErr != GL_NO_ERROR)
         {
-            std::cout << "~~  GLError (" << glErr << ") " << glErr << " ~~" << std::endl;
+            Log::getErrorLog() << "~~  GLError (" << glErr << ") " << glErr << " ~~\n";
         }
         else
         {

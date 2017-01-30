@@ -1,24 +1,31 @@
 #include "staticmodel.hpp"
 
 #include <memory>
-#include <iostream>
-
-#include <Utilities/utilities.hpp>
-#include <Utilities/exceptions.hpp>
 #include <GL/gl3w.h>
-#include <Render/Textures/texture.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
-StaticModel::StaticModel(const std::shared_ptr<Model3D> model)
-        : m_model(model) {
+#include <Utilities/log.hpp>
+#include <Utilities/exceptions.hpp>
+#include <Render/Sampler/sampler.hpp>
+#include <Core/display.hpp>
+#include <Core/camera.hpp>
+#include <Render/renderchain.hpp>
+#include <Resources/texture.hpp>
+#include <Resources/model3d.hpp>
+
+// NOTE Can i make this process faster?
+// NOTE Why should i have a seperate class for dynamic and static models
+StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
+        : m_model(model), m_world(world), m_sampler(std::make_unique<Sampler>()) {
 
     if(model == nullptr) {
-        throw generic_exception("Null param passed to StaticModel constructor");
+        throw GenericException("Null param passed to StaticModel constructor");
     }
 
-    m_meshCount = m_model->GetMeshes().size();
+    m_meshCount = m_model->getMeshCount();
 
-    for(uint i = 0; i < m_meshCount; i++) {
-        std::shared_ptr<Model3D::Mesh> mesh = m_model->GetMeshes()[i];
+    for(unsigned int i = 0; i < m_meshCount; i++) {
+        auto mesh = m_model->getMesh(i);
         GLuint vbo, vao, ibo;
 
         glGenVertexArrays(1, &vao);
@@ -27,22 +34,22 @@ StaticModel::StaticModel(const std::shared_ptr<Model3D> model)
 
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->GetVertices().size(), mesh->GetVertices().data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->getVertices().size(), mesh->getVertices().data(), GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
         m_VBO.push_back(vbo);
 
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(uint) * mesh->GetIndices().size(), mesh->GetIndices().data(), GL_STATIC_DRAW);
-        m_indexCount.push_back(mesh->GetIndices().size());
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh->getIndices().size(), mesh->getIndices().data(), GL_STATIC_DRAW);
+        m_indexCount.push_back(mesh->getIndices().size());
         m_IBO.push_back(ibo);
     }
-
-    std::vector<std::string> files = {"staticmodel_vs.glsl", "staticmodel_fs.glsl"};
-    std::vector<GLenum> types = {GL_VERTEX_SHADER, GL_FRAGMENT_SHADER};
-    m_shader = std::make_unique<Shader>(files, types);
 }
 
 StaticModel::~StaticModel() {
@@ -51,59 +58,31 @@ StaticModel::~StaticModel() {
     glDeleteBuffers(m_IBO.size(), m_IBO.data());
 }
 
-void StaticModel::Render(const Display* const display) {
-    m_shader->UseShader();
+glm::mat4 StaticModel::generateMVP(const Display* const display) const {
+    return display->getProjectionMatrix() * display->getCamera()->getViewMatrix() * m_world;
+}
 
-    GLint worldLocation = glGetUniformLocation(m_shader->GetProgram(), "gMVP");
-    if(worldLocation == -1) {
-        std::cout << "Couldn't get MVP uniform loaction" << std::endl;
-        exit(-1);
-    }
+const Model3D* StaticModel::getModel() const {
+    return m_model;
+}
 
-    GLint samplerLocation = glGetUniformLocation(m_shader->GetProgram(), "gSampler");
-    if(samplerLocation == -1) {
-        std::cout << "Couldn't get sampler uniform location" << std::endl;
-        exit(-1);
-    }
-    glUniform1i(samplerLocation, 0);
+void StaticModel::render(const Shader* const shader, const Display* const display) const {
+    glUniform1i(shader->getUniformLocation("gSampler"), 0);
+    glUniformMatrix4fv(shader->getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
-    m_sampler.Bind();
+    m_sampler->bind();
 
-    for(uint i = 0; i < m_meshCount; i++) {
-        glm::mat4 model;
-        if(m_model->GetMeshes()[i]->HasTransformation()) {
-            model = GetWorld() * m_model->GetMeshes()[i]->GetTransformation();
-        } else {
-            model = GetWorld();
-        }
-
-        glm::mat4 mvp = display->GetProjectionMatrix() * display->GetCamera()->GetViewMatrix() * model;
-        glUniformMatrix4fv(worldLocation, 1, GL_FALSE, glm::value_ptr(mvp));
-
+    for(unsigned int i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
 
-        std::shared_ptr<Texture> texture = m_model->GetTexture(m_model->GetMeshes()[i]->GetMatName());
+        auto texture = m_model->getTexture(m_model->getMesh(i)->getMatName());
         if(texture != nullptr) {
-            texture->Bind();
+            texture->bind();
         } else {
-            std::cout << "Couldn't get material " << m_model->GetMeshes()[i]->GetMatName() << std::endl;
+            Log::getErrorLog() << "Couldn't get material " << m_model->getMesh(i)->getMatName() << '\n';
             exit(-1);
         }
 
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1);
-        glEnableVertexAttribArray(2);
-
         glDrawElements(GL_TRIANGLES, (GLsizei)m_indexCount.data()[i], GL_UNSIGNED_INT, nullptr);
-
-        glDisableVertexAttribArray(0);
-        glDisableVertexAttribArray(1);
-        glDisableVertexAttribArray(2);
     }
-
-    Utilities::PrintGLErrors();
-}
-
-std::shared_ptr<Model3D> StaticModel::GetModel() {
-    return m_model;
 }

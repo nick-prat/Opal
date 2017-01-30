@@ -2,44 +2,56 @@
 
 #include <iostream>
 
+#include <Resources/texture.hpp>
+#include <Utilities/log.hpp>
+
 // Model3D
 
-Model3D::Model3D() {
-
-}
-
-Model3D::Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, std::shared_ptr<Texture>> textures)
-    :  m_textures(textures), m_meshes(meshes) {
-
+Model3D::Model3D()
+        : IResource("model3d") {
 }
 
 Model3D::~Model3D() {
 
 }
 
-void Model3D::AddMesh(std::shared_ptr<Mesh> mesh) {
-    m_meshes.push_back(mesh);
+void Model3D::addMesh(Mesh* mesh) {
+    m_meshes.push_back(std::unique_ptr<Mesh>(mesh));
 }
 
-void Model3D::SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes) {
-    m_meshes = meshes;
+void Model3D::addTexture(const std::string& name, const Texture* const texture) {
+    m_textures[name] = texture;
 }
 
-void Model3D::SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>> textures) {
-    m_textures = textures;
-}
-
-void Model3D::PrintTextures() const {
-    for(const auto texture : m_textures) {
-        std::cout << texture.first << "->" << (texture.second->IsLoaded() ? "loaded" : "load failed") << ": " << texture.second->GetFileName() << '\n';
+void Model3D::applyTransformation(const glm::mat4 &transform) {
+    for(auto& mesh : m_meshes) {
+        mesh->applyTransformation(transform);
     }
 }
 
-std::vector<std::shared_ptr<Model3D::Mesh>> Model3D::GetMeshes() const {
-    return m_meshes;
+void Model3D::printTextures() const {
+    for(const auto texture : m_textures) {
+        Log::getLog() << texture.first << "->" << (texture.second->isLoaded() ? "loaded" : "load failed") << ": " << texture.second->getFileName() << '\n';
+    }
 }
 
-std::shared_ptr<Texture> Model3D::GetTexture(const std::string& key) const {
+unsigned int Model3D::getMeshCount() const {
+    return m_meshes.size();
+}
+
+unsigned int Model3D::getFaceCount() const {
+    unsigned int faceCount = 0;
+    for(const auto& mesh : m_meshes) {
+        faceCount += mesh->getIndices().size() / 3;
+    }
+    return faceCount;
+}
+
+Model3D::Mesh* Model3D::getMesh(unsigned int index) const {
+    return m_meshes[index].get();
+}
+
+const Texture* Model3D::getTexture(const std::string& key) const {
     auto tex = m_textures.find(key);
     if(tex != m_textures.end())
     {
@@ -50,7 +62,8 @@ std::shared_ptr<Texture> Model3D::GetTexture(const std::string& key) const {
 
 // Model3D::Vertex
 
-Model3D::Vertex::Vertex() {}
+Model3D::Vertex::Vertex() {
+}
 
 Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
     : position(pos), normal(norm), texCoord(tex) {
@@ -59,44 +72,38 @@ Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
 
 // Model3D::Mesh
 
-Model3D::Mesh::Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices)
-: m_hasTransformation(false), m_matIndex(0), m_matName("null"), m_transformation(glm::mat4x4(1.0f)), m_indices(indices), m_vertices(vertices) {}
+Model3D::Mesh::Mesh(const std::vector<Vertex> vertices, const std::vector<unsigned int> indices)
+: m_matIndex(0), m_matName("null"), m_indices(indices), m_vertices(vertices) {}
 
 Model3D::Mesh::~Mesh() {}
 
-bool Model3D::Mesh::HasTransformation() const {
-    return m_hasTransformation;
+void Model3D::Mesh::applyTransformation(const glm::mat4& transform) {
+    for(auto& vert : m_vertices) {
+        glm::vec4 pos = transform * glm::vec4(vert.position, 1.0f);
+        vert.position = glm::vec3(pos.x, pos.y, pos.z);
+    }
 }
 
-void Model3D::Mesh::SetTransformation(const glm::mat4x4& transformation) {
-    m_hasTransformation = true;
-    m_transformation = transformation;
-}
-
-glm::mat4x4 Model3D::Mesh::GetTransformation() const {
-    return m_transformation;
-}
-
-std::vector<Model3D::Vertex> Model3D::Mesh::GetVertices() const {
+std::vector<Model3D::Vertex> Model3D::Mesh::getVertices() const {
     return m_vertices;
 }
 
-std::vector<uint> Model3D::Mesh::GetIndices() const {
+std::vector<unsigned int> Model3D::Mesh::getIndices() const {
     return m_indices;
 }
 
-void Model3D::Mesh::SetMatIndex(const uint matIndex) {
+void Model3D::Mesh::setMatIndex(const unsigned int matIndex) {
     m_matIndex = matIndex;
 }
 
-uint Model3D::Mesh::GetMatIndex() const {
+unsigned int Model3D::Mesh::getMatIndex() const {
     return m_matIndex;
 }
 
-void Model3D::Mesh::SetMatName(const std::string matName) {
+void Model3D::Mesh::setMatName(const std::string matName) {
     m_matName = matName;
 }
 
-std::string Model3D::Mesh::GetMatName() const {
+std::string Model3D::Mesh::getMatName() const {
     return m_matName;
 }

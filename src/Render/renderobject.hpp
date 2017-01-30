@@ -1,33 +1,29 @@
 #ifndef _RENDEROBJECT_H
 #define _RENDEROBJECT_H
 
-#include <glm/glm.hpp>
-#include <glm/gtx/transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 #include <memory>
+#include <Render/renderchain.hpp>
 
-#include <Render/Shader/shader.hpp>
-#include <Core/display.hpp>
+class Shader;
+class Display;
+
+// NOTE Is there any other data I need to track for render objects?
+// NOTE Are there any other functions every render object *should* have?
 
 class IRenderObject
 {
+    friend class RenderChain;
 public:
     IRenderObject();
     virtual ~IRenderObject();
-    virtual void Render(const Display* const display) = 0;
 
-    void Translate(const glm::vec3& trans);
-    void Rotate(const float& degrees, const glm::vec3& rotate);
-    void Scale(const glm::vec3& scale);
+    static int getNumRenderObjects();
 
-    glm::mat4 GetWorld();
+protected:
+    virtual void render(const Shader* const shader, const Display* const display) const = 0;
 
 private:
-    glm::mat4 m_translate;
-    glm::mat4 m_scale;
-    glm::mat4 m_rotate;
-    glm::mat4 m_world;
-
+    static int m_numRenderObjects;
 };
 
 #endif // _RENDEROBJECT_H

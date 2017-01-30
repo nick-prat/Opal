@@ -1,5 +1,5 @@
-#ifndef _3DMODEL_H
-#define _3DMODEL_H
+#ifndef _MODEL3D_H
+#define _MODEL3D_H
 
 #include <glm/glm.hpp>
 #include <string>
@@ -7,12 +7,15 @@
 #include <vector>
 #include <memory>
 
-#include <GL/gl3w.h>
-#include <Render/Textures/texture.hpp>
+#include <Resources/resource.hpp>
 
-class Model3D
+class Texture;
+
+// NOTE Are there model types that aren't 3D, if so implement them
+class Model3D : public IResource
 {
 public:
+    // NOTE Does a vertex struct need any functions?
     struct Vertex
     {
         Vertex();
@@ -22,51 +25,55 @@ public:
         glm::vec2 texCoord;
     };
 
+    // NOTE Should a mesh be a POD structure?
     class Mesh
     {
     public:
-        Mesh(const std::vector<Vertex> vertices, const std::vector<uint> indices);
+        Mesh(const std::vector<Vertex> vertices, const std::vector<unsigned int> indices);
         ~Mesh();
 
-        bool HasTransformation() const;
-        void SetTransformation(const glm::mat4x4& transformation);
+        void applyTransformation(const glm::mat4& transform);
 
-        glm::mat4x4 GetTransformation() const;
-        std::vector<Vertex> GetVertices() const;
-        std::vector<uint> GetIndices() const;
+        std::vector<Vertex> getVertices() const;
+        std::vector<unsigned int> getIndices() const;
 
-        void SetMatIndex(const uint matIndex);
-        uint GetMatIndex() const;
+        void setMatIndex(const unsigned int matIndex);
+        unsigned int getMatIndex() const;
 
-        void SetMatName(const std::string matName);
-        std::string GetMatName() const;
+        void setMatName(const std::string matName);
+        std::string getMatName() const;
 
     private:
-        bool m_hasTransformation;
-        uint m_matIndex;
+        unsigned int m_matIndex;
         std::string m_matName;
         glm::mat4x4 m_transformation;
-        std::vector<uint> m_indices;
+        std::vector<unsigned int> m_indices;
         std::vector<Vertex> m_vertices;
     };
 
     Model3D();
-    Model3D(const std::vector<std::shared_ptr<Mesh>>& meshes, const std::unordered_map<std::string, std::shared_ptr<Texture>> textures);
     ~Model3D();
 
-    void AddMesh(std::shared_ptr<Mesh> mesh);
-    void SetMeshes(const std::vector<std::shared_ptr<Mesh>>& meshes);
-    void SetTextures(const std::unordered_map<std::string, std::shared_ptr<Texture>> textures);
+    // NOTE Add meshes and texture is not possible in resource handler, so should I have these functions?
+    void addMesh(Mesh* mesh);
+    void addTexture(const std::string& name, const Texture* const texture);
 
-    std::shared_ptr<Texture> GetTexture(const std::string& key) const;
-    std::vector<std::shared_ptr<Mesh>> GetMeshes() const;
+    // NOTE Is this function useful still?
+    void applyTransformation(const glm::mat4& transform);
 
-    void PrintTextures() const;
+    const Texture* getTexture(const std::string& key) const;
+    Mesh* getMesh(unsigned int index) const;
+    unsigned int getMeshCount() const;
+    unsigned int getFaceCount() const;
+
+    void printTextures() const;
 
 private:
-    std::unordered_map<std::string, std::shared_ptr<Texture>> m_textures;
-    std::vector<std::shared_ptr<Mesh>> m_meshes;
+    std::unordered_map<std::string, const Texture*> m_textures;
+
+    // NOTE It might be useful to have these as obect's not pointers for easier copying
+    std::vector<std::unique_ptr<Mesh>> m_meshes;
 
 };
 
-#endif // _3DMODEL_H
+#endif // _MODEL3D_H

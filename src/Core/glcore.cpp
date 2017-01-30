@@ -1,90 +1,128 @@
 #include <GL/gl3w.h>
-
 #include "glcore.hpp"
 
-#include <chrono>
 #include <string>
-#include <thread>
-#include <fstream>
 
+#include <Scene/scene.hpp>
 #include <Utilities/exceptions.hpp>
-#include <Utilities/utilities.hpp>
 #include <Utilities/log.hpp>
-#include <Resources/resourceloader.hpp>
 
-GLCore::GLCore(int width, int height, std::string scene) {
+// TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])
 
-    m_display = std::make_unique<Display>(width, height);
-    m_renderChain = std::make_unique<RenderChain>();
+GLCore::GLCore(int width, int height, std::string title) {
+
+    if(!glfwInit()) {
+        Log::error("Couldn't initialize GLFW3\n");
+        exit(-1);
+    }
+
+    constexpr int major = 3;
+    constexpr int minor = 3;
+
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
+    if(!m_window) {
+        Log::error("Couldn't create window\n");
+        glfwTerminate();
+        exit(-1);
+    }
+
+    glfwMakeContextCurrent(m_window);
+
+    if(gl3wInit() == -1) {
+        Log::error("Couldn't initialize GL3W\n");
+        glfwTerminate();
+        exit(-1);
+    }
+
+    if(!gl3wIsSupported(major, minor)) {
+        Log::getErrorLog() << "Open GL " << major << "." << minor << " is unsupported\n";
+        glfwTerminate();
+        exit(-1);
+    }
+
+    glfwSetWindowUserPointer(m_window, this);
+    glfwSwapInterval(1);
+
+    glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
+        GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+        if(action == GLFW_PRESS) {
+            glCore->inputFunc(key, true);
+        } else if(action == GLFW_RELEASE) {
+            glCore->inputFunc(key, false);
+        }
+    });
+
+    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int /*mods*/) {
+        GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+        if(action == GLFW_PRESS) {
+            glCore->inputFunc(button, true);
+        } else if(action == GLFW_RELEASE) {
+            glCore->inputFunc(button, false);
+        }
+    });
+
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) {
+        GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+        glCore->mouseFunc(xpos, ypos);
+    });
+
+    m_display = std::make_unique<const Display>(width, height);
 
     // Log information about current context
-    std::cout << "\nInformation: \n";
-    std::cout << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
-    std::cout << "\tDisplay Address: " << m_display.get() << '\n';
-    std::cout << "\tRender Chain Address: " << m_renderChain.get() << "\n\n";
-
-    LoadScene(scene);
+    Log::getLog() << "\nInformation: \n";
+    Log::getLog() << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
+    Log::getLog() << "\tDisplay Address: " << m_display.get() << "\n\n";
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
     glDepthFunc(GL_LESS);
-    glClearColor(0.0f, 0.1f, 0.0f, 0.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-    auto inputController = m_display->GetInputController();
-
-    inputController->RegisterWhileKeyPressed(InputKey::A, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(-0.1f, 0.0f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::S, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, 0.1f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::D, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.1f, 0.0f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::W, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.0f, -0.1f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::Q, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, -0.1f, 0.0f));
-    });
-    inputController->RegisterWhileKeyPressed(InputKey::E, [this]() {
-        m_display->GetCamera()->MoveCamera(glm::vec3(0.0f, 0.1f, 0.0f));
-    });
-
-    Log::info("GL Context created", Log::OUT_LOG);
+    Log::getLog() << Log::OUT_LOG << "GL Context created\n";
+    Log::getLog() << Log::OUT_LOG_CONS;
 }
 
 GLCore::~GLCore() {
+    closeScene();
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
 }
 
-void GLCore::InputFunc(int key, bool state) {
-    m_display->GetInputController()->UpdateKey(key, state);
+GLFWwindow* GLCore::getWindow() const {
+    return m_window;
 }
 
-void GLCore::MouseFunc(double xpos, double ypos) {
-    m_display->GetInputController()->UpdateMousePosition(xpos, ypos);
+void GLCore::startScene(const std::string& scene) {
+    initScene(scene);
+    m_scene->start();
 }
 
-void GLCore::DisplayFunc() {
-    auto start = std::chrono::high_resolution_clock::now();
-
+void GLCore::displayFunc() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    m_renderChain->RenderObjectChain(m_display.get());
-
-    auto finish = std::chrono::high_resolution_clock::now();
-
-    std::shared_ptr<InputController> inputController = m_display->GetInputController();
-    if(inputController->IsKeyPressed(InputKey::SPACE)) {
-        std::cout << "Frame Time: " << std::chrono::duration_cast<std::chrono::nanoseconds>(finish - start).count() << '\n';
-    }
-
-    inputController->CallKeyLambdas();
-    Utilities::PrintGLErrors();
+    m_scene->gameLoop();
+    m_display->getInputController()->callKeyLambdas();
 }
 
-void GLCore::LoadScene(std::string name) {
-    m_renderObjects = ResourceLoader::LoadScene(name);
-    for(const auto& obj : m_renderObjects) {
-        m_renderChain->AttachRenderObject(obj);
-    }
+void GLCore::inputFunc(int key, bool state) {
+    m_display->getInputController()->updateKey(key, state);
+}
+
+void GLCore::mouseFunc(double xpos, double ypos) {
+    m_display->getInputController()->updateMousePosition(xpos, ypos);
+}
+
+void GLCore::initScene(std::string scene) {
+    m_luaState = luaL_newstate();
+    luaL_openlibs(m_luaState);
+    m_scene = std::make_unique<Scene>(m_display.get(), m_luaState, scene);
+}
+
+void GLCore::closeScene() {
+    m_scene.reset(nullptr);
+    lua_close(m_luaState);
 }

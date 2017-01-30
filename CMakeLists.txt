@@ -15,16 +15,24 @@ set(SOURCE_FILES
     # Render
     src/Render/renderchain.cpp
     src/Render/renderobject.cpp
-    src/Render/Shader/shader.cpp
-    src/Render/Textures/texture.cpp
+    src/Render/shader.cpp
     src/Render/Sampler/sampler.cpp
 
+    # Entity
+    src/Entity/entity.cpp
+
+    # Scene
+    src/Scene/scene.cpp
+
     # Models
+    src/Models/dynamicmodel.cpp
     src/Models/staticmodel.cpp
 	src/Models/line.cpp
 
     # Resources
-    src/Resources/resourceloader.cpp
+    src/Resources/texture.cpp
+    src/Resources/resource.cpp
+    src/Resources/resourcehandler.cpp
     src/Resources/model3d.cpp
 
     # Utilities
@@ -45,4 +53,4 @@ find_package(Threads REQUIRED)
 find_package(ASSIMP REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 include_directories(${OPENGL_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIR} ${GLFW_INCLUDE_DIRECTORIES} "./src")
-target_link_libraries(OpenGL -ldl /usr/lib/libfreeimage.so ${OPENGL_gl_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ASSIMP_LIBRARIES})
+target_link_libraries(OpenGL -ldl -llua /usr/lib/libfreeimage.so ${OPENGL_gl_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ASSIMP_LIBRARIES})
