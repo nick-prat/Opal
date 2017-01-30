@@ -28,6 +28,8 @@ int main(int argc, char **args) {
         glfwTerminate();
         exit(-1);
     }
+
+    glCore->setClearColor(glm::vec4(0.0f));
     glCore->setVsync(true);
 
     std::unique_ptr<Scene> scene = std::unique_ptr<Scene>(glCore->createScene(scenename));
