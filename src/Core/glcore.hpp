@@ -20,7 +20,7 @@ public:
     GLCore();
     GLCore(int width, int height, std::string scene);
     GLCore(const GLCore& rhs) = delete;
-    GLCore(GLCore&& glCore) = delete;
+    GLCore(GLCore&& glCore);
     ~GLCore();
 
     GLCore& operator=(GLCore&& glCore);

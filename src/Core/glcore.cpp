@@ -110,6 +110,10 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
     Log::getLog() << Log::OUT_LOG_CONS;
 }
 
+GLCore::GLCore(GLCore&& glCore) {
+    this->operator=(std::forward<GLCore>(glCore));
+}
+
 GLCore::~GLCore() {
     if(m_deleter != nullptr) {
         m_deleter();
