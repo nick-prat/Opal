@@ -39,6 +39,7 @@ public:
     Camera* getCamera() const;
 
 private:
+    void closeLua();
     void buildLuaNamespace();
     void registerLuaFunctions();
 
@@ -55,6 +56,7 @@ private:
     std::unique_ptr<RenderChain> m_renderChain;
     std::unique_ptr<ResourceHandler> m_resourceHandler;
 
+    bool m_luaEnabled;
     const Display* const m_display;
     lua_State* m_luaState;
 };

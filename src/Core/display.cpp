@@ -5,11 +5,13 @@
 #include <GL/gl3w.h>
 
 #include <Utilities/exceptions.hpp>
+#include <Utilities/log.hpp>
 #include <Core/camera.hpp>
 #include <Core/inputcontroller.hpp>
 
 Display::Display()
         : m_inputController(nullptr), m_camera(nullptr), m_projMatrix(glm::mat4(1.0f)) {
+
 }
 
 Display::Display(unsigned int width, unsigned int height)
@@ -22,7 +24,7 @@ Display::Display(unsigned int width, unsigned int height)
 }
 
 Display::~Display() {
-
+    Log::getLog() << "destroying display\n";
 }
 
 InputController* Display::getInputController() const {

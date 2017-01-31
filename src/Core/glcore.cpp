@@ -9,8 +9,17 @@
 
 // TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])
 
-GLCore::GLCore(int width, int height, std::string title)
-        : m_currentScene(nullptr) {
+// Creates a dummy GLCore that doesn't spawn a window
+GLCore::GLCore() {
+    m_deleter = nullptr;
+    m_display = nullptr;
+    m_currentScene = nullptr;
+    m_window = nullptr;
+    m_luaState = nullptr;
+}
+
+GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullptr) {
+    m_currentScene = nullptr;
 
     glfwSetErrorCallback([](int error, const char* desc) {
         Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
@@ -20,6 +29,10 @@ GLCore::GLCore(int width, int height, std::string title)
         Log::error("Couldn't initialize GLFW3\n");
         exit(-1);
     }
+
+    m_deleter = [this]() {
+        glfwTerminate();
+    };
 
     constexpr int major = 3;
     constexpr int minor = 3;
@@ -31,15 +44,18 @@ GLCore::GLCore(int width, int height, std::string title)
 
     m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
     if(!m_window) {
-        Log::error("Couldn't create window\n");
-        glfwTerminate();
-        exit(-1);
+        throw GenericException("Couldn't create window\n");
     }
+
+    m_deleter = [this]() {
+        glfwDestroyWindow(m_window);
+        glfwTerminate();
+    };
 
     glfwMakeContextCurrent(m_window);
 
     if(gl3wInit() == -1) {
-        Log::error("Couldn't initialize GL3W\n");
+        throw GenericException("Couldn't initialize GL3W\n");
         glfwTerminate();
         exit(-1);
     }
@@ -95,8 +111,23 @@ GLCore::GLCore(int width, int height, std::string title)
 }
 
 GLCore::~GLCore() {
-    glfwDestroyWindow(m_window);
-    glfwTerminate();
+    if(m_deleter != nullptr) {
+        m_deleter();
+    }
+}
+
+GLCore& GLCore::operator=(GLCore&& glCore) {
+    m_deleter = glCore.m_deleter;
+    glCore.m_deleter = nullptr;
+    m_display.reset(glCore.m_display.release());
+    m_currentScene = glCore.m_currentScene;
+    if(m_window != nullptr) {
+        glfwDestroyWindow(m_window);
+    }
+    m_window = glCore.m_window;
+    m_luaState = glCore.m_luaState;
+    glfwSetWindowUserPointer(m_window, this);
+    return *this;
 }
 
 bool GLCore::shouldClose() const {
@@ -117,6 +148,10 @@ void GLCore::setVsync(bool enabled) {
 
 GLFWwindow* GLCore::getWindow() const {
     return m_window;
+}
+
+const Display* GLCore::getDisplay() const {
+    return m_display.get();
 }
 
 Scene* GLCore::createScene(const std::string& scenename) {

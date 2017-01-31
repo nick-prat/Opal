@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <glm/glm.hpp>
+#include <GLFW/glfw3.h>
 
 extern "C" {
 #include <lua.h>
@@ -10,16 +11,19 @@ extern "C" {
 #include <lualib.h>
 }
 
-#include <GLFW/glfw3.h>
-
 class ResourceHandler;
 class Scene;
 class Display;
 
 class GLCore {
 public:
+    GLCore();
     GLCore(int width, int height, std::string scene);
+    GLCore(const GLCore& rhs) = delete;
+    GLCore(GLCore&& glCore) = delete;
     ~GLCore();
+
+    GLCore& operator=(GLCore&& glCore);
 
     bool shouldClose() const;
 
@@ -27,7 +31,7 @@ public:
     void setVsync(bool enabled);
 
     GLFWwindow* getWindow() const;
-    Display* getDisplay() const;
+    const Display* getDisplay() const;
     Scene* getCurrentScene() const;
     Scene* createScene(const std::string& scenename);
     void startScene(Scene* scene);
@@ -37,8 +41,8 @@ public:
     void mouseFunc(double xpos, double ypos);
 
 private:
+    std::function<void()> m_deleter;
     std::unique_ptr<const Display> m_display;
-
     Scene* m_currentScene;
     GLFWwindow* m_window;
     lua_State* m_luaState;

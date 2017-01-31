@@ -13,14 +13,14 @@
 using luabridge::LuaRef;
 using json = nlohmann::json;
 
-// TODO Implement scene closing
 // TODO Implement some sort of multithreading in lua (coroutines?)
+// TODO Check to see if main.lua exists (a scene doesn't need to have lua support)
 
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
 Scene::Scene(const Display* const display, std::string scenename)
-        : m_display(display) {
+        : m_luaEnabled(true), m_display(display) {
 
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
@@ -106,6 +106,12 @@ Scene::Scene(const Display* const display, std::string scenename)
 
 // NOTE This is annoying, luaref's need to be deleted before lua scene
 Scene::~Scene() {
+    if(m_luaEnabled) {
+        closeLua();
+    }
+}
+
+void Scene::closeLua() {
     m_startFunc.reset(nullptr);
     m_renderFunc.reset(nullptr);
     for(auto& pair : m_luaKeyBinds) {

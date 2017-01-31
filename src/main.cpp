@@ -20,26 +20,25 @@ int main(int argc, char **args) {
     const int width = 1024;
     const int height = 576;
 
-    std::unique_ptr<GLCore> glCore;
+    GLCore glCore;
     try {
-        glCore = std::unique_ptr<GLCore>(new GLCore(width, height, title));
+        glCore = GLCore(width, height, title);
     } catch(GenericException& error) {
         error.printError();
-        glfwTerminate();
-        exit(-1);
+        return 1;
     }
 
-    glCore->setClearColor(glm::vec4(0.0f));
-    glCore->setVsync(true);
+    glCore.setClearColor(glm::vec4(0.0f));
+    glCore.setVsync(true);
 
-    std::unique_ptr<Scene> scene = std::unique_ptr<Scene>(glCore->createScene(scenename));
-    glCore->startScene(scene.get());
+    std::unique_ptr<Scene> scene = std::unique_ptr<Scene>(glCore.createScene(scenename));
+    glCore.startScene(scene.get());
 
     double timer = glfwGetTime();
     unsigned long frames = 0;
 
-    while(!glCore->shouldClose()) {
-        glCore->displayFunc();
+    while(!glCore.shouldClose()) {
+        glCore.displayFunc();
         frames++;
     }
 

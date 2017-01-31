@@ -1,10 +1,13 @@
 #include "inputcontroller.hpp"
 
+#include <iostream>
+
 InputController::InputController()
         : m_mouseX(0.0), m_mouseY(0.0){
 }
 
 InputController::~InputController() {
+
 }
 
 void InputController::clearWhileKeyPressed() {
