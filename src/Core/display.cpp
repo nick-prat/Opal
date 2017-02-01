@@ -24,7 +24,7 @@ Display::Display(unsigned int width, unsigned int height)
 }
 
 Display::~Display() {
-    Log::getLog() << "destroying display\n";
+
 }
 
 InputController* Display::getInputController() const {
