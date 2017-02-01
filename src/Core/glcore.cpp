@@ -26,8 +26,7 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
     });
 
     if(!glfwInit()) {
-        Log::error("Couldn't initialize GLFW3\n");
-        exit(-1);
+        throw GenericException("Couldn't initialize GLFW3\n");
     }
 
     m_deleter = [this]() {
@@ -56,8 +55,6 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
 
     if(gl3wInit() == -1) {
         throw GenericException("Couldn't initialize GL3W\n");
-        glfwTerminate();
-        exit(-1);
     }
 
     if(!gl3wIsSupported(major, minor)) {
