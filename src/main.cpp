@@ -20,30 +20,33 @@ int main(int argc, char **args) {
     const int width = 1024;
     const int height = 576;
 
-    GLCore glCore;
+    GLCore::initAPI();
+    std::unique_ptr<GLCore> glCore;
     try {
-        glCore = GLCore(width, height, title);
+        glCore = std::make_unique<GLCore>(GLCore::createWindow(width, height, title));
     } catch(GenericException& error) {
         error.printError();
         return 1;
     }
 
-    glCore.setClearColor(glm::vec4(0.0f));
-    glCore.setVsync(true);
+    glCore->setClearColor(glm::vec4(0.0f));
+    glCore->setVsync(true);
 
-    std::unique_ptr<Scene> scene = std::unique_ptr<Scene>(glCore.createScene(scenename));
-    glCore.startScene(scene.get());
+    std::unique_ptr<Scene> scene = std::unique_ptr<Scene>(glCore->createScene(scenename));
+    glCore->startScene(scene.get());
 
     double timer = glfwGetTime();
     unsigned long frames = 0;
 
-    while(!glCore.shouldClose()) {
-        glCore.displayFunc();
+    while(!glCore->shouldClose()) {
+        glCore->displayFunc();
         frames++;
     }
 
     timer = glfwGetTime() - timer;
     Log::getLog() << "Average FPS: " << frames / timer << '\n';
 
+    glCore->closeWindow();
+    GLCore::closeAPI();
     return 0;
 }

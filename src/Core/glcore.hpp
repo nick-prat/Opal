@@ -15,16 +15,23 @@ class ResourceHandler;
 class Scene;
 class Display;
 
+// TODO Be able to switch between what window is active
+
 class GLCore {
 public:
     GLCore();
-    GLCore(int width, int height, std::string scene);
     GLCore(const GLCore& rhs) = delete;
     GLCore(GLCore&& glCore);
     ~GLCore();
 
     GLCore& operator=(GLCore&& glCore);
 
+    static GLCore&& createWindow(int width, int height, const std::string& title);
+    static void makeWindowCurrent(const GLCore& glCore);
+    static void initAPI();
+    static void closeAPI();
+
+    void closeWindow();
     bool shouldClose() const;
 
     void setClearColor(const glm::vec4& color);
@@ -41,7 +48,9 @@ public:
     void mouseFunc(double xpos, double ypos);
 
 private:
-    std::function<void()> m_deleter;
+    GLCore(int width, int height, std::string scene);
+
+private:
     std::unique_ptr<const Display> m_display;
     Scene* m_currentScene;
     GLFWwindow* m_window;

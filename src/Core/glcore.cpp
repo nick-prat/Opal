@@ -11,7 +11,7 @@
 
 // Creates a dummy GLCore that doesn't spawn a window
 GLCore::GLCore() {
-    m_deleter = nullptr;
+    std::cout << "Creating dummy\n";
     m_display = nullptr;
     m_currentScene = nullptr;
     m_window = nullptr;
@@ -19,19 +19,13 @@ GLCore::GLCore() {
 }
 
 GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullptr) {
+    std::cout << "Creating real\n";
     m_currentScene = nullptr;
+    m_window = nullptr;
 
     glfwSetErrorCallback([](int error, const char* desc) {
         Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
-
-    if(!glfwInit()) {
-        throw GenericException("Couldn't initialize GLFW3\n");
-    }
-
-    m_deleter = [this]() {
-        glfwTerminate();
-    };
 
     constexpr int major = 3;
     constexpr int minor = 3;
@@ -45,11 +39,6 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
     if(!m_window) {
         throw GenericException("Couldn't create window\n");
     }
-
-    m_deleter = [this]() {
-        glfwDestroyWindow(m_window);
-        glfwTerminate();
-    };
 
     glfwMakeContextCurrent(m_window);
 
@@ -108,27 +97,56 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
 }
 
 GLCore::GLCore(GLCore&& glCore) {
-    this->operator=(std::forward<GLCore>(glCore));
+    m_display.reset(glCore.m_display.release());
+    m_currentScene = glCore.m_currentScene;
+    std::cout << m_window << ' ' << glCore.m_window << '\n';
+    m_window = glCore.m_window;
+    glCore.m_window = nullptr;
+    m_luaState = glCore.m_luaState;
+    glfwSetWindowUserPointer(m_window, this);
 }
 
 GLCore::~GLCore() {
-    if(m_deleter != nullptr) {
-        m_deleter();
-    }
+    closeWindow();
 }
 
 GLCore& GLCore::operator=(GLCore&& glCore) {
-    m_deleter = glCore.m_deleter;
-    glCore.m_deleter = nullptr;
     m_display.reset(glCore.m_display.release());
     m_currentScene = glCore.m_currentScene;
+    std::cout << m_window << ' ' << glCore.m_window << '\n';
     if(m_window != nullptr) {
         glfwDestroyWindow(m_window);
     }
     m_window = glCore.m_window;
+    glCore.m_window = nullptr;
     m_luaState = glCore.m_luaState;
     glfwSetWindowUserPointer(m_window, this);
     return *this;
+}
+
+GLCore&& GLCore::createWindow(int width, int height, const std::string& title) {
+    return std::move(*(new GLCore(width, height, title)));
+}
+
+void GLCore::makeWindowCurrent(const GLCore& glCore) {
+    // NOTE How do I do this?
+}
+
+void GLCore::initAPI() {
+    if(!glfwInit()) {
+        throw GenericException("Couldn't initialize GLFW3\n");
+    }
+}
+
+void GLCore::closeAPI() {
+    glfwTerminate();
+}
+
+void GLCore::closeWindow() {
+    if(m_window != nullptr) {
+        glfwDestroyWindow(m_window);
+        m_window = nullptr;
+    }
 }
 
 bool GLCore::shouldClose() const {
