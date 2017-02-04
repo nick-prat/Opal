@@ -96,14 +96,16 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
     Log::getLog() << Log::OUT_LOG_CONS;
 }
 
-GLCore::GLCore(GLCore&& glCore) {
-    m_display.reset(glCore.m_display.release());
-    m_currentScene = glCore.m_currentScene;
-    std::cout << m_window << ' ' << glCore.m_window << '\n';
-    m_window = glCore.m_window;
-    glCore.m_window = nullptr;
-    m_luaState = glCore.m_luaState;
-    glfwSetWindowUserPointer(m_window, this);
+GLCore::GLCore(GLCore&& glCore)
+        : m_display(nullptr), m_currentScene(nullptr), m_window(nullptr), m_luaState(nullptr) {
+    std::cout << "move const\n";
+    *this = std::move(glCore);
+    //m_display.reset(glCore.m_display.release());
+    //m_currentScene = glCore.m_currentScene;
+    //m_window = glCore.m_window;
+    //glCore.m_window = nullptr;
+    //m_luaState = glCore.m_luaState;
+    //glfwSetWindowUserPointer(m_window, this);
 }
 
 GLCore::~GLCore() {
@@ -111,15 +113,10 @@ GLCore::~GLCore() {
 }
 
 GLCore& GLCore::operator=(GLCore&& glCore) {
-    m_display.reset(glCore.m_display.release());
-    m_currentScene = glCore.m_currentScene;
-    std::cout << m_window << ' ' << glCore.m_window << '\n';
-    if(m_window != nullptr) {
-        glfwDestroyWindow(m_window);
-    }
-    m_window = glCore.m_window;
-    glCore.m_window = nullptr;
-    m_luaState = glCore.m_luaState;
+    std::swap(m_display, glCore.m_display);
+    std::swap(m_currentScene, glCore.m_currentScene);
+    std::swap(m_window, glCore.m_window);
+    std::swap(m_luaState, glCore.m_luaState);
     glfwSetWindowUserPointer(m_window, this);
     return *this;
 }

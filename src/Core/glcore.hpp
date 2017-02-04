@@ -20,7 +20,7 @@ class Display;
 class GLCore {
 public:
     GLCore();
-    GLCore(const GLCore& rhs) = delete;
+    GLCore(const GLCore&) = delete;
     GLCore(GLCore&& glCore);
     ~GLCore();
 

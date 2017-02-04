@@ -23,8 +23,13 @@ class RenderChain;
 
 class Scene {
 public:
+    Scene();
     Scene(const Display* const display, std::string scenename);
+    Scene(const Scene&) = delete;
+    Scene(Scene&& scene);
     ~Scene();
+
+    Scene& operator=(Scene&& scene);
 
     void start();
     void gameLoop();
@@ -57,7 +62,7 @@ private:
     std::unique_ptr<ResourceHandler> m_resourceHandler;
 
     bool m_luaEnabled;
-    const Display* const m_display;
+    const Display* m_display;
     lua_State* m_luaState;
 };
 
