@@ -10,19 +10,10 @@
 // TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])
 
 // Creates a dummy GLCore that doesn't spawn a window
-GLCore::GLCore() {
-    std::cout << "Creating dummy\n";
-    m_display = nullptr;
-    m_currentScene = nullptr;
-    m_window = nullptr;
-    m_luaState = nullptr;
+GLCore::GLCore() : m_display(nullptr), m_currentScene(nullptr), m_window(nullptr) {
 }
 
-GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullptr) {
-    std::cout << "Creating real\n";
-    m_currentScene = nullptr;
-    m_window = nullptr;
-
+GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullptr), m_window(nullptr) {
     glfwSetErrorCallback([](int error, const char* desc) {
         Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
@@ -97,21 +88,20 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
 }
 
 GLCore::GLCore(GLCore&& glCore)
-        : m_display(nullptr), m_currentScene(nullptr), m_window(nullptr), m_luaState(nullptr) {
-    std::cout << "move const\n";
+        : m_display(nullptr), m_currentScene(nullptr), m_window(nullptr) {
     *this = std::move(glCore);
 }
 
 GLCore::~GLCore() {
-    closeWindow();
+    destroy();
 }
 
 GLCore& GLCore::operator=(GLCore&& glCore) {
     std::swap(m_display, glCore.m_display);
     std::swap(m_currentScene, glCore.m_currentScene);
     std::swap(m_window, glCore.m_window);
-    std::swap(m_luaState, glCore.m_luaState);
     glfwSetWindowUserPointer(m_window, this);
+    glCore.destroy();
     return *this;
 }
 
@@ -133,10 +123,13 @@ void GLCore::closeAPI() {
     glfwTerminate();
 }
 
-void GLCore::closeWindow() {
+void GLCore::destroy() {
     if(m_window != nullptr) {
         glfwDestroyWindow(m_window);
         m_window = nullptr;
+    }
+    if(m_display != nullptr) {
+        m_display.reset(nullptr);
     }
 }
 

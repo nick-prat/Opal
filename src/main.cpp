@@ -15,12 +15,13 @@ int main(int argc, char **args) {
         exit(-1);
     }
 
-    std::string scenename = args[1];
-    const char* title = "OpenGL Project";
-    const int width = 1024;
-    const int height = 576;
+    const std::string scenename = args[1];
+    const std::string title = "OpenGL Project";
+    constexpr int width = 1024;
+    constexpr int height = 576;
 
     GLCore::initAPI();
+
     std::unique_ptr<GLCore> glCore;
     try {
         glCore = std::make_unique<GLCore>(GLCore::createWindow(width, height, title));
@@ -46,7 +47,8 @@ int main(int argc, char **args) {
     timer = glfwGetTime() - timer;
     Log::getLog() << "Average FPS: " << frames / timer << '\n';
 
-    glCore->closeWindow();
+    glCore.reset(nullptr);
+    scene.reset(nullptr);
     GLCore::closeAPI();
     return 0;
 }

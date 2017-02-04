@@ -20,6 +20,7 @@ class Display;
 class GLCore {
 public:
     GLCore();
+    GLCore(int width, int height, std::string scene);
     GLCore(const GLCore&) = delete;
     GLCore(GLCore&& glCore);
     ~GLCore();
@@ -31,7 +32,7 @@ public:
     static void initAPI();
     static void closeAPI();
 
-    void closeWindow();
+    void destroy();
     bool shouldClose() const;
 
     void setClearColor(const glm::vec4& color);
@@ -48,13 +49,9 @@ public:
     void mouseFunc(double xpos, double ypos);
 
 private:
-    GLCore(int width, int height, std::string scene);
-
-private:
     std::unique_ptr<const Display> m_display;
     Scene* m_currentScene;
     GLFWwindow* m_window;
-    lua_State* m_luaState;
 };
 
 #endif // _GLCORE_H

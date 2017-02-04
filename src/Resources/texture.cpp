@@ -36,7 +36,7 @@ void Texture::bind() const {
 }
 
 void Texture::unload() {
-    if(m_loaded && glIsTexture(m_glTexture)) {
+    if(m_loaded /*&& glIsTexture(m_glTexture)*/) {
         glDeleteTextures(1, &m_glTexture);
         m_glTexture = 0;
     }
