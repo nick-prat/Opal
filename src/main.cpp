@@ -22,33 +22,33 @@ int main(int argc, char **args) {
 
     GLCore::initAPI();
 
-    std::unique_ptr<GLCore> glCore;
+    GLCore glCore;
     try {
-        glCore = std::make_unique<GLCore>(GLCore::createWindow(width, height, title));
+        glCore = GLCore(width, height, title);
     } catch(GenericException& error) {
         error.printError();
         return 1;
     }
 
-    glCore->setClearColor(glm::vec4(0.0f));
-    glCore->setVsync(true);
+    glCore.setClearColor(glm::vec4(0.0f));
+    glCore.setVsync(true);
 
-    std::unique_ptr<Scene> scene = std::unique_ptr<Scene>(glCore->createScene(scenename));
-    glCore->startScene(scene.get());
+    Scene scene = Scene(glCore.createScene(scenename));
+    glCore.startScene(&scene);
 
     double timer = glfwGetTime();
     unsigned long frames = 0;
 
-    while(!glCore->shouldClose()) {
-        glCore->displayFunc();
+    while(!glCore.shouldClose()) {
+        glCore.displayFunc();
         frames++;
     }
 
     timer = glfwGetTime() - timer;
     Log::getLog() << "Average FPS: " << frames / timer << '\n';
 
-    glCore.reset(nullptr);
-    scene.reset(nullptr);
+    scene.destroy();
+    glCore.destroy();
     GLCore::closeAPI();
     return 0;
 }

@@ -19,7 +19,7 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-Scene::Scene() : m_luaEnabled(false), m_display(nullptr), m_luaState(nullptr) {}
+Scene::Scene() : m_scenename("null"),  m_luaState(nullptr), m_luaEnabled(false), m_display(nullptr) {}
 
 Scene::Scene(const Display* const display, std::string scenename)
         : m_luaEnabled(true), m_display(display) {
@@ -107,15 +107,13 @@ Scene::Scene(const Display* const display, std::string scenename)
 }
 
 Scene::Scene(Scene&& scene)
-        : m_luaEnabled(false), m_display(nullptr), m_luaState(nullptr) {
+        : m_scenename("null"),  m_luaState(nullptr), m_luaEnabled(false), m_display(nullptr) {
     *this = std::move(scene);
 }
 
 // NOTE This is annoying, luaref's need to be deleted before lua scene
 Scene::~Scene() {
-    if(m_luaEnabled) {
-        closeLua();
-    }
+    destroy();
 }
 
 Scene& Scene::operator=(Scene&& scene) {
@@ -133,13 +131,22 @@ Scene& Scene::operator=(Scene&& scene) {
     return *this;
 }
 
-void Scene::closeLua() {
-    m_startFunc.reset(nullptr);
-    m_renderFunc.reset(nullptr);
-    for(auto& pair : m_luaKeyBinds) {
-        pair.second.reset(nullptr);
+void Scene::destroy() {
+    m_entities.clear();
+    m_renderObjects.clear();
+    m_renderChain.reset(nullptr);
+    m_resourceHandler.reset(nullptr);
+    m_scenename = "null";
+    if(m_luaEnabled) {
+        m_startFunc.reset(nullptr);
+        m_renderFunc.reset(nullptr);
+        for(auto& pair : m_luaKeyBinds) {
+            pair.second.reset(nullptr);
+        }
+        lua_close(m_luaState);
+        m_luaEnabled = false;
     }
-    lua_close(m_luaState);
+    m_display = nullptr;
 }
 
 // NOTE What other functions are necessary to expose to lua?

@@ -133,6 +133,7 @@ IRenderObject* ResourceHandler::generateModel(const json& object) {
     model->addMesh(mesh);
     model->addTexture("texture", texture);
 
+    // TODO Memory leak here
     return generateModel(object, model);
 }
 

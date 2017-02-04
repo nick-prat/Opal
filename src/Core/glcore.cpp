@@ -100,13 +100,10 @@ GLCore& GLCore::operator=(GLCore&& glCore) {
     std::swap(m_display, glCore.m_display);
     std::swap(m_currentScene, glCore.m_currentScene);
     std::swap(m_window, glCore.m_window);
-    glfwSetWindowUserPointer(m_window, this);
-    glCore.destroy();
+    if(m_window != nullptr) {
+        glfwSetWindowUserPointer(m_window, this);
+    }
     return *this;
-}
-
-GLCore&& GLCore::createWindow(int width, int height, const std::string& title) {
-    return std::move(*(new GLCore(width, height, title)));
 }
 
 void GLCore::makeWindowCurrent(const GLCore& glCore) {
@@ -157,9 +154,9 @@ const Display* GLCore::getDisplay() const {
     return m_display.get();
 }
 
-Scene* GLCore::createScene(const std::string& scenename) {
+Scene GLCore::createScene(const std::string& scenename) {
     auto timer = glfwGetTime();
-    auto scene = new Scene(m_display.get(), scenename);
+    auto scene = Scene(m_display.get(), scenename);
     Log::getLog() << "Scene creation for " << scenename << " in " << glfwGetTime() - timer << " seconds\n";
     return scene;
 }

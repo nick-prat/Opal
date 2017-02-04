@@ -26,13 +26,12 @@ public:
     ~GLCore();
 
     GLCore& operator=(GLCore&& glCore);
+    void destroy();
 
-    static GLCore&& createWindow(int width, int height, const std::string& title);
     static void makeWindowCurrent(const GLCore& glCore);
     static void initAPI();
     static void closeAPI();
 
-    void destroy();
     bool shouldClose() const;
 
     void setClearColor(const glm::vec4& color);
@@ -41,7 +40,7 @@ public:
     GLFWwindow* getWindow() const;
     const Display* getDisplay() const;
     Scene* getCurrentScene() const;
-    Scene* createScene(const std::string& scenename);
+    Scene createScene(const std::string& scenename);
     void startScene(Scene* scene);
 
     void displayFunc();
