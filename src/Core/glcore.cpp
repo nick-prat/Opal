@@ -100,12 +100,6 @@ GLCore::GLCore(GLCore&& glCore)
         : m_display(nullptr), m_currentScene(nullptr), m_window(nullptr), m_luaState(nullptr) {
     std::cout << "move const\n";
     *this = std::move(glCore);
-    //m_display.reset(glCore.m_display.release());
-    //m_currentScene = glCore.m_currentScene;
-    //m_window = glCore.m_window;
-    //glCore.m_window = nullptr;
-    //m_luaState = glCore.m_luaState;
-    //glfwSetWindowUserPointer(m_window, this);
 }
 
 GLCore::~GLCore() {
