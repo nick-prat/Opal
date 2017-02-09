@@ -33,7 +33,7 @@ int main(int argc, char **args) {
     glCore.setClearColor(glm::vec4(0.0f));
     glCore.setVsync(true);
 
-    Scene scene = Scene(glCore.createScene(scenename));
+    Scene scene = glCore.createScene(scenename);
     glCore.startScene(&scene);
 
     double timer = glfwGetTime();
