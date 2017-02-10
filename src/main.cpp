@@ -25,6 +25,7 @@ int main(int argc, char **args) {
     GLCore glCore;
     try {
         glCore = GLCore(width, height, title);
+        GLCore::makeWindowCurrent(&glCore);
     } catch(GenericException& error) {
         error.printError();
         return 1;

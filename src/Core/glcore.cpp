@@ -47,6 +47,9 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
 
     glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+        if(glCore == nullptr) {
+            return;
+        }
         if(action == GLFW_PRESS) {
             glCore->inputFunc(key, true);
         } else if(action == GLFW_RELEASE) {
@@ -56,6 +59,9 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
 
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int /*mods*/) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+        if(glCore == nullptr) {
+            return;
+        }
         if(action == GLFW_PRESS) {
             glCore->inputFunc(button, true);
         } else if(action == GLFW_RELEASE) {
@@ -65,6 +71,9 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
 
     glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) {
         GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
+        if(glCore == nullptr) {
+            return;
+        }
         glCore->mouseFunc(xpos, ypos);
     });
 
@@ -73,9 +82,10 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
 
     m_display = std::make_unique<const Display>(width, height);
 
-    // Log information about current context
+    // Log information about this context
     Log::getLog() << "\nInformation: \n";
     Log::getLog() << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
+    Log::getLog() << "\tGLCore Address: " << this << '\n';
     Log::getLog() << "\tDisplay Address: " << m_display.get() << "\n\n";
 
     glEnable(GL_DEPTH_TEST);
@@ -97,17 +107,24 @@ GLCore::~GLCore() {
 }
 
 GLCore& GLCore::operator=(GLCore&& glCore) {
-    std::swap(m_display, glCore.m_display);
-    std::swap(m_currentScene, glCore.m_currentScene);
-    std::swap(m_window, glCore.m_window);
-    if(m_window != nullptr) {
-        glfwSetWindowUserPointer(m_window, this);
+    m_display = std::move(glCore.m_display);
+    m_currentScene = glCore.m_currentScene;
+    m_window = glCore.m_window;
+
+    glCore.m_currentScene = nullptr;
+    glCore.m_window = nullptr;
+
+    if(glfwGetWindowUserPointer(m_window) == &glCore) {
+        glfwSetWindowUserPointer(m_window, nullptr);
     }
+
     return *this;
 }
 
-void GLCore::makeWindowCurrent(const GLCore& glCore) {
-    // NOTE How do I do this?
+void GLCore::makeWindowCurrent(GLCore* glCore) {
+    if(glCore->m_window != nullptr) {
+        glfwSetWindowUserPointer(glCore->m_window, glCore);
+    }
 }
 
 void GLCore::initAPI() {
@@ -124,9 +141,6 @@ void GLCore::destroy() {
     if(m_window != nullptr) {
         glfwDestroyWindow(m_window);
         m_window = nullptr;
-    }
-    if(m_display != nullptr) {
-        m_display.reset(nullptr);
     }
 }
 

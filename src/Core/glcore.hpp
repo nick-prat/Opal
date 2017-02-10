@@ -28,7 +28,7 @@ public:
     GLCore& operator=(GLCore&& glCore);
     void destroy();
 
-    static void makeWindowCurrent(const GLCore& glCore);
+    static void makeWindowCurrent(GLCore* glCore);
     static void initAPI();
     static void closeAPI();
 

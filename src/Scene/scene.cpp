@@ -117,17 +117,21 @@ Scene::~Scene() {
 }
 
 Scene& Scene::operator=(Scene&& scene) {
-    std::swap(m_entities, scene.m_entities);
-    std::swap(m_luaKeyBinds, scene.m_luaKeyBinds);
-    std::swap(m_renderObjects, scene.m_renderObjects);
-    std::swap(m_scenename, scene.m_scenename);
-    std::swap(m_startFunc, scene.m_startFunc);
-    std::swap(m_renderFunc, scene.m_renderFunc);
-    std::swap(m_renderChain, scene.m_renderChain);
-    std::swap(m_resourceHandler, scene.m_resourceHandler);
-    std::swap(m_luaEnabled, scene.m_luaEnabled);
-    std::swap(m_display, scene.m_display);
-    std::swap(m_luaState, scene.m_luaState);
+    m_entities = std::move(scene.m_entities);
+    m_renderObjects = std::move(scene.m_renderObjects);
+    m_renderChain = std::move(scene.m_renderChain);
+    m_resourceHandler = std::move(scene.m_resourceHandler);
+    m_scenename = std::move(scene.m_scenename);
+    m_luaKeyBinds = std::move(scene.m_luaKeyBinds);
+    m_startFunc = std::move(scene.m_startFunc);
+    m_renderFunc = std::move(scene.m_renderFunc);
+    m_luaState = scene.m_luaState;
+    m_luaEnabled = scene.m_luaEnabled;
+    m_display = scene.m_display;
+
+    scene.m_luaState = nullptr;
+    scene.m_luaEnabled = false;
+    scene.m_display = nullptr;
     return *this;
 }
 
