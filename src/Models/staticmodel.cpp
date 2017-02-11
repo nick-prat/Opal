@@ -16,13 +16,11 @@
 // NOTE Can i make this process faster?
 // NOTE Why should i have a seperate class for dynamic and static models
 StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
-        : m_model(model), m_world(world), m_sampler(std::make_unique<Sampler>()) {
+        : m_model(model), m_world(world), m_sampler(std::make_unique<Sampler>()), m_meshCount(model->getMeshCount()) {
 
     if(model == nullptr) {
         throw GenericException("Null param passed to StaticModel constructor");
     }
-
-    m_meshCount = m_model->getMeshCount();
 
     for(unsigned int i = 0; i < m_meshCount; i++) {
         auto mesh = m_model->getMesh(i);
@@ -50,6 +48,17 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
         m_indexCount.push_back(mesh->getIndices().size());
         m_IBO.push_back(ibo);
     }
+}
+
+StaticModel::StaticModel(StaticModel&& model) : m_world(model.m_world), m_meshCount(model.m_meshCount) {
+    m_model = model.m_model;
+    m_sampler = std::move(model.m_sampler);
+    m_indexCount = std::move(model.m_indexCount);
+    m_VAO = std::move(model.m_VAO);
+    m_VBO = std::move(model.m_VBO);
+    m_IBO = std::move(model.m_IBO);
+
+    model.m_model = nullptr;
 }
 
 StaticModel::~StaticModel() {

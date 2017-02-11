@@ -29,6 +29,7 @@ public:
     Scene(Scene&& scene);
     ~Scene();
 
+    Scene& operator=(const Scene&) = delete;
     Scene& operator=(Scene&& scene);
     void destroy();
 

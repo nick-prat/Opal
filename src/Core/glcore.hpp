@@ -25,6 +25,7 @@ public:
     GLCore(GLCore&& glCore);
     ~GLCore();
 
+    GLCore& operator=(const GLCore&) = delete;
     GLCore& operator=(GLCore&& glCore);
     void destroy();
 
