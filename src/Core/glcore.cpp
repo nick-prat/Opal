@@ -114,17 +114,15 @@ GLCore& GLCore::operator=(GLCore&& glCore) {
     glCore.m_currentScene = nullptr;
     glCore.m_window = nullptr;
 
-    if(glfwGetWindowUserPointer(m_window) == &glCore) {
-        glfwSetWindowUserPointer(m_window, nullptr);
+    if(m_window != nullptr) {
+        glfwSetWindowUserPointer(m_window, this);
     }
 
     return *this;
 }
 
 void GLCore::makeWindowCurrent(GLCore* glCore) {
-    if(glCore->m_window != nullptr) {
-        glfwSetWindowUserPointer(glCore->m_window, glCore);
-    }
+
 }
 
 void GLCore::initAPI() {

@@ -12,7 +12,7 @@
 int main(int argc, char **args) {
     if(argc != 2) {
         Log::getErrorLog() << "Arguments are invalid, use:\n\t" << args[0] << " [scene_name]\n";
-        exit(-1);
+        return -1;
     }
 
     const std::string scenename = args[1];
@@ -25,7 +25,6 @@ int main(int argc, char **args) {
     GLCore glCore;
     try {
         glCore = GLCore(width, height, title);
-        GLCore::makeWindowCurrent(&glCore);
     } catch(GenericException& error) {
         error.printError();
         return 1;
