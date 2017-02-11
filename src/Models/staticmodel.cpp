@@ -22,6 +22,7 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
         throw GenericException("Null param passed to StaticModel constructor");
     }
 
+    // TODO Can you store multiple VBOs in a single VAO?
     for(unsigned int i = 0; i < m_meshCount; i++) {
         auto mesh = m_model->getMesh(i);
         GLuint vbo, vao, ibo;
