@@ -24,7 +24,7 @@ public:
     glm::mat4 getWorld() const;
 
 protected:
-    virtual void render(const Shader* const shader, const Display* const display) const override;
+    void render(const Shader* const shader, const Display* const display) const override;
 
 private:
     bool m_visible;

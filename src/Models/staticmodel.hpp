@@ -6,11 +6,11 @@
 #include <glm/glm.hpp>
 #include <GL/gl3w.h>
 
+#include <Render/Sampler/sampler.hpp>
 #include <Render/renderobject.hpp>
 
 class Model3D;
 class Display;
-class Sampler;
 
 class StaticModel : public IRenderObject {
 public:
@@ -29,7 +29,7 @@ protected:
 
 private:
     const glm::mat4 m_world;
-    std::unique_ptr<Sampler> m_sampler;
+    Sampler m_sampler;
     std::vector<GLsizei> m_indexCount;
     std::vector<GLuint> m_VAO, m_VBO, m_IBO;
 

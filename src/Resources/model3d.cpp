@@ -11,12 +11,8 @@ Model3D::Model3D()
         : IResource("model3d") {
 }
 
-Model3D::~Model3D() {
-
-}
-
-void Model3D::addMesh(Mesh* mesh) {
-    m_meshes.push_back(std::unique_ptr<Mesh>(mesh));
+void Model3D::addMesh(Mesh&& mesh) {
+    m_meshes.push_back(std::move(mesh));
 }
 
 void Model3D::addTexture(const std::string& name, const Texture* const texture) {
@@ -25,7 +21,7 @@ void Model3D::addTexture(const std::string& name, const Texture* const texture) 
 
 void Model3D::applyTransformation(const glm::mat4 &transform) {
     for(auto& mesh : m_meshes) {
-        mesh->applyTransformation(transform);
+        mesh.applyTransformation(transform);
     }
 }
 
@@ -42,13 +38,13 @@ unsigned int Model3D::getMeshCount() const {
 unsigned int Model3D::getFaceCount() const {
     unsigned int faceCount = 0;
     for(const auto& mesh : m_meshes) {
-        faceCount += mesh->getIndices().size() / 3;
+        faceCount += mesh.getIndices().size() / 3;
     }
     return faceCount;
 }
 
-Model3D::Mesh* Model3D::getMesh(unsigned int index) const {
-    return m_meshes[index].get();
+const Model3D::Mesh& Model3D::getMesh(unsigned int index) const {
+    return m_meshes[index];
 }
 
 const Texture* Model3D::getTexture(const std::string& key) const {
@@ -66,16 +62,14 @@ Model3D::Vertex::Vertex() {
 }
 
 Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
-    : position(pos), normal(norm), texCoord(tex) {
+        : position(pos), normal(norm), texCoord(tex) {
 
 }
 
 // Model3D::Mesh
 
-Model3D::Mesh::Mesh(const std::vector<Vertex> vertices, const std::vector<unsigned int> indices)
-: m_matIndex(0), m_matName("null"), m_indices(indices), m_vertices(vertices) {}
-
-Model3D::Mesh::~Mesh() {}
+Model3D::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+        : m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
 
 void Model3D::Mesh::applyTransformation(const glm::mat4& transform) {
     for(auto& vert : m_vertices) {

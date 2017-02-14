@@ -16,7 +16,6 @@ class Shader;
 class RenderChain {
 public:
     RenderChain();
-    ~RenderChain();
 
     void attachShader(Shader* shader);
     void detachShader(Shader* shader);
@@ -39,7 +38,6 @@ class Shader {
     friend class RenderChain;
 public:
     Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types);
-    ~Shader();
 
     void attachRenderObject(IRenderObject* object);
     void detachRenderObject(IRenderObject* object);

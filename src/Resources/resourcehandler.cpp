@@ -124,13 +124,13 @@ IRenderObject* ResourceHandler::generateModel(const json& object) {
         vertices.push_back(Model3D::Vertex(verts[i], norms[i], uvs[i]));
     }
 
-    auto mesh = new Model3D::Mesh(vertices, indices);
-    mesh->setMatName("texture");
+    auto mesh = Model3D::Mesh(vertices, indices);
+    mesh.setMatName("texture");
 
     auto texture = loadTexture(object["matname"], true);
 
     auto model = new Model3D();
-    model->addMesh(mesh);
+    model->addMesh(std::move(mesh));
     model->addTexture("texture", texture);
 
     // TODO Memory leak here
@@ -364,26 +364,22 @@ const Model3D* ResourceHandler::loadModel3D(const std::string& modelname) {
         }
     }
 
-    std::vector<Model3D::Mesh*> meshes;
+    std::vector<Model3D::Mesh> meshes;
     try {
         loadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
     } catch(BadResource& error) {
-        error.printError();
         delete model;
-        for(const auto& mesh : meshes) {
-            delete mesh;
-        }
-        throw BadResource("failed to load model nodes", modelname);
+        throw error;
     }
 
     for(auto& mesh : meshes) {
         aiString aName;
-        unsigned int index = mesh->getMatIndex();
+        unsigned int index = mesh.getMatIndex();
         if(index < scene->mNumMaterials) {
-            materials[mesh->getMatIndex()]->Get(AI_MATKEY_NAME, aName);
-            mesh->setMatName(std::string(aName.C_Str()));
+            materials[mesh.getMatIndex()]->Get(AI_MATKEY_NAME, aName);
+            mesh.setMatName(std::string(aName.C_Str()));
         }
-        model->addMesh(mesh);
+        model->addMesh(std::move(mesh));
     }
 
     return model;
@@ -400,7 +396,7 @@ void ResourceHandler::copyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<Model3D::Mesh*>& meshes) {
+void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<Model3D::Mesh>& meshes) {
     glm::mat4x4 transformation;
     copyaiMat(&node->mTransformation, transformation);
     transformation = parentTransform * transformation;
@@ -412,6 +408,7 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
     for(unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         std::vector<Model3D::Vertex> vertices;
+        std::vector<unsigned int> indices;
 
         for(unsigned int j = 0; j < mesh->mNumVertices; j++) {
             Model3D::Vertex vertex;
@@ -430,7 +427,6 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
             vertices.push_back(vertex);
         }
 
-        std::vector<unsigned int> indices;
         if(mesh->HasFaces()) {
             for(unsigned int j = 0; j < mesh->mNumFaces; j++) {
                 aiFace face = mesh->mFaces[j];
@@ -439,12 +435,12 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
                 }
             }
         } else {
-            throw BadResource("Node was missing faces, load cancled");
+            throw BadResource("Node was missing faces, load canceled");
         }
 
-        auto rmesh = new Model3D::Mesh(vertices, indices);
-        rmesh->setMatIndex(mesh->mMaterialIndex);
-        meshes.push_back(rmesh);
+        auto rmesh = Model3D::Mesh(vertices, indices);
+        rmesh.setMatIndex(mesh->mMaterialIndex);
+        meshes.push_back(std::move(rmesh));
     }
 }
 

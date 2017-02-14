@@ -16,7 +16,7 @@
 // NOTE Can i make this process faster?
 // NOTE Why should i have a seperate class for dynamic and static models
 StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
-        : m_model(model), m_world(world), m_sampler(std::make_unique<Sampler>()) {
+        : m_model(model), m_world(world) {
 
     if(model == nullptr) {
         throw GenericException("Null param passed to StaticModel constructor");
@@ -34,7 +34,7 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
 
         glGenBuffers(1, &vbo);
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh->getVertices().size(), mesh->getVertices().data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh.getVertices().size(), mesh.getVertices().data(), GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
@@ -46,8 +46,8 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
 
         glGenBuffers(1, &ibo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh->getIndices().size(), mesh->getIndices().data(), GL_STATIC_DRAW);
-        m_indexCount.push_back(mesh->getIndices().size());
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.getIndices().size(), mesh.getIndices().data(), GL_STATIC_DRAW);
+        m_indexCount.push_back(mesh.getIndices().size());
         m_IBO.push_back(ibo);
     }
 }
@@ -70,16 +70,16 @@ void StaticModel::render(const Shader* const shader, const Display* const displa
     glUniform1i(shader->getUniformLocation("gSampler"), 0);
     glUniformMatrix4fv(shader->getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
-    m_sampler->bind();
+    m_sampler.bind();
 
     for(unsigned int i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
 
-        auto texture = m_model->getTexture(m_model->getMesh(i)->getMatName());
+        auto texture = m_model->getTexture(m_model->getMesh(i).getMatName());
         if(texture != nullptr) {
             texture->bind();
         } else {
-            Log::getErrorLog() << "Couldn't get material " << m_model->getMesh(i)->getMatName() << '\n';
+            Log::getErrorLog() << "Couldn't get material " << m_model->getMesh(i).getMatName() << '\n';
             exit(-1);
         }
 

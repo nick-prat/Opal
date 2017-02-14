@@ -11,9 +11,6 @@ RenderChain::RenderChain()
         : m_ambientColor(glm::vec4(1.0f)) {
 }
 
-RenderChain::~RenderChain() {
-}
-
 void RenderChain::attachShader(Shader* shader) {
     m_shaders.insert(shader);
 }

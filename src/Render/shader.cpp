@@ -83,8 +83,6 @@ Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& t
     registerUniform("gAmbientLight");
 }
 
-Shader::~Shader() {}
-
 void Shader::attachRenderObject(IRenderObject* object) {
     if(object == nullptr) {
         Log::getErrorLog() << "Null object atempted attached to render chain\n";

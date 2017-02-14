@@ -12,12 +12,10 @@
 class Texture;
 
 // NOTE Are there model types that aren't 3D, if so implement them
-class Model3D : public IResource
-{
+class Model3D : public IResource {
 public:
     // NOTE Does a vertex struct need any functions?
-    struct Vertex
-    {
+    struct Vertex {
         Vertex();
         Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoord);
         glm::vec3 position;
@@ -25,12 +23,9 @@ public:
         glm::vec2 texCoord;
     };
 
-    // NOTE Should a mesh be a POD structure?
-    class Mesh
-    {
+    class Mesh {
     public:
-        Mesh(const std::vector<Vertex> vertices, const std::vector<unsigned int> indices);
-        ~Mesh();
+        Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 
         void applyTransformation(const glm::mat4& transform);
 
@@ -52,17 +47,16 @@ public:
     };
 
     Model3D();
-    ~Model3D();
 
     // NOTE Add meshes and texture is not possible in resource handler, so should I have these functions?
-    void addMesh(Mesh* mesh);
+    void addMesh(Mesh&& mesh);
     void addTexture(const std::string& name, const Texture* const texture);
 
     // NOTE Is this function useful still?
     void applyTransformation(const glm::mat4& transform);
 
     const Texture* getTexture(const std::string& key) const;
-    Mesh* getMesh(unsigned int index) const;
+    const Mesh& getMesh(unsigned int index) const;
     unsigned int getMeshCount() const;
     unsigned int getFaceCount() const;
 
@@ -70,9 +64,7 @@ public:
 
 private:
     std::unordered_map<std::string, const Texture*> m_textures;
-
-    // NOTE It might be useful to have these as obect's not pointers for easier copying
-    std::vector<std::unique_ptr<Mesh>> m_meshes;
+    std::vector<Mesh> m_meshes;
 
 };
 
