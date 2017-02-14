@@ -15,7 +15,12 @@ class IRenderObject
     friend class RenderChain;
 public:
     IRenderObject();
+    IRenderObject(const IRenderObject&) = delete;
+    IRenderObject(IRenderObject&&) = delete;
     virtual ~IRenderObject();
+
+    IRenderObject& operator=(const IRenderObject&) = delete;
+    IRenderObject& operator=(IRenderObject&&) = delete;
 
     static int getNumRenderObjects();
 
