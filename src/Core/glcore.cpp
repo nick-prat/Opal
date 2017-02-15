@@ -11,11 +11,15 @@
 // TODO Implement notification system for entities (entity can post lambda to be called on an event)
 
 // Creates a dummy GLCore that doesn't spawn a window
-GLCore::GLCore() : m_display(), m_currentScene(nullptr), m_window(nullptr) {
-}
+GLCore::GLCore()
+        : m_display()
+        , m_currentScene(nullptr)
+        , m_window(nullptr) {}
 
 GLCore::GLCore(int width, int height, std::string title)
-        : m_display(), m_currentScene(nullptr), m_window(nullptr) {
+        : m_display()
+        , m_currentScene(nullptr)
+        , m_window(nullptr) {
     glfwSetErrorCallback([](int error, const char* desc) {
         Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
