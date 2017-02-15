@@ -16,8 +16,7 @@ class StaticModel : public IRenderObject {
 public:
     StaticModel() = delete;
     StaticModel(const Model3D& model, const glm::mat4& world);
-    // TODO Implement copy constructor, so you can initialize a dynamic model with a static model
-    StaticModel(const StaticModel&) = delete;
+    StaticModel(const StaticModel& model) = delete;
     StaticModel(StaticModel&& model);
     virtual ~StaticModel();
 
@@ -36,11 +35,11 @@ protected:
 
 private:
     const glm::mat4 m_world;
+    const unsigned int m_meshCount;
+
     Sampler m_sampler;
     std::vector<GLsizei> m_indexCount;
     std::vector<GLuint> m_VAO, m_VBO, m_IBO;
-
-    const unsigned int m_meshCount;
 };
 
 #endif // _STATIC_MODEL_H
