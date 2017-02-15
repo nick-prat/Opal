@@ -8,12 +8,14 @@
 #include <Utilities/log.hpp>
 
 // TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])
+// TODO Implement notification system for entities (entity can post lambda to be called on an event)
 
 // Creates a dummy GLCore that doesn't spawn a window
-GLCore::GLCore() : m_display(nullptr), m_currentScene(nullptr), m_window(nullptr) {
+GLCore::GLCore() : m_display(), m_currentScene(nullptr), m_window(nullptr) {
 }
 
-GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullptr), m_window(nullptr) {
+GLCore::GLCore(int width, int height, std::string title)
+        : m_display(), m_currentScene(nullptr), m_window(nullptr) {
     glfwSetErrorCallback([](int error, const char* desc) {
         Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
@@ -42,6 +44,8 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
         glfwTerminate();
         exit(-1);
     }
+
+    m_display = Display(width, height);
 
     glfwSetWindowUserPointer(m_window, this);
 
@@ -80,13 +84,11 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
     // NOTE You can set input mode with this
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-    m_display = std::make_unique<const Display>(width, height);
-
     // Log information about this context
     Log::getLog() << "\nInformation: \n";
     Log::getLog() << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
     Log::getLog() << "\tGLCore Address: " << this << '\n';
-    Log::getLog() << "\tDisplay Address: " << m_display.get() << "\n\n";
+    Log::getLog() << "\tDisplay Address: " << &m_display << "\n\n";
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -97,7 +99,7 @@ GLCore::GLCore(int width, int height, std::string title) : m_currentScene(nullpt
 }
 
 GLCore::GLCore(GLCore&& glCore)
-        : m_display(nullptr), m_currentScene(nullptr), m_window(nullptr) {
+        : m_currentScene(nullptr), m_window(nullptr) {
     *this = std::move(glCore);
 }
 
@@ -161,13 +163,13 @@ GLFWwindow* GLCore::getWindow() const {
     return m_window;
 }
 
-const Display* GLCore::getDisplay() const {
-    return m_display.get();
+const Display& GLCore::getDisplay() const {
+    return m_display;
 }
 
 Scene GLCore::createScene(const std::string& scenename) {
     auto timer = glfwGetTime();
-    auto scene = Scene(m_display.get(), scenename);
+    auto scene = Scene(&m_display, scenename);
     Log::getLog() << "Scene creation for " << scenename << " in " << glfwGetTime() - timer << " seconds\n";
     return scene;
 }
@@ -182,15 +184,15 @@ void GLCore::displayFunc() {
     if(m_currentScene != nullptr) {
         m_currentScene->gameLoop();
     }
-    m_display->getInputController()->callKeyLambdas();
+    m_display.getInputController()->callKeyLambdas();
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 }
 
 void GLCore::inputFunc(int key, bool state) {
-    m_display->getInputController()->updateKey(key, state);
+    m_display.getInputController()->updateKey(key, state);
 }
 
 void GLCore::mouseFunc(double xpos, double ypos) {
-    m_display->getInputController()->updateMousePosition(xpos, ypos);
+    m_display.getInputController()->updateMousePosition(xpos, ypos);
 }

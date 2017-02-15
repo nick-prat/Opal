@@ -15,16 +15,12 @@
 
 // NOTE Can i make this process faster?
 // NOTE Why should i have a seperate class for dynamic and static models
-StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
-        : m_model(model), m_world(world), m_meshCount(model->getMeshCount()) {
-
-    if(model == nullptr) {
-        throw GenericException("Null param passed to StaticModel constructor");
-    }
+StaticModel::StaticModel(const Model3D& model, const glm::mat4& world)
+        : m_model(model), m_world(world), m_meshCount(model.getMeshCount()) {
 
     // TODO Can you store multiple VBOs in a single VAO?
     for(unsigned int i = 0; i < m_meshCount; i++) {
-        auto mesh = m_model->getMesh(i);
+        auto mesh = m_model.getMesh(i);
         GLuint vbo, vao, ibo;
 
         glGenVertexArrays(1, &vao);
@@ -51,15 +47,12 @@ StaticModel::StaticModel(const Model3D* const model, const glm::mat4& world)
     }
 }
 
-StaticModel::StaticModel(StaticModel&& model) : m_world(model.m_world), m_meshCount(model.m_meshCount) {
-    m_model = model.m_model;
+StaticModel::StaticModel(StaticModel&& model) : m_model(model.m_model), m_world(model.m_world), m_meshCount(model.m_meshCount) {
     m_sampler = std::move(model.m_sampler);
     m_indexCount = std::move(model.m_indexCount);
     m_VAO = std::move(model.m_VAO);
     m_VBO = std::move(model.m_VBO);
     m_IBO = std::move(model.m_IBO);
-
-    model.m_model = nullptr;
 }
 
 StaticModel::~StaticModel() {
@@ -68,28 +61,28 @@ StaticModel::~StaticModel() {
     glDeleteBuffers(m_IBO.size(), m_IBO.data());
 }
 
-glm::mat4 StaticModel::generateMVP(const Display* const display) const {
-    return display->getProjectionMatrix() * display->getCamera()->getViewMatrix() * m_world;
+glm::mat4 StaticModel::generateMVP(const Display& display) const {
+    return display.getProjectionMatrix() * display.getCamera()->getViewMatrix() * m_world;
 }
 
-const Model3D* StaticModel::getModel() const {
+const Model3D& StaticModel::getModel() const {
     return m_model;
 }
 
-void StaticModel::render(const Shader* const shader, const Display* const display) const {
-    glUniform1i(shader->getUniformLocation("gSampler"), 0);
-    glUniformMatrix4fv(shader->getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
+void StaticModel::render(const Shader& shader, const Display& display) const {
+    glUniform1i(shader.getUniformLocation("gSampler"), 0);
+    glUniformMatrix4fv(shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(generateMVP(display)));
 
     m_sampler.bind();
 
     for(unsigned int i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
 
-        auto texture = m_model->getTexture(m_model->getMesh(i).getMatName());
+        auto texture = m_model.getTexture(m_model.getMesh(i).getMatName());
         if(texture != nullptr) {
             texture->bind();
         } else {
-            Log::getErrorLog() << "Couldn't get material " << m_model->getMesh(i).getMatName() << '\n';
+            Log::getErrorLog() << "Couldn't get material " << m_model.getMesh(i).getMatName() << '\n';
             exit(-1);
         }
 

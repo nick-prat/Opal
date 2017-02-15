@@ -5,14 +5,14 @@
 
 class Entity;
 
-// Implement some way of convering a static model to a dynamic model and vice versa
+// TODO Implement some way of convering a static model to a dynamic model and vice versa
 
 class DynamicModel : public StaticModel {
     friend class Entity;
 public:
-    DynamicModel(const Model3D* const model3D);
+    DynamicModel(const Model3D& model3D);
 
-    glm::mat4 generateMVP(const Display* const display) const override;
+    glm::mat4 generateMVP(const Display& display) const override;
 
     void translate(const glm::vec3& trans);
     void rotate(const float& degrees, const glm::vec3& rotate);
@@ -24,7 +24,7 @@ public:
     glm::mat4 getWorld() const;
 
 protected:
-    void render(const Shader* const shader, const Display* const display) const override;
+    void render(const Shader& shader, const Display& display) const override;
 
 private:
     bool m_visible;

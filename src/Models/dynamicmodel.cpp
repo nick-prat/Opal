@@ -6,18 +6,18 @@
 #include <Core/camera.hpp>
 #include <Utilities/log.hpp>
 
-DynamicModel::DynamicModel(const Model3D* const model3D)
+DynamicModel::DynamicModel(const Model3D& model3D)
         : StaticModel(model3D, glm::mat4(1.0f)), m_visible(true), m_translate(glm::mat4(1.0f)), m_scale(glm::mat4(1.0f)), m_rotate(glm::mat4(1.0f)) {
 }
 
-void DynamicModel::render(const Shader* const shader, const Display* const display) const {
+void DynamicModel::render(const Shader& shader, const Display& display) const {
     if(m_visible) {
         StaticModel::render(shader, display);
     }
 }
 
-glm::mat4 DynamicModel::generateMVP(const Display* const display) const {
-    return display->getProjectionMatrix() * display->getCamera()->getViewMatrix() * getWorld();
+glm::mat4 DynamicModel::generateMVP(const Display& display) const {
+    return display.getProjectionMatrix() * display.getCamera()->getViewMatrix() * getWorld();
 }
 
 void DynamicModel::translate(const glm::vec3& trans) {

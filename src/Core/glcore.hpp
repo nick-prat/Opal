@@ -11,9 +11,10 @@ extern "C" {
 #include <lualib.h>
 }
 
+#include <Core/display.hpp>
+
 class ResourceHandler;
 class Scene;
-class Display;
 
 // TODO Be able to switch between what window is active
 
@@ -39,7 +40,7 @@ public:
     void setVsync(bool enabled);
 
     GLFWwindow* getWindow() const;
-    const Display* getDisplay() const;
+    const Display& getDisplay() const;
     Scene* getCurrentScene() const;
     Scene createScene(const std::string& scenename);
     void startScene(Scene* scene);
@@ -49,7 +50,7 @@ public:
     void mouseFunc(double xpos, double ypos);
 
 private:
-    std::unique_ptr<const Display> m_display;
+    Display m_display;
     Scene* m_currentScene;
     GLFWwindow* m_window;
 };

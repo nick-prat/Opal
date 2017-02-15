@@ -15,7 +15,8 @@ class Display;
 class StaticModel : public IRenderObject {
 public:
     StaticModel() = delete;
-    StaticModel(const Model3D* const model, const glm::mat4& world);
+    StaticModel(const Model3D& model, const glm::mat4& world);
+    // TODO Implement copy constructor, so you can initialize a dynamic model with a static model
     StaticModel(const StaticModel&) = delete;
     StaticModel(StaticModel&& model);
     virtual ~StaticModel();
@@ -23,15 +24,15 @@ public:
     StaticModel& operator=(const StaticModel&) = delete;
     StaticModel& operator=(StaticModel&& model) = delete;
 
-    virtual glm::mat4 generateMVP(const Display* const display) const;
+    virtual glm::mat4 generateMVP(const Display& display) const;
 
-    const Model3D* getModel() const;
-
-protected:
-    virtual void render(const Shader* const shader, const Display* const display) const override;
+    const Model3D& getModel() const;
 
 protected:
-    const Model3D* m_model;
+    virtual void render(const Shader& shader, const Display& display) const override;
+
+protected:
+    const Model3D& m_model;
 
 private:
     const glm::mat4 m_world;

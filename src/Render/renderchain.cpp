@@ -31,7 +31,7 @@ void RenderChain::render(const Display* const display) const {
         }
 
         for(const auto& object : shader->m_renderObjects) {
-            object->render(shader, display);
+            object->render(*shader, *display);
         }
     }
 }

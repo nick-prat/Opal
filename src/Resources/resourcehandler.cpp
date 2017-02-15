@@ -187,7 +187,7 @@ IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D*
         throw BadResource("requested unknown shader " + shadername, name);
     }
 
-    auto model = new StaticModel(model3d, transform);
+    auto model = new StaticModel(*model3d, transform);
     shader->second->attachRenderObject(model);
     return model;
 }

@@ -11,7 +11,12 @@ class Display {
 public:
     Display();
     Display(unsigned int width, unsigned int height);
+    Display(const Display&) = delete;
+    Display(Display&& display);
     ~Display();
+
+    Display& operator=(const Display&) = delete;
+    Display& operator=(Display&& display);
 
     InputController* getInputController() const;
     Camera* getCamera() const;

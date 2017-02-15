@@ -16,7 +16,7 @@ public:
     ~Line();
 
 protected:
-    void render(const Shader* const shader, const Display* const display) const override;
+    void render(const Shader& shader, const Display& display) const override;
 
 private:
     unsigned int m_indexCount;
