@@ -25,14 +25,6 @@
 
 using json = nlohmann::json;
 
-ResourceHandler::ResourceHandler() {
-
-}
-
-ResourceHandler::~ResourceHandler() {
-
-}
-
 void ResourceHandler::loadResources(const json& scene) {
     // TODO Implement texture loading
     // NOTE What other types of resources might i want to load on scene start

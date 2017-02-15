@@ -99,8 +99,15 @@ GLCore::GLCore(int width, int height, std::string title)
 }
 
 GLCore::GLCore(GLCore&& glCore)
-        : m_currentScene(nullptr), m_window(nullptr) {
-    *this = std::move(glCore);
+        : m_display(std::move(glCore.m_display))
+        , m_currentScene(glCore.m_currentScene)
+        , m_window(glCore.m_window) {
+    glCore.m_currentScene = nullptr;
+    glCore.m_window = nullptr;
+
+    if(m_window != nullptr) {
+        glfwSetWindowUserPointer(m_window, this);
+    }
 }
 
 GLCore::~GLCore() {

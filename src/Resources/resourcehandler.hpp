@@ -18,9 +18,6 @@ class Texture;
 
 class ResourceHandler {
 public:
-    ResourceHandler();
-    ~ResourceHandler();
-
     void loadResources(const nlohmann::json& scene);
     void addResource(const std::string& name, const IResource* const resource);
 

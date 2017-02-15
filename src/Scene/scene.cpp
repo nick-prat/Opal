@@ -19,10 +19,15 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-Scene::Scene() : m_scenename("null"),  m_luaState(nullptr), m_luaEnabled(false), m_display(nullptr) {}
+Scene::Scene()
+        : m_scenename("null")
+        ,  m_luaState(nullptr)
+        , m_luaEnabled(false)
+        , m_display(nullptr) {}
 
 Scene::Scene(const Display* const display, std::string scenename)
-        : m_luaEnabled(true), m_display(display) {
+        : m_luaEnabled(true)
+        , m_display(display) {
 
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
@@ -107,8 +112,20 @@ Scene::Scene(const Display* const display, std::string scenename)
 }
 
 Scene::Scene(Scene&& scene)
-        : m_scenename("null"),  m_luaState(nullptr), m_luaEnabled(false), m_display(nullptr) {
-    *this = std::move(scene);
+        : m_entities(std::move(scene.m_entities))
+        , m_renderObjects(std::move(scene.m_renderObjects))
+        , m_renderChain(std::move(scene.m_renderChain))
+        , m_resourceHandler(std::move(scene.m_resourceHandler))
+        , m_scenename(scene.m_scenename)
+        , m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
+        , m_startFunc(std::move(scene.m_startFunc))
+        , m_renderFunc(std::move(scene.m_renderFunc))
+        , m_luaState(scene.m_luaState)
+        , m_luaEnabled(scene.m_luaEnabled)
+        , m_display(scene.m_display) {
+    scene.m_luaState = nullptr;
+    scene.m_luaEnabled = false;
+    scene.m_display = nullptr;
 }
 
 // NOTE This is annoying, luaref's need to be deleted before lua scene
