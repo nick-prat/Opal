@@ -11,6 +11,9 @@ class DynamicModel : public StaticModel {
     friend class Entity;
 public:
     DynamicModel(const Model3D& model3D);
+    // TODO Implement these functions
+    // DynamicModel(const StaticModel& model);
+    DynamicModel(StaticModel&& model);
 
     glm::mat4 generateMVP(const Display& display) const override;
 

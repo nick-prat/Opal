@@ -8,7 +8,12 @@
 class Sampler {
 public:
     Sampler();
+    Sampler(const Sampler&) = delete;
+    Sampler(Sampler&& sampler);
     ~Sampler();
+
+    Sampler& operator=(const Sampler&) = delete;
+    Sampler& operator=(Sampler&& sampler);
 
     void bind() const;
     void setParams(int magnification, int minification);

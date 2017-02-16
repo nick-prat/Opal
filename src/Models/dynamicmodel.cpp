@@ -7,8 +7,18 @@
 #include <Utilities/log.hpp>
 
 DynamicModel::DynamicModel(const Model3D& model3D)
-        : StaticModel(model3D, glm::mat4(1.0f)), m_visible(true), m_translate(glm::mat4(1.0f)), m_scale(glm::mat4(1.0f)), m_rotate(glm::mat4(1.0f)) {
-}
+        : StaticModel(model3D, glm::mat4(1.0f))
+        , m_visible(true)
+        , m_translate({1.0f})
+        , m_scale({1.0f})
+        , m_rotate({1.0f}) {}
+
+DynamicModel::DynamicModel(StaticModel&& model)
+        : StaticModel(std::move(model))
+        , m_visible(true)
+        , m_translate({1.0f})
+        , m_scale({1.0f})
+        , m_rotate({1.0f}) {}
 
 void DynamicModel::render(const Shader& shader, const Display& display) const {
     if(m_visible) {
