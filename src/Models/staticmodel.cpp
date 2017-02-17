@@ -22,7 +22,6 @@ StaticModel::StaticModel(const Model3D& model, const glm::mat4& world)
         , m_VAO(m_meshCount)
         , m_VBO(m_meshCount)
         , m_IBO(m_meshCount) {
-
     glGenVertexArrays(m_meshCount, m_VAO.data());
     glGenBuffers(m_meshCount, m_VBO.data());
     glGenBuffers(m_meshCount, m_IBO.data());
