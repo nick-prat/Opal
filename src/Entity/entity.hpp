@@ -25,7 +25,7 @@ public:
     DynamicModel* getModel() const;
 
     void translate(const glm::vec3& trans);
-    void rotate(const float& degrees, const glm::vec3& rotate);
+    void rotate(const float degrees, const glm::vec3& rotate);
     void scale(const glm::vec3& scale);
 
 private:

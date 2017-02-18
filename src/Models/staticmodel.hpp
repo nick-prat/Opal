@@ -16,18 +16,21 @@ class StaticModel : public IRenderObject {
 public:
     StaticModel() = delete;
     StaticModel(const Model3D& model, const glm::mat4& world);
-    StaticModel(const StaticModel& model) = delete;
+    StaticModel(const StaticModel& model);
     StaticModel(StaticModel&& model);
     virtual ~StaticModel();
 
     StaticModel& operator=(const StaticModel&) = delete;
     StaticModel& operator=(StaticModel&& model) = delete;
 
+    void destroy();
+
     virtual glm::mat4 generateMVP(const Display& display) const;
 
     const Model3D& getModel() const;
 
 protected:
+    void generateBuffers();
     virtual void render(const Shader& shader, const Display& display) const override;
 
 protected:

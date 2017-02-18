@@ -56,7 +56,7 @@ void Entity::translate(const glm::vec3& trans) {
     }
 }
 
-void Entity::rotate(const float& degrees, const glm::vec3& rotate) {
+void Entity::rotate(const float degrees, const glm::vec3& rotate) {
     if(m_model != nullptr) {
         m_model->m_rotate = glm::rotate(m_model->m_rotate, degrees, rotate);
     }

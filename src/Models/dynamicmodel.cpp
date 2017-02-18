@@ -13,6 +13,13 @@ DynamicModel::DynamicModel(const Model3D& model3D)
         , m_scale({1.0f})
         , m_rotate({1.0f}) {}
 
+DynamicModel::DynamicModel(const StaticModel& model)
+        : StaticModel(model)
+        , m_visible(true)
+        , m_translate({1.0f})
+        , m_scale({1.0f})
+        , m_rotate({1.0f}) {}
+
 DynamicModel::DynamicModel(StaticModel&& model)
         : StaticModel(std::move(model))
         , m_visible(true)

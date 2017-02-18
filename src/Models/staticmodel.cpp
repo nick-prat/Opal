@@ -22,6 +22,49 @@ StaticModel::StaticModel(const Model3D& model, const glm::mat4& world)
         , m_VAO(m_meshCount)
         , m_VBO(m_meshCount)
         , m_IBO(m_meshCount) {
+    generateBuffers();
+}
+
+StaticModel::StaticModel(const StaticModel& model)
+        : m_model(model.m_model)
+        , m_world(model.m_world)
+        , m_meshCount(model.m_meshCount)
+        , m_VAO(m_meshCount)
+        , m_VBO(m_meshCount)
+        , m_IBO(m_meshCount) {
+    generateBuffers();
+}
+
+StaticModel::StaticModel(StaticModel&& model)
+        : m_model(model.m_model)
+        , m_world(model.m_world)
+        , m_meshCount(model.m_meshCount) {
+    m_sampler = std::move(model.m_sampler);
+    m_indexCount = std::move(model.m_indexCount);
+    m_VAO = std::move(model.m_VAO);
+    m_VBO = std::move(model.m_VBO);
+    m_IBO = std::move(model.m_IBO);
+}
+
+StaticModel::~StaticModel() {
+    destroy();
+}
+
+void StaticModel::destroy() {
+    glDeleteVertexArrays(m_VAO.size(), m_VAO.data());
+    glDeleteBuffers(m_VBO.size(), m_VBO.data());
+    glDeleteBuffers(m_IBO.size(), m_IBO.data());
+}
+
+glm::mat4 StaticModel::generateMVP(const Display& display) const {
+    return display.getProjectionMatrix() * display.getCamera()->getViewMatrix() * m_world;
+}
+
+const Model3D& StaticModel::getModel() const {
+    return m_model;
+}
+
+void StaticModel::generateBuffers() {
     glGenVertexArrays(m_meshCount, m_VAO.data());
     glGenBuffers(m_meshCount, m_VBO.data());
     glGenBuffers(m_meshCount, m_IBO.data());
@@ -50,31 +93,6 @@ StaticModel::StaticModel(const Model3D& model, const glm::mat4& world)
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-
-StaticModel::StaticModel(StaticModel&& model)
-        : m_model(model.m_model)
-        , m_world(model.m_world)
-        , m_meshCount(model.m_meshCount) {
-    m_sampler = std::move(model.m_sampler);
-    m_indexCount = std::move(model.m_indexCount);
-    m_VAO = std::move(model.m_VAO);
-    m_VBO = std::move(model.m_VBO);
-    m_IBO = std::move(model.m_IBO);
-}
-
-StaticModel::~StaticModel() {
-    glDeleteVertexArrays(m_VAO.size(), m_VAO.data());
-    glDeleteBuffers(m_VBO.size(), m_VBO.data());
-    glDeleteBuffers(m_IBO.size(), m_IBO.data());
-}
-
-glm::mat4 StaticModel::generateMVP(const Display& display) const {
-    return display.getProjectionMatrix() * display.getCamera()->getViewMatrix() * m_world;
-}
-
-const Model3D& StaticModel::getModel() const {
-    return m_model;
 }
 
 void StaticModel::render(const Shader& shader, const Display& display) const {

@@ -21,7 +21,7 @@ using json = nlohmann::json;
 
 Scene::Scene()
         : m_scenename("null")
-        ,  m_luaState(nullptr)
+        , m_luaState(nullptr)
         , m_luaEnabled(false)
         , m_display(nullptr) {}
 

@@ -3,7 +3,7 @@
 
 #include <GL/gl3w.h>
 
-// NOTE This wrapper is very lack luster, can i expand on ti's features?
+// TODO Implement parameter settings
 
 class Sampler {
 public:
