@@ -15,7 +15,7 @@ class Display;
 class StaticModel : public IRenderObject {
 public:
     StaticModel() = delete;
-    StaticModel(const Model3D& model, const glm::mat4& world);
+    StaticModel(const Model3D& model, const glm::mat4& world = glm::mat4(1.0f));
     StaticModel(const StaticModel& model);
     StaticModel(StaticModel&& model);
     virtual ~StaticModel();

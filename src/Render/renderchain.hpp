@@ -16,6 +16,11 @@ class Shader;
 class RenderChain {
 public:
     RenderChain();
+    RenderChain(const RenderChain&) = delete;
+    RenderChain(RenderChain&& renderChain);
+
+    RenderChain& operator=(const RenderChain&) = delete;
+    RenderChain& operator=(RenderChain&& renderChain);
 
     void attachShader(Shader* shader);
     void detachShader(Shader* shader);

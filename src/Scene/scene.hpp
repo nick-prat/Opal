@@ -16,10 +16,10 @@ extern "C" {
 #include <Core/display.hpp>
 #include <Core/inputcontroller.hpp>
 #include <Entity/entity.hpp>
+#include <Render/renderchain.hpp>
+#include <Resources/resourcehandler.hpp>
 
 class IRenderObject;
-class ResourceHandler;
-class RenderChain;
 
 class Scene {
 public:
@@ -43,7 +43,10 @@ public:
     Entity* spawn(const std::string& name, const std::string& resource, glm::vec3 location);
     Entity* getEntity(const std::string& name) const;
     int getEntityCount() const;
-    Camera* getCamera() const;
+
+    Camera* getCamera() const {return m_display->getCamera();};
+    inline RenderChain& getRenderChain() {return m_renderChain;};
+    inline ResourceHandler& getResourceHandler() {return m_resourceHandler;};
 
 private:
     void closeLua();
@@ -53,8 +56,8 @@ private:
 private:
     std::unordered_map<std::string, std::unique_ptr<Entity>> m_entities;
     std::list<std::unique_ptr<IRenderObject>> m_renderObjects;
-    std::unique_ptr<RenderChain> m_renderChain;
-    std::unique_ptr<ResourceHandler> m_resourceHandler;
+    RenderChain m_renderChain;
+    ResourceHandler m_resourceHandler;
     std::string m_scenename;
 
     // Lua pointers

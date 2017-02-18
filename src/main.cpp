@@ -1,3 +1,5 @@
+#include <GL/gl3w.h>
+
 #include <iostream>
 #include <memory>
 
@@ -5,6 +7,8 @@
 #include <Utilities/log.hpp>
 #include <Core/glcore.hpp>
 #include <Scene/scene.hpp>
+#include <Models/staticmodel.hpp>
+#include <Models/dynamicmodel.hpp>
 
 // TODO Ensure const correctness is follwed in whole project
 // TODO Implement some sort of collsion detection (bullet physics library?)
@@ -43,6 +47,17 @@ int main(int argc, char **args) {
         glCore.displayFunc();
         frames++;
     }
+
+    auto& rh = scene.getResourceHandler();
+    const auto* m3d = rh.getResource<Model3D>("m3d_bear");
+    auto smodel = StaticModel(*m3d);
+
+    auto dynmodel1 = DynamicModel(smodel);
+    auto dynmodel2 = DynamicModel(std::move(smodel));
+
+    // TODO Why doesn't this work
+    rh.getShader("shader_staticmodel")->attachRenderObject(&dynmodel1);
+    rh.getShader("shader_staticmodel")->attachRenderObject(&dynmodel2);
 
     timer = glfwGetTime() - timer;
     Log::getLog() << "Average FPS: " << frames / timer << '\n';

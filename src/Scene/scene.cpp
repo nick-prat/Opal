@@ -32,9 +32,6 @@ Scene::Scene(const Display* const display, std::string scenename)
     m_luaState = luaL_newstate();
     luaL_openlibs(m_luaState);
 
-    m_renderChain = std::make_unique<RenderChain>();
-    m_resourceHandler = std::make_unique<ResourceHandler>();
-
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
@@ -58,7 +55,7 @@ Scene::Scene(const Display* const display, std::string scenename)
 
     try {
         const json scene = json::parse(contents);
-        m_resourceHandler->loadResources(scene);
+        m_resourceHandler.loadResources(scene);
 
         if(scene.find("staticObjects") != scene.end()) {
             std::vector<json> objects = scene["staticObjects"];
@@ -69,11 +66,11 @@ Scene::Scene(const Display* const display, std::string scenename)
 
                     // NOTE Are there other types of render obects i might want to load?
                     if(type == "line") {
-                        rObject = m_resourceHandler->generateLine(object);
+                        rObject = m_resourceHandler.generateLine(object);
                     } else if(type == "staticmodel") {
-                        rObject = m_resourceHandler->generateModel(object, m_resourceHandler->getResource<Model3D>(object["resource"]));
+                        rObject = m_resourceHandler.generateModel(object, m_resourceHandler.getResource<Model3D>(object["resource"]));
                     } else if(type == "rawstaticmodel") {
-                        rObject = m_resourceHandler->generateModel(object);
+                        rObject = m_resourceHandler.generateModel(object);
                     }
 
                     if(rObject != nullptr) {
@@ -94,7 +91,7 @@ Scene::Scene(const Display* const display, std::string scenename)
             for(const json& object : objects) {
                 try {
                     auto name = object["name"];
-                    //m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler->GetResource<Model3D>(object["resource"]));
+                    //m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler.GetResource<Model3D>(object["resource"]));
                 } catch (BadResource& error) {
                     error.printError();
                 } catch (std::domain_error& error) {
@@ -106,8 +103,8 @@ Scene::Scene(const Display* const display, std::string scenename)
         Log::getErrorLog() << "Parsing of " << filename << " failed: " << error.what() << '\n';
     }
 
-    for(const auto& shader : m_resourceHandler->getShaders()) {
-        m_renderChain->attachShader(shader.second.get());
+    for(const auto& shader : m_resourceHandler.getShaders()) {
+        m_renderChain.attachShader(shader.second.get());
     }
 }
 
@@ -155,8 +152,6 @@ Scene& Scene::operator=(Scene&& scene) {
 void Scene::destroy() {
     m_entities.clear();
     m_renderObjects.clear();
-    m_renderChain.reset(nullptr);
-    m_resourceHandler.reset(nullptr);
     m_scenename = "null";
     if(m_luaEnabled) {
         m_startFunc.reset(nullptr);
@@ -241,7 +236,7 @@ void Scene::start() {
 
 // NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
-    m_renderChain->render(m_display);
+    m_renderChain.render(m_display);
     (*m_renderFunc)();
 }
 
@@ -265,16 +260,16 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
 }
 
 void Scene::setAmbientIntensity(float intensity) {
-    m_renderChain->setAmbientIntensity(intensity);
+    m_renderChain.setAmbientIntensity(intensity);
 }
 
 void Scene::setAmbientColor(const glm::vec3 &color) {
-    m_renderChain->setAmbientColor(color);
+    m_renderChain.setAmbientColor(color);
 }
 
 // NOTE Do i want to be able to easily destroy an entity?
 Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
-    auto res = m_resourceHandler->getResource<Model3D>(resource);
+    auto res = m_resourceHandler.getResource<Model3D>(resource);
     if(res == nullptr) {
         throw BadResource("resource isn't a model or doesn't exist", resource);
     }
@@ -284,7 +279,7 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
         return m_entities[name].get();
     }
 
-    auto shader = m_resourceHandler->getShader("shader_staticmodel");
+    auto shader = m_resourceHandler.getShader("shader_staticmodel");
     auto dyn = new DynamicModel(*res);
     dyn->translate(location);
     shader->attachRenderObject(dyn);
@@ -320,8 +315,4 @@ Entity* Scene::getEntity(const std::string& name) const {
 
 int Scene::getEntityCount() const {
     return m_entities.size();
-}
-
-Camera* Scene::getCamera() const {
-    return m_display->getCamera();
 }
