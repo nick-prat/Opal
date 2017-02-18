@@ -144,20 +144,20 @@ IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D*
 
     glm::mat4 transform = glm::mat4(1.0f);
 
-    if(object.find("scale") != object.end()) {
-        std::vector<float> scale = object["scale"];
-        if(scale.size() != 3) {
-            throw BadResource("Scale data size is not 3", name);
-        }
-        transform = glm::scale(transform, glm::vec3(scale[0], scale[1], scale[2]));
-    }
-
     if(object.find("translation") != object.end()) {
         std::vector<float> translation = object["translation"];
         if(translation.size() != 3) {
             throw BadResource("Translation data size is not 3", name);
         }
         transform = glm::translate(transform, glm::vec3(translation[0], translation[1], translation[2]));
+    }
+
+    if(object.find("scale") != object.end()) {
+        std::vector<float> scale = object["scale"];
+        if(scale.size() != 3) {
+            throw BadResource("Scale data size is not 3", name);
+        }
+        transform = glm::scale(transform, glm::vec3(scale[0], scale[1], scale[2]));
     }
 
     if(object.find("rotation") != object.end()) {
