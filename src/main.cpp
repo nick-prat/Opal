@@ -67,7 +67,6 @@ int main(int argc, char **args) {
     timer = glfwGetTime() - timer;
     Log::getLog() << "Average FPS: " << frames / timer << '\n';
 
-    scene.destroy();
     glCore.destroy();
     GLCore::closeAPI();
     return 0;

@@ -5,14 +5,7 @@
 #include <string>
 #include <list>
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-}
-
-#include <LuaBridge/LuaBridge.h>
-
+#include <Utilities/lua.hpp>
 #include <Core/display.hpp>
 #include <Core/inputcontroller.hpp>
 #include <Entity/entity.hpp>
@@ -31,7 +24,6 @@ public:
 
     Scene& operator=(const Scene&) = delete;
     Scene& operator=(Scene&& scene);
-    void destroy();
 
     void start();
     void gameLoop();
@@ -60,11 +52,11 @@ private:
     ResourceHandler m_resourceHandler;
     std::string m_scenename;
 
-    // Lua pointers
+    // Lua related members
+    LuaState m_luaState;
     std::unordered_map<InputKey, std::unique_ptr<luabridge::LuaRef>> m_luaKeyBinds;
     std::unique_ptr<luabridge::LuaRef> m_startFunc;
     std::unique_ptr<luabridge::LuaRef> m_renderFunc;
-    lua_State* m_luaState;
 
     bool m_luaEnabled;
     const Display* m_display;

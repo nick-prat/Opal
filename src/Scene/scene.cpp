@@ -21,7 +21,6 @@ using json = nlohmann::json;
 
 Scene::Scene()
         : m_scenename("null")
-        , m_luaState(nullptr)
         , m_luaEnabled(false)
         , m_display(nullptr) {}
 
@@ -29,15 +28,14 @@ Scene::Scene(const Display* const display, std::string scenename)
         : m_luaEnabled(true)
         , m_display(display) {
 
-    m_luaState = luaL_newstate();
-    luaL_openlibs(m_luaState);
+    luaL_openlibs(m_luaState.get());
 
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
     buildLuaNamespace();
 
-    luaL_dofile(m_luaState, script.c_str());
+    luaL_dofile(m_luaState.get(), script.c_str());
 
     registerLuaFunctions();
 
@@ -114,21 +112,17 @@ Scene::Scene(Scene&& scene)
         , m_renderChain(std::move(scene.m_renderChain))
         , m_resourceHandler(std::move(scene.m_resourceHandler))
         , m_scenename(scene.m_scenename)
+        , m_luaState(std::move(scene.m_luaState))
         , m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
         , m_startFunc(std::move(scene.m_startFunc))
         , m_renderFunc(std::move(scene.m_renderFunc))
-        , m_luaState(scene.m_luaState)
         , m_luaEnabled(scene.m_luaEnabled)
         , m_display(scene.m_display) {
-    scene.m_luaState = nullptr;
     scene.m_luaEnabled = false;
     scene.m_display = nullptr;
 }
 
-// NOTE This is annoying, luaref's need to be deleted before lua scene
-Scene::~Scene() {
-    destroy();
-}
+Scene::~Scene() {}
 
 Scene& Scene::operator=(Scene&& scene) {
     m_entities = std::move(scene.m_entities);
@@ -136,38 +130,21 @@ Scene& Scene::operator=(Scene&& scene) {
     m_renderChain = std::move(scene.m_renderChain);
     m_resourceHandler = std::move(scene.m_resourceHandler);
     m_scenename = std::move(scene.m_scenename);
+    m_luaState = std::move(scene.m_luaState);
     m_luaKeyBinds = std::move(scene.m_luaKeyBinds);
     m_startFunc = std::move(scene.m_startFunc);
     m_renderFunc = std::move(scene.m_renderFunc);
-    m_luaState = scene.m_luaState;
     m_luaEnabled = scene.m_luaEnabled;
     m_display = scene.m_display;
 
-    scene.m_luaState = nullptr;
     scene.m_luaEnabled = false;
     scene.m_display = nullptr;
     return *this;
 }
 
-void Scene::destroy() {
-    m_entities.clear();
-    m_renderObjects.clear();
-    m_scenename = "null";
-    if(m_luaEnabled) {
-        m_startFunc.reset(nullptr);
-        m_renderFunc.reset(nullptr);
-        for(auto& pair : m_luaKeyBinds) {
-            pair.second.reset(nullptr);
-        }
-        lua_close(m_luaState);
-        m_luaEnabled = false;
-    }
-    m_display = nullptr;
-}
-
 // NOTE What other functions are necessary to expose to lua?
 void Scene::buildLuaNamespace() {
-    luabridge::getGlobalNamespace(m_luaState)
+    luabridge::getGlobalNamespace(m_luaState.get())
         .beginClass<glm::vec2>("vec2")
             .addConstructor<void(*)(float, float)>()
             .addData("x", &glm::vec2::x)
@@ -213,17 +190,17 @@ void Scene::buildLuaNamespace() {
             .endClass()
         .endNamespace();
 
-    luabridge::setGlobal(m_luaState, this, "Level");
+    luabridge::setGlobal(m_luaState.get(), this, "Level");
 }
 
 // NOTE Are there other necessary function the engine might want to call?
 void Scene::registerLuaFunctions() {
-    m_startFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState, "Start"));
+    m_startFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState.get(), "Start"));
     if(!m_startFunc->isFunction()) {
         throw GenericException("Start function wasn't found");
     }
 
-    m_renderFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState, "GameLoop"));
+    m_renderFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState.get(), "GameLoop"));
     if(!m_renderFunc->isFunction()) {
         throw GenericException("Render function wasn't found");
     }
