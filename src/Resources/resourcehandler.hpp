@@ -11,6 +11,8 @@
 #include <Utilities/exceptions.hpp>
 #include <Resources/model3d.hpp>
 
+// TODO Might be a good idea to store any resource in ogl buffers instead
+
 class IRenderObject;
 class IResource;
 class Shader;

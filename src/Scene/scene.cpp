@@ -256,10 +256,9 @@ Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::
         return m_entities[name].get();
     }
 
-    auto shader = m_resourceHandler.getShader("shader_staticmodel");
     auto dyn = new DynamicModel(*res);
     dyn->translate(location);
-    shader->attachRenderObject(dyn);
+    m_resourceHandler.getShader("shader_staticmodel")->attachRenderObject(dyn);
     m_renderObjects.push_back(std::unique_ptr<IRenderObject>(dyn));
 
     auto ent = new Entity();

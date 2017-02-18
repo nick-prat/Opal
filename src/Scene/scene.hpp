@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 #include <string>
-#include <list>
+#include <vector>
 
 #include <Utilities/lua.hpp>
 #include <Core/display.hpp>
@@ -47,7 +47,7 @@ private:
 
 private:
     std::unordered_map<std::string, std::unique_ptr<Entity>> m_entities;
-    std::list<std::unique_ptr<IRenderObject>> m_renderObjects;
+    std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;
     RenderChain m_renderChain;
     ResourceHandler m_resourceHandler;
     std::string m_scenename;
