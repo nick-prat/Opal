@@ -19,6 +19,17 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
+struct A {
+    A() : a(10) {};
+    A(A&& _a) : a(_a.a) {
+        std::cout << "move const\n";
+    }
+    int a;
+};
+class B {};
+class C {};
+class D {};
+
 Scene::Scene()
         : m_scenename("null")
         , m_luaEnabled(false)
@@ -30,6 +41,10 @@ Scene::Scene(const Display* const display, std::string scenename)
 
     luaL_openlibs(m_luaState.get());
 
+    EntityManager<A,B,C,D> entMan;
+    auto id = entMan.createEntity();
+    auto ent = entMan.getEntity(id);
+    
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
