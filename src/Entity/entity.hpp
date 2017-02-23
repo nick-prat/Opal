@@ -98,6 +98,7 @@ private:
     std::stack<unsigned int> m_nextLocation;
     std::vector<Ent> m_entities;
     std::tuple<std::vector<comp_ts>...> m_componentLists;
+    std::tuple<std::unordered_map<unsigned int, comp_ts*>...> m_componentLookup;
 };
 
 class Entity {
