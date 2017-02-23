@@ -6,12 +6,12 @@
 #include <unordered_map>
 #include <vector>
 #include <stack>
+#include <iostream>
 
 class DynamicModel;
 
 // NOTE What defines an entity vs a static object?
-
-class Ent;
+// TOOD Implement error detection if a entity doesn't have a specified component
 
 template <typename ... comp_ts>
 class EntityManager {
@@ -20,12 +20,40 @@ public:
     class Ent {
     public:
         Ent() : m_id(-1) {};
+
         Ent(unsigned int id, EntityManager<comp_ts...>* entityManager)
         : m_entityManager(entityManager)
         , m_id(id) {};
 
+        Ent(const Ent&) = delete;
+
+        Ent(Ent&& ent)
+        : m_entityManager(ent.m_entityManager)
+        , m_id(ent.m_id) {
+            ent.m_id = -1;
+        }
+
+        Ent& operator=(const Ent&) = delete;
+        Ent& operator=(Ent&& ent) {
+            m_entityManager = ent.m_entityManager;
+            m_id = ent.m_id;
+            ent.m_id = -1;
+            return *this;
+        }
+
+        template<typename comp_t>
+        void addComponent() {
+            std::get<comp_t*>(m_components) = m_entityManager->createComponent<comp_t>();
+        }
+
+        template<typename comp_t>
+        comp_t* getComponent() {
+            return std::get<comp_t*>(m_components);
+        }
+
     private:
         EntityManager<comp_ts...>* m_entityManager;
+        std::tuple<comp_ts*...> m_components;
         unsigned int m_id;
     };
 
@@ -58,17 +86,19 @@ public:
         return std::get<std::vector<comp_t>>(m_componentLists);
     }
 
+private:
     template<typename comp_t>
-    void addElement(comp_t&& e) {
-        std::get<std::vector<comp_t>>(m_componentLists).push_back(std::forward(e));
+    comp_t* createComponent() {
+        auto& vec = std::get<std::vector<comp_t>>(m_componentLists);
+        vec.push_back(comp_t());
+        return &(vec[vec.size()-1]);
     }
+
 private:
     std::stack<unsigned int> m_nextLocation;
     std::vector<Ent> m_entities;
     std::tuple<std::vector<comp_ts>...> m_componentLists;
 };
-
-
 
 class Entity {
 public:

@@ -26,7 +26,13 @@ struct A {
     }
     int a;
 };
-class B {};
+struct B {
+    B() : b(10) {};
+    B(B&& _b) : b(_b.b) {
+        std::cout << "move const\n";
+    }
+    int b;
+};
 class C {};
 class D {};
 
@@ -43,8 +49,14 @@ Scene::Scene(const Display* const display, std::string scenename)
 
     EntityManager<A,B,C,D> entMan;
     auto id = entMan.createEntity();
-    auto ent = entMan.getEntity(id);
-    
+    auto& ent = entMan.getEntity(id);
+    ent.addComponent<A>();
+    auto comp = ent.getComponent<A>();
+    comp->a = 100;
+    auto comp2 = ent.getComponent<A>();
+    comp2->a = 200;
+    std::cout << comp2->a << ' ' << comp->a << '\n';
+
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
