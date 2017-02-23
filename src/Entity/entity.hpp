@@ -8,6 +8,8 @@
 #include <stack>
 #include <iostream>
 
+#include <Utilities/exceptions.hpp>
+
 class DynamicModel;
 
 // NOTE What defines an entity vs a static object?
@@ -34,6 +36,7 @@ public:
         }
 
         Ent& operator=(const Ent&) = delete;
+
         Ent& operator=(Ent&& ent) {
             m_entityManager = ent.m_entityManager;
             m_id = ent.m_id;
@@ -43,12 +46,12 @@ public:
 
         template<typename comp_t>
         void addComponent() {
-            std::get<comp_t*>(m_components) = m_entityManager->createComponent<comp_t>();
+            m_entityManager->createComponent<comp_t>(m_id);
         }
 
         template<typename comp_t>
         comp_t* getComponent() {
-            return std::get<comp_t*>(m_components);
+            return m_entityManager->getComponent<comp_t>(m_id);
         }
 
     private:
@@ -88,10 +91,25 @@ public:
 
 private:
     template<typename comp_t>
-    comp_t* createComponent() {
-        auto& vec = std::get<std::vector<comp_t>>(m_componentLists);
-        vec.push_back(comp_t());
-        return &(vec[vec.size()-1]);
+    void createComponent(unsigned int id) {
+        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentLookup);
+        if(map.find(id) == map.end()) {
+            auto& vec = std::get<std::vector<comp_t>>(m_componentLists);
+            vec.push_back(comp_t());
+            map[id] = &(vec[vec.size()-1]);
+        } else {
+            throw BadComponent(id, "Component already exists for entity");
+        }
+    }
+
+    template<typename comp_t>
+    comp_t* getComponent(unsigned int id) {
+        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentLookup);
+        if(map.find(id) != map.end()) {
+            return map[id];
+        } else {
+            throw BadComponent(id, "Component doesn't exist for entity");
+        }
     }
 
 private:

@@ -2,12 +2,8 @@
 
 #include <Utilities/log.hpp>
 
-GenericException::GenericException(const std::string& error) {
-    m_error = error;
-}
-
-GenericException::~GenericException() {
-}
+GenericException::GenericException(const std::string& error)
+: m_error(error) {}
 
 void GenericException::printError() const {
     Log::error(m_error, Log::OUT_LOG_CONS);
@@ -22,10 +18,8 @@ const char* GenericException::what() const noexcept {
 }
 
 BadResource::BadResource(const std::string& error, const std::string& resourcename)
-        : GenericException(error), m_resourcename(resourcename) {
-}
-
-BadResource::~BadResource() {}
+: GenericException(error)
+, m_resourcename(resourcename) {}
 
 void BadResource::printError() const {
     Log::error("[" + m_resourcename + "] " + m_error + '\n', Log::OUT_LOG_CONS);
@@ -33,4 +27,16 @@ void BadResource::printError() const {
 
 std::string BadResource::getResourceName() const {
     return m_resourcename;
+}
+
+BadComponent::BadComponent(unsigned int entID, const std::string& error)
+: GenericException(error)
+, m_entityID(entID) {}
+
+void BadComponent::printError() const {
+    Log::getErrorLog() << "[" << m_entityID << "] " << m_error + '\n';
+}
+
+unsigned int BadComponent::getEntityID() const {
+    return m_entityID;
 }
