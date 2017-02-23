@@ -85,7 +85,7 @@ public:
     }
 
     template<typename comp_t>
-    std::vector<comp_t> getComponentList() {
+    const std::vector<comp_t>& getComponentList() {
         return std::get<std::vector<comp_t>>(m_componentLists);
     }
 
