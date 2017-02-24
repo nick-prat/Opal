@@ -7,19 +7,22 @@
 #include <vector>
 #include <stack>
 #include <iostream>
+#include <functional>
 
 #include <Utilities/exceptions.hpp>
 
 class DynamicModel;
 
 // NOTE What defines an entity vs a static object?
-// TOOD Implement error detection if a entity doesn't have a specified component
+// TODO Implement error detection if a entity doesn't have a specified component
+// TODO Implement component deletion, and implement it on entity destructor
 
-template <typename ... comp_ts>
+template <typename... comp_ts>
 class EntityManager {
     static constexpr int compSize = sizeof...(comp_ts);
 public:
     class Ent {
+        friend class EntityManager;
     public:
         Ent() : m_id(-1) {};
 
@@ -44,6 +47,10 @@ public:
             return *this;
         }
 
+        inline unsigned int getID() const {
+            return m_id;
+        }
+
         template<typename comp_t>
         void addComponent() {
             m_entityManager->createComponent<comp_t>(m_id);
@@ -54,39 +61,60 @@ public:
             return m_entityManager->getComponent<comp_t>(m_id);
         }
 
+        /*template<typename comp_t>
+        void removeComponent() {
+            m_entityManager->removeComponent<comp_t>(m_id);
+        }*/
+
     private:
         EntityManager<comp_ts...>* m_entityManager;
         std::tuple<comp_ts*...> m_components;
         unsigned int m_id;
     };
 
-    EntityManager()
-    : m_entities(10) {
-        m_nextLocation.push(0);
-    };
-
     unsigned int createEntity() {
-        auto loc = m_nextLocation.top();
-        if(loc >= m_entities.capacity()) {
-            m_entities.resize(m_entities.size() * 2);
+        if(m_freeLocations.size() > 0) {
+            auto loc = m_freeLocations.top();
+            m_freeLocations.pop();
+            m_entities[loc] = Ent(loc, this);
+            return loc;
+        } else {
+            auto loc = m_entities.size();
+            m_entities.push_back(Ent(loc, this));
+            return loc;
         }
-
-        m_entities[loc] = Ent(loc, this);
-
-        m_nextLocation.pop();
-        if(m_nextLocation.size() == 0) {
-            m_nextLocation.push(m_entities.size());
-        }
-        return loc;
     }
 
     Ent& getEntity(unsigned int id) {
-        return m_entities[id];
+        if(id >= m_entities.size() || m_entities[id].getID() != id) {
+            throw BadEntity(id, "Entity doesn't exist, can't return");
+        } else {
+            return m_entities[id];
+        }
+    }
+
+    void removeEntity(unsigned int id) {
+        if(id >= m_entities.size() || m_entities[id].getID() == id) {
+            m_entities[id] = Ent();
+            m_freeLocations.push(id);
+        } else {
+            throw BadEntity(id, "Entity doesn't exist, can't remove");
+        }
     }
 
     template<typename comp_t>
-    const std::vector<comp_t>& getComponentList() {
+    std::vector<comp_t>& getComponentList() {
         return std::get<std::vector<comp_t>>(m_componentLists);
+    }
+
+    void registerService(std::function<void(EntityManager<comp_ts...>*)>&& service) {
+        m_services.push_back((service));
+    }
+
+    void updateServices() {
+        for(auto& service : m_services) {
+            service(this);
+        }
     }
 
 private:
@@ -94,9 +122,9 @@ private:
     void createComponent(unsigned int id) {
         auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentLookup);
         if(map.find(id) == map.end()) {
-            auto& vec = std::get<std::vector<comp_t>>(m_componentLists);
-            vec.push_back(comp_t());
-            map[id] = &(vec[vec.size()-1]);
+            auto& compList = std::get<std::vector<comp_t>>(m_componentLists);
+            compList.push_back(comp_t());
+            map[id] = &(compList[compList.size()-1]);
         } else {
             throw BadComponent(id, "Component already exists for entity");
         }
@@ -108,13 +136,26 @@ private:
         if(map.find(id) != map.end()) {
             return map[id];
         } else {
-            throw BadComponent(id, "Component doesn't exist for entity");
+            throw BadComponent(id, "Component doesn't eist for entity, can't return");
         }
     }
 
+    /*template<typename comp_t>
+    void removeComponent(unsigned int id) {
+        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentLookup);
+        if(map.find(id) != map.end()) {
+            auto& compList = std::get<std::vector<comp_t>>(m_componentLists);
+            compList[id] = {};
+            map.erase(id);
+        } else {
+            throw BadComponent(id, "Component doens't exist for entity, can't be removed");
+        }
+    }*/
+
 private:
-    std::stack<unsigned int> m_nextLocation;
+    std::stack<unsigned int> m_freeLocations;
     std::vector<Ent> m_entities;
+    std::vector<std::function<void(EntityManager<comp_ts...>*)>> m_services;
     std::tuple<std::vector<comp_ts>...> m_componentLists;
     std::tuple<std::unordered_map<unsigned int, comp_ts*>...> m_componentLookup;
 };

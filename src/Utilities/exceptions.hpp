@@ -42,4 +42,15 @@ private:
     unsigned int m_entityID;
 };
 
+class BadEntity : public GenericException {
+public:
+    BadEntity(unsigned int entID, const std::string& error);
+
+    void printError() const override;
+    unsigned int getEntityID() const;
+
+private:
+    unsigned int m_entityID;
+};
+
 #endif // _EXCEPTIONS_H

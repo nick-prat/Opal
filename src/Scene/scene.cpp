@@ -1,3 +1,6 @@
+#include <GL/gl3w.h>
+#include <GLFW/glfw3.h>
+
 #include "scene.hpp"
 
 #include <iostream>
@@ -21,16 +24,13 @@ using json = nlohmann::json;
 
 struct A {
     A() : a(10) {};
-    A(A&& _a) : a(_a.a) {
-        std::cout << "move const\n";
-    }
+    void destroy() {
+        a = 0;
+    };
     int a;
 };
 struct B {
     B() : b(10) {};
-    B(B&& _b) : b(_b.b) {
-        std::cout << "move const\n";
-    }
     int b;
 };
 class C {};
@@ -48,14 +48,39 @@ Scene::Scene(const Display* const display, std::string scenename)
     luaL_openlibs(m_luaState.get());
 
     EntityManager<A,B,C,D> entMan;
-    auto id = entMan.createEntity();
-    auto& ent = entMan.getEntity(id);
-    ent.addComponent<A>();
-    auto comp = ent.getComponent<A>();
-    comp->a = 100;
-    auto comp2 = ent.getComponent<A>();
-    comp2->a = 200;
-    std::cout << comp2->a << ' ' << comp->a << '\n';
+
+    auto timer = glfwGetTime();
+    for(int i = 0; i < 1000; i++) {
+        auto id = entMan.createEntity();
+        auto& ent = entMan.getEntity(id);
+        ent.addComponent<A>();
+        auto comp = ent.getComponent<A>();
+        comp->a = 100;
+    }
+
+    std::cout << entMan.createEntity() << '\n';
+    entMan.removeEntity(50);
+    entMan.removeEntity(51);
+    entMan.removeEntity(52);
+    std::cout << entMan.createEntity() << '\n';
+    std::cout << entMan.createEntity() << '\n';
+    std::cout << entMan.createEntity() << '\n';
+    std::cout << entMan.createEntity() << '\n';
+    std::cout << entMan.createEntity() << '\n';
+    std::cout << entMan.createEntity() << '\n';
+
+
+    timer = glfwGetTime() - timer;
+    std::cout << "Entity creation in " << timer << " seconds\n";
+
+    entMan.registerService([](decltype(entMan)* entMan) {
+        auto& list = entMan->template getComponentList<A>();
+        for(auto& comp : list) {
+            comp.a++;
+        }
+    });
+
+    entMan.updateServices();
 
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";

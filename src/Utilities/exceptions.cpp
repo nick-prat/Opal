@@ -40,3 +40,15 @@ void BadComponent::printError() const {
 unsigned int BadComponent::getEntityID() const {
     return m_entityID;
 }
+
+BadEntity::BadEntity(unsigned int entID, const std::string& error)
+: GenericException(error)
+, m_entityID(entID) {}
+
+void BadEntity::printError() const {
+    Log::getErrorLog() << "[" << m_entityID << "] " << m_error + '\n';
+}
+
+unsigned int BadEntity::getEntityID() const {
+    return m_entityID;
+}
