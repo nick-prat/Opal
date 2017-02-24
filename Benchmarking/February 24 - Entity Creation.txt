@@ -1,0 +1,21 @@
+Creation of 1000 entities, and adding an A component to all of them
+
+struct A {
+    A() : a(10) {};
+    int a;
+};
+
+Time in seconds
+0.000634862
+0.000646874
+0.000786348
+0.00078991
+0.00062669
+0.000628715
+0.000636747
+0.000628645
+0.000633325
+0.000628226
+
+Average:
+0.000664034
