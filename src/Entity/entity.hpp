@@ -19,8 +19,9 @@ class DynamicModel;
 
 template <typename... comp_ts>
 class EntityManager {
-    static constexpr int compSize = sizeof...(comp_ts);
 public:
+    using entitymanager_t = EntityManager<comp_ts...>;
+
     class Ent {
         friend class EntityManager;
     public:
@@ -61,10 +62,10 @@ public:
             return m_entityManager->getComponent<comp_t>(m_id);
         }
 
-        /*template<typename comp_t>
+        template<typename comp_t>
         void removeComponent() {
             m_entityManager->removeComponent<comp_t>(m_id);
-        }*/
+        }
 
     private:
         EntityManager<comp_ts...>* m_entityManager;
@@ -120,7 +121,7 @@ public:
 private:
     template<typename comp_t>
     void createComponent(unsigned int id) {
-        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentLookup);
+        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentMaps);
         if(map.find(id) == map.end()) {
             auto& compList = std::get<std::vector<comp_t>>(m_componentLists);
             compList.push_back(comp_t());
@@ -132,7 +133,7 @@ private:
 
     template<typename comp_t>
     comp_t* getComponent(unsigned int id) {
-        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentLookup);
+        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentMaps);
         if(map.find(id) != map.end()) {
             return map[id];
         } else {
@@ -140,24 +141,27 @@ private:
         }
     }
 
-    /*template<typename comp_t>
+    template<typename comp_t>
     void removeComponent(unsigned int id) {
-        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentLookup);
+        auto& map = std::get<std::unordered_map<unsigned int, comp_t*>>(m_componentMaps);
         if(map.find(id) != map.end()) {
-            auto& compList = std::get<std::vector<comp_t>>(m_componentLists);
-            compList[id] = {};
+            auto list = std::get<std::vector<comp_t>>(m_componentLists);
+            m_freeLocations.push(id);
             map.erase(id);
+            // TODO What's the best way to invalidate a component
         } else {
-            throw BadComponent(id, "Component doens't exist for entity, can't be removed");
+            throw BadComponent(id, "Component doesn't exist for entity, couldn't return");
         }
-    }*/
+    }
 
 private:
+    static constexpr int compSize = sizeof...(comp_ts);
+
     std::stack<unsigned int> m_freeLocations;
     std::vector<Ent> m_entities;
     std::vector<std::function<void(EntityManager<comp_ts...>*)>> m_services;
     std::tuple<std::vector<comp_ts>...> m_componentLists;
-    std::tuple<std::unordered_map<unsigned int, comp_ts*>...> m_componentLookup;
+    std::tuple<std::unordered_map<unsigned int, comp_ts*>...> m_componentMaps;
 };
 
 class Entity {
