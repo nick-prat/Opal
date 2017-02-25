@@ -24,9 +24,6 @@ using json = nlohmann::json;
 
 struct A {
     A() : a(10) {};
-    void destroy() {
-        a = 0;
-    };
     int a;
 };
 struct B {
@@ -50,35 +47,27 @@ Scene::Scene(const Display* const display, std::string scenename)
     EntityManager<A,B,C,D> entMan;
 
     auto timer = glfwGetTime();
-    for(int i = 0; i < 1000; i++) {
+    for(int i = 0; i < 20; i++) {
         auto id = entMan.createEntity();
-        auto& ent = entMan.getEntity(id);
-        ent.addComponent<A>();
-        auto comp = ent.getComponent<A>();
-        comp->a = 100;
+        auto ent = entMan.getEntity(id);
+        ent->addComponent<D>();
+        auto comp = ent->getComponent<A>();
+        comp->a = i;
     }
-
-    std::cout << entMan.createEntity() << '\n';
-    entMan.removeEntity(50);
-    entMan.removeEntity(51);
-    entMan.removeEntity(52);
-    std::cout << entMan.createEntity() << '\n';
-    std::cout << entMan.createEntity() << '\n';
-    std::cout << entMan.createEntity() << '\n';
-    std::cout << entMan.createEntity() << '\n';
-    std::cout << entMan.createEntity() << '\n';
-    std::cout << entMan.createEntity() << '\n';
-
-
     timer = glfwGetTime() - timer;
     std::cout << "Entity creation in " << timer << " seconds\n";
 
-    entMan.registerService([](decltype(entMan)* entMan) {
-        auto& list = entMan->template getComponentList<A>();
+    entMan.registerService([&entMan]() {
+        auto list = entMan.getComponentList<A>();
         for(auto& comp : list) {
-            comp.a++;
+            if(comp.isEnabled()) {
+                std::cout << comp.id() << ' ' << comp->a << '\n';
+            }
         }
     });
+
+    auto ent2 = entMan.getEntity(5);
+    ent2->removeComponent<A>();
 
     entMan.updateServices();
 
