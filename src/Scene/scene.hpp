@@ -8,6 +8,7 @@
 #include <Utilities/lua.hpp>
 #include <Core/display.hpp>
 #include <Core/inputcontroller.hpp>
+#include <Entity/components.hpp>
 #include <Entity/entity.hpp>
 #include <Render/renderchain.hpp>
 #include <Resources/resourcehandler.hpp>
@@ -15,6 +16,8 @@
 class IRenderObject;
 
 class Scene {
+    using entity_manager_t = EntityManager<CRender, CLocation>;
+    using entity_t = entity_manager_t::Entity;
 public:
     Scene();
     Scene(const Display* const display, std::string scenename);
@@ -27,18 +30,19 @@ public:
 
     void start();
     void gameLoop();
-    void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
-    void addEntity(const std::string& name, Entity* const ent);
 
-    void setAmbientIntensity(float intensity);
-    void setAmbientColor(const glm::vec3& color);
-    Entity* spawn(const std::string& name, const std::string& resource, glm::vec3 location);
-    Entity* getEntity(const std::string& name) const;
     int getEntityCount() const;
 
-    Camera* getCamera() const {return m_display->getCamera();};
     inline RenderChain& getRenderChain() {return m_renderChain;};
     inline ResourceHandler& getResourceHandler() {return m_resourceHandler;};
+
+    // Lua proxy functions
+    void setAmbientIntensity(float intensity);
+    void setAmbientColor(const glm::vec3& color);
+    void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
+    Camera* getCamera() const {return m_display->getCamera();};
+    unsigned int createEntity();
+    entity_t* getEntity(const unsigned int id) const;
 
 private:
     void closeLua();
@@ -46,8 +50,8 @@ private:
     void registerLuaFunctions();
 
 private:
-    std::unordered_map<std::string, std::unique_ptr<Entity>> m_entities;
     std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;
+    entity_manager_t m_entityManager;
     RenderChain m_renderChain;
     ResourceHandler m_resourceHandler;
     std::string m_scenename;

@@ -148,8 +148,8 @@ Scene::Scene(const Display* const display, std::string scenename)
 }
 
 Scene::Scene(Scene&& scene)
-        : m_entities(std::move(scene.m_entities))
-        , m_renderObjects(std::move(scene.m_renderObjects))
+        : m_renderObjects(std::move(scene.m_renderObjects))
+        , m_entityManager(std::move(scene.m_entityManager))
         , m_renderChain(std::move(scene.m_renderChain))
         , m_resourceHandler(std::move(scene.m_resourceHandler))
         , m_scenename(scene.m_scenename)
@@ -166,8 +166,8 @@ Scene::Scene(Scene&& scene)
 Scene::~Scene() {}
 
 Scene& Scene::operator=(Scene&& scene) {
-    m_entities = std::move(scene.m_entities);
     m_renderObjects = std::move(scene.m_renderObjects);
+    m_entityManager = std::move(scene.m_entityManager);
     m_renderChain = std::move(scene.m_renderChain);
     m_resourceHandler = std::move(scene.m_resourceHandler);
     m_scenename = std::move(scene.m_scenename);
@@ -211,23 +211,14 @@ void Scene::buildLuaNamespace() {
                 .addFunction("GetPosition", &Camera::getPosition)
                 .addFunction("GetDirection", &Camera::getDirection)
             .endClass()
-            .beginClass<Entity>("Entity")
-                .addConstructor<void(*)(void)>()
-                .addProperty("visible", &Entity::isVisible, &Entity::setVisible)
-                .addProperty("name", &Entity::getName, &Entity::setName)
-                .addFunction("Scale", &Entity::scale)
-                .addFunction("Translate", &Entity::translate)
-                .addFunction("Rotate", &Entity::rotate)
-            .endClass()
             .beginClass<Scene>("Scene")
                 .addFunction("SetAmbientIntensity", &Scene::setAmbientIntensity)
                 .addFunction("SetAmbientColor", &Scene::setAmbientColor)
                 .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
                 .addFunction("GetCamera", &Scene::getCamera)
-                .addFunction("AddEntity", &Scene::addEntity)
                 .addFunction("GetEntity", &Scene::getEntity)
                 .addFunction("GetEntityCount", &Scene::getEntityCount)
-                .addFunction("Spawn", &Scene::spawn)
+                .addFunction("CreateEntity", &Scene::createEntity)
             .endClass()
         .endNamespace();
 
@@ -286,50 +277,15 @@ void Scene::setAmbientColor(const glm::vec3 &color) {
 }
 
 // NOTE Do i want to be able to easily destroy an entity?
-Entity* Scene::spawn(const std::string& name, const std::string& resource, glm::vec3 location) {
-    auto res = m_resourceHandler.getResource<Model3D>(resource);
-    if(res == nullptr) {
-        throw BadResource("resource isn't a model or doesn't exist", resource);
-    }
-
-    if(m_entities.find(name) != m_entities.end()) {
-        Log::getErrorLog() << "Attempting to spawn entity with name that has already been registered\n";
-        return m_entities[name].get();
-    }
-
-    auto dyn = new DynamicModel(*res);
-    dyn->translate(location);
-    m_resourceHandler.getShader("shader_staticmodel")->attachRenderObject(dyn);
-    m_renderObjects.push_back(std::unique_ptr<IRenderObject>(dyn));
-
-    auto ent = new Entity();
-    ent->bindModel(dyn);
-    m_entities[name] = std::unique_ptr<Entity>(ent);
-
-    return ent;
-}
-
-// NOTE What is the purpose of this?
-void Scene::addEntity(const std::string& name, Entity* const ent) {
-    if(m_entities.find(name) != m_entities.end()) {
-        Log::error(name + " entity attempted to be added a second time, skipped");
-    }
-
-    if(ent != nullptr) {
-        m_entities[name] = std::unique_ptr<Entity>(ent);
-    } else {
-        Log::error(name + " entity was null, skipped");
-    }
+unsigned int Scene::createEntity() {
+    return 0;
 }
 
 // TODO Expand on the capabilites of an entity, ie. how does the user interact with them?
-Entity* Scene::getEntity(const std::string& name) const {
-    if(m_entities.find(name) != m_entities.end()) {
-        return m_entities.find(name)->second.get();
-    }
+Scene::entity_t* Scene::getEntity(unsigned int id) const {
     return nullptr;
 }
 
 int Scene::getEntityCount() const {
-    return m_entities.size();
+    return 0;
 }

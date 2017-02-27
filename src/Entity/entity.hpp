@@ -59,26 +59,26 @@ public:
         bool m_enabled;
     };
 
-    class Ent {
+    class Entity {
         friend class EntityManager;
     public:
-        Ent() : m_id(-1) {};
+        Entity() : m_id(-1) {};
 
-        Ent(unsigned int id, EntityManager<comp_ts...>* entityManager)
+        Entity(unsigned int id, EntityManager<comp_ts...>* entityManager)
         : m_entityManager(entityManager)
         , m_id(id) {};
 
-        Ent(const Ent&) = delete;
+        Entity(const Entity&) = delete;
 
-        Ent(Ent&& ent)
+        Entity(Entity&& ent)
         : m_entityManager(ent.m_entityManager)
         , m_id(ent.m_id) {
             ent.m_id = -1;
         }
 
-        Ent& operator=(const Ent&) = delete;
+        Entity& operator=(const Entity&) = delete;
 
-        Ent& operator=(Ent&& ent) {
+        Entity& operator=(Entity&& ent) {
             m_entityManager = ent.m_entityManager;
             m_id = ent.m_id;
             ent.m_id = -1;
@@ -113,16 +113,16 @@ public:
         if(m_freeLocations.size() > 0) {
             auto loc = m_freeLocations.top();
             m_freeLocations.pop();
-            m_entities[loc] = Ent(loc, this);
+            m_entities[loc] = Entity(loc, this);
             return loc;
         } else {
             auto loc = m_entities.size();
-            m_entities.push_back(Ent(loc, this));
+            m_entities.push_back(Entity(loc, this));
             return loc;
         }
     }
 
-    Ent* getEntity(unsigned int id) {
+    Entity* getEntity(unsigned int id) {
         if(id >= m_entities.size() || m_entities[id].getID() != id) {
             throw BadEntity(id, "Entity doesn't exist, can't return");
         } else {
@@ -132,7 +132,7 @@ public:
 
     void removeEntity(unsigned int id) {
         if(id >= m_entities.size() || m_entities[id].getID() == id) {
-            m_entities[id] = Ent();
+            m_entities[id] = Entity();
             m_freeLocations.push(id);
         } else {
             throw BadEntity(id, "Entity doesn't exist, can't remove");
@@ -201,7 +201,7 @@ private:
     static constexpr int compSize = sizeof...(comp_ts);
 
     std::stack<unsigned int> m_freeLocations;
-    std::vector<Ent> m_entities;
+    std::vector<Entity> m_entities;
     std::vector<std::function<void(void)>> m_services;
     std::tuple<std::vector<Component<comp_ts>>...> m_componentLists;
     std::array<std::unordered_map<unsigned int, unsigned int>, parameter_size> m_componentMaps;
