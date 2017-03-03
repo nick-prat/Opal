@@ -28,15 +28,15 @@ public:
     class Component {
         friend class EntityManager;
     public:
-        comp_t* getComponent() {
+        inline comp_t* getComponent() {
             return &m_component;
         };
 
-        bool isEnabled() {
+        inline bool isEnabled() {
             return m_enabled;
         }
 
-        comp_t* operator->() {
+        inline comp_t* operator->() {
             if(m_enabled) {
                 return &m_component;
             } else {
@@ -44,18 +44,18 @@ public:
             }
         }
 
-        unsigned int id() {
+        inline int getEntityID() {
             return m_entityID;
         }
 
     private:
-        Component(unsigned int id)
+        Component(int id)
         : m_entityID(id)
         , m_enabled(true) {};
 
     private:
         comp_t m_component;
-        unsigned int m_entityID;
+        int m_entityID;
         bool m_enabled;
     };
 
@@ -64,7 +64,7 @@ public:
     public:
         Entity() : m_id(-1) {};
 
-        Entity(unsigned int id, EntityManager<comp_ts...>* entityManager)
+        Entity(int id, EntityManager<comp_ts...>* entityManager)
         : m_entityManager(entityManager)
         , m_id(id) {};
 
@@ -85,31 +85,38 @@ public:
             return *this;
         }
 
-        inline unsigned int getID() const {
+        inline int getID() const {
             return m_id;
         }
 
         template<typename comp_t>
         void addComponent() {
-            m_entityManager->createComponent<comp_t>(m_id);
+            auto loc = index<comp_t>();
+            if(loc != -1) {
+                m_componentIDs[index<comp_t>()] = m_entityManager->createComponent<comp_t>();
+            } else {
+                throw BadComponent(m_id, "Attempted adding component to entity twice");
+            }
         }
 
         template<typename comp_t>
         comp_t* getComponent() {
-            return m_entityManager->getComponent<comp_t>(m_id);
+            return m_entityManager->getComponent<comp_t>(m_componentIDs[index<comp_t>()]);
         }
 
         template<typename comp_t>
         void removeComponent() {
             m_entityManager->removeComponent<comp_t>(m_id);
+            m_componentIDs[index<comp_t>()] = -1;
         }
 
     private:
         EntityManager<comp_ts...>* m_entityManager;
-        unsigned int m_id;
+        std::array<int, sizeof...(comp_ts)> m_componentIDs;
+        int m_id;
     };
 
-    unsigned int createEntity() {
+    int createEntity() {
         if(m_freeLocations.size() > 0) {
             auto loc = m_freeLocations.top();
             m_freeLocations.pop();
@@ -122,7 +129,7 @@ public:
         }
     }
 
-    Entity* getEntity(unsigned int id) {
+    Entity* getEntity(int id) {
         if(id >= m_entities.size() || m_entities[id].getID() != id) {
             throw BadEntity(id, "Entity doesn't exist, can't return");
         } else {
@@ -130,7 +137,7 @@ public:
         }
     }
 
-    void removeEntity(unsigned int id) {
+    void removeEntity(int id) {
         if(id >= m_entities.size() || m_entities[id].getID() == id) {
             m_entities[id] = Entity();
             m_freeLocations.push(id);
@@ -145,7 +152,7 @@ public:
     }
 
     void registerService(std::function<void(void)>&& service) {
-        m_services.push_back((service));
+        m_services.push_back(service);
     }
 
     void updateServices() {
@@ -156,40 +163,24 @@ public:
 
 private:
     template<typename comp_t>
-    void createComponent(unsigned int id) {
-        auto& map = m_componentMaps[index<comp_t, comp_ts...>()];
-        if(map.find(id) == map.end()) {
-            auto& compList = std::get<std::vector<Component<comp_t>>>(m_componentLists);
-            compList.push_back(Component<comp_t>(id));
-            map[id] = compList.size()-1;
-        } else {
-            throw BadComponent(id, "Component already exists for entity");
-        }
+    int createComponent() {
+        auto& list = std::get<std::vector<Component<comp_t>>>(m_componentLists);
+        list.push_back(comp_t());
+        return list.size() - 1;
     }
 
     template<typename comp_t>
-    comp_t* getComponent(unsigned int id) {
-        auto& map = m_componentMaps[index<comp_t, comp_ts...>()];
-        if(map.find(id) != map.end()) {
-            auto& list = getComponentList<comp_t>();
-            return &(list[map[id]].m_component);
-        } else {
-            throw BadComponent(id, "Component doesn't eist for entity, can't return");
-        }
+    comp_t* getComponent(int id) {
+        auto& list = getComponentList<comp_t>();
+        return &(list[id].m_component);
     }
 
     template<typename comp_t>
-    void removeComponent(unsigned int id) {
-        auto& map = m_componentMaps[index<comp_t, comp_ts...>()];
-        if(map.find(id) != map.end()) {
-            auto& compList = std::get<std::vector<Component<comp_t>>>(m_componentLists);
-            compList[map[id]].m_enabled = false;
-            compList[map[id]].m_entityID = -1;
-            map.erase(id);
-            m_freeLocations.push(id);
-        } else {
-            throw BadComponent(id, "Component doesn't exist for entity, couldn't return");
-        }
+    void removeComponent(int id) {
+        auto& compList = std::get<std::vector<Component<comp_t>>>(m_componentLists);
+        compList[id].m_enabled = false;
+        compList[id].m_entityID = -1;
+        m_freeLocations.push(id);
     }
 
     template<typename T, typename U = void, typename... comp_ts1>
@@ -202,7 +193,6 @@ private:
     std::vector<Entity> m_entities;
     std::vector<std::function<void(void)>> m_services;
     std::tuple<std::vector<Component<comp_ts>>...> m_componentLists;
-    std::array<std::unordered_map<unsigned int, unsigned int>, parameter_size> m_componentMaps;
 };
 
 #endif // _ENTITY_H

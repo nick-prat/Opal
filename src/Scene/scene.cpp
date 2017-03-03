@@ -61,7 +61,7 @@ Scene::Scene(const Display* const display, std::string scenename)
         auto list = entMan.getComponentList<A>();
         for(auto& comp : list) {
             if(comp.isEnabled()) {
-                std::cout << comp.id() << ' ' << comp->a << '\n';
+                std::cout << comp.getEntityID() << ' ' << comp->a << '\n';
             }
         }
     });
