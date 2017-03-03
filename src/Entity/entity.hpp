@@ -198,8 +198,6 @@ private:
     }
 
 private:
-    static constexpr int compSize = sizeof...(comp_ts);
-
     std::stack<unsigned int> m_freeLocations;
     std::vector<Entity> m_entities;
     std::vector<std::function<void(void)>> m_services;

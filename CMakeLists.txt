@@ -18,9 +18,6 @@ set(SOURCE_FILES
     src/Render/shader.cpp
     src/Render/Sampler/sampler.cpp
 
-    # Entity
-    src/Entity/entity.cpp
-
     # Scene
     src/Scene/scene.cpp
 

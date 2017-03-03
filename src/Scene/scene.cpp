@@ -50,7 +50,7 @@ Scene::Scene(const Display* const display, std::string scenename)
     for(int i = 0; i < 20; i++) {
         auto id = entMan.createEntity();
         auto ent = entMan.getEntity(id);
-        ent->addComponent<D>();
+        ent->addComponent<A>();
         auto comp = ent->getComponent<A>();
         comp->a = i;
     }
