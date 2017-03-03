@@ -93,7 +93,7 @@ public:
         void addComponent() {
             auto loc = index<comp_t>();
             if(loc != -1) {
-                m_componentIDs[index<comp_t>()] = m_entityManager->createComponent<comp_t>();
+                m_componentIDs[index<comp_t>()] = m_entityManager->createComponent<comp_t>(m_id);
             } else {
                 throw BadComponent(m_id, "Attempted adding component to entity twice");
             }
@@ -163,9 +163,9 @@ public:
 
 private:
     template<typename comp_t>
-    int createComponent() {
+    int createComponent(int id) {
         auto& list = std::get<std::vector<Component<comp_t>>>(m_componentLists);
-        list.push_back(comp_t());
+        list.push_back(Component<comp_t>(id));
         return list.size() - 1;
     }
 
