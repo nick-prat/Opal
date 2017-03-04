@@ -20,10 +20,6 @@ Start = function()
     Level:BindFunctionToKey(88, OnKeyX, false);
     Level:BindFunctionToKey(90, OnKeyZ, false);
     Level:BindFunctionToKey(32, OnKeySpace, false);
-
-    local bear = Level:Spawn("test" .. entCount, "m3d_bear", vec3(3.0, 0.0, 0.0));
-    entCount = entCount + 1;
-    bear:Scale(vec3(0.1, 0.1, 0.1));
 end
 
 GameLoop = function()

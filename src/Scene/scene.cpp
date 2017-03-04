@@ -33,6 +33,13 @@ struct B {
 class C {};
 class D {};
 
+class ShittySystem : public Scene::entity_manager_t::System<ShittySystem,CRender> {
+public:
+    ShittySystem(Scene::entity_manager_t* entMan)
+    : System(entMan) {}
+
+};
+
 Scene::Scene()
         : m_scenename("null")
         , m_luaEnabled(false)
@@ -44,32 +51,11 @@ Scene::Scene(const Display* const display, std::string scenename)
 
     luaL_openlibs(m_luaState.get());
 
-    EntityManager<A,B,C,D> entMan;
-
-    auto timer = glfwGetTime();
-    for(int i = 0; i < 20; i++) {
-        auto id = entMan.createEntity();
-        auto ent = entMan.getEntity(id);
-        ent->addComponent<A>();
-        auto comp = ent->getComponent<A>();
-        comp->a = i;
-    }
-    timer = glfwGetTime() - timer;
-    std::cout << "Entity creation in " << timer << " seconds\n";
-
-    entMan.registerService([&entMan]() {
-        auto list = entMan.getComponentList<A>();
-        for(auto& comp : list) {
-            if(comp.isEnabled()) {
-                std::cout << comp.getEntityID() << ' ' << comp->a << '\n';
-            }
-        }
-    });
-
-    auto ent2 = entMan.getEntity(5);
-    ent2->removeComponent<A>();
-
-    entMan.updateServices();
+    auto entId = m_entityManager.createEntity();
+    auto& ent = m_entityManager.getEntity(entId);
+    ent.addComponent<CRender>();
+    ShittySystem sys(&m_entityManager);
+    sys.subscribe(ent);
 
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";

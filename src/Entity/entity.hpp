@@ -21,15 +21,79 @@ class DynamicModel;
 template <typename... comp_ts>
 class EntityManager {
 public:
-    using entitymanager_t = EntityManager<comp_ts...>;
+    using entity_manager_t = EntityManager<comp_ts...>;
+    static constexpr unsigned int invalid_id = 0xFFFFFFFF;
     static constexpr unsigned int parameter_size = sizeof...(comp_ts);
+
+    class Entity {
+        friend class EntityManager;
+    public:
+        Entity() : m_id(invalid_id) {};
+
+        Entity(int id, EntityManager<comp_ts...>* entityManager)
+        : m_entityManager(entityManager)
+        , m_id(id) {};
+
+        Entity(const Entity&) = delete;
+
+        Entity(Entity&& ent)
+        : m_entityManager(ent.m_entityManager)
+        , m_id(ent.m_id) {
+            ent.m_id = invalid_id;
+        }
+
+        Entity& operator=(const Entity&) = delete;
+
+        Entity& operator=(Entity&& ent) {
+            m_entityManager = ent.m_entityManager;
+            m_id = ent.m_id;
+            ent.m_id = invalid_id;
+            return *this;
+        }
+
+        inline unsigned int getID() const {
+            return m_id;
+        }
+
+        template<typename comp_t>
+        void addComponent() {
+            auto loc = m_componentIDs[index<comp_t, comp_ts...>()];
+            if(loc != invalid_id) {
+                m_componentIDs[index<comp_t, comp_ts...>()] = m_entityManager->createComponent<comp_t>(m_id);
+            } else {
+                throw BadComponent(m_id, "Attempted adding component to entity twice");
+            }
+        }
+
+        template<typename comp_t>
+        comp_t& getComponent() {
+            return m_entityManager->getComponent<comp_t>(m_componentIDs[index<comp_t, comp_ts...>()]);
+        }
+
+        template<typename comp_t>
+        void removeComponent() {
+            m_entityManager->removeComponent<comp_t>(m_id);
+            m_componentIDs[index<comp_t, comp_ts...>()] = invalid_id;
+        }
+
+        template<typename comp_t>
+        bool hasComponent() {
+            auto loc = m_componentIDs[index<comp_t, comp_ts...>()];
+            return (loc == invalid_id ? false : true);
+        }
+
+    private:
+        entity_manager_t* m_entityManager;
+        std::array<unsigned int, parameter_size> m_componentIDs;
+        unsigned int m_id;
+    };
 
     template<typename comp_t>
     class Component {
         friend class EntityManager;
     public:
-        inline comp_t* getComponent() {
-            return &m_component;
+        inline comp_t& getComponent() {
+            return m_component;
         };
 
         inline bool isEnabled() {
@@ -44,7 +108,7 @@ public:
             }
         }
 
-        inline int getEntityID() {
+        inline unsigned int getEntityID() {
             return m_entityID;
         }
 
@@ -55,68 +119,48 @@ public:
 
     private:
         comp_t m_component;
-        int m_entityID;
+        unsigned int m_entityID;
         bool m_enabled;
     };
 
-    class Entity {
-        friend class EntityManager;
+    template<typename system_t, typename... system_comp_ts>
+    class System {
     public:
-        Entity() : m_id(-1) {};
+        System(entity_manager_t* entityManager)
+        : m_entityManager(entityManager) {
 
-        Entity(int id, EntityManager<comp_ts...>* entityManager)
-        : m_entityManager(entityManager)
-        , m_id(id) {};
-
-        Entity(const Entity&) = delete;
-
-        Entity(Entity&& ent)
-        : m_entityManager(ent.m_entityManager)
-        , m_id(ent.m_id) {
-            ent.m_id = -1;
         }
 
-        Entity& operator=(const Entity&) = delete;
-
-        Entity& operator=(Entity&& ent) {
-            m_entityManager = ent.m_entityManager;
-            m_id = ent.m_id;
-            ent.m_id = -1;
-            return *this;
+        void update() {
+            static_cast<system_t*>(this)->update();
         }
 
-        inline int getID() const {
-            return m_id;
-        }
+        // TODO Validate entity has proper components
+        void subscribe(entity_manager_t::Entity& entity) {
+            if(validate<system_comp_ts...>(entity)) {
 
-        template<typename comp_t>
-        void addComponent() {
-            auto loc = index<comp_t>();
-            if(loc != -1) {
-                m_componentIDs[index<comp_t>()] = m_entityManager->createComponent<comp_t>(m_id);
             } else {
-                throw BadComponent(m_id, "Attempted adding component to entity twice");
+                throw BadEntity(entity.getID(), "Validation failed for subscribing entity to system");
             }
         }
 
-        template<typename comp_t>
-        comp_t* getComponent() {
-            return m_entityManager->getComponent<comp_t>(m_componentIDs[index<comp_t>()]);
-        }
-
-        template<typename comp_t>
-        void removeComponent() {
-            m_entityManager->removeComponent<comp_t>(m_id);
-            m_componentIDs[index<comp_t>()] = -1;
+    private:
+        template<typename comp_t = void, typename... comp_ts1>
+        bool validate(entity_manager_t::Entity& entity) {
+            if(std::is_same<comp_t, void>::value) {
+                return true;
+            } else if(entity.template hasComponent<comp_t>()) {
+                return validate<comp_ts1...>(entity);
+            } else {
+                return false;
+            }
         }
 
     private:
-        EntityManager<comp_ts...>* m_entityManager;
-        std::array<int, sizeof...(comp_ts)> m_componentIDs;
-        int m_id;
+        entity_manager_t* m_entityManager;
     };
 
-    int createEntity() {
+    unsigned int createEntity() {
         if(m_freeLocations.size() > 0) {
             auto loc = m_freeLocations.top();
             m_freeLocations.pop();
@@ -129,15 +173,15 @@ public:
         }
     }
 
-    Entity* getEntity(int id) {
+    Entity& getEntity(unsigned int id) {
         if(id >= m_entities.size() || m_entities[id].getID() != id) {
             throw BadEntity(id, "Entity doesn't exist, can't return");
         } else {
-            return &(m_entities[id]);
+            return m_entities[id];
         }
     }
 
-    void removeEntity(int id) {
+    void removeEntity(unsigned int id) {
         if(id >= m_entities.size() || m_entities[id].getID() == id) {
             m_entities[id] = Entity();
             m_freeLocations.push(id);
@@ -151,14 +195,8 @@ public:
         return std::get<std::vector<Component<comp_t>>>(m_componentLists);
     }
 
-    void registerService(std::function<void(void)>&& service) {
-        m_services.push_back(service);
-    }
-
     void updateServices() {
-        for(auto& service : m_services) {
-            service();
-        }
+
     }
 
 private:
@@ -170,28 +208,33 @@ private:
     }
 
     template<typename comp_t>
-    comp_t* getComponent(int id) {
+    comp_t& getComponent(unsigned int id) {
         auto& list = getComponentList<comp_t>();
-        return &(list[id].m_component);
+        return list[id].m_component;
     }
 
     template<typename comp_t>
-    void removeComponent(int id) {
+    void removeComponent(unsigned int id) {
         auto& compList = std::get<std::vector<Component<comp_t>>>(m_componentLists);
         compList[id].m_enabled = false;
-        compList[id].m_entityID = -1;
+        compList[id].m_entityID = invalid_id;
         m_freeLocations.push(id);
     }
 
     template<typename T, typename U = void, typename... comp_ts1>
-    static constexpr unsigned int index() {
-        return std::is_same<T,U>::value ? 0 : 1 + index<T, comp_ts1...>();
+    static constexpr unsigned int index(int i = 0) {
+        if(std::is_same<U,void>::value) {
+            throw GenericException("Index couldn't be found");
+        } else if(std::is_same<T,U>::value) {
+            return i;
+        } else {
+            return index<T,comp_ts1...>(++i);
+        }
     }
 
 private:
     std::stack<unsigned int> m_freeLocations;
     std::vector<Entity> m_entities;
-    std::vector<std::function<void(void)>> m_services;
     std::tuple<std::vector<Component<comp_ts>>...> m_componentLists;
 };
 

@@ -16,9 +16,10 @@
 class IRenderObject;
 
 class Scene {
+public:
     using entity_manager_t = EntityManager<CRender, CLocation>;
     using entity_t = entity_manager_t::Entity;
-public:
+    
     Scene();
     Scene(const Display* const display, std::string scenename);
     Scene(const Scene&) = delete;
