@@ -6,16 +6,8 @@
 
 void Utilities::PrintGLErrors()
 {
-    for(;;)
+    for(GLenum glErr = glGetError(); glErr != GL_NO_ERROR; glErr = glGetError())
     {
-        GLenum glErr = glGetError();
-        if(glErr != GL_NO_ERROR)
-        {
-            Log::getErrorLog() << "~~  GLError (" << glErr << ") " << glErr << " ~~\n";
-        }
-        else
-        {
-            break;
-        }
+        Log::getErrorLog() << "~~  GLError (" << glErr << ") " << glErr << " ~~\n";
     }
 }

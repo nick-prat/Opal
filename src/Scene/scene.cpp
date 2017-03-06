@@ -22,17 +22,6 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-struct A {
-    A() : a(10) {};
-    int a;
-};
-struct B {
-    B() : b(10) {};
-    int b;
-};
-class C {};
-class D {};
-
 class ShittySystem : public Scene::entity_manager_t::System<ShittySystem,CRender> {
 public:
     ShittySystem(Scene::entity_manager_t* entMan)

@@ -1,17 +1,11 @@
 #ifndef _ENTITY_H
 #define _ENTITY_H
 
-#include <glm/glm.hpp>
-#include <string>
-#include <unordered_map>
 #include <vector>
 #include <stack>
-#include <iostream>
 #include <functional>
 
-#include <Utilities/exceptions.hpp>
-
-class DynamicModel;
+#include <Utilities/utilities.hpp>
 
 // NOTE What defines an entity vs a static object?
 // TODO Implement error detection if a entity doesn't have a specified component
@@ -20,10 +14,10 @@ class DynamicModel;
 
 template <typename... comp_ts>
 class EntityManager {
-public:
-    using entity_manager_t = EntityManager<comp_ts...>;
     static constexpr unsigned int invalid_id = 0xFFFFFFFF;
     static constexpr unsigned int parameter_size = sizeof...(comp_ts);
+public:
+    using entity_manager_t = EntityManager<comp_ts...>;
 
     class Entity {
         friend class EntityManager;
@@ -51,15 +45,15 @@ public:
             return *this;
         }
 
-        inline unsigned int getID() const {
+        unsigned int getID() const {
             return m_id;
         }
 
         template<typename comp_t>
         void addComponent() {
-            auto loc = m_componentIDs[index<comp_t, comp_ts...>()];
+            auto loc = m_componentIDs[Utilities::index<comp_t, comp_ts...>()];
             if(loc != invalid_id) {
-                m_componentIDs[index<comp_t, comp_ts...>()] = m_entityManager->createComponent<comp_t>(m_id);
+                m_componentIDs[Utilities::index<comp_t, comp_ts...>()] = m_entityManager->createComponent<comp_t>(m_id);
             } else {
                 throw BadComponent(m_id, "Attempted adding component to entity twice");
             }
@@ -67,18 +61,18 @@ public:
 
         template<typename comp_t>
         comp_t& getComponent() {
-            return m_entityManager->getComponent<comp_t>(m_componentIDs[index<comp_t, comp_ts...>()]);
+            return m_entityManager->getComponent<comp_t>(m_componentIDs[Utilities::index<comp_t, comp_ts...>()]);
         }
 
         template<typename comp_t>
         void removeComponent() {
             m_entityManager->removeComponent<comp_t>(m_id);
-            m_componentIDs[index<comp_t, comp_ts...>()] = invalid_id;
+            m_componentIDs[Utilities::index<comp_t, comp_ts...>()] = invalid_id;
         }
 
         template<typename comp_t>
         bool hasComponent() {
-            auto loc = m_componentIDs[index<comp_t, comp_ts...>()];
+            auto loc = m_componentIDs[Utilities::index<comp_t, comp_ts...>()];
             return (loc == invalid_id ? false : true);
         }
 
@@ -92,15 +86,15 @@ public:
     class Component {
         friend class EntityManager;
     public:
-        inline comp_t& getComponent() {
+        comp_t& getComponent() {
             return m_component;
         };
 
-        inline bool isEnabled() {
+        bool isEnabled() {
             return m_enabled;
         }
 
-        inline comp_t* operator->() {
+        comp_t* operator->() {
             if(m_enabled) {
                 return &m_component;
             } else {
@@ -108,7 +102,7 @@ public:
             }
         }
 
-        inline unsigned int getEntityID() {
+        unsigned int getEntityID() {
             return m_entityID;
         }
 
@@ -123,6 +117,7 @@ public:
         bool m_enabled;
     };
 
+    // TODO How can i register a system?
     template<typename system_t, typename... system_comp_ts>
     class System {
     public:
@@ -195,6 +190,11 @@ public:
         return std::get<std::vector<Component<comp_t>>>(m_componentLists);
     }
 
+    template<typename system_t>
+    void registerSystem(system_t& system) {
+
+    }
+
     void updateServices() {
 
     }
@@ -219,17 +219,6 @@ private:
         compList[id].m_enabled = false;
         compList[id].m_entityID = invalid_id;
         m_freeLocations.push(id);
-    }
-
-    template<typename T, typename U = void, typename... comp_ts1>
-    static constexpr unsigned int index(int i = 0) {
-        if(std::is_same<U,void>::value) {
-            throw GenericException("Index couldn't be found");
-        } else if(std::is_same<T,U>::value) {
-            return i;
-        } else {
-            return index<T,comp_ts1...>(++i);
-        }
     }
 
 private:
