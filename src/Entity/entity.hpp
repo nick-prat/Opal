@@ -16,6 +16,12 @@ template <typename... comp_ts>
 class EntityManager {
     static constexpr unsigned int invalid_id = 0xFFFFFFFF;
     static constexpr unsigned int parameter_size = sizeof...(comp_ts);
+
+    class IBaseSystem {
+    public:
+        virtual void update() = 0;
+    };
+
 public:
     using entity_manager_t = EntityManager<comp_ts...>;
 
@@ -119,40 +125,39 @@ public:
 
     // TODO How can i register a system?
     template<typename system_t, typename... system_comp_ts>
-    class System {
+    class System : public IBaseSystem {
     public:
         System(entity_manager_t* entityManager)
-        : m_entityManager(entityManager) {
-
-        }
+        : m_entityManager(entityManager) {}
 
         void update() {
             static_cast<system_t*>(this)->update();
         }
 
         // TODO Validate entity has proper components
-        void subscribe(entity_manager_t::Entity& entity) {
+        void subscribe(entity_manager_t::Entity* entity) {
             if(validate<system_comp_ts...>(entity)) {
-
+                m_entities.push_back(entity);
             } else {
-                throw BadEntity(entity.getID(), "Validation failed for subscribing entity to system");
+                throw BadEntity(entity->getID(), "Validation failed for subscribing entity to system");
             }
         }
 
     private:
         template<typename comp_t = void, typename... comp_ts1>
-        bool validate(entity_manager_t::Entity& entity) {
+        bool validate(entity_manager_t::Entity* entity) {
             if(std::is_same<comp_t, void>::value) {
                 return true;
-            } else if(entity.template hasComponent<comp_t>()) {
+            } else if(entity->template hasComponent<comp_t>()) {
                 return validate<comp_ts1...>(entity);
             } else {
                 return false;
             }
         }
 
-    private:
+    protected:
         entity_manager_t* m_entityManager;
+        std::vector<entity_manager_t::Entity*> m_entities;
     };
 
     unsigned int createEntity() {
@@ -190,13 +195,15 @@ public:
         return std::get<std::vector<Component<comp_t>>>(m_componentLists);
     }
 
-    template<typename system_t>
-    void registerSystem(system_t& system) {
-
+    // TODO See if it's possible to use statis polymorphism only
+    void registerSystem(IBaseSystem* system) {
+        m_systems.push_back(system);
     }
 
-    void updateServices() {
-
+    void updateSystems() {
+        for(auto& system : m_systems) {
+            system->update();
+        }
     }
 
 private:
@@ -224,6 +231,7 @@ private:
 private:
     std::stack<unsigned int> m_freeLocations;
     std::vector<Entity> m_entities;
+    std::vector<IBaseSystem*> m_systems;
     std::tuple<std::vector<Component<comp_ts>>...> m_componentLists;
 };
 

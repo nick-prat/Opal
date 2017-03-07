@@ -27,6 +27,12 @@ public:
     ShittySystem(Scene::entity_manager_t* entMan)
     : System(entMan) {}
 
+    void update() {
+        for(auto& ent : m_entities) {
+            std::cout << ent->getID() << '\n';
+        }
+    }
+
 };
 
 Scene::Scene()
@@ -43,8 +49,9 @@ Scene::Scene(const Display* const display, std::string scenename)
     auto entId = m_entityManager.createEntity();
     auto& ent = m_entityManager.getEntity(entId);
     ent.addComponent<CRender>();
-    ShittySystem sys(&m_entityManager);
-    sys.subscribe(ent);
+    ShittySystem* sys = new ShittySystem(&m_entityManager);
+    sys->subscribe(&ent);
+    m_entityManager.registerSystem(sys);
 
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
@@ -221,6 +228,7 @@ void Scene::start() {
 // NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
     m_renderChain.render(m_display);
+    m_entityManager.updateSystems();
     (*m_renderFunc)();
 }
 
