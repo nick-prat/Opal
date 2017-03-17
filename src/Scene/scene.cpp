@@ -22,36 +22,36 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-class ShittySystem : public Scene::entity_manager_t::System<ShittySystem,CRender> {
+class ShittySystem : public ISystem<ShittySystem, Scene::entity_manager_t, CRender, CLocation> {
 public:
     ShittySystem(Scene::entity_manager_t* entMan)
-    : System(entMan) {}
+    : ISystem(entMan) {}
 
     void update() {
         for(auto& ent : m_entities) {
             std::cout << ent->getID() << '\n';
         }
     }
-
 };
 
 Scene::Scene()
-        : m_scenename("null")
-        , m_luaEnabled(false)
-        , m_display(nullptr) {}
+: m_scenename("null")
+, m_luaEnabled(false)
+, m_display(nullptr) {}
 
 Scene::Scene(const Display* const display, std::string scenename)
-        : m_luaEnabled(true)
-        , m_display(display) {
-
+: m_luaEnabled(true)
+, m_display(display) {
     luaL_openlibs(m_luaState.get());
 
     auto entId = m_entityManager.createEntity();
     auto& ent = m_entityManager.getEntity(entId);
+    ent.addComponent<CLocation>();
     ent.addComponent<CRender>();
+
     ShittySystem* sys = new ShittySystem(&m_entityManager);
     sys->subscribe(&ent);
-    m_entityManager.registerSystem(sys);
+    //m_entityManager.registerSystem(sys);
 
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
@@ -130,17 +130,17 @@ Scene::Scene(const Display* const display, std::string scenename)
 }
 
 Scene::Scene(Scene&& scene)
-        : m_renderObjects(std::move(scene.m_renderObjects))
-        , m_entityManager(std::move(scene.m_entityManager))
-        , m_renderChain(std::move(scene.m_renderChain))
-        , m_resourceHandler(std::move(scene.m_resourceHandler))
-        , m_scenename(scene.m_scenename)
-        , m_luaState(std::move(scene.m_luaState))
-        , m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
-        , m_startFunc(std::move(scene.m_startFunc))
-        , m_renderFunc(std::move(scene.m_renderFunc))
-        , m_luaEnabled(scene.m_luaEnabled)
-        , m_display(scene.m_display) {
+: m_renderObjects(std::move(scene.m_renderObjects))
+, m_entityManager(std::move(scene.m_entityManager))
+, m_renderChain(std::move(scene.m_renderChain))
+, m_resourceHandler(std::move(scene.m_resourceHandler))
+, m_scenename(scene.m_scenename)
+, m_luaState(std::move(scene.m_luaState))
+, m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
+, m_startFunc(std::move(scene.m_startFunc))
+, m_renderFunc(std::move(scene.m_renderFunc))
+, m_luaEnabled(scene.m_luaEnabled)
+, m_display(scene.m_display) {
     scene.m_luaEnabled = false;
     scene.m_display = nullptr;
 }
