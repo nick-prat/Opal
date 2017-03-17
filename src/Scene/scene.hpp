@@ -8,8 +8,8 @@
 #include <Utilities/lua.hpp>
 #include <Core/display.hpp>
 #include <Core/inputcontroller.hpp>
-#include <Entity/components.hpp>
-#include <Entity/entity.hpp>
+#include <ECS/ecs.hpp>
+#include <Systems/rendersystem.hpp>
 #include <Render/renderchain.hpp>
 #include <Resources/resourcehandler.hpp>
 
@@ -55,6 +55,7 @@ private:
     entity_manager_t m_entityManager;
     RenderChain m_renderChain;
     ResourceHandler m_resourceHandler;
+    RenderSystem<entity_manager_t> m_renderSystem;
     std::string m_scenename;
 
     // Lua related members

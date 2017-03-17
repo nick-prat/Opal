@@ -35,23 +35,17 @@ public:
 };
 
 Scene::Scene()
-: m_scenename("null")
+: m_renderSystem(nullptr)
+, m_scenename("null")
 , m_luaEnabled(false)
 , m_display(nullptr) {}
 
 Scene::Scene(const Display* const display, std::string scenename)
-: m_luaEnabled(true)
+: m_renderSystem(&m_entityManager)
+, m_scenename(scenename)
+, m_luaEnabled(true)
 , m_display(display) {
     luaL_openlibs(m_luaState.get());
-
-    auto entId = m_entityManager.createEntity();
-    auto& ent = m_entityManager.getEntity(entId);
-    ent.addComponent<CLocation>();
-    ent.addComponent<CRender>();
-
-    ShittySystem* sys = new ShittySystem(&m_entityManager);
-    sys->subscribe(&ent);
-    //m_entityManager.registerSystem(sys);
 
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
     std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
@@ -134,6 +128,7 @@ Scene::Scene(Scene&& scene)
 , m_entityManager(std::move(scene.m_entityManager))
 , m_renderChain(std::move(scene.m_renderChain))
 , m_resourceHandler(std::move(scene.m_resourceHandler))
+, m_renderSystem(std::move(scene.m_renderSystem))
 , m_scenename(scene.m_scenename)
 , m_luaState(std::move(scene.m_luaState))
 , m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
@@ -228,6 +223,7 @@ void Scene::start() {
 // NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
     m_renderChain.render(m_display);
+    m_renderSystem.update();
     m_entityManager.updateSystems();
     (*m_renderFunc)();
 }
