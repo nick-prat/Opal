@@ -1,6 +1,8 @@
 #ifndef _RENDER_SYSTEM_H
 #define _RENDER_SYSTEM_H
 
+#include <iostream>
+
 #include <ECS/systems.hpp>
 #include <ECS/components.hpp>
 
@@ -14,7 +16,13 @@ public:
     : ISystem<RenderSystem<entity_manager_t>, entity_manager_t, CRender, CLocation>(entityManager) {}
 
     void update() {
-
+        for(auto& entity : this->m_entities) {
+            if(entity->template hasComponent<CRender>()) {
+                std::cout << "yolo\n";
+            }
+            //auto& rend = entity->template getComponent<CRender>();
+            //auto& loc = entity->template getComponent<CLocation>();
+        }
     }
 };
 

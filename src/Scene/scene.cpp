@@ -223,7 +223,6 @@ void Scene::start() {
 // NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
     m_renderChain.render(m_display);
-    m_renderSystem.update();
     m_entityManager.updateSystems();
     (*m_renderFunc)();
 }
