@@ -8,7 +8,7 @@ public:
     virtual void update() = 0;
 };
 
-template<typename system_t, typename entity_manager_t, typename... system_comp_ts>
+template<typename system_t, typename entity_manager_t>
 class ISystem : public IBaseSystem {
 public:
     ISystem(entity_manager_t* entityManager)

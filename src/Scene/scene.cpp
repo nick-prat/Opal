@@ -22,18 +22,6 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-class ShittySystem : public ISystem<ShittySystem, Scene::entity_manager_t, CRender, CLocation> {
-public:
-    ShittySystem(Scene::entity_manager_t* entMan)
-    : ISystem(entMan) {}
-
-    void update() {
-        for(auto& ent : m_entities) {
-            std::cout << ent->getID() << '\n';
-        }
-    }
-};
-
 Scene::Scene()
 : m_renderSystem(nullptr)
 , m_scenename("null")
