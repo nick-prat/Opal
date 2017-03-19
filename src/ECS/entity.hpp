@@ -83,14 +83,25 @@ public:
     template<typename comp_t>
     comp_t& getComponent() {
         static_assert(entity_manager_t::template contains<comp_t>(), "getComponent called with invalid type");
-        return m_entityManager->template getComponent<comp_t>(m_componentIDs[index<comp_t>()]);
+        auto loc = m_componentIDs[index<comp_t>()];
+        if(loc != invalid_id) {
+            return m_entityManager->template getComponent<comp_t>(loc);
+        } else {
+            throw BadComponent(m_id, "Attempted getting component that doesn't exist from entity");
+        }
     }
 
     template<typename comp_t>
     void removeComponent() {
         static_assert(entity_manager_t::template contains<comp_t>(), "removeComponent called with invalid type");
-        m_entityManager->template removeComponent<comp_t>(m_componentIDs[index<comp_t>()]);
-        m_componentIDs[index<comp_t>()] = invalid_id;
+        auto loc = m_componentIDs[index<comp_t>()];
+        if(loc != invalid_id) {
+            m_entityManager->template removeComponent<comp_t>(m_componentIDs[index<comp_t>()]);
+            m_componentIDs[index<comp_t>()] = invalid_id;
+        } else {
+            throw BadComponent(m_id, "Attempted removing component that doesn't exist from entity");
+        }
+
     }
 
     template<typename comp_t>
