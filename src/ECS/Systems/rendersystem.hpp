@@ -2,6 +2,7 @@
 #define _RENDER_SYSTEM_H
 
 #include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <Render/shader.hpp>
 #include <ECS/systems.hpp>
@@ -12,30 +13,27 @@ public:
     static_assert(entity_manager_t::template contains<CRender>(), "RenderSystem requires invalid type CRender");
     static_assert(entity_manager_t::template contains<CLocation>(), "RenderSystem requires invalid type CLocation");
 
-    RenderSystem(entity_manager_t* entityManager)
+    RenderSystem(entity_manager_t* entityManager, const Shader& shader, const Display& display)
     : ISystem<RenderSystem<entity_manager_t>, entity_manager_t>(entityManager)
+    , m_display(display)
+    , m_shader(shader)
     , m_ambientColor(glm::vec4(1.0f)) {}
 
-    RenderSystem(const RenderSystem&) = delete;
+    RenderSystem(const RenderSystem& renderSystem)
+    : ISystem<RenderSystem<entity_manager_t>, entity_manager_t>(renderSystem.m_entityManager)
+    , m_display(renderSystem.m_display)
+    , m_shader(renderSystem.m_shader)
+    , m_ambientColor(renderSystem.m_ambientColor) {}
 
     RenderSystem(RenderSystem&& renderSystem)
     : ISystem<RenderSystem<entity_manager_t>, entity_manager_t>(renderSystem.m_entityManager)
-    , m_ambientColor(renderSystem.m_ambientColor)
-    , m_shader(renderSystem.m_shader) {
-        renderSystem.m_shader = nullptr;
-    }
+    , m_display(renderSystem.m_display)
+    , m_shader(renderSystem.m_shader)
+    , m_ambientColor(renderSystem.m_ambientColor) {}
 
     RenderSystem& operator=(const RenderSystem&) = delete;
 
-    RenderSystem& operator=(RenderSystem&& renderSystem) {
-        m_ambientColor = renderSystem.m_ambientColor;
-        m_shader = renderSystem.m_shader;
-
-        renderSystem.m_ambientColor = glm::vec4(0.0f);
-        renderSystem.m_shader = nullptr;
-
-        return *this;
-    }
+    RenderSystem& operator=(RenderSystem&&) = delete;
 
     /* The old render function
     void RenderChain::render(const Display* const display) const {
@@ -54,22 +52,31 @@ public:
     }
     */
 
+    void start() {
+        glUseProgram(m_shader.getProgram());
+
+        GLint ambientLightLocation = m_shader.getUniformLocation("gAmbientLight");
+        if(ambientLightLocation != -1) {
+            glUniform4fv(ambientLightLocation, 1, glm::value_ptr(m_ambientColor));
+        }
+    }
+
     void visit(Entity<entity_manager_t>& entity) {
         if(entity.template hasComponent<CRender>()) {
             std::cout << "yolo\n";
         }
     }
 
+    void end() {
+
+    }
+
     void setDisplay(const Display* const display) {
         m_display = display;
     }
 
-    void setShader(Shader* shader) {
-        m_shader = shader;
-    }
-
     std::size_t getRenderCount() const {
-        return m_shader->getRenderCount();
+        return m_shader.getRenderCount();
     }
 
     void setAmbientColor(const glm::vec3& color) {
@@ -83,9 +90,9 @@ public:
     }
 
 private:
-    const Display* m_display;
+    const Display& m_display;
+    const Shader& m_shader;
     glm::vec4 m_ambientColor;
-    Shader* m_shader;
 };
 
 #endif // _RENDER_SYSTEM_H

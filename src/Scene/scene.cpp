@@ -21,15 +21,8 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-Scene::Scene()
-: m_renderSystem(&m_entityManager)
-, m_scenename("null")
-, m_luaEnabled(false)
-, m_display(nullptr) {}
-
-Scene::Scene(const Display* const display, std::string scenename)
-: m_renderSystem(&m_entityManager)
-, m_scenename(scenename)
+Scene::Scene(const Display& display, std::string scenename)
+: m_scenename(scenename)
 , m_luaEnabled(true)
 , m_display(display) {
     luaL_openlibs(m_luaState.get());
@@ -107,7 +100,7 @@ Scene::Scene(const Display* const display, std::string scenename)
     }
 
     for(const auto& shader : m_resourceHandler.getShaders()) {
-        //m_renderChain.attachShader(shader.second.get());
+        m_renderSystems.push_back(render_system_t(&m_entityManager, shader.second, m_display));
     }
 }
 
@@ -115,7 +108,7 @@ Scene::Scene(Scene&& scene)
 : m_renderObjects(std::move(scene.m_renderObjects))
 , m_entityManager(std::move(scene.m_entityManager))
 , m_resourceHandler(std::move(scene.m_resourceHandler))
-, m_renderSystem(std::move(scene.m_renderSystem))
+, m_renderSystems(std::move(scene.m_renderSystems))
 , m_scenename(scene.m_scenename)
 , m_luaState(std::move(scene.m_luaState))
 , m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
@@ -123,30 +116,13 @@ Scene::Scene(Scene&& scene)
 , m_renderFunc(std::move(scene.m_renderFunc))
 , m_luaEnabled(scene.m_luaEnabled)
 , m_display(scene.m_display) {
-    scene.m_luaEnabled = false;
-    scene.m_display = nullptr;
+    scene.m_luaEnabled = false;\
 }
 
 Scene::~Scene() {
-    m_renderSystem.detach();
-}
-
-Scene& Scene::operator=(Scene&& scene) {
-    m_renderObjects = std::move(scene.m_renderObjects);
-    m_entityManager = std::move(scene.m_entityManager);
-    m_resourceHandler = std::move(scene.m_resourceHandler);
-    m_renderSystem = std::move(scene.m_renderSystem);
-    m_scenename = std::move(scene.m_scenename);
-    m_luaState = std::move(scene.m_luaState);
-    m_luaKeyBinds = std::move(scene.m_luaKeyBinds);
-    m_startFunc = std::move(scene.m_startFunc);
-    m_renderFunc = std::move(scene.m_renderFunc);
-    m_luaEnabled = scene.m_luaEnabled;
-    m_display = scene.m_display;
-
-    scene.m_luaEnabled = false;
-    scene.m_display = nullptr;
-    return *this;
+    for(auto& renderSystem : m_renderSystems) {
+        renderSystem.detach();
+    }
 }
 
 // NOTE What other functions are necessary to expose to lua?
@@ -205,12 +181,9 @@ void Scene::registerLuaFunctions() {
 }
 
 void Scene::registerSystems() {
-    auto id = m_entityManager.createEntity();
-    auto& ent = m_entityManager.getEntity(id);
-    ent.addComponent<CLocation>();
-    ent.addComponent<CRender>();
-    m_renderSystem.attach();
-    m_renderSystem.subscribe(id);
+    for(auto& renderSystem : m_renderSystems) {
+        renderSystem.attach();
+    }
 }
 
 // Is this the best way to do it?
@@ -233,22 +206,26 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     InputKey key = (InputKey)ikey;
     m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
     if(repeat) {
-        m_display->getInputController()->registerWhileKeyPressed(key, [this](InputKey key) {
+        m_display.getInputController()->registerWhileKeyPressed(key, [this](InputKey key) {
             (*m_luaKeyBinds[key])();
         });
     } else {
-        m_display->getInputController()->registerOnKeyPressed(key, [this](InputKey key) {
+        m_display.getInputController()->registerOnKeyPressed(key, [this](InputKey key) {
             (*m_luaKeyBinds[key])();
         });
     }
 }
 
 void Scene::setAmbientIntensity(float intensity) {
-    m_renderSystem.setAmbientIntensity(intensity);
+
 }
 
 void Scene::setAmbientColor(const glm::vec3 &color) {
-    m_renderSystem.setAmbientColor(color);
+
+}
+
+Camera* Scene::getCamera() const {
+    return m_display.getCamera();
 }
 
 // NOTE Do i want to be able to easily destroy an entity?

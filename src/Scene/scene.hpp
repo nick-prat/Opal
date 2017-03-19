@@ -17,16 +17,16 @@ class IRenderObject;
 class Scene {
 public:
     using entity_manager_t = EntityManager<CRender, CLocation>;
+    using render_system_t = RenderSystem<entity_manager_t>;
     using entity_t = Entity<entity_manager_t>;
 
-    Scene();
-    Scene(const Display* const display, std::string scenename);
+    Scene(const Display& display, std::string scenename);
     Scene(const Scene&) = delete;
     Scene(Scene&& scene);
     ~Scene();
 
     Scene& operator=(const Scene&) = delete;
-    Scene& operator=(Scene&& scene);
+    Scene& operator=(Scene&& scene) = delete;
 
     void start();
     void gameLoop();
@@ -39,7 +39,7 @@ public:
     void setAmbientIntensity(float intensity);
     void setAmbientColor(const glm::vec3& color);
     void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
-    Camera* getCamera() const {return m_display->getCamera();};
+    Camera* getCamera() const;
     unsigned int createEntity();
     entity_t* getEntity(const unsigned int id) const;
 
@@ -53,7 +53,7 @@ private:
     std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;
     entity_manager_t m_entityManager;
     ResourceHandler m_resourceHandler;
-    RenderSystem<entity_manager_t> m_renderSystem;
+    std::vector<render_system_t> m_renderSystems;
     std::string m_scenename;
 
     // Lua related members
@@ -63,7 +63,7 @@ private:
     std::unique_ptr<luabridge::LuaRef> m_renderFunc;
 
     bool m_luaEnabled;
-    const Display* m_display;
+    const Display& m_display;
 };
 
 #endif // _SCENE_H

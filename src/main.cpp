@@ -50,9 +50,9 @@ int main(int argc, char **args) {
     dynmodel2.scale(glm::vec3(0.1f, 0.1f, 0.1f));
     dynmodel2.translate(glm::vec3(3.0f, -2.1f, 0.0f));
 
-    auto sh = rh.getShader("shader_staticmodel");
-    sh->attachRenderObject(&dynmodel1);
-    sh->attachRenderObject(&dynmodel2);
+    auto& sh = rh.getShader("shader_staticmodel");
+    sh.attachRenderObject(&dynmodel1);
+    sh.attachRenderObject(&dynmodel2);
 
     glCore.startScene(&scene);
 
@@ -68,6 +68,6 @@ int main(int argc, char **args) {
     Log::getLog() << "Average FPS: " << frames / timer << '\n';
 
     glCore.destroy();
-    GLCore::closeAPI();
+    //GLCore::closeAPI();
     return 0;
 }

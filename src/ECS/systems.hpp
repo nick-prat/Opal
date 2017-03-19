@@ -47,10 +47,14 @@ public:
     }
 
     void update() override {
+        static_cast<system_t*>(this)->start();
+
         auto& entityList = m_entityManager->getEntityList();
         for(auto& id : m_entities) {
-            static_cast<system_t*>(this)->system_t::visit(entityList[id]);
+            static_cast<system_t*>(this)->visit(entityList[id]);
         }
+
+        static_cast<system_t*>(this)->end();
     }
 
     void subscribe(unsigned int id) {

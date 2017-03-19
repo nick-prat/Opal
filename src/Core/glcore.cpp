@@ -180,7 +180,7 @@ const Display& GLCore::getDisplay() const {
 
 Scene GLCore::createScene(const std::string& scenename) {
     auto timer = glfwGetTime();
-    auto scene = Scene(&m_display, scenename);
+    auto scene = Scene(m_display, scenename);
     Log::getLog() << "Scene creation for " << scenename << " in " << glfwGetTime() - timer << " seconds\n";
     return scene;
 }

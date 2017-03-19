@@ -37,7 +37,8 @@ void ResourceHandler::loadResources(const json& scene) {
                 if(type == "model3d") {
                     m_resources[name] = std::unique_ptr<const IResource>(loadModel3D(resource["filename"]));
                 } else if(type == "shader") {
-                    m_shaders[name] = std::unique_ptr<Shader>(loadShader(resource));
+                    m_shaders.insert(std::make_pair(name, loadShader(resource)));
+                    //m_shaders[name] = std::unique_ptr<Shader>(loadShader(resource));
                 }
             } catch(std::domain_error& error) {
                 Log::getErrorLog() << error.what() << '\n';
@@ -179,7 +180,7 @@ IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D*
     }
 
     auto model = new StaticModel(*model3d, transform);
-    shader->second->attachRenderObject(model);
+    shader->second.attachRenderObject(model);
     return model;
 }
 
@@ -221,11 +222,11 @@ IRenderObject* ResourceHandler::generateLine(const json& object) {
     }
 
     auto line = new Line(head, tail, color);
-    shader->second->attachRenderObject(line);
+    shader->second.attachRenderObject(line);
     return line;
 }
 
-Shader* ResourceHandler::loadShader(const json& object) {
+Shader ResourceHandler::loadShader(const json& object) {
     std::string name = object["resourcename"];
     std::string filename = object["filename"];
     std::vector<std::string> files = object["types"];
@@ -244,12 +245,12 @@ Shader* ResourceHandler::loadShader(const json& object) {
         }
     }
 
-    auto shader = new Shader(files, types);
+    Shader shader(files, types);
 
     if(object.find("uniforms") != object.end()) {
         std::vector<std::string> uniforms = object["uniforms"];
         for(const auto& uniform : uniforms) {
-            shader->registerUniform(uniform);
+            shader.registerUniform(uniform);
         }
     }
 
@@ -435,14 +436,14 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
     }
 }
 
-const std::unordered_map<std::string, std::unique_ptr<Shader>>& ResourceHandler::getShaders() const {
+const std::unordered_map<std::string, Shader>& ResourceHandler::getShaders() const {
     return m_shaders;
 }
 
-Shader* ResourceHandler::getShader(const std::string& shader) const {
+Shader& ResourceHandler::getShader(const std::string& shader) {
     auto ret = m_shaders.find(shader);
     if(ret != m_shaders.end()) {
-        return ret->second.get();
+        return ret->second;
     }
     throw BadResource("Couldn't find shader", shader);
 }
