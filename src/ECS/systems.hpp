@@ -8,9 +8,8 @@
 
 class IBaseSystem {
 public:
+    virtual ~IBaseSystem() {}
     virtual void update() = 0;
-    virtual void attach() = 0;
-    virtual void detach() = 0;
 };
 
 template<typename system_t, typename entity_manager_t>
@@ -20,7 +19,7 @@ public:
     : m_active(false)
     , m_entityManager(entityManager) {}
 
-    ~ISystem() {
+    virtual ~ISystem() {
         detach();
     }
 
@@ -47,7 +46,7 @@ public:
         system.m_entityManager = nullptr;
     }
 
-    void update() {
+    void update() override {
         auto& entityList = m_entityManager->getEntityList();
         for(auto& id : m_entities) {
             static_cast<system_t*>(this)->system_t::visit(entityList[id]);
