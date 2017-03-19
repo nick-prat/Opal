@@ -23,7 +23,7 @@ using json = nlohmann::json;
 // NOTE What should lua be capable of doing?
 
 Scene::Scene()
-: m_renderSystem(nullptr)
+: m_renderSystem(&m_entityManager)
 , m_scenename("null")
 , m_luaEnabled(false)
 , m_display(nullptr) {}
@@ -43,6 +43,7 @@ Scene::Scene(const Display* const display, std::string scenename)
     luaL_dofile(m_luaState.get(), script.c_str());
 
     registerLuaFunctions();
+    registerSystems();
 
     std::string contents;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
@@ -128,7 +129,9 @@ Scene::Scene(Scene&& scene)
     scene.m_display = nullptr;
 }
 
-Scene::~Scene() {}
+Scene::~Scene() {
+    m_renderSystem.attach();
+}
 
 Scene& Scene::operator=(Scene&& scene) {
     m_renderObjects = std::move(scene.m_renderObjects);
@@ -201,6 +204,15 @@ void Scene::registerLuaFunctions() {
     if(!m_renderFunc->isFunction()) {
         throw GenericException("Render function wasn't found");
     }
+}
+
+void Scene::registerSystems() {
+    auto id = m_entityManager.createEntity();
+    auto& ent = m_entityManager.getEntity(id);
+    ent.addComponent<CLocation>();
+    ent.addComponent<CRender>();
+    m_renderSystem.attach();
+    m_renderSystem.subscribe(id);
 }
 
 // Is this the best way to do it?

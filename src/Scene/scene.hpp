@@ -9,7 +9,7 @@
 #include <Core/display.hpp>
 #include <Core/inputcontroller.hpp>
 #include <ECS/ecs.hpp>
-#include <Systems/rendersystem.hpp>
+#include <ECS/Systems/rendersystem.hpp>
 #include <Render/renderchain.hpp>
 #include <Resources/resourcehandler.hpp>
 
@@ -49,6 +49,7 @@ private:
     void closeLua();
     void buildLuaNamespace();
     void registerLuaFunctions();
+    void registerSystems();
 
 private:
     std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;

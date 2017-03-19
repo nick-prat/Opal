@@ -2,6 +2,7 @@
 #define _ENTITY_MANAGER_H
 
 #include <vector>
+#include <unordered_set>
 
 #include <ECS/entity.hpp>
 #include <ECS/systems.hpp>
@@ -10,7 +11,7 @@
 template<typename... comp_ts>
 class EntityManager {
 public:
-    static constexpr unsigned int parameter_size = sizeof...(comp_ts);
+    static constexpr std::size_t parameter_size = sizeof...(comp_ts);
     using entity_manager_t = EntityManager<comp_ts...>;
 
     template<typename comp_t>
@@ -89,21 +90,14 @@ public:
         }
     }
 
+    std::vector<Entity<entity_manager_t>>& getEntityList() {
+        return m_entities;
+    }
+
     template<typename comp_t>
     std::vector<Component<comp_t>>& getComponentList() {
         static_assert(contains<comp_t>(), "getComponentList called with invalid type");
         return std::get<std::vector<Component<comp_t>>>(m_componentLists);
-    }
-
-    // TODO See if it's possible to use static polymorphism only
-    void registerSystem(IBaseSystem* system) {
-        m_systems.push_back(system);
-    }
-
-    void updateSystems() {
-        for(auto& system : m_systems) {
-            system->update();
-        }
     }
 
     template<typename comp_t>
@@ -130,10 +124,24 @@ public:
         m_freeLocations.push(id);
     }
 
+    void attachSystem(IBaseSystem* system) {
+        m_systems.insert(system);
+    }
+
+    void detachSystem(IBaseSystem* system) {
+        m_systems.erase(m_systems.find(system));
+    }
+
+    void updateSystems() {
+        for(auto& system : m_systems) {
+            system->update();
+        }
+    }
+
 private:
     std::stack<unsigned int> m_freeLocations;
     std::vector<Entity<entity_manager_t>> m_entities;
-    std::vector<IBaseSystem*> m_systems;
+    std::unordered_set<IBaseSystem*> m_systems;
     std::tuple<std::vector<Component<comp_ts>>...> m_componentLists;
 };
 
