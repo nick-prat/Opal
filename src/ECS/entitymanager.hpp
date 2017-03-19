@@ -20,6 +20,12 @@ public:
     }
 
     template<typename comp_t>
+    static constexpr unsigned int index() {
+        static_assert(contains<comp_t>(), "index() called on invalid type");
+        return Utilities::index<comp_t, comp_ts...>();
+    }
+
+    template<typename comp_t>
     class Component {
         friend class EntityManager;
     public:
@@ -53,12 +59,6 @@ public:
         unsigned int m_entityID;
         bool m_enabled;
     };
-
-    template<typename comp_t>
-    unsigned int index() {
-        static_assert(contains<comp_t>(), "index() called on invalid type");
-        return Utilities::index<comp_t, comp_ts...>();
-    }
 
     unsigned int createEntity() {
         if(m_freeLocations.size() > 0) {

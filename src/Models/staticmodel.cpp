@@ -9,7 +9,6 @@
 #include <Render/Sampler/sampler.hpp>
 #include <Core/display.hpp>
 #include <Core/camera.hpp>
-#include <Render/renderchain.hpp>
 #include <Resources/texture.hpp>
 #include <Resources/model3d.hpp>
 

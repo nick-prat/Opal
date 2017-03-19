@@ -4,6 +4,9 @@
 #include <memory>
 
 #include <Core/display.hpp>
+
+class IRenderObject;
+
 #include <Render/shader.hpp>
 
 // NOTE Is there any other data I need to track for render objects?

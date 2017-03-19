@@ -1,7 +1,5 @@
 #include "renderobject.hpp"
 
-#include <Render/renderchain.hpp>
-
 int IRenderObject::m_numRenderObjects = 0;
 
 IRenderObject::IRenderObject() {

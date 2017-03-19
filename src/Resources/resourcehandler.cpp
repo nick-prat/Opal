@@ -19,7 +19,6 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 #include <Resources/texture.hpp>
-#include <Render/renderchain.hpp>
 #include <Models/line.hpp>
 #include <Models/staticmodel.hpp>
 

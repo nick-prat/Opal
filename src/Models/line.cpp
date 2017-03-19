@@ -4,7 +4,6 @@
 #include <string>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <Render/renderchain.hpp>
 #include <Core/display.hpp>
 #include <Core/camera.hpp>
 

@@ -128,7 +128,7 @@ Scene::Scene(Scene&& scene)
 }
 
 Scene::~Scene() {
-    m_renderSystem.attach();
+    m_renderSystem.detach();
 }
 
 Scene& Scene::operator=(Scene&& scene) {

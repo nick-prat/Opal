@@ -58,7 +58,6 @@ public:
     }
 
     void attach() {
-        std::cout << "attaching...\n";
         if(m_entityManager != nullptr && !m_active) {
             m_entityManager->attachSystem(this);
             m_active = true;

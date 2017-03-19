@@ -7,6 +7,9 @@
 #include <unordered_map>
 
 #include <GL/gl3w.h>
+
+class Shader;
+
 #include <Render/renderobject.hpp>
 
 // NOTE What else are shader's capable of? Do i need to implement more functions in this wrapper?

@@ -16,6 +16,12 @@ static constexpr unsigned int invalid_id = 0xFFFFFFFF;
 
 template<typename entity_manager_t>
 class Entity {
+private:
+    template<typename comp_t>
+    static constexpr unsigned int index() {
+        return entity_manager_t::template index<comp_t>();
+    }
+
 public:
     Entity()
     : m_entityManager(nullptr)
@@ -66,9 +72,9 @@ public:
     template<typename comp_t>
     void addComponent() {
         static_assert(entity_manager_t::template contains<comp_t>(), "addComponent called with invalid type");
-        auto loc = m_componentIDs[m_entityManager->template index<comp_t>()];
+        auto loc = m_componentIDs[index<comp_t>()];
         if(loc == invalid_id) {
-            m_componentIDs[m_entityManager->template index<comp_t>()] = m_entityManager->template createComponent<comp_t>(m_id);
+            m_componentIDs[index<comp_t>()] = m_entityManager->template createComponent<comp_t>(m_id);
         } else {
             throw BadComponent(m_id, "Attempted adding component to entity twice");
         }
@@ -77,20 +83,20 @@ public:
     template<typename comp_t>
     comp_t& getComponent() {
         static_assert(entity_manager_t::template contains<comp_t>(), "getComponent called with invalid type");
-        return m_entityManager->template getComponent<comp_t>(m_entityManager->template index<comp_t>());
+        return m_entityManager->template getComponent<comp_t>(m_componentIDs[index<comp_t>()]);
     }
 
     template<typename comp_t>
     void removeComponent() {
         static_assert(entity_manager_t::template contains<comp_t>(), "removeComponent called with invalid type");
-        m_entityManager->template removeComponent<comp_t>(m_id);
-        m_componentIDs[m_entityManager->template index<comp_t>()] = invalid_id;
+        m_entityManager->template removeComponent<comp_t>(m_componentIDs[index<comp_t>()]);
+        m_componentIDs[index<comp_t>()] = invalid_id;
     }
 
     template<typename comp_t>
     bool hasComponent() {
         static_assert(entity_manager_t::template contains<comp_t>(), "hasComponent called with invalid type");
-        auto loc = m_componentIDs[m_entityManager->template index<comp_t>()];
+        auto loc = m_componentIDs[index<comp_t>()];
         return (loc == invalid_id ? false : true);
     }
 

@@ -4,7 +4,6 @@
 
 #include <Core/display.hpp>
 #include <Core/camera.hpp>
-#include <Utilities/log.hpp>
 
 DynamicModel::DynamicModel(const Model3D& model3D)
         : StaticModel(model3D, glm::mat4(1.0f))
