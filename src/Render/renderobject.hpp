@@ -2,15 +2,15 @@
 #define _RENDEROBJECT_H
 
 #include <memory>
-#include <Render/renderchain.hpp>
+
 #include <Core/display.hpp>
+#include <Render/shader.hpp>
 
 // NOTE Is there any other data I need to track for render objects?
 // NOTE Are there any other functions every render object *should* have?
 
 class IRenderObject
 {
-    friend class RenderChain;
 public:
     IRenderObject();
     IRenderObject(const IRenderObject&) = delete;

@@ -10,7 +10,6 @@
 #include <Core/inputcontroller.hpp>
 #include <ECS/ecs.hpp>
 #include <ECS/Systems/rendersystem.hpp>
-#include <Render/renderchain.hpp>
 #include <Resources/resourcehandler.hpp>
 
 class IRenderObject;
@@ -34,7 +33,6 @@ public:
 
     int getEntityCount() const;
 
-    inline RenderChain& getRenderChain() {return m_renderChain;};
     inline ResourceHandler& getResourceHandler() {return m_resourceHandler;};
 
     // Lua proxy functions
@@ -54,7 +52,6 @@ private:
 private:
     std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;
     entity_manager_t m_entityManager;
-    RenderChain m_renderChain;
     ResourceHandler m_resourceHandler;
     RenderSystem<entity_manager_t> m_renderSystem;
     std::string m_scenename;

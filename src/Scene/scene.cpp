@@ -10,7 +10,6 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 #include <Render/renderobject.hpp>
-#include <Render/renderchain.hpp>
 #include <Resources/resourcehandler.hpp>
 
 using luabridge::LuaRef;
@@ -108,14 +107,13 @@ Scene::Scene(const Display* const display, std::string scenename)
     }
 
     for(const auto& shader : m_resourceHandler.getShaders()) {
-        m_renderChain.attachShader(shader.second.get());
+        //m_renderChain.attachShader(shader.second.get());
     }
 }
 
 Scene::Scene(Scene&& scene)
 : m_renderObjects(std::move(scene.m_renderObjects))
 , m_entityManager(std::move(scene.m_entityManager))
-, m_renderChain(std::move(scene.m_renderChain))
 , m_resourceHandler(std::move(scene.m_resourceHandler))
 , m_renderSystem(std::move(scene.m_renderSystem))
 , m_scenename(scene.m_scenename)
@@ -136,8 +134,8 @@ Scene::~Scene() {
 Scene& Scene::operator=(Scene&& scene) {
     m_renderObjects = std::move(scene.m_renderObjects);
     m_entityManager = std::move(scene.m_entityManager);
-    m_renderChain = std::move(scene.m_renderChain);
     m_resourceHandler = std::move(scene.m_resourceHandler);
+    m_renderSystem = std::move(scene.m_renderSystem);
     m_scenename = std::move(scene.m_scenename);
     m_luaState = std::move(scene.m_luaState);
     m_luaKeyBinds = std::move(scene.m_luaKeyBinds);
@@ -222,7 +220,6 @@ void Scene::start() {
 
 // NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
-    m_renderChain.render(m_display);
     m_entityManager.updateSystems();
     (*m_renderFunc)();
 }
@@ -247,11 +244,11 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
 }
 
 void Scene::setAmbientIntensity(float intensity) {
-    m_renderChain.setAmbientIntensity(intensity);
+    m_renderSystem.setAmbientIntensity(intensity);
 }
 
 void Scene::setAmbientColor(const glm::vec3 &color) {
-    m_renderChain.setAmbientColor(color);
+    m_renderSystem.setAmbientColor(color);
 }
 
 // NOTE Do i want to be able to easily destroy an entity?

@@ -13,7 +13,6 @@ set(SOURCE_FILES
     src/gl3w.c
 
     # Render
-    src/Render/renderchain.cpp
     src/Render/renderobject.cpp
     src/Render/shader.cpp
     src/Render/Sampler/sampler.cpp
@@ -42,6 +41,7 @@ set(SOURCE_FILES
     src/Core/display.cpp
 	src/Core/inputcontroller.cpp
     src/Core/camera.cpp
+
 )
 
 add_executable(OpenGL ${SOURCE_FILES})
