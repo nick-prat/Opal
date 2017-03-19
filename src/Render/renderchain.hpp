@@ -13,7 +13,7 @@ class Display;
 class IRenderObject;
 class Shader;
 
-class RenderChain {
+/*class RenderChain {
 public:
     RenderChain();
     RenderChain(const RenderChain&) = delete;
@@ -55,6 +55,6 @@ private:
     GLuint m_shaderProgram;
     std::list<IRenderObject*> m_renderObjects;
     std::unordered_map<std::string, GLint> m_uniformLocations;
-};
+};*/
 
 #endif // _RENDERCHAIN_H

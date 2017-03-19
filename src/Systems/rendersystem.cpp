@@ -1,4 +1,4 @@
-#include "renderchain.hpp"
+#include "Systems/rendersystem.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -111,4 +111,12 @@ GLint Shader::getUniformLocation(const std::string& name) const {
         return -1;
     }
     return uniform->second;
+}
+
+GLuint Shader::getProgram() const {
+    return m_shaderProgram;
+}
+
+std::size_t Shader::getRenderCount() const {
+    return m_renderObjects.size();
 }

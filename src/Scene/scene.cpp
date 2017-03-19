@@ -135,6 +135,7 @@ Scene& Scene::operator=(Scene&& scene) {
     m_entityManager = std::move(scene.m_entityManager);
     m_renderChain = std::move(scene.m_renderChain);
     m_resourceHandler = std::move(scene.m_resourceHandler);
+    m_renderSystem = std::move(scene.m_renderSystem);
     m_scenename = std::move(scene.m_scenename);
     m_luaState = std::move(scene.m_luaState);
     m_luaKeyBinds = std::move(scene.m_luaKeyBinds);

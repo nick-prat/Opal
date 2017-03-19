@@ -15,7 +15,6 @@ set(SOURCE_FILES
     # Render
     src/Render/renderchain.cpp
     src/Render/renderobject.cpp
-    src/Render/shader.cpp
     src/Render/Sampler/sampler.cpp
 
     # Scene
@@ -42,6 +41,9 @@ set(SOURCE_FILES
     src/Core/display.cpp
 	src/Core/inputcontroller.cpp
     src/Core/camera.cpp
+
+    # Systems
+    src/Systems/rendersystem.cpp
 )
 
 add_executable(OpenGL ${SOURCE_FILES})
