@@ -59,6 +59,10 @@ public:
         if(ambientLightLocation != -1) {
             glUniform4fv(ambientLightLocation, 1, glm::value_ptr(m_ambientColor));
         }
+
+        for(const auto& object : m_shader.getRenderObjects()) {
+            object->render(m_shader, m_display);
+        }
     }
 
     void visit(Entity<entity_manager_t>& entity) {

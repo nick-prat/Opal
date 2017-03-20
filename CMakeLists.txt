@@ -27,7 +27,6 @@ set(SOURCE_FILES
 
     # Resources
     src/Resources/texture.cpp
-    src/Resources/resource.cpp
     src/Resources/resourcehandler.cpp
     src/Resources/model3d.cpp
 

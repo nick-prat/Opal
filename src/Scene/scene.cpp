@@ -21,7 +21,7 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-Scene::Scene(const Display& display, std::string scenename)
+Scene::Scene(const Display& display, const std::string& scenename)
 : m_scenename(scenename)
 , m_luaEnabled(true)
 , m_display(display) {
@@ -35,7 +35,6 @@ Scene::Scene(const Display& display, std::string scenename)
     luaL_dofile(m_luaState.get(), script.c_str());
 
     registerLuaFunctions();
-    registerSystems();
 
     std::string contents;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
@@ -64,9 +63,7 @@ Scene::Scene(const Display& display, std::string scenename)
                     if(type == "line") {
                         rObject = m_resourceHandler.generateLine(object);
                     } else if(type == "staticmodel") {
-                        rObject = m_resourceHandler.generateModel(object, m_resourceHandler.getResource<Model3D>(object["resource"]));
-                    } else if(type == "rawstaticmodel") {
-                        rObject = m_resourceHandler.generateModel(object);
+                        rObject = m_resourceHandler.generateModel(object, m_resourceHandler.getModel3D(object["resource"]));
                     }
 
                     if(rObject != nullptr) {
@@ -102,6 +99,7 @@ Scene::Scene(const Display& display, std::string scenename)
     for(const auto& shader : m_resourceHandler.getShaders()) {
         m_renderSystems.push_back(render_system_t(&m_entityManager, shader.second, m_display));
     }
+    registerSystems();
 }
 
 Scene::Scene(Scene&& scene)

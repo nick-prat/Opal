@@ -25,7 +25,6 @@ public:
 
     static int getNumRenderObjects();
 
-protected:
     virtual void render(const Shader& shader, const Display& display) const = 0;
 
 private:

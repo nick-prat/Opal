@@ -20,7 +20,7 @@ public:
     using render_system_t = RenderSystem<entity_manager_t>;
     using entity_t = Entity<entity_manager_t>;
 
-    Scene(const Display& display, std::string scenename);
+    Scene(const Display& display, const std::string& scenename);
     Scene(const Scene&) = delete;
     Scene(Scene&& scene);
     ~Scene();
@@ -54,7 +54,7 @@ private:
     entity_manager_t m_entityManager;
     ResourceHandler m_resourceHandler;
     std::vector<render_system_t> m_renderSystems;
-    std::string m_scenename;
+    const std::string m_scenename;
 
     // Lua related members
     LuaState m_luaState;

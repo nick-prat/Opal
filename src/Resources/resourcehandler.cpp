@@ -32,13 +32,11 @@ void ResourceHandler::loadResources(const json& scene) {
         for(const json& resource : resources) {
             try {
                 std::string type = resource["type"];
-                std::string name = resource["resourcename"];
 
                 if(type == "model3d") {
-                    m_resources[name] = std::unique_ptr<const IResource>(loadModel3D(resource["filename"]));
+                    loadModel3D(resource["resourcename"], resource["filename"]);
                 } else if(type == "shader") {
-                    m_shaders.insert(std::make_pair(name, loadShader(resource)));
-                    //m_shaders[name] = std::unique_ptr<Shader>(loadShader(resource));
+                    loadShader(resource);
                 }
             } catch(std::domain_error& error) {
                 Log::getErrorLog() << error.what() << '\n';
@@ -47,99 +45,13 @@ void ResourceHandler::loadResources(const json& scene) {
     }
 }
 
-void ResourceHandler::addResource(const std::string& name, const IResource* const resource) {
-    m_resources[name] = std::unique_ptr<const IResource>(resource);
-}
-
-IRenderObject* ResourceHandler::generateModel(const json& object) {
-    std::string name = "";
-    std::vector<glm::vec3> verts;
-
-    std::vector<std::vector<float>> vertsf = object["vertices"];
-
-    if(object.find("name") != object.end()) {
-        name = object["name"];
-    } else {
-        name = "null";
-    }
-
-    for(std::vector<float> vert : vertsf) {
-        if(vert.size() != 3) {
-            throw BadResource("Vertex data size is not 3", name);
-        }
-        verts.push_back(glm::vec3(vert[0], vert[1], vert[2]));
-    }
-
-    std::vector<GLuint> indices;
-    std::vector<unsigned int> indicesf = object["indices"];
-    for(const unsigned int& index : indicesf) {
-        if(index >= verts.size()) {
-            throw BadResource("Index is out of range", name);
-        }
-        indices.push_back(index);
-    }
-
-    std::vector<glm::vec3> norms;
-    if(object.find("noramls") != object.end()) {
-        std::vector<std::vector<float>> normsf = object["normals"];
-        for(const std::vector<float>& norm : normsf) {
-            if(norm.size() != 3) {
-                throw BadResource("Normal data size is not 3", name);
-            }
-            norms.push_back(glm::vec3(norm[0], norm[1], norm[2]));
-        }
-    } else {
-        norms.clear();
-        for(unsigned int i = 0; i < verts.size(); i++) {
-            norms.push_back(glm::vec3(0.0f));
-        }
-    }
-
-    std::vector<glm::vec2> uvs;
-    if(object.find("uvs") != object.end()) {
-        std::vector<std::vector<float>> uvsf = object["uvs"];
-        for(const std::vector<float>& uv : uvsf) {
-            if(uv.size() != 2) {
-                throw BadResource("UV data size is not 2", name);
-            }
-            uvs.push_back(glm::vec2(uv[0], uv[1]));
-        }
-    } else {
-        uvs.clear();
-        for(unsigned int i = 0; i < verts.size(); i++) {
-            uvs.push_back(glm::vec2(0.0f));
-        }
-    }
-
-    std::vector<Model3D::Vertex> vertices;
-    for(unsigned int i = 0; i < verts.size(); i++) {
-        vertices.push_back(Model3D::Vertex(verts[i], norms[i], uvs[i]));
-    }
-
-    auto mesh = Model3D::Mesh(vertices, indices);
-    mesh.setMatName("texture");
-
-    auto texture = loadTexture(object["matname"], true);
-
-    auto model = new Model3D();
-    model->addMesh(std::move(mesh));
-    model->addTexture("texture", texture);
-
-    // TODO Memory leak here
-    return generateModel(object, model);
-}
-
-IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D* const model3d) {
+IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D& model3d) {
     std::string name = "";
 
     if(object.find("name") != object.end()) {
         name = object["name"];
     } else {
         name = "null";
-    }
-
-    if(model3d == nullptr) {
-        throw BadResource("Model3D was null for ", name);
     }
 
     glm::mat4 transform = glm::mat4(1.0f);
@@ -179,7 +91,7 @@ IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D*
         throw BadResource("requested unknown shader " + shadername, name);
     }
 
-    auto model = new StaticModel(*model3d, transform);
+    auto model = new StaticModel(model3d, transform);
     shader->second.attachRenderObject(model);
     return model;
 }
@@ -226,8 +138,24 @@ IRenderObject* ResourceHandler::generateLine(const json& object) {
     return line;
 }
 
-Shader ResourceHandler::loadShader(const json& object) {
+const std::unordered_map<std::string, Shader>& ResourceHandler::getShaders() const {
+    return m_shaders;
+}
+
+Shader& ResourceHandler::getShader(const std::string& shader) {
+    auto ret = m_shaders.find(shader);
+    if(ret != m_shaders.end()) {
+        return ret->second;
+    }
+    throw BadResource("Couldn't find shader", shader);
+}
+
+void ResourceHandler::loadShader(const json& object) {
     std::string name = object["resourcename"];
+    if(m_shaders.find(name) != m_shaders.end()) {
+        return;
+    }
+
     std::string filename = object["filename"];
     std::vector<std::string> files = object["types"];
     if(files.size() == 0) {
@@ -254,14 +182,21 @@ Shader ResourceHandler::loadShader(const json& object) {
         }
     }
 
-    return shader;
+    m_shaders.insert(std::make_pair(name, std::move(shader)));
 }
 
-const Texture* ResourceHandler::loadTexture(const std::string& name, bool genMipMaps) {
-    auto resourcename = "tex_" + name;
-    if(m_resources.find(resourcename) != m_resources.end()) {
-        auto res = m_resources.find(resourcename);
-        return getResource<Texture>(res->first);
+Texture& ResourceHandler::getTexture(const std::string &name) {
+    auto res = m_textures.find(name);
+    if(res != m_textures.end()) {
+        return res->second;
+    } else {
+        throw BadResource("Texture not found", name);
+    }
+}
+
+void ResourceHandler::loadTexture(const std::string& resourcename, const std::string& name, bool genMipMaps) {
+    if(m_textures.find(resourcename) != m_textures.end()) {
+        return;
     }
 
     FIBITMAP *img;
@@ -318,14 +253,23 @@ const Texture* ResourceHandler::loadTexture(const std::string& name, bool genMip
 
     FreeImage_Unload(img);
 
-    Texture* texture = new Texture();
-    texture->setFileName(resourcename);
-    texture->setTexture(glTexture);
-    m_resources[resourcename] = std::unique_ptr<Texture>(texture);
-    return texture;
+    m_textures.insert(std::make_pair(resourcename, Texture(glTexture, resourcename)));
 }
 
-const Model3D* ResourceHandler::loadModel3D(const std::string& modelname) {
+Model3D& ResourceHandler::getModel3D(const std::string &name) {
+    auto res = m_model3Ds.find(name);
+    if(res != m_model3Ds.end()) {
+        return res->second;
+    } else {
+        throw BadResource("Model3D not found", name);
+    }
+}
+
+void ResourceHandler::loadModel3D(const std::string& resourcename, const std::string& modelname) {
+    if(m_model3Ds.find(resourcename) != m_model3Ds.end()) {
+        return;
+    }
+
     std::string filename = "Resources/Models/" + modelname + ".3ds";
     Assimp::Importer importer;
     const aiScene* scene = importer.ReadFile(filename.c_str(),
@@ -338,43 +282,36 @@ const Model3D* ResourceHandler::loadModel3D(const std::string& modelname) {
         throw BadResource(importer.GetErrorString(), filename);
     }
 
-    auto model = new Model3D();
-
+    std::unordered_map<std::string, Texture*> textures;
     aiMaterial** materials = scene->mMaterials;
     for(unsigned int i = 0; i < scene->mNumMaterials; i++) {
         aiString aName;
         materials[i]->Get(AI_MATKEY_NAME, aName);
-        std::string name = std::string(aName.C_Str());
-
+        std::string texname = std::string(aName.C_Str());
+        std::string texresname = "tex_" + texname;
+        std::string texfilename = modelname + "/" + texname;
         try {
-            auto temp = loadTexture(modelname + "/" + name, true);
-            if(temp != nullptr) {
-                model->addTexture(name, temp);
-            }
-        } catch (BadResource& error) {
+            loadTexture(texresname, texfilename, true);
+            textures[texresname] = &(getTexture(texresname));
+        } catch(BadResource& error) {
             error.printError();
         }
     }
 
     std::vector<Model3D::Mesh> meshes;
-    try {
-        loadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
-    } catch(BadResource& error) {
-        delete model;
-        throw error;
-    }
+    loadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
 
     for(auto& mesh : meshes) {
         aiString aName;
         unsigned int index = mesh.getMatIndex();
         if(index < scene->mNumMaterials) {
             materials[mesh.getMatIndex()]->Get(AI_MATKEY_NAME, aName);
-            mesh.setMatName(std::string(aName.C_Str()));
+            std::string resname = std::string("tex_") + aName.C_Str();
+            mesh.setMatName(resname);
         }
-        model->addMesh(std::move(mesh));
     }
 
-    return model;
+    m_model3Ds.insert(std::make_pair(resourcename, Model3D(std::move(meshes), std::move(textures))));
 }
 
 void ResourceHandler::copyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
@@ -434,16 +371,4 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
         rmesh.setMatIndex(mesh->mMaterialIndex);
         meshes.push_back(std::move(rmesh));
     }
-}
-
-const std::unordered_map<std::string, Shader>& ResourceHandler::getShaders() const {
-    return m_shaders;
-}
-
-Shader& ResourceHandler::getShader(const std::string& shader) {
-    auto ret = m_shaders.find(shader);
-    if(ret != m_shaders.end()) {
-        return ret->second;
-    }
-    throw BadResource("Couldn't find shader", shader);
 }

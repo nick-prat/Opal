@@ -12,13 +12,15 @@ extern "C" {
 // NOTE Helper class to make sure the lua state is closed last
 class LuaState {
 public:
-    LuaState() : m_lState(luaL_newstate()) {
+    LuaState()
+    : m_lState(luaL_newstate()) {
         luaL_openlibs(m_lState);
     }
 
     LuaState(const LuaState&) = delete;
 
-    LuaState(LuaState&& luaState) : m_lState(luaState.m_lState) {
+    LuaState(LuaState&& luaState)
+    : m_lState(luaState.m_lState) {
         luaState.m_lState = nullptr;
     }
 

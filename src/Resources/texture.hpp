@@ -5,27 +5,18 @@
 
 #include <GL/gl3w.h>
 
-#include <Resources/resource.hpp>
-
-class Texture : public IResource
-{
+class Texture {
 public:
-    Texture();
+    Texture(const GLuint glTexture, const std::string& filename);
+    Texture(const Texture&) = delete;
+    Texture(Texture&& texture);
     ~Texture();
 
-    void setFileName(const std::string filename);
     std::string getFileName() const;
-
-    void setTexture(const GLuint glTexture);
-
     void bind() const;
-
-    bool isLoaded() const;
-    void unload();
 
 private:
     GLuint m_glTexture;
-    bool m_loaded;
     std::string m_filename;
 };
 

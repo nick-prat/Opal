@@ -40,8 +40,8 @@ int main(int argc, char **args) {
     Scene scene = glCore.createScene(scenename);
 
     auto& rh = scene.getResourceHandler();
-    const auto* m3d = rh.getResource<Model3D>("m3d_bear");
-    auto smodel = StaticModel(*m3d);
+    const auto& m3d = rh.getModel3D("m3d_bear");
+    auto smodel = StaticModel(m3d);
 
     auto dynmodel1 = DynamicModel(smodel);
     dynmodel1.scale(glm::vec3(0.1f, 0.1f, 0.1f));

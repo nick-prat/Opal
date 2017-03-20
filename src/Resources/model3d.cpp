@@ -5,29 +5,13 @@
 #include <Resources/texture.hpp>
 #include <Utilities/log.hpp>
 
-// Model3D
-
-Model3D::Model3D()
-        : IResource("model3d") {
-}
-
-void Model3D::addMesh(Mesh&& mesh) {
-    m_meshes.push_back(std::move(mesh));
-}
-
-void Model3D::addTexture(const std::string& name, const Texture* const texture) {
-    m_textures[name] = texture;
-}
-
-void Model3D::applyTransformation(const glm::mat4 &transform) {
-    for(auto& mesh : m_meshes) {
-        mesh.applyTransformation(transform);
-    }
-}
+Model3D::Model3D(std::vector<Mesh>&& meshes, std::unordered_map<std::string, Texture*>&& textures)
+: m_meshes(meshes)
+, m_textures(textures) {}
 
 void Model3D::printTextures() const {
     for(const auto texture : m_textures) {
-        Log::getLog() << texture.first << "->" << (texture.second->isLoaded() ? "loaded" : "load failed") << ": " << texture.second->getFileName() << '\n';
+        Log::getLog() << texture.first << " : " << texture.second->getFileName() << '\n';
     }
 }
 
@@ -70,13 +54,6 @@ Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
 
 Model3D::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
         : m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
-
-void Model3D::Mesh::applyTransformation(const glm::mat4& transform) {
-    for(auto& vert : m_vertices) {
-        glm::vec4 pos = transform * glm::vec4(vert.position, 1.0f);
-        vert.position = glm::vec3(pos.x, pos.y, pos.z);
-    }
-}
 
 std::vector<Model3D::Vertex> Model3D::Mesh::getVertices() const {
     return m_vertices;

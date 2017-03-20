@@ -33,6 +33,7 @@ public:
 
     GLuint getProgram() const;
     std::size_t getRenderCount() const;
+    const std::list<IRenderObject*>& getRenderObjects() const;
 
 private:
     ulong m_numShaders;

@@ -7,12 +7,10 @@
 #include <vector>
 #include <memory>
 
-#include <Resources/resource.hpp>
-
 class Texture;
 
 // NOTE Are there model types that aren't 3D, if so implement them
-class Model3D : public IResource {
+class Model3D {
 public:
     // NOTE Does a vertex struct need any functions?
     struct Vertex {
@@ -26,8 +24,6 @@ public:
     class Mesh {
     public:
         Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
-
-        void applyTransformation(const glm::mat4& transform);
 
         std::vector<Vertex> getVertices() const;
         std::vector<unsigned int> getIndices() const;
@@ -46,14 +42,7 @@ public:
         std::vector<Vertex> m_vertices;
     };
 
-    Model3D();
-
-    // NOTE Add meshes and texture is not possible in resource handler, so should I have these functions?
-    void addMesh(Mesh&& mesh);
-    void addTexture(const std::string& name, const Texture* const texture);
-
-    // NOTE Is this function useful still?
-    void applyTransformation(const glm::mat4& transform);
+    Model3D(std::vector<Mesh>&& meshes, std::unordered_map<std::string, Texture*>&& textures);
 
     const Texture* getTexture(const std::string& key) const;
     const Mesh& getMesh(unsigned int index) const;
@@ -63,9 +52,8 @@ public:
     void printTextures() const;
 
 private:
-    std::unordered_map<std::string, const Texture*> m_textures;
-    std::vector<Mesh> m_meshes;
-
+    const std::vector<Mesh> m_meshes;
+    const std::unordered_map<std::string, Texture*> m_textures;
 };
 
 #endif // _MODEL3D_H

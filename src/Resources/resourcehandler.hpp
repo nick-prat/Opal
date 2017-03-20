@@ -11,6 +11,7 @@
 #include <Utilities/exceptions.hpp>
 #include <Render/shader.hpp>
 #include <Resources/model3d.hpp>
+#include <Resources/texture.hpp>
 
 // TODO Might be a good idea to store any resource in ogl buffers instead
 
@@ -23,28 +24,18 @@ public:
     void loadResources(const nlohmann::json& scene);
     void addResource(const std::string& name, const IResource* const resource);
 
-    IRenderObject* generateModel(const nlohmann::json& obect);
-    IRenderObject* generateModel(const nlohmann::json& object, const Model3D* const model);
+    IRenderObject* generateModel(const nlohmann::json& object, const Model3D& model);
     IRenderObject* generateLine(const nlohmann::json& object);
-    Shader loadShader(const nlohmann::json& object);
-    const Texture* loadTexture(const std::string& name, bool genMipMaps);
-    const Model3D* loadModel3D(const std::string& modelname);
 
     const std::unordered_map<std::string, Shader>& getShaders() const;
     Shader& getShader(const std::string& shader);
+    void loadShader(const nlohmann::json& object);
 
-    template <typename T = IRenderObject>
-    const T* getResource(const std::string& resource) {
-        auto res = m_resources.find(resource);
-        if(res == m_resources.end() || res->second.get() == nullptr) {
-            return nullptr;
-        }
-        auto ret = dynamic_cast<const T*>(res->second.get());
-        if(ret == nullptr) {
-            throw BadResource("invalid type conversion", resource);
-        }
-        return ret;
-    }
+    Texture& getTexture(const std::string& name);
+    void loadTexture(const std::string& resourcename, const std::string& filename, bool genMipMaps);
+
+    Model3D& getModel3D(const std::string& name);
+    void loadModel3D(const std::string& resourcename, const std::string& filename);
 
 private:
     void copyaiMat(const aiMatrix4x4* from, glm::mat4& to);
@@ -52,7 +43,8 @@ private:
 
 private:
     std::unordered_map<std::string, Shader> m_shaders;
-    std::unordered_map<std::string, std::unique_ptr<const IResource>> m_resources;
+    std::unordered_map<std::string, Texture> m_textures;
+    std::unordered_map<std::string, Model3D> m_model3Ds;
 };
 
 #endif // _RESOURCE_HANDLER_H

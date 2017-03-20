@@ -135,3 +135,7 @@ GLuint Shader::getProgram() const {
 std::size_t Shader::getRenderCount() const {
     return m_renderObjects.size();
 }
+
+const std::list<IRenderObject*>& Shader::getRenderObjects() const {
+    return m_renderObjects;
+}
