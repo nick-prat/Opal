@@ -16,8 +16,8 @@ public:
     void bind() const;
 
 private:
-    GLuint m_glTexture;
-    std::string m_filename;
+    const GLuint m_glTexture;
+    const std::string m_filename;
 };
 
 #endif // _TEXTURE_H

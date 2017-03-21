@@ -1,8 +1,14 @@
 #ifndef _COMPONENTS_H
 #define _COMPONENTS_H
 
-class CLocation {
+#include <glm/glm.hpp>
 
+class CLocation {
+public:
+
+private:
+    glm::vec3 m_location;
+    glm::vec3 m_direction;
 };
 
 class CShader {

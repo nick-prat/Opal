@@ -5,7 +5,7 @@
 #include <unordered_set>
 
 #include <ECS/entity.hpp>
-#include <ECS/systems.hpp>
+#include <ECS/system.hpp>
 #include <Utilities/utilities.hpp>
 
 template<typename... comp_ts>
@@ -94,8 +94,12 @@ public:
         return m_entities;
     }
 
+    const std::vector<Entity<entity_manager_t>>& getEntityList() const {
+        return m_entities;
+    }
+
     template<typename comp_t>
-    std::vector<Component<comp_t>>& getComponentList() {
+    const std::vector<Component<comp_t>>& getComponentList() const {
         static_assert(contains<comp_t>(), "getComponentList called with invalid type");
         return std::get<std::vector<Component<comp_t>>>(m_componentLists);
     }
@@ -110,6 +114,13 @@ public:
 
     template<typename comp_t>
     comp_t& getComponent(unsigned int id) {
+        static_assert(contains<comp_t>(), "getComponent called with invalid type");
+        auto& list = getComponentList<comp_t>();
+        return list[id].m_component;
+    }
+
+    template<typename comp_t>
+    const comp_t& getComponent(unsigned int id) const {
         static_assert(contains<comp_t>(), "getComponent called with invalid type");
         auto& list = getComponentList<comp_t>();
         return list[id].m_component;

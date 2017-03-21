@@ -97,7 +97,7 @@ Scene::Scene(const Display& display, const std::string& scenename)
     }
 
     for(const auto& shader : m_resourceHandler.getShaders()) {
-        m_renderSystems.push_back(render_system_t(&m_entityManager, shader.second, m_display));
+        m_renderSystems.push_back(render_system_t(&m_entityManager, shader.second, m_display, m_worldLight));
     }
     registerSystems();
 }
@@ -119,7 +119,7 @@ Scene::Scene(Scene&& scene)
 
 Scene::~Scene() {
     for(auto& renderSystem : m_renderSystems) {
-        renderSystem.detach();
+        m_entityManager.detachSystem(&renderSystem);
     }
 }
 
@@ -180,7 +180,7 @@ void Scene::registerLuaFunctions() {
 
 void Scene::registerSystems() {
     for(auto& renderSystem : m_renderSystems) {
-        renderSystem.attach();
+        m_entityManager.attachSystem(&renderSystem);
     }
 }
 

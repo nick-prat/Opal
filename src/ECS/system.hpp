@@ -19,9 +19,7 @@ public:
     : m_active(false)
     , m_entityManager(entityManager) {}
 
-    virtual ~ISystem() {
-        detach();
-    }
+    virtual ~ISystem() {}
 
     ISystem(const ISystem&) = delete;
 
@@ -34,17 +32,7 @@ public:
     }
 
     ISystem& operator=(const ISystem&) = delete;
-
-    ISystem& operator=(ISystem&& system) {
-        if(m_active) {
-            detach();
-        }
-
-        m_entityManager = system.m_entityManager;
-        m_entities = std::move(system.m_entities);
-        system.detach();
-        system.m_entityManager = nullptr;
-    }
+    ISystem& operator=(ISystem&& system) = delete;
 
     void update() override {
         static_cast<system_t*>(this)->start();
@@ -59,20 +47,6 @@ public:
 
     void subscribe(unsigned int id) {
         m_entities.push_back(id);
-    }
-
-    void attach() {
-        if(m_entityManager != nullptr && !m_active) {
-            m_entityManager->attachSystem(this);
-            m_active = true;
-        }
-    }
-
-    void detach() {
-        if(m_entityManager != nullptr && m_active) {
-            m_entityManager->detachSystem(this);
-            m_active = false;
-        }
     }
 
 protected:

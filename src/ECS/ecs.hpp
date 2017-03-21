@@ -2,7 +2,7 @@
 #define _ECS_H
 
 #include <ECS/components.hpp>
-#include <ECS/systems.hpp>
+#include <ECS/system.hpp>
 #include <ECS/entity.hpp>
 #include <ECS/entitymanager.hpp>
 

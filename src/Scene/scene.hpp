@@ -10,6 +10,7 @@
 #include <Core/inputcontroller.hpp>
 #include <ECS/ecs.hpp>
 #include <ECS/Systems/rendersystem.hpp>
+#include <Render/light.hpp>
 #include <Resources/resourcehandler.hpp>
 
 class IRenderObject;
@@ -52,6 +53,7 @@ private:
 private:
     std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;
     entity_manager_t m_entityManager;
+    WorldLight m_worldLight;
     ResourceHandler m_resourceHandler;
     std::vector<render_system_t> m_renderSystems;
     const std::string m_scenename;

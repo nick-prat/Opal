@@ -13,6 +13,7 @@ set(SOURCE_FILES
     src/gl3w.c
 
     # Render
+    src/Render/light.cpp
     src/Render/renderobject.cpp
     src/Render/shader.cpp
     src/Render/Sampler/sampler.cpp
