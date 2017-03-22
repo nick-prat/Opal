@@ -81,6 +81,14 @@ public:
         }
     }
 
+    const Entity<entity_manager_t>& getEntity(unsigned int id) const {
+        if(id >= m_entities.size() || m_entities[id].getID() != id) {
+            throw BadEntity(id, "Entity doesn't exist, can't return");
+        } else {
+            return m_entities[id];
+        }
+    }
+
     void removeEntity(unsigned int id) {
         if(id >= m_entities.size() || m_entities[id].getID() == id) {
             m_entities[id] = Entity<entity_manager_t>();
@@ -94,7 +102,7 @@ public:
         return m_entities;
     }
 
-    const std::vector<Entity<entity_manager_t>>& getEntityList() const {
+    const std::vector<const Entity<entity_manager_t>>& getEntityList() const {
         return m_entities;
     }
 

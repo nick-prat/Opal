@@ -96,6 +96,9 @@ Scene::Scene(const Display& display, const std::string& scenename)
         Log::getErrorLog() << "Parsing of " << filename << " failed: " << error.what() << '\n';
     }
 
+    m_worldLight.setAmbientColor(glm::vec3(1.0f, 1.0f, 1.0f));
+    m_worldLight.setAmbientIntensity(1.0f);
+
     for(const auto& shader : m_resourceHandler.getShaders()) {
         m_renderSystems.push_back(render_system_t(&m_entityManager, shader.second, m_display, m_worldLight));
     }
@@ -215,11 +218,11 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
 }
 
 void Scene::setAmbientIntensity(float intensity) {
-
+    m_worldLight.setAmbientIntensity(intensity);
 }
 
 void Scene::setAmbientColor(const glm::vec3 &color) {
-
+    m_worldLight.setAmbientColor(color);
 }
 
 Camera* Scene::getCamera() const {
@@ -233,6 +236,7 @@ unsigned int Scene::createEntity() {
 
 // TODO Expand on the capabilites of an entity, ie. how does the user interact with them?
 Scene::entity_t* Scene::getEntity(unsigned int id) const {
+    m_entityManager.getEntity(id);
     return nullptr;
 }
 
