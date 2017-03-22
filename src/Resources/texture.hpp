@@ -12,12 +12,15 @@ public:
     Texture(Texture&& texture);
     ~Texture();
 
+    Texture& operator=(const Texture&) = delete;
+    Texture& operator=(Texture&&) = delete;
+
     std::string getFileName() const;
     void bind() const;
 
 private:
-    const GLuint m_glTexture;
-    const std::string m_filename;
+    GLuint m_glTexture;
+    std::string m_filename;
 };
 
 #endif // _TEXTURE_H

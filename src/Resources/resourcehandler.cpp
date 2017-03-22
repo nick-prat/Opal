@@ -46,8 +46,9 @@ void ResourceHandler::loadResources(const json& scene) {
 }
 
 IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D& model3d) {
-    std::string name = "";
+    //const auto& model3d = m_model3Ds.find(object["resource"])->second;
 
+    std::string name = "";
     if(object.find("name") != object.end()) {
         name = object["name"];
     } else {

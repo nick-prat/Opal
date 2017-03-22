@@ -16,16 +16,14 @@ template<typename system_t, typename entity_manager_t>
 class ISystem : public IBaseSystem {
 public:
     ISystem(entity_manager_t* entityManager)
-    : m_active(false)
-    , m_entityManager(entityManager) {}
+    : m_entityManager(entityManager) {}
 
     virtual ~ISystem() {}
 
     ISystem(const ISystem&) = delete;
 
     ISystem(ISystem<system_t, entity_manager_t>&& system)
-    : m_active(false)
-    , m_entityManager(system.m_entityManager)
+    : m_entityManager(system.m_entityManager)
     , m_entities(std::move(system.m_entities)){
         system.detach();
         system.m_entityManager = nullptr;
@@ -50,7 +48,6 @@ public:
     }
 
 protected:
-    bool m_active;
     entity_manager_t* m_entityManager;
     std::vector<unsigned int> m_entities;
 };

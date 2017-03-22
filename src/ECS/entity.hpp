@@ -69,6 +69,15 @@ public:
         return m_id;
     }
 
+    // NOTE Good function to have in C++17
+    /*template<typename comp_t = void, typename... comp_ts>
+    void addComponents() {
+        if constexpr(!std::is_same<comp_t, void>::value) {
+            addComponent<comp_t>();
+            addComponents<comp_ts...>();
+        }
+    }*/
+
     template<typename comp_t>
     void addComponent() {
         static_assert(entity_manager_t::template contains<comp_t>(), "addComponent called with invalid type");
