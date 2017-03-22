@@ -133,10 +133,6 @@ GLCore& GLCore::operator=(GLCore&& glCore) {
     return *this;
 }
 
-void GLCore::makeWindowCurrent(GLCore* glCore) {
-
-}
-
 void GLCore::initAPI() {
     if(!glfwInit()) {
         throw GenericException("Couldn't initialize GLFW3\n");
