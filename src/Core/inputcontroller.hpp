@@ -24,9 +24,6 @@ enum class InputKey : int {
 
 class InputController {
 public:
-    InputController();
-    ~InputController();
-
     void clearWhileKeyPressed();
     void deregisterWhileKeyPressed(const InputKey key);
     void registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda);
