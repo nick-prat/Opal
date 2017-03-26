@@ -52,12 +52,12 @@ void InputController::callKeyLambdas() {
 }
 
 void InputController::updateMousePosition(const double xpos, const double ypos) {
-    m_mouseX = xpos;
-    m_mouseY = ypos;
+    m_mousePos.first = xpos;
+    m_mousePos.second = ypos;
 }
 
-std::pair<double, double> InputController::getMousePosition() const {
-    return std::pair<double, double>(m_mouseX, m_mouseY);
+const std::pair<double, double>& InputController::getMousePosition() const {
+    return m_mousePos;
 }
 
 bool InputController::isKeyPressed(const InputKey key) const {

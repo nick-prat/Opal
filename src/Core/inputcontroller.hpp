@@ -38,7 +38,7 @@ public:
     void callKeyLambdas();
 
     void updateMousePosition(const double xpos, const double ypos);
-    std::pair<double, double> getMousePosition() const;
+    const std::pair<double, double>& getMousePosition() const;
 
     bool isKeyPressed(const InputKey key) const;
     glm::vec2 getMouseLocation() const;
@@ -48,8 +48,7 @@ private:
     std::unordered_map<InputKey, bool> m_pressedKeys;
     std::unordered_map<InputKey, std::function<void(InputKey)>> m_whileKeyPressed;
     std::unordered_map<InputKey, std::function<void(InputKey)>> m_onKeyPressed;
-    double m_mouseX;
-    double m_mouseY;
+    std::pair<double, double> m_mousePos;
 };
 
 #endif // _INPUT_H
