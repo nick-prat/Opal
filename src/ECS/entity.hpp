@@ -8,9 +8,7 @@
 #include <Utilities/utilities.hpp>
 
 // NOTE What defines an entity vs a static object?
-// TODO Implement error detection if a entity doesn't have a specified component
 // TODO Implement component deletion on entity destructor
-// TODO Implement static assert checks to clarify error messages
 
 static constexpr unsigned int invalid_id = 0xFFFFFFFF;
 

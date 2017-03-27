@@ -9,6 +9,7 @@ namespace Utilities {
 
     void PrintGLErrors();
 
+    // TODO Static assert this with if constexpr() in C++17
     template<typename T, typename U = void, typename... Ts>
     static constexpr unsigned int index(int i = 0) {
         if(std::is_same<U, void>::value) {

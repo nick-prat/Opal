@@ -234,7 +234,7 @@ unsigned int Scene::createEntity() {
     return 0;
 }
 
-// TODO Expand on the capabilites of an entity, ie. how does the user interact with them?
+// TODO Fix this function
 Scene::entity_t* Scene::getEntity(unsigned int id) const {
     m_entityManager.getEntity(id);
     return nullptr;

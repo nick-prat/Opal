@@ -129,7 +129,7 @@ public:
 
     template<typename comp_t>
     const comp_t& getComponent(unsigned int id) const {
-        static_assert(contains<comp_t>(), "getComponent called with invalid type");
+        static_assert(contains<comp_t>(), "const getComponent called with invalid type");
         auto& list = getComponentList<comp_t>();
         return list[id].m_component;
     }
