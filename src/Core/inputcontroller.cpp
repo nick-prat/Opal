@@ -27,17 +27,17 @@ void InputController::registerOnKeyPressed(const InputKey key, const std::functi
 }
 
 void InputController::callKeyLambdas() {
-    for(auto& [key, press] : m_pressedKeys) {
-        auto lambda = m_whileKeyPressed.find(key);
+    for(auto& key : m_pressedKeys) {
+        auto lambda = m_whileKeyPressed.find(key.first);
         if(lambda != m_whileKeyPressed.end()) {
-            lambda->second(key);
+            lambda->second(key.first);
         }
 
-        if(press) {
-            press = false;
-            auto lambda = m_onKeyPressed.find(key);
+        if(key.second) {
+            key.second = false;
+            auto lambda = m_onKeyPressed.find(key.first);
             if(lambda != m_onKeyPressed.end()) {
-                lambda->second(key);
+                lambda->second(key.first);
             }
         }
     }
