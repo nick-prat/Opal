@@ -67,18 +67,17 @@ public:
         return m_id;
     }
 
-    // NOTE Good function to have in C++17
-    /*template<typename comp_t = void, typename... comp_ts>
+    template<typename comp_t = void, typename... comp_ts>
     void addComponents() {
         if constexpr(!std::is_same<comp_t, void>::value) {
             addComponent<comp_t>();
             addComponents<comp_ts...>();
         }
-    }*/
+    }
 
     template<typename comp_t>
     void addComponent() {
-        static_assert(entity_manager_t::template contains<comp_t>(), "addComponent called with invalid type");
+        static_assert(entity_manager_t::template contains<comp_t>(), "Entity::addComponent() called with invalid type");
         auto loc = m_componentIDs[index<comp_t>()];
         if(loc == invalid_id) {
             m_componentIDs[index<comp_t>()] = m_entityManager->template createComponent<comp_t>(m_id);
@@ -89,7 +88,18 @@ public:
 
     template<typename comp_t>
     comp_t& getComponent() {
-        static_assert(entity_manager_t::template contains<comp_t>(), "getComponent called with invalid type");
+        static_assert(entity_manager_t::template contains<comp_t>(), "Entity::getComponent() called with invalid type");
+        auto loc = m_componentIDs[index<comp_t>()];
+        if(loc != invalid_id) {
+            return m_entityManager->template getComponent<comp_t>(loc);
+        } else {
+            throw BadComponent(m_id, "Attempted getting component that doesn't exist from entity");
+        }
+    }
+
+    template<typename comp_t>
+    const comp_t& getComponent() const {
+        static_assert(entity_manager_t::template contains<comp_t>(), "Entity::getComponent() const called with invalid type");
         auto loc = m_componentIDs[index<comp_t>()];
         if(loc != invalid_id) {
             return m_entityManager->template getComponent<comp_t>(loc);
@@ -100,7 +110,7 @@ public:
 
     template<typename comp_t>
     void removeComponent() {
-        static_assert(entity_manager_t::template contains<comp_t>(), "removeComponent called with invalid type");
+        static_assert(entity_manager_t::template contains<comp_t>(), "Entity::removeComponent() called with invalid type");
         auto loc = m_componentIDs[index<comp_t>()];
         if(loc != invalid_id) {
             m_entityManager->template removeComponent<comp_t>(m_componentIDs[index<comp_t>()]);
@@ -108,12 +118,11 @@ public:
         } else {
             throw BadComponent(m_id, "Attempted removing component that doesn't exist from entity");
         }
-
     }
 
     template<typename comp_t>
-    bool hasComponent() {
-        static_assert(entity_manager_t::template contains<comp_t>(), "hasComponent called with invalid type");
+    bool hasComponent() const {
+        static_assert(entity_manager_t::template contains<comp_t>(), "Entity::hasComponent() const called with invalid type");
         auto loc = m_componentIDs[index<comp_t>()];
         return (loc == invalid_id ? false : true);
     }

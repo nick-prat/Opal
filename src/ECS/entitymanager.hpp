@@ -21,7 +21,7 @@ public:
 
     template<typename comp_t>
     static constexpr unsigned int index() {
-        static_assert(contains<comp_t>(), "index() called on invalid type");
+        static_assert(contains<comp_t>(), "EntityManager::index called on invalid type");
         return Utilities::index<comp_t, comp_ts...>();
     }
 
@@ -108,13 +108,13 @@ public:
 
     template<typename comp_t>
     const std::vector<Component<comp_t>>& getComponentList() const {
-        static_assert(contains<comp_t>(), "getComponentList called with invalid type");
+        static_assert(contains<comp_t>(), "EntityManager::getComponentList() called with invalid type");
         return std::get<std::vector<Component<comp_t>>>(m_componentLists);
     }
 
     template<typename comp_t>
     int createComponent(int id) {
-        static_assert(contains<comp_t>(), "createComponent called with invalid type");
+        static_assert(contains<comp_t>(), "EntityManager::createComponent() called with invalid type");
         auto& list = std::get<std::vector<Component<comp_t>>>(m_componentLists);
         list.push_back(Component<comp_t>(id));
         return list.size() - 1;
@@ -122,21 +122,21 @@ public:
 
     template<typename comp_t>
     comp_t& getComponent(unsigned int id) {
-        static_assert(contains<comp_t>(), "getComponent called with invalid type");
-        auto& list = getComponentList<comp_t>();
+        static_assert(contains<comp_t>(), "EntityManager::getComponent() called with invalid type");
+        auto& list = std::get<std::vector<Component<comp_t>>>(m_componentLists);
         return list[id].m_component;
     }
 
     template<typename comp_t>
     const comp_t& getComponent(unsigned int id) const {
-        static_assert(contains<comp_t>(), "const getComponent called with invalid type");
-        auto& list = getComponentList<comp_t>();
+        static_assert(contains<comp_t>(), "EntityManager::getComponent() const called with invalid type");
+        auto& list = std::get<std::vector<Component<comp_t>>>(m_componentLists);
         return list[id].m_component;
     }
 
     template<typename comp_t>
     void removeComponent(unsigned int id) {
-        static_assert(contains<comp_t>(), "removeComponent called with invalid type");
+        static_assert(contains<comp_t>(), "EntityManager::removeComponent() called with invalid type");
         auto& compList = std::get<std::vector<Component<comp_t>>>(m_componentLists);
         compList[id].m_enabled = false;
         compList[id].m_entityID = invalid_id;

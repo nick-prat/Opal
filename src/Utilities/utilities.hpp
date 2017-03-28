@@ -9,18 +9,6 @@ namespace Utilities {
 
     void PrintGLErrors();
 
-    // TODO Static assert this with if constexpr() in C++17
-    template<typename T, typename U = void, typename... Ts>
-    static constexpr unsigned int index(int i = 0) {
-        if(std::is_same<U, void>::value) {
-            throw GenericException("Index couldn't be found");
-        } else if(std::is_same<T, U>::value) {
-            return i;
-        } else {
-            return index<T, Ts...>(++i);
-        }
-    }
-
     template<typename T, typename U = void, typename... Ts>
     static constexpr bool contains() {
         if(std::is_same<U, void>::value) {
@@ -29,6 +17,17 @@ namespace Utilities {
             return true;
         } else {
             return contains<T, Ts...>();
+        }
+    }
+
+    template<typename T, typename U = void, typename... Ts>
+    static constexpr unsigned int index(int i = 0) {
+        if(std::is_same<T, U>::value) {
+            return i;
+        } else if (!std::is_same<U, void>::value) {
+            return index<T, Ts...>(++i);
+        } else {
+            return -1;
         }
     }
 

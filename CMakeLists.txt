@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(OpenGL)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall -pedantic -Wextra -std=c++14")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall -pedantic -Wextra -std=c++1z")
 set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/debug)
 set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)

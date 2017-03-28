@@ -182,6 +182,8 @@ void Scene::registerLuaFunctions() {
 }
 
 void Scene::registerSystems() {
+    auto& ent = m_entityManager.getEntity(m_entityManager.createEntity());
+    ent.addComponents<CRender, CLocation>();
     for(auto& renderSystem : m_renderSystems) {
         m_entityManager.attachSystem(&renderSystem);
     }
