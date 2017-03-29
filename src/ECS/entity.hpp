@@ -120,6 +120,19 @@ public:
         }
     }
 
+    template<typename comp_t, typename... comp_ts>
+    bool hasComponents() const {
+        if(hasComponent<comp_t>()) {
+            if constexpr(sizeof...(comp_ts) > 0) {
+                return hasComponents<comp_ts...>();
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
     template<typename comp_t>
     bool hasComponent() const {
         static_assert(entity_manager_t::template contains<comp_t>(), "Entity::hasComponent() const called with invalid type");

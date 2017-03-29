@@ -3,8 +3,6 @@
 
 #include <Utilities/exceptions.hpp>
 
-// NOTE This is lackluster, is it worth having?
-
 namespace Utilities {
 
     void PrintGLErrors();
