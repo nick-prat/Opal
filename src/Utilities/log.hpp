@@ -10,9 +10,9 @@ class Log
 {
 public:
     enum OutputMode {
-        OUT_CONS = 0x0001,
-        OUT_LOG = 0x0010,
-        OUT_LOG_CONS = 0x0011
+        OUT_CONS = 0b0001,
+        OUT_LOG = 0b0010,
+        OUT_LOG_CONS = 0b0011
     };
 
     static void debug(std::string text, OutputMode showInConsole = OUT_CONS);
@@ -34,6 +34,7 @@ public:
         }
         return m_log;
     }
+
     Log& operator<<(OutputMode value);
 
 private:
