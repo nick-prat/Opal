@@ -10,6 +10,7 @@
 #include <Core/inputcontroller.hpp>
 #include <ECS/ecs.hpp>
 #include <ECS/Systems/rendersystem.hpp>
+#include <ECS/Systems/movementsystem.hpp>
 #include <Render/light.hpp>
 #include <Resources/resourcehandler.hpp>
 
@@ -19,6 +20,7 @@ class Scene {
 public:
     using entity_manager_t = EntityManager<CRender, CLocation>;
     using render_system_t = RenderSystem<entity_manager_t>;
+    using movement_system_t = MovementSystem<entity_manager_t>;
     using entity_t = Entity<entity_manager_t>;
 
     Scene(const Display& display, const std::string& scenename);
@@ -56,6 +58,8 @@ private:
     WorldLight m_worldLight;
     ResourceHandler m_resourceHandler;
     std::vector<render_system_t> m_renderSystems;
+    movement_system_t m_movementSystem;
+
     const std::string m_scenename;
 
     // Lua related members

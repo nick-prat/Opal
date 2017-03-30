@@ -75,12 +75,13 @@ public:
         }
     }
 
-    template<typename comp_t>
-    void addComponent() {
+    template<typename comp_t, typename... args_t>
+    void addComponent(args_t&&... args) {
         static_assert(entity_manager_t::template contains<comp_t>(), "Entity::addComponent() called with invalid type");
+        static_assert(std::is_constructible<comp_t, args_t...>::value, "Entity::addComponent() can't construct object with given params");
         auto loc = m_componentIDs[index<comp_t>()];
         if(loc == invalid_id) {
-            m_componentIDs[index<comp_t>()] = m_entityManager->template createComponent<comp_t>(m_id);
+            m_componentIDs[index<comp_t>()] = m_entityManager->template createComponent<comp_t>(m_id, std::forward<args_t>(args)...);
         } else {
             throw BadComponent(m_id, "Attempted adding component to entity twice");
         }

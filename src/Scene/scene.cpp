@@ -22,7 +22,8 @@ using json = nlohmann::json;
 // NOTE What should lua be capable of doing?
 
 Scene::Scene(const Display& display, const std::string& scenename)
-: m_scenename(scenename)
+: m_movementSystem(&m_entityManager)
+, m_scenename(scenename)
 , m_luaEnabled(true)
 , m_display(display) {
     luaL_openlibs(m_luaState.get());
@@ -110,6 +111,7 @@ Scene::Scene(Scene&& scene)
 , m_entityManager(std::move(scene.m_entityManager))
 , m_resourceHandler(std::move(scene.m_resourceHandler))
 , m_renderSystems(std::move(scene.m_renderSystems))
+, m_movementSystem(std::move(scene.m_movementSystem))
 , m_scenename(scene.m_scenename)
 , m_luaState(std::move(scene.m_luaState))
 , m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
@@ -183,7 +185,8 @@ void Scene::registerLuaFunctions() {
 
 void Scene::registerSystems() {
     auto& ent = m_entityManager.getEntity(m_entityManager.createEntity());
-    ent.addComponents<CRender, CLocation>();
+    
+    m_entityManager.attachSystem(&m_movementSystem);
     for(auto& renderSystem : m_renderSystems) {
         m_entityManager.attachSystem(&renderSystem);
     }
@@ -196,7 +199,7 @@ void Scene::start() {
 
 // NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
-    m_entityManager.updateSystems();
+    m_entityManager.updateSystems(1.0);
     (*m_renderFunc)();
 }
 

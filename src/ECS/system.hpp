@@ -23,9 +23,7 @@ public:
     ISystem(const ISystem&) = delete;
 
     ISystem(ISystem<system_t, entity_manager_t>&& system)
-    : m_entityManager(system.m_entityManager)
-    , m_entities(std::move(system.m_entities)){
-        system.detach();
+    : m_entityManager(system.m_entityManager) {
         system.m_entityManager = nullptr;
     }
 
@@ -36,13 +34,8 @@ public:
         static_cast<system_t*>(this)->update();
     }
 
-    void subscribe(unsigned int id) {
-        m_entities.push_back(id);
-    }
-
 protected:
     entity_manager_t* m_entityManager;
-    std::vector<unsigned int> m_entities;
 };
 
 #endif // _SYSTEMS_H

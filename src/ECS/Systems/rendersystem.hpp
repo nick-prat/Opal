@@ -3,6 +3,7 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <GL/gl3w.h>
 
 #include <Render/shader.hpp>
 #include <Render/light.hpp>

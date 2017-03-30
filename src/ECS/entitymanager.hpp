@@ -50,8 +50,14 @@ public:
         }
 
     private:
-        Component(int id)
+        /*Component(int id)
         : m_entityID(id)
+        , m_enabled(true) {};*/
+
+        template<typename... args_t>
+        Component(int id, args_t&&... args)
+        : m_component(std::forward<args_t>(args)...)
+        , m_entityID(id)
         , m_enabled(true) {};
 
     private:
@@ -81,6 +87,14 @@ public:
         }
     }
 
+    std::vector<Entity<entity_manager_t>>& getEntities() {
+        return m_entities;
+    }
+
+    const std::vector<const Entity<entity_manager_t>>& getEntities() const {
+        return m_entities;
+    }
+
     const Entity<entity_manager_t>& getEntity(unsigned int id) const {
         if(id >= m_entities.size() || m_entities[id].getID() != id) {
             throw BadEntity(id, "Entity doesn't exist, can't return");
@@ -98,25 +112,25 @@ public:
         }
     }
 
-    std::vector<Entity<entity_manager_t>>& getEntityList() {
-        return m_entities;
-    }
-
-    const std::vector<const Entity<entity_manager_t>>& getEntityList() const {
-        return m_entities;
-    }
-
     template<typename comp_t>
     const std::vector<Component<comp_t>>& getComponentList() const {
         static_assert(contains<comp_t>(), "EntityManager::getComponentList() called with invalid type");
         return std::get<std::vector<Component<comp_t>>>(m_componentLists);
     }
 
-    template<typename comp_t>
+    /*template<typename comp_t>
     int createComponent(int id) {
         static_assert(contains<comp_t>(), "EntityManager::createComponent() called with invalid type");
         auto& list = std::get<std::vector<Component<comp_t>>>(m_componentLists);
         list.push_back(Component<comp_t>(id));
+        return list.size() - 1;
+    }*/
+
+    template<typename comp_t, typename... args_t>
+    int createComponent(int id, args_t&&... args) {
+        static_assert(contains<comp_t>(), "EntityManager::createComponent() called with invalid type");
+        auto& list = std::get<std::vector<Component<comp_t>>>(m_componentLists);
+        list.push_back(Component<comp_t>(id, std::forward<args_t>(args)...));
         return list.size() - 1;
     }
 
@@ -151,13 +165,19 @@ public:
         m_systems.erase(m_systems.find(system));
     }
 
-    void updateSystems() {
+    void updateSystems(double timeScale) {
+        m_timeScale = timeScale;
         for(auto& system : m_systems) {
             system->update();
         }
     }
 
+    float getTimeScale() {
+        return m_timeScale;
+    }
+
 private:
+    float m_timeScale;
     std::stack<unsigned int> m_freeLocations;
     std::vector<Entity<entity_manager_t>> m_entities;
     std::unordered_set<IBaseSystem*> m_systems;

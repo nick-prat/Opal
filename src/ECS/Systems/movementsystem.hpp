@@ -16,11 +16,18 @@ public:
         static_assert(entity_manager_t::template contains<CLocation>(), "MovementSystem requires invalid type CLocation");
     }
 
+    MovementSystem(MovementSystem&&) = default;
+
     MovementSystem& operator=(const MovementSystem&) = delete;
     MovementSystem& operator=(MovementSystem&&) = delete;
 
     void update() {
-
+        for(auto& ent : m_entityManager->getEntities()) {
+            if(ent.template hasComponent<CLocation>()) {
+                auto loc = ent.template getComponent<CLocation>();
+                loc.setLocation(loc.getLocation() + loc.getDirection() * m_entityManager->getTimeScale());
+            }
+        }
     }
 };
 
