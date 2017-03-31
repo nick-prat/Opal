@@ -35,7 +35,7 @@ unsigned int Model3D::getFaceCount() const {
 }
 
 CRender Model3D::generateRenderComponent() const {
-    
+    return CRender();
 }
 
 void Model3D::printTextures() const {
