@@ -7,6 +7,8 @@
 #include <vector>
 #include <memory>
 
+#include <ECS/components.hpp>
+
 class Texture;
 
 // NOTE Are there model types that aren't 3D, if so implement them
@@ -48,6 +50,7 @@ public:
     const Mesh& getMesh(unsigned int index) const;
     unsigned int getMeshCount() const;
     unsigned int getFaceCount() const;
+    CRender generateRenderComponent() const;
 
     void printTextures() const;
 

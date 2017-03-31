@@ -9,10 +9,17 @@ Model3D::Model3D(std::vector<Mesh>&& meshes, std::unordered_map<std::string, Tex
 : m_meshes(meshes)
 , m_textures(textures) {}
 
-void Model3D::printTextures() const {
-    for(const auto texture : m_textures) {
-        Log::getLog() << texture.first << " : " << texture.second->getFileName() << '\n';
+const Texture* Model3D::getTexture(const std::string& key) const {
+    auto tex = m_textures.find(key);
+    if(tex != m_textures.end())
+    {
+        return tex->second;
     }
+    return nullptr;
+}
+
+const Model3D::Mesh& Model3D::getMesh(unsigned int index) const {
+    return m_meshes[index];
 }
 
 unsigned int Model3D::getMeshCount() const {
@@ -27,17 +34,14 @@ unsigned int Model3D::getFaceCount() const {
     return faceCount;
 }
 
-const Model3D::Mesh& Model3D::getMesh(unsigned int index) const {
-    return m_meshes[index];
+CRender Model3D::generateRenderComponent() const {
+    
 }
 
-const Texture* Model3D::getTexture(const std::string& key) const {
-    auto tex = m_textures.find(key);
-    if(tex != m_textures.end())
-    {
-        return tex->second;
+void Model3D::printTextures() const {
+    for(const auto texture : m_textures) {
+        Log::getLog() << texture.first << " : " << texture.second->getFileName() << '\n';
     }
-    return nullptr;
 }
 
 // Model3D::Vertex
