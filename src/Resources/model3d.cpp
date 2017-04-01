@@ -6,7 +6,7 @@
 #include <Utilities/log.hpp>
 
 Model3D::Model3D(std::vector<Mesh>&& meshes, std::unordered_map<std::string, Texture*>&& textures)
-: m_meshes(meshes)
+: m_meshes(generateMeshBuffers(std::move(meshes)))
 , m_textures(textures) {}
 
 const Texture* Model3D::getTexture(const std::string& key) const {
@@ -44,6 +44,28 @@ void Model3D::printTextures() const {
     }
 }
 
+std::vector<Model3D::Mesh>&& Model3D::generateMeshBuffers(std::vector<Model3D::Mesh>&& meshes) {
+    for(auto& mesh : meshes) {
+        glGenBuffers(1, &mesh.m_vbo);
+        glGenBuffers(1, &mesh.m_ibo);
+
+        glBindBuffer(GL_ARRAY_BUFFER, mesh.m_vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh.getVertices().size(), mesh.getVertices().data(), GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.m_ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.getIndices().size(), mesh.getIndices().data(), GL_STATIC_DRAW);
+    }
+
+    return std::move(meshes);
+}
+
 // Model3D::Vertex
 
 Model3D::Vertex::Vertex() {
@@ -65,6 +87,14 @@ std::vector<Model3D::Vertex> Model3D::Mesh::getVertices() const {
 
 std::vector<unsigned int> Model3D::Mesh::getIndices() const {
     return m_indices;
+}
+
+GLuint Model3D::Mesh::getVBO() const {
+    return m_vbo;
+}
+
+GLuint Model3D::Mesh::getIBO() const {
+    return m_ibo;
 }
 
 void Model3D::Mesh::setMatIndex(const unsigned int matIndex) {

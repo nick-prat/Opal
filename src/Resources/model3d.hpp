@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
+#include <GL/gl3w.h>
 
 #include <ECS/components.hpp>
 
@@ -24,11 +25,14 @@ public:
     };
 
     class Mesh {
+        friend class Model3D;
     public:
         Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
 
         std::vector<Vertex> getVertices() const;
         std::vector<unsigned int> getIndices() const;
+        GLuint getVBO() const;
+        GLuint getIBO() const;
 
         void setMatIndex(const unsigned int matIndex);
         unsigned int getMatIndex() const;
@@ -38,6 +42,7 @@ public:
 
     private:
         unsigned int m_matIndex;
+        GLuint m_vbo, m_ibo;
         std::string m_matName;
         glm::mat4x4 m_transformation;
         std::vector<unsigned int> m_indices;
@@ -53,6 +58,9 @@ public:
     CRender generateRenderComponent() const;
 
     void printTextures() const;
+
+private:
+    std::vector<Mesh>&& generateMeshBuffers(std::vector<Mesh>&& meshes);
 
 private:
     const std::vector<Mesh> m_meshes;
