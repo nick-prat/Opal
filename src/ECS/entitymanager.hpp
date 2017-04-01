@@ -21,7 +21,7 @@ public:
 
     template<typename comp_t>
     static constexpr unsigned int index() {
-        static_assert(contains<comp_t>(), "EntityManager::index called on invalid type");
+        static_assert(contains<comp_t>(), "EntityManager::index() called on invalid type");
         return Utilities::index<comp_t, comp_ts...>();
     }
 
