@@ -1,6 +1,7 @@
 #ifndef _COMPONENTS_H
 #define _COMPONENTS_H
 
+#include <vector>
 #include <glm/glm.hpp>
 #include <GL/gl3w.h>
 
@@ -25,6 +26,11 @@ private:
 class CRender {
 public:
     CRender() = default;
+    CRender(std::vector<GLuint>&& vaos);
+
+private:
+    std::vector<GLuint> m_vaos;
+
 };
 
 #endif // _COMPONENTS_H
