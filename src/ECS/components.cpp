@@ -28,3 +28,19 @@ glm::vec3 CLocation::getDirection() const {
 
 CRender::CRender(std::vector<GLuint>&& vaos)
 : m_vaos(std::move(vaos)) {}
+
+glm::mat4 CRender::getRotation() const {
+    return m_rotate;
+}
+
+void CRender::setRotation(const glm::mat4& rotation) {
+    m_rotate = rotation;
+}
+
+glm::mat4 CRender::getScale() const {
+    return m_scale;
+}
+
+void CRender::setScale(const glm::mat4& scale) {
+    m_scale = scale;
+}

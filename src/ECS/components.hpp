@@ -28,9 +28,16 @@ public:
     CRender() = default;
     CRender(std::vector<GLuint>&& vaos);
 
+    glm::mat4 getRotation() const;
+    void setRotation(const glm::mat4& rotation);
+
+    glm::mat4 getScale() const;
+    void setScale(const glm::mat4& scale);
+
 private:
     std::vector<GLuint> m_vaos;
-
+    glm::mat4 m_rotate;
+    glm::mat4 m_scale;
 };
 
 #endif // _COMPONENTS_H
