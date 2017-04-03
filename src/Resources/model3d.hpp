@@ -28,6 +28,7 @@ public:
         friend class Model3D;
     public:
         Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+        ~Mesh();
 
         std::vector<Vertex> getVertices() const;
         std::vector<unsigned int> getIndices() const;

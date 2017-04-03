@@ -36,7 +36,7 @@ unsigned int Model3D::getFaceCount() const {
 
 CRender Model3D::generateRenderComponent() const {
     std::vector<GLuint> vaos;
-    
+
     for(const auto& mesh : m_meshes) {
         GLuint vao = 0;
         glGenVertexArrays(1, &vao);
@@ -85,14 +85,21 @@ Model3D::Vertex::Vertex() {
 }
 
 Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
-        : position(pos), normal(norm), texCoord(tex) {
-
-}
+: position(pos), normal(norm), texCoord(tex) {}
 
 // Model3D::Mesh
 
 Model3D::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
-        : m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
+: m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
+
+Model3D::Mesh::~Mesh() {
+    if(glIsBuffer(m_vbo)) {
+        glDeleteBuffers(1, &m_vbo);
+    }
+    if(glIsBuffer(m_ibo)) {
+        glDeleteBuffers(1, &m_ibo);
+    }
+}
 
 std::vector<Model3D::Vertex> Model3D::Mesh::getVertices() const {
     return m_vertices;
