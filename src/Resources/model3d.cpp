@@ -36,6 +36,7 @@ unsigned int Model3D::getFaceCount() const {
 
 CRender Model3D::generateRenderComponent() const {
     std::vector<GLuint> vaos;
+    
     for(const auto& mesh : m_meshes) {
         GLuint vao = 0;
         glGenVertexArrays(1, &vao);
@@ -52,9 +53,9 @@ CRender Model3D::generateRenderComponent() const {
         glEnableVertexAttribArray(2);
 
         vaos.push_back(vao);
-
     }
-    return CRender();
+
+    return CRender(std::move(vaos));
 }
 
 void Model3D::printTextures() const {
