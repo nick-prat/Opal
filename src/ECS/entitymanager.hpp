@@ -50,10 +50,6 @@ public:
         }
 
     private:
-        /*Component(int id)
-        : m_entityID(id)
-        , m_enabled(true) {};*/
-
         template<typename... args_t>
         Component(int id, args_t&&... args)
         : m_component(std::forward<args_t>(args)...)
@@ -117,14 +113,6 @@ public:
         static_assert(contains<comp_t>(), "EntityManager::getComponentList() called with invalid type");
         return std::get<std::vector<Component<comp_t>>>(m_componentLists);
     }
-
-    /*template<typename comp_t>
-    int createComponent(int id) {
-        static_assert(contains<comp_t>(), "EntityManager::createComponent() called with invalid type");
-        auto& list = std::get<std::vector<Component<comp_t>>>(m_componentLists);
-        list.push_back(Component<comp_t>(id));
-        return list.size() - 1;
-    }*/
 
     template<typename comp_t, typename... args_t>
     int createComponent(int id, args_t&&... args) {
