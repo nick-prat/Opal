@@ -40,7 +40,7 @@ public:
 
     RenderSystem& operator=(const RenderSystem&) = delete;
     RenderSystem& operator=(RenderSystem&&) = delete;
-
+    
     // TODO Refactor this to actually use entities and components
     void update() {
         glUseProgram(m_shader.getProgram());

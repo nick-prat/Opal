@@ -50,18 +50,19 @@ public:
         std::vector<Vertex> m_vertices;
     };
 
-    Model3D(std::vector<Mesh>&& meshes, std::unordered_map<std::string, Texture*>&& textures);
+    Model3D(const std::vector<Mesh>& meshes, const std::unordered_map<std::string, Texture*>& textures);
+    Model3D(const Model3D&) = delete;
+    Model3D(Model3D&& model);
 
     const Texture* getTexture(const std::string& key) const;
     const Mesh& getMesh(unsigned int index) const;
     unsigned int getMeshCount() const;
     unsigned int getFaceCount() const;
     CRender generateRenderComponent() const;
-
     void printTextures() const;
 
 private:
-    std::vector<Mesh>&& generateMeshBuffers(std::vector<Mesh>&& meshes);
+    std::vector<Mesh> generateMeshBuffers(const std::vector<Mesh>& meshes);
 
 private:
     const std::vector<Mesh> m_meshes;

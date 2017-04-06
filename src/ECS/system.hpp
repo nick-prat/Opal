@@ -5,6 +5,7 @@
 #include <ECS/components.hpp>
 
 #include <iostream>
+#include <unordered_set>
 
 class IBaseSystem {
 public:
@@ -14,6 +15,7 @@ public:
 
 template<typename system_t, typename entity_manager_t>
 class ISystem : public IBaseSystem {
+    using entity_t = typename entity_manager_t::entity_t;
 public:
     ISystem(entity_manager_t* entityManager)
     : m_entityManager(entityManager) {}
@@ -34,8 +36,13 @@ public:
         static_cast<system_t*>(this)->update();
     }
 
+    void subscribe(entity_t* ent) {
+        m_entities.inssert(ent);
+    }
+
 protected:
     entity_manager_t* m_entityManager;
+    std::unordered_set<entity_t*> m_entities;
 };
 
 #endif // _SYSTEMS_H

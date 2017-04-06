@@ -5,14 +5,17 @@
 #include <Resources/texture.hpp>
 #include <Utilities/log.hpp>
 
-Model3D::Model3D(std::vector<Mesh>&& meshes, std::unordered_map<std::string, Texture*>&& textures)
+Model3D::Model3D(const std::vector<Mesh>& meshes, const std::unordered_map<std::string, Texture*>& textures)
 : m_meshes(generateMeshBuffers(std::move(meshes)))
 , m_textures(textures) {}
 
+Model3D::Model3D(Model3D&& model)
+: m_meshes(std::move(model.m_meshes))
+, m_textures(std::move(model.m_textures)) {}
+
 const Texture* Model3D::getTexture(const std::string& key) const {
     auto tex = m_textures.find(key);
-    if(tex != m_textures.end())
-    {
+    if(tex != m_textures.end()) {
         return tex->second;
     }
     return nullptr;
@@ -64,8 +67,10 @@ void Model3D::printTextures() const {
     }
 }
 
-std::vector<Model3D::Mesh>&& Model3D::generateMeshBuffers(std::vector<Model3D::Mesh>&& meshes) {
-    for(auto& mesh : meshes) {
+std::vector<Model3D::Mesh> Model3D::generateMeshBuffers(const std::vector<Model3D::Mesh>& meshes) {
+    std::vector<Model3D::Mesh> newMeshes;
+
+    for(auto mesh : meshes) {
         glGenBuffers(1, &mesh.m_vbo);
         glGenBuffers(1, &mesh.m_ibo);
 
@@ -74,9 +79,11 @@ std::vector<Model3D::Mesh>&& Model3D::generateMeshBuffers(std::vector<Model3D::M
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.m_ibo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned int) * mesh.getIndices().size(), mesh.getIndices().data(), GL_STATIC_DRAW);
+
+        newMeshes.push_back(mesh);
     }
 
-    return std::move(meshes);
+    return newMeshes;
 }
 
 // Model3D::Vertex

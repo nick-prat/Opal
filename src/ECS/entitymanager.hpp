@@ -13,6 +13,7 @@ class EntityManager {
 public:
     static constexpr std::size_t parameter_size = sizeof...(comp_ts);
     using entity_manager_t = EntityManager<comp_ts...>;
+    using entity_t = Entity<entity_manager_t>;
 
     template<typename comp_t>
     static constexpr bool contains() {
@@ -66,16 +67,16 @@ public:
         if(m_freeLocations.size() > 0) {
             auto loc = m_freeLocations.top();
             m_freeLocations.pop();
-            m_entities[loc] = Entity<entity_manager_t>(loc, this);
+            m_entities[loc] = entity_t(loc, this);
             return loc;
         } else {
             auto loc = m_entities.size();
-            m_entities.push_back(Entity<entity_manager_t>(loc, this));
+            m_entities.push_back(entity_t(loc, this));
             return loc;
         }
     }
 
-    Entity<entity_manager_t>& getEntity(unsigned int id) {
+    entity_t& getEntity(unsigned int id) {
         if(id >= m_entities.size() || m_entities[id].getID() != id) {
             throw BadEntity(id, "Entity doesn't exist, can't return");
         } else {
@@ -83,15 +84,15 @@ public:
         }
     }
 
-    std::vector<Entity<entity_manager_t>>& getEntities() {
+    std::vector<entity_t>& getEntities() {
         return m_entities;
     }
 
-    const std::vector<const Entity<entity_manager_t>>& getEntities() const {
+    const std::vector<const entity_t>& getEntities() const {
         return m_entities;
     }
 
-    const Entity<entity_manager_t>& getEntity(unsigned int id) const {
+    const entity_t& getEntity(unsigned int id) const {
         if(id >= m_entities.size() || m_entities[id].getID() != id) {
             throw BadEntity(id, "Entity doesn't exist, can't return");
         } else {
@@ -101,7 +102,7 @@ public:
 
     void removeEntity(unsigned int id) {
         if(id >= m_entities.size() || m_entities[id].getID() == id) {
-            m_entities[id] = Entity<entity_manager_t>();
+            m_entities[id] = entity_t();
             m_freeLocations.push(id);
         } else {
             throw BadEntity(id, "Entity doesn't exist, can't remove");
@@ -167,7 +168,7 @@ public:
 private:
     float m_timeScale;
     std::stack<unsigned int> m_freeLocations;
-    std::vector<Entity<entity_manager_t>> m_entities;
+    std::vector<entity_t> m_entities;
     std::unordered_set<IBaseSystem*> m_systems;
     std::tuple<std::vector<Component<comp_ts>>...> m_componentLists;
 };
