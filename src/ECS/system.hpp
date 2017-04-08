@@ -40,6 +40,12 @@ public:
         m_entities.inssert(ent);
     }
 
+    void mapEntities(const std::function<void(entity_t&)>& function) {
+        for(auto ent : m_entities) {
+            function(*ent);
+        }
+    }
+
 protected:
     entity_manager_t* m_entityManager;
     std::unordered_set<entity_t*> m_entities;

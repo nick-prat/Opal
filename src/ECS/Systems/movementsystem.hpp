@@ -7,6 +7,7 @@
 template<typename entity_manager_t>
 class MovementSystem : public ISystem<MovementSystem<entity_manager_t>, entity_manager_t> {
     using isystem_t = ISystem<MovementSystem<entity_manager_t>, entity_manager_t>;
+    using isystem_t::mapEntities;
     using isystem_t::m_entityManager;
     using entity_t = Entity<entity_manager_t>;
 
@@ -22,12 +23,10 @@ public:
     MovementSystem& operator=(MovementSystem&&) = delete;
 
     void update() {
-        for(auto& ent : m_entityManager->getEntities()) {
-            if(ent.template hasComponent<CLocation>()) {
-                auto loc = ent.template getComponent<CLocation>();
-                loc.setLocation(loc.getLocation() + loc.getDirection() * m_entityManager->getTimeScale());
-            }
-        }
+        mapEntities([&](entity_t& ent) {
+            auto& loc = ent.template getComponent<CLocation>();
+            loc.setLocation(loc.getLocation() + loc.getDirection() * m_entityManager->getTimeScale());
+        });
     }
 };
 
