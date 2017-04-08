@@ -119,7 +119,7 @@ Scene::Scene(Scene&& scene)
 , m_renderFunc(std::move(scene.m_renderFunc))
 , m_luaEnabled(scene.m_luaEnabled)
 , m_display(scene.m_display) {
-    scene.m_luaEnabled = false;\
+    scene.m_luaEnabled = false;
 }
 
 Scene::~Scene() {
