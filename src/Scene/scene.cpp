@@ -22,8 +22,7 @@ using json = nlohmann::json;
 // NOTE What should lua be capable of doing?
 
 Scene::Scene(const Display& display, const std::string& scenename)
-: m_movementSystem(&m_entityManager)
-, m_scenename(scenename)
+: m_scenename(scenename)
 , m_luaEnabled(true)
 , m_display(display) {
     luaL_openlibs(m_luaState.get());
@@ -101,8 +100,9 @@ Scene::Scene(const Display& display, const std::string& scenename)
     m_worldLight.setAmbientIntensity(1.0f);
 
     for(const auto& shader : m_resourceHandler.getShaders()) {
-        m_renderSystems.push_back(render_system_t(&m_entityManager, shader.second, m_display, m_worldLight));
+        std::cout << shader.first << '\n';
     }
+
     registerSystems();
 }
 
@@ -110,8 +110,6 @@ Scene::Scene(Scene&& scene)
 : m_renderObjects(std::move(scene.m_renderObjects))
 , m_entityManager(std::move(scene.m_entityManager))
 , m_resourceHandler(std::move(scene.m_resourceHandler))
-, m_renderSystems(std::move(scene.m_renderSystems))
-, m_movementSystem(std::move(scene.m_movementSystem))
 , m_scenename(scene.m_scenename)
 , m_luaState(std::move(scene.m_luaState))
 , m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
@@ -122,11 +120,7 @@ Scene::Scene(Scene&& scene)
     scene.m_luaEnabled = false;
 }
 
-Scene::~Scene() {
-    for(auto& renderSystem : m_renderSystems) {
-        m_entityManager.detachSystem(&renderSystem);
-    }
-}
+Scene::~Scene() {}
 
 // NOTE What other functions are necessary to expose to lua?
 void Scene::buildLuaNamespace() {
@@ -186,10 +180,7 @@ void Scene::registerLuaFunctions() {
 void Scene::registerSystems() {
     auto& ent = m_entityManager.getEntity(m_entityManager.createEntity());
     ent.addComponents<CLocation, CRender>();
-    m_entityManager.attachSystem(&m_movementSystem);
-    for(auto& renderSystem : m_renderSystems) {
-        m_entityManager.attachSystem(&renderSystem);
-    }
+
 }
 
 // Is this the best way to do it?

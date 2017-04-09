@@ -34,6 +34,8 @@ public:
     glm::mat4 getScale() const;
     void setScale(const glm::mat4& scale);
 
+    const std::vector<GLuint> getVAOs() const;
+
 private:
     std::vector<GLuint> m_vaos;
     glm::mat4 m_rotate;

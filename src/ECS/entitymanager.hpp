@@ -2,7 +2,9 @@
 #define _ENTITY_MANAGER_H
 
 #include <vector>
+#include <memory>
 #include <unordered_set>
+#include <unordered_map>
 
 #include <ECS/entity.hpp>
 #include <ECS/system.hpp>
@@ -146,19 +148,28 @@ public:
         m_freeLocations.push(id);
     }
 
-    void attachSystem(IBaseSystem* system) {
-        m_systems.insert(system);
+    template<typename system_t, typename... args_t>
+    void registerSystem(args_t&&... args) {
+        auto system_id = system_t::getSystemID();
+        auto system = m_systems.find(system_id);
+        if(system == m_systems.end()) {
+            m_systems[system_id] = std::make_unique<system_t>(std::forward<args_t>(args)...);
+        } else {
+            // error
+        }
     }
 
-    void detachSystem(IBaseSystem* system) {
-        m_systems.erase(m_systems.find(system));
+    template<typename system_t>
+    system_t& getSystem() {
+        auto system_id = system_t::getSystemID();
+        auto system = m_systems.find(system_id);
+        if(system != m_systems.end()) {
+            return *(system->second.get());
+        }
     }
 
     void updateSystems(double timeScale) {
-        m_timeScale = timeScale;
-        for(auto& system : m_systems) {
-            system->update();
-        }
+
     }
 
     float getTimeScale() {
@@ -169,7 +180,7 @@ private:
     float m_timeScale;
     std::stack<unsigned int> m_freeLocations;
     std::vector<entity_t> m_entities;
-    std::unordered_set<IBaseSystem*> m_systems;
+    std::unordered_map<IBaseSystem::system_id, std::unique_ptr<IBaseSystem>> m_systems;
     std::tuple<std::vector<Component<comp_ts>>...> m_componentLists;
 };
 

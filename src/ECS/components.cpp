@@ -44,3 +44,7 @@ glm::mat4 CRender::getScale() const {
 void CRender::setScale(const glm::mat4& scale) {
     m_scale = scale;
 }
+
+const std::vector<GLuint> CRender::getVAOs() const {
+    return m_vaos;
+}
