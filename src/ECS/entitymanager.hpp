@@ -111,6 +111,12 @@ public:
         }
     }
 
+    void mapEntities(const std::vector<unsigned int>& entities, std::function<void(entity_t&)> func) {
+        for(auto id : entities) {
+            func(m_entities[id]);
+        }
+    }
+
     template<typename comp_t>
     const std::vector<Component<comp_t>>& getComponentList() const {
         static_assert(contains<comp_t>(), "EntityManager::getComponentList() called with invalid type");
@@ -169,7 +175,7 @@ public:
     }
 
     void updateSystems(double timeScale) {
-
+        m_timeScale = timeScale;
     }
 
     float getTimeScale() {
@@ -177,7 +183,7 @@ public:
     }
 
 private:
-    float m_timeScale;
+    double m_timeScale;
     std::stack<unsigned int> m_freeLocations;
     std::vector<entity_t> m_entities;
     std::unordered_map<IBaseSystem::system_id, std::unique_ptr<IBaseSystem>> m_systems;

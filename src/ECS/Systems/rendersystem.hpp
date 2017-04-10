@@ -12,7 +12,7 @@
 #include <ECS/system.hpp>
 
 template<typename system_t>
-class RenderSystem : public ISystem<RenderSystem<system_t>> {
+class RenderSystem : public ISystem<system_t> {
 public:
     RenderSystem(const Shader& shader, const Display& display, const WorldLight& worldLight)
     : m_display(display)
@@ -31,38 +31,6 @@ public:
 
     RenderSystem& operator=(const RenderSystem&) = delete;
     RenderSystem& operator=(RenderSystem&&) = delete;
-
-    // TODO Refactor this to actually use entities and components
-    void update() override {
-        glUseProgram(m_shader.getProgram());
-
-        GLint ambientLightLocation = m_shader.getUniformLocation("gAmbientLight");
-        if(ambientLightLocation != -1) {
-            glUniform4fv(ambientLightLocation, 1, glm::value_ptr(m_worldLight.getAmbientColor()));
-        }
-
-        for(const auto& object : m_shader.getRenderObjects()) {
-            object->render(m_shader, m_display);
-        }
-
-        /*auto pv = m_display.getProjectionMatrix() * m_display.getCamera()->getViewMatrix();
-
-        map([&](entity_t& ent) {
-            auto& rc = ent.template getComponent<CRender>();
-            auto& loc = ent.template getComponent<CLocation>();
-
-            auto world = loc.getLocation() * rc.getRotation() * rc.getScale();
-            auto mvp = pv * world;
-
-            glUniform1i(m_shader.getUniformLocation("gSampler"), 0);
-            glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
-
-            for(auto vao : rc.getVAOs()) {
-                glBindVertexArray(vao);
-            }
-
-        });*/
-    }
 
     void setDisplay(const Display* const display) {
         m_display = display;
@@ -83,7 +51,8 @@ public:
     ModelRenderSystem(const Shader& shader, const Display& display, const WorldLight& worldLight)
     : RenderSystem<ModelRenderSystem>(shader, display, worldLight) {}
 
-    void update() {
+    template<typename entity_manager_t>
+    void update(entity_manager_t& entMan) {
         glUseProgram(m_shader.getProgram());
 
         GLint ambientLightLocation = m_shader.getUniformLocation("gAmbientLight");
@@ -97,7 +66,7 @@ public:
 
         auto pv = m_display.getProjectionMatrix() * m_display.getCamera()->getViewMatrix();
 
-        /*map([&](entity_t& ent) {
+        entMan.mapEntities([&](Entity<entity_manager_t>& ent) {
             auto& rc = ent.template getComponent<CRender>();
             auto& loc = ent.template getComponent<CLocation>();
 
@@ -110,7 +79,7 @@ public:
                 glBindVertexArray(vao);
             }
 
-        });*/
+        });
     }
 };
 

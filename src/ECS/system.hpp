@@ -41,15 +41,8 @@ public:
 
     template<typename entity_manager_t>
     void update(entity_manager_t& entMan) {
-        static_cast<system_t*>(this)->update();
+        static_cast<system_t*>(this)->update(entMan);
     }
-
-    /*void map(const std::function<void(entity_t&)>& function) {
-        auto& entities = m_entityManager->getEntities();
-        for(auto entID : m_entities) {
-            function(entities[entID]);
-        }
-    }*/
 
 protected:
     inline static system_id systemId;
