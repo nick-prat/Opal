@@ -60,13 +60,9 @@ public:
             glUniform4fv(ambientLightLocation, 1, glm::value_ptr(m_worldLight.getAmbientColor()));
         }
 
-        for(const auto& object : m_shader.getRenderObjects()) {
-            object->render(m_shader, m_display);
-        }
-
         auto pv = m_display.getProjectionMatrix() * m_display.getCamera()->getViewMatrix();
 
-        entMan.mapEntities([&](Entity<entity_manager_t>& ent) {
+        entMan.mapEntities([this, &pv](Entity<entity_manager_t>& ent) {
             auto& rc = ent.template getComponent<CRender>();
             auto& loc = ent.template getComponent<CLocation>();
 
@@ -78,7 +74,6 @@ public:
             for(auto vao : rc.getVAOs) {
                 glBindVertexArray(vao);
             }
-
         });
     }
 };

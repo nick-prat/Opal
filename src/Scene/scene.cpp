@@ -54,7 +54,7 @@ Scene::Scene(const Display& display, const std::string& scenename)
 
         if(scene.find("staticObjects") != scene.end()) {
             std::vector<json> objects = scene["staticObjects"];
-            for(const json& object : objects) {
+            for(const auto& object : objects) {
                 try {
                     std::string type = object["type"];
                     IRenderObject* rObject = nullptr;
@@ -76,27 +76,11 @@ Scene::Scene(const Display& display, const std::string& scenename)
                 }
             }
         }
-
-        // TODO Implement actual dynamic model loading
-        // NOTE What is "actual dynamic loading"?
-        if(scene.find("dynamicObjects") != scene.end()) {
-            std::vector<json> objects = scene["dynamicObjects"];
-            for(const json& object : objects) {
-                try {
-                    auto name = object["name"];
-                    //m_dynamicModels[name] = std::make_unique<DynamicModel>(m_resourceHandler.GetResource<Model3D>(object["resource"]));
-                } catch (BadResource& error) {
-                    error.printError();
-                } catch (std::domain_error& error) {
-                    Log::getErrorLog() << error.what() << '\n';
-                }
-            }
-        }
     } catch(std::exception& error) {
         Log::getErrorLog() << "Parsing of " << filename << " failed: " << error.what() << '\n';
     }
 
-    m_worldLight.setAmbientColor(glm::vec3(1.0f, 1.0f, 1.0f));
+    m_worldLight.setAmbientColor({1.0f, 1.0f, 1.0f});
     m_worldLight.setAmbientIntensity(1.0f);
 
     for(const auto& shader : m_resourceHandler.getShaders()) {
@@ -180,7 +164,6 @@ void Scene::registerLuaFunctions() {
 void Scene::registerSystems() {
     auto& ent = m_entityManager.getEntity(m_entityManager.createEntity());
     ent.addComponents<CLocation, CRender>();
-
 }
 
 // Is this the best way to do it?
@@ -204,11 +187,11 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
     if(repeat) {
         m_display.getInputController()->registerWhileKeyPressed(key, [this](InputKey key) {
-            (*m_luaKeyBinds[key])();
+            m_luaKeyBinds[key]->operator()();
         });
     } else {
         m_display.getInputController()->registerOnKeyPressed(key, [this](InputKey key) {
-            (*m_luaKeyBinds[key])();
+            m_luaKeyBinds[key]->operator()();
         });
     }
 }
