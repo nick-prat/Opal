@@ -5,6 +5,7 @@
 
 #include <Core/display.hpp>
 
+class Shader;
 class IRenderObject;
 
 #include <Render/shader.hpp>

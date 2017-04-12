@@ -36,7 +36,11 @@ public:
             return m_component;
         };
 
-        bool isEnabled() {
+        const comp_t& getComponent() const {
+            return m_component;
+        }
+
+        bool isEnabled() const {
             return m_enabled;
         }
 
@@ -48,7 +52,7 @@ public:
             }
         }
 
-        unsigned int getEntityID() {
+        unsigned int getEntityID() const {
             return m_entityID;
         }
 
@@ -86,20 +90,20 @@ public:
         }
     }
 
-    std::vector<entity_t>& getEntities() {
-        return m_entities;
-    }
-
-    const std::vector<const entity_t>& getEntities() const {
-        return m_entities;
-    }
-
     const entity_t& getEntity(unsigned int id) const {
         if(id >= m_entities.size() || m_entities[id].getID() != id) {
             throw BadEntity(id, "Entity doesn't exist, can't return");
         } else {
             return m_entities[id];
         }
+    }
+
+    std::vector<entity_t>& getEntities() {
+        return m_entities;
+    }
+
+    const std::vector<entity_t>& getEntities() const {
+        return m_entities;
     }
 
     void removeEntity(unsigned int id) {
@@ -161,14 +165,21 @@ public:
         if(system == m_systems.end()) {
             m_systems[system_id] = std::make_unique<system_t>(std::forward<args_t>(args)...);
         } else {
-            // error
+            // TODO Throw proper error
         }
     }
 
     template<typename system_t>
     system_t& getSystem() {
-        auto system_id = system_t::getSystemID();
-        auto system = m_systems.find(system_id);
+        auto system = m_systems.find(system_t::getSystemID());
+        if(system != m_systems.end()) {
+            return *(system->second.get());
+        }
+    }
+
+    template<typename system_t>
+    const system_t& getSystem() {
+        auto system = m_systems.find(system_t::getSystemID());
         if(system != m_systems.end()) {
             return *(system->second.get());
         }

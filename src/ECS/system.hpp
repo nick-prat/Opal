@@ -9,7 +9,7 @@
 
 class IBaseSystem {
 public:
-    typedef int system_id;
+    typedef unsigned int system_id;
     inline static system_id systemIdCounter = 0;
 
     virtual ~IBaseSystem() {}

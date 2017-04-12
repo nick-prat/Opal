@@ -162,8 +162,7 @@ void Scene::registerLuaFunctions() {
 }
 
 void Scene::registerSystems() {
-    auto& ent = m_entityManager.getEntity(m_entityManager.createEntity());
-    ent.addComponents<CLocation, CRender>();
+
 }
 
 // Is this the best way to do it?
