@@ -37,7 +37,7 @@ public:
     }
 
     std::size_t getRenderCount() const {
-        return m_shader.getRenderCount();
+        return this->m_entities.size();
     }
 
 protected:
@@ -62,7 +62,7 @@ public:
 
         auto pv = m_display.getProjectionMatrix() * m_display.getCamera()->getViewMatrix();
 
-        entMan.mapEntities([this, &pv](Entity<entity_manager_t>& ent) {
+        entMan.mapEntities(m_entities, [this, &pv](Entity<entity_manager_t>& ent) {
             auto& rc = ent.template getComponent<CRender>();
             auto& loc = ent.template getComponent<CLocation>();
 

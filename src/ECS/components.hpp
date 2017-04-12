@@ -2,10 +2,11 @@
 #define _COMPONENTS_H
 
 #include <vector>
+#include <unordered_map>
 #include <glm/glm.hpp>
 #include <GL/gl3w.h>
 
-#include <iostream>
+#include <Resources/texture.hpp>
 
 class CLocation {
 public:
@@ -26,7 +27,7 @@ private:
 class CRender {
 public:
     CRender() = default;
-    CRender(std::vector<GLuint>&& vaos);
+    CRender(std::vector<GLuint>&& vaos, const std::unordered_map<std::string, Texture*>& textures);
 
     glm::mat4 getRotation() const;
     void setRotation(const glm::mat4& rotation);
@@ -38,6 +39,7 @@ public:
 
 private:
     std::vector<GLuint> m_vaos;
+    const std::unordered_map<std::string, Texture*> m_textures;
     glm::mat4 m_rotate;
     glm::mat4 m_scale;
 };

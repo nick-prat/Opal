@@ -58,7 +58,7 @@ CRender Model3D::generateRenderComponent() const {
         vaos.push_back(vao);
     }
 
-    return CRender(std::move(vaos));
+    return CRender(std::move(vaos), m_textures);
 }
 
 void Model3D::printTextures() const {

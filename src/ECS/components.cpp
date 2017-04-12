@@ -3,9 +3,7 @@
 // CLocationee
 
 CLocation::CLocation(const glm::vec3& loc)
-: m_location(loc) {
-    std::cout << "reference const called\n";
-}
+: m_location(loc) {}
 
 void CLocation::setLocation(const glm::vec3& loc) {
     m_location = loc;
@@ -26,8 +24,9 @@ glm::vec3 CLocation::getDirection() const {
 
 // CRender
 
-CRender::CRender(std::vector<GLuint>&& vaos)
-: m_vaos(std::move(vaos)) {}
+CRender::CRender(std::vector<GLuint>&& vaos, const std::unordered_map<std::string, Texture*>& textures)
+: m_vaos(std::move(vaos))
+, m_textures(textures) {}
 
 glm::mat4 CRender::getRotation() const {
     return m_rotate;
