@@ -14,7 +14,7 @@
 // TODO Implmenet shader destructor
 class Shader {
 public:
-    Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types);
+    Shader(std::vector<std::string> fileNames, const std::vector<GLenum>& types);
     Shader(const Shader&) = delete;
     Shader(Shader&& shader);
     ~Shader();

@@ -10,8 +10,9 @@
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 
-Shader::Shader(std::vector<std::string>& fileNames, const std::vector<GLenum>& types)
-        : m_numShaders(0), m_shaderProgram(0) {
+Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum>& types)
+: m_numShaders(0)
+, m_shaderProgram(0) {
 
     if(fileNames.size() != types.size() || fileNames.size() == 0 || types.size() == 0) {
         throw GenericException("Couldn't initialize shader: incorrect information passed");
