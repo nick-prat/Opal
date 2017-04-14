@@ -189,7 +189,7 @@ public:
         m_timeScale = timeScale;
     }
 
-    float getTimeScale() {
+    double getTimeScale() {
         return m_timeScale;
     }
 
