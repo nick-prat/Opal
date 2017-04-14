@@ -83,10 +83,6 @@ Scene::Scene(const Display& display, const std::string& scenename)
     m_worldLight.setAmbientColor({1.0f, 1.0f, 1.0f});
     m_worldLight.setAmbientIntensity(1.0f);
 
-    for(const auto& shader : m_resourceHandler.getShaders()) {
-        std::cout << shader.first << '\n';
-    }
-
     registerSystems();
 }
 
@@ -162,7 +158,7 @@ void Scene::registerLuaFunctions() {
 }
 
 void Scene::registerSystems() {
-
+    m_entityManager.registerSystem<ModelRenderSystem>(m_resourceHandler.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
 }
 
 // Is this the best way to do it?

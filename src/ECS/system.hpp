@@ -13,7 +13,6 @@ public:
     inline static system_id systemIdCounter = 0;
 
     virtual ~IBaseSystem() {}
-    virtual void update() = 0;
 };
 
 template<typename system_t>

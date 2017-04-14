@@ -12,11 +12,12 @@ public:
     MovementSystem& operator=(const MovementSystem&) = delete;
     MovementSystem& operator=(MovementSystem&&) = delete;
 
-    void update() override {
-        /*map([&](entity_t& ent) {
+    template<typename entity_manager_t>
+    void update(entity_manager_t& entMan) {
+        entMan.mapEntities(m_entities, [&](Entity<entity_manager_t>& ent) {
             auto& loc = ent.template getComponent<CLocation>();
-            loc.setLocation(loc.getLocation() + loc.getDirection() * m_entityManager->getTimeScale());
-        });*/
+            loc.setLocation(loc.getLocation() + loc.getDirection() * entMan.getTimeScale());
+        });
     }
 };
 

@@ -48,11 +48,14 @@ protected:
 
 class ModelRenderSystem : public RenderSystem<ModelRenderSystem> {
 public:
+    inline static const std::string shaderName = "shader_staticmodel";
+
     ModelRenderSystem(const Shader& shader, const Display& display, const WorldLight& worldLight)
     : RenderSystem<ModelRenderSystem>(shader, display, worldLight) {}
 
     template<typename entity_manager_t>
     void update(entity_manager_t& entMan) {
+        std::cout << "modelrendersystem\n";
         glUseProgram(m_shader.getProgram());
 
         GLint ambientLightLocation = m_shader.getUniformLocation("gAmbientLight");
