@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <memory>
-#include <unordered_set>
+#include <set>
 #include <unordered_map>
 
 #include <ECS/entity.hpp>
@@ -115,7 +115,7 @@ public:
         }
     }
 
-    void mapEntities(const std::vector<unsigned int>& entities, std::function<void(entity_t&)> func) {
+    void mapEntities(const std::set<unsigned int>& entities, std::function<void(entity_t&)> func) {
         for(auto id : entities) {
             func(m_entities[id]);
         }
@@ -164,6 +164,9 @@ public:
         auto system = m_systems.find(system_id);
         if(system == m_systems.end()) {
             m_systems[system_id] = std::make_unique<system_t>(std::forward<args_t>(args)...);
+            m_systemUpdaters[system_id] = [sys = m_systems[system_id].get()](auto& entMan) {
+                static_cast<system_t*>(sys)->update(entMan);
+            };
         } else {
             // TODO Throw proper error
         }
@@ -185,19 +188,23 @@ public:
         }
     }
 
-    void updateSystems(double timeScale) {
+    void updateSystems(float timeScale) {
         m_timeScale = timeScale;
+        for(auto& updater : m_systemUpdaters) {
+            updater.second(*this);
+        }
     }
 
-    double getTimeScale() {
+    float getTimeScale() {
         return m_timeScale;
     }
 
 private:
-    double m_timeScale;
+    float m_timeScale;
     std::stack<unsigned int> m_freeLocations;
     std::vector<entity_t> m_entities;
     std::unordered_map<IBaseSystem::system_id, std::unique_ptr<IBaseSystem>> m_systems;
+    std::unordered_map<IBaseSystem::system_id, std::function<void(entity_manager_t&)>> m_systemUpdaters;
     std::tuple<std::vector<Component<comp_ts>>...> m_componentLists;
 };
 

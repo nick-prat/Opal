@@ -5,7 +5,7 @@
 #include <ECS/components.hpp>
 
 #include <iostream>
-#include <unordered_set>
+#include <set>
 
 class IBaseSystem {
 public:
@@ -45,7 +45,7 @@ public:
 
 protected:
     inline static system_id systemId;
-    std::unordered_set<unsigned int> m_entities;
+    std::set<unsigned int> m_entities;
 };
 
 #endif // _SYSTEMS_H

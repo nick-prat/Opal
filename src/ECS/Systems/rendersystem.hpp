@@ -55,7 +55,6 @@ public:
 
     template<typename entity_manager_t>
     void update(entity_manager_t& entMan) {
-        std::cout << "modelrendersystem\n";
         glUseProgram(m_shader.getProgram());
 
         GLint ambientLightLocation = m_shader.getUniformLocation("gAmbientLight");
@@ -65,16 +64,16 @@ public:
 
         auto pv = m_display.getProjectionMatrix() * m_display.getCamera()->getViewMatrix();
 
-        entMan.mapEntities(m_entities, [this, &pv](Entity<entity_manager_t>& ent) {
+        entMan.mapEntities(m_entities, [this, &pv](auto& ent) {
             auto& rc = ent.template getComponent<CRender>();
-            auto& loc = ent.template getComponent<CLocation>();
+            //auto& loc = ent.template getComponent<CLocation>();
 
-            auto mvp = pv * loc.getLocation() * rc.getRotation() * rc.getScale();
+            //auto mvp = pv * loc.getLocation() * rc.getRotation() * rc.getScale();
 
             glUniform1i(m_shader.getUniformLocation("gSampler"), 0);
-            glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
+            //glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 
-            for(auto vao : rc.getVAOs) {
+            for(auto vao : rc.getVAOs()) {
                 glBindVertexArray(vao);
             }
         });

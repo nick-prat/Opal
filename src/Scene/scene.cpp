@@ -159,6 +159,7 @@ void Scene::registerLuaFunctions() {
 
 void Scene::registerSystems() {
     m_entityManager.registerSystem<ModelRenderSystem>(m_resourceHandler.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
+    m_entityManager.registerSystem<MovementSystem>();
 }
 
 // Is this the best way to do it?
@@ -168,7 +169,7 @@ void Scene::start() {
 
 // NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
-    m_entityManager.updateSystems(1.0);
+    m_entityManager.updateSystems(1.0f);
     (*m_renderFunc)();
 }
 

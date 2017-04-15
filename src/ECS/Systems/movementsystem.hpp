@@ -14,7 +14,7 @@ public:
 
     template<typename entity_manager_t>
     void update(entity_manager_t& entMan) {
-        entMan.mapEntities(m_entities, [&](Entity<entity_manager_t>& ent) {
+        entMan.mapEntities(m_entities, [&entMan](auto& ent) {
             auto& loc = ent.template getComponent<CLocation>();
             loc.setLocation(loc.getLocation() + loc.getDirection() * entMan.getTimeScale());
         });
