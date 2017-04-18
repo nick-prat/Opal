@@ -8,8 +8,6 @@
 #include <memory>
 #include <GL/gl3w.h>
 
-#include <ECS/components.hpp>
-
 class Texture;
 
 // NOTE Are there model types that aren't 3D, if so implement them
@@ -58,7 +56,7 @@ public:
     const Mesh& getMesh(unsigned int index) const;
     unsigned int getMeshCount() const;
     unsigned int getFaceCount() const;
-    CRender generateRenderComponent() const;
+    std::vector<GLuint> generateVAOs() const;
     void printTextures() const;
 
 private:

@@ -37,7 +37,7 @@ unsigned int Model3D::getFaceCount() const {
     return faceCount;
 }
 
-CRender Model3D::generateRenderComponent() const {
+std::vector<GLuint> Model3D::generateVAOs() const {
     std::vector<GLuint> vaos;
 
     for(const auto& mesh : m_meshes) {
@@ -58,7 +58,7 @@ CRender Model3D::generateRenderComponent() const {
         vaos.push_back(vao);
     }
 
-    return CRender(std::move(vaos), m_textures);
+    return vaos;
 }
 
 void Model3D::printTextures() const {

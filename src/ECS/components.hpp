@@ -7,6 +7,7 @@
 #include <GL/gl3w.h>
 
 #include <Resources/texture.hpp>
+#include <Resources/model3d.hpp>
 
 class CLocation {
 public:
@@ -28,7 +29,7 @@ private:
 class CRender {
 public:
     CRender() = default;
-    CRender(std::vector<GLuint>&& vaos, const std::unordered_map<std::string, Texture*>& textures);
+    CRender(const Model3D& model);
 
     const glm::mat4& getRotation() const;
     void setRotation(const glm::mat4& rotation);
@@ -37,10 +38,11 @@ public:
     void setScale(const glm::mat4& scale);
 
     const std::vector<GLuint> getVAOs() const;
+    const Model3D& getModel() const;
 
 private:
+    const Model3D& m_model;
     std::vector<GLuint> m_vaos;
-    const std::unordered_map<std::string, Texture*> m_textures;
     glm::mat4 m_rotate;
     glm::mat4 m_scale;
 };
