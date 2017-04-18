@@ -4,6 +4,8 @@
 #include <ECS/components.hpp>
 #include <ECS/system.hpp>
 
+#include <glm/gtx/transform.hpp>
+
 class MovementSystem : public ISystem<MovementSystem> {
 public:
     MovementSystem() = default;
@@ -16,7 +18,7 @@ public:
     void update(entity_manager_t& entMan) {
         entMan.mapEntities(m_entities, [&entMan](auto& ent) {
             auto& loc = ent.template getComponent<CLocation>();
-            loc.setLocation(loc.getLocation() + loc.getDirection() * entMan.getTimeScale());
+            loc.setLocation(glm::translate(loc.getLocation(), loc.getDirection() * entMan.getTimeScale()));
         });
     }
 };

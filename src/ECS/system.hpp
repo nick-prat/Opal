@@ -11,8 +11,6 @@ class IBaseSystem {
 public:
     typedef unsigned int system_id;
     inline static system_id systemIdCounter = 0;
-
-    virtual ~IBaseSystem() {}
 };
 
 template<typename system_t>

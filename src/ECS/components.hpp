@@ -14,13 +14,14 @@ public:
     CLocation(const glm::vec3& loc);
 
     void setLocation(const glm::vec3& loc);
-    glm::vec3 getLocation() const;
+    void setLocation(const glm::mat4& loc);
+    const glm::mat4& getLocation() const;
 
     void setDirection(const glm::vec3& dir);
     glm::vec3 getDirection() const;
 
 private:
-    glm::vec3 m_location;
+    glm::mat4 m_location;
     glm::vec3 m_direction;
 };
 
@@ -29,10 +30,10 @@ public:
     CRender() = default;
     CRender(std::vector<GLuint>&& vaos, const std::unordered_map<std::string, Texture*>& textures);
 
-    glm::mat4 getRotation() const;
+    const glm::mat4& getRotation() const;
     void setRotation(const glm::mat4& rotation);
 
-    glm::mat4 getScale() const;
+    const glm::mat4& getScale() const;
     void setScale(const glm::mat4& scale);
 
     const std::vector<GLuint> getVAOs() const;

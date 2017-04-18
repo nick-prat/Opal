@@ -1,15 +1,21 @@
 #include "components.hpp"
 
+#include <glm/gtx/transform.hpp>
+
 // CLocationee
 
 CLocation::CLocation(const glm::vec3& loc)
-: m_location(loc) {}
+: m_location(glm::translate(loc)) {}
 
 void CLocation::setLocation(const glm::vec3& loc) {
+    m_location = glm::translate(loc);
+}
+
+void CLocation::setLocation(const glm::mat4& loc) {
     m_location = loc;
 }
 
-glm::vec3 CLocation::getLocation() const {
+const glm::mat4& CLocation::getLocation() const {
     return m_location;
 }
 
@@ -28,7 +34,7 @@ CRender::CRender(std::vector<GLuint>&& vaos, const std::unordered_map<std::strin
 : m_vaos(std::move(vaos))
 , m_textures(textures) {}
 
-glm::mat4 CRender::getRotation() const {
+const glm::mat4& CRender::getRotation() const {
     return m_rotate;
 }
 
@@ -36,7 +42,7 @@ void CRender::setRotation(const glm::mat4& rotation) {
     m_rotate = rotation;
 }
 
-glm::mat4 CRender::getScale() const {
+const glm::mat4& CRender::getScale() const {
     return m_scale;
 }
 

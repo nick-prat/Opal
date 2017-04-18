@@ -66,12 +66,12 @@ public:
 
         entMan.mapEntities(m_entities, [this, &pv](auto& ent) {
             auto& rc = ent.template getComponent<CRender>();
-            //auto& loc = ent.template getComponent<CLocation>();
+            auto& loc = ent.template getComponent<CLocation>();
 
-            //auto mvp = pv * loc.getLocation() * rc.getRotation() * rc.getScale();
+            auto mvp = pv * (loc.getLocation() * rc.getRotation() * rc.getScale());
 
             glUniform1i(m_shader.getUniformLocation("gSampler"), 0);
-            //glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
+            glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 
             for(auto vao : rc.getVAOs()) {
                 glBindVertexArray(vao);
