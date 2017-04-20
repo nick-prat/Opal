@@ -73,8 +73,9 @@ public:
             glUniform1i(m_shader.getUniformLocation("gSampler"), 0);
             glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 
-            for(auto vao : rc.getVAOs()) {
-                glBindVertexArray(vao);
+            auto& vaos = rc.getVAOs();
+            for(unsigned int i = 0; i < vaos.size(); i++) {
+                glBindVertexArray(vaos[i]);
             }
         });
     }

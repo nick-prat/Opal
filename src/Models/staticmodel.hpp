@@ -2,11 +2,9 @@
 #define _STATIC_MODEL_H
 
 #include <vector>
-#include <memory>
 #include <glm/glm.hpp>
-#include <GL/gl3w.h>
 
-#include <Render/Sampler/sampler.hpp>
+#include <Render/sampler.hpp>
 #include <Render/renderobject.hpp>
 
 class Model3D;

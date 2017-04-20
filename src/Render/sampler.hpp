@@ -16,7 +16,7 @@ public:
     Sampler& operator=(Sampler&& sampler);
 
     void bind() const;
-    void setParams(int magnification, int minification);
+    void setParameter(GLenum pname, GLint param);
 
 private:
     GLuint m_sampler;

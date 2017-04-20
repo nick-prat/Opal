@@ -6,7 +6,6 @@
 
 #include <Utilities/log.hpp>
 #include <Utilities/exceptions.hpp>
-#include <Render/Sampler/sampler.hpp>
 #include <Core/display.hpp>
 #include <Core/camera.hpp>
 #include <Resources/texture.hpp>

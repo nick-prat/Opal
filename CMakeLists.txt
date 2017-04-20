@@ -18,7 +18,7 @@ set(SOURCE_FILES
     src/Render/light.cpp
     src/Render/renderobject.cpp
     src/Render/shader.cpp
-    src/Render/Sampler/sampler.cpp
+    src/Render/sampler.cpp
 
     # ECS
     src/ECS/components.cpp
