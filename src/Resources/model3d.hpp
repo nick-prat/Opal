@@ -43,7 +43,6 @@ public:
         unsigned int m_matIndex;
         GLuint m_vbo, m_ibo;
         std::string m_matName;
-        glm::mat4x4 m_transformation;
         std::vector<unsigned int> m_indices;
         std::vector<Vertex> m_vertices;
     };
