@@ -1,5 +1,5 @@
-# OpenGL-Project
-My first OpenGL project
+# Opal
+MY first OpenGL project. A simple 3D graphics engine that I'm working on for fun and learning purposes
 
 # Dependecies
  - LuaBridge (https://github.com/vinniefalco/LuaBridge)
