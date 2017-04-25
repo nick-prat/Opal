@@ -101,15 +101,7 @@ void StaticModel::render(const Shader& shader, const Display& display) const {
 
     for(unsigned int i = 0; i < m_meshCount; i++) {
         glBindVertexArray(m_VAO[i]);
-
-        auto texture = m_model.getTexture(m_model.getMesh(i).getMatName());
-        if(texture != nullptr) {
-            texture->bind();
-        } else {
-            Log::getErrorLog() << "Couldn't get material " << m_model.getMesh(i).getMatName() << '\n';
-            exit(-1);
-        }
-
+        m_model.getTexture(m_model.getMesh(i).getMatName()).bind();
         glDrawElements(GL_TRIANGLES, (GLsizei)m_indexCount.data()[i], GL_UNSIGNED_INT, nullptr);
     }
 }

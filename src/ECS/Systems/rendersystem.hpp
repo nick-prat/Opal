@@ -80,15 +80,7 @@ public:
                 const auto& mesh = model.getMesh(i);
 
                 glBindVertexArray(vaos[i]);
-
-                auto texture = model.getTexture(mesh.getMatName());
-                if(texture != nullptr) {
-                    texture->bind();
-                } else {
-                    Log::getErrorLog() << "Couldn't get material " << mesh.getMatName() << '\n';
-                    exit(-1);
-                }
-
+                model.getTexture(mesh.getMatName()).bind();
                 glDrawElements(GL_TRIANGLES, (GLsizei)mesh.getIndexCount(), GL_UNSIGNED_INT, nullptr);
             }
         });

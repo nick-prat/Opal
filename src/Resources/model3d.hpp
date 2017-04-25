@@ -53,7 +53,7 @@ public:
     Model3D(const Model3D&) = delete;
     Model3D(Model3D&& model);
 
-    const Texture* getTexture(const std::string& key) const;
+    const Texture& getTexture(const std::string& key) const;
     const Mesh& getMesh(unsigned int index) const;
     unsigned int getMeshCount() const;
     unsigned int getFaceCount() const;

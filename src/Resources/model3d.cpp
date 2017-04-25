@@ -13,12 +13,13 @@ Model3D::Model3D(Model3D&& model)
 : m_meshes(std::move(model.m_meshes))
 , m_textures(std::move(model.m_textures)) {}
 
-const Texture* Model3D::getTexture(const std::string& key) const {
+const Texture& Model3D::getTexture(const std::string& key) const {
     auto tex = m_textures.find(key);
     if(tex != m_textures.end()) {
-        return tex->second;
+        return *(tex->second);
+    } else {
+        throw std::invalid_argument(key + " texture not found");
     }
-    return nullptr;
 }
 
 const Model3D::Mesh& Model3D::getMesh(unsigned int index) const {
