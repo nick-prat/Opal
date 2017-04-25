@@ -51,3 +51,7 @@ void CRender::setScale(const glm::mat4& scale) {
 const std::vector<GLuint> CRender::getVAOs() const {
     return m_vaos;
 }
+
+const Model3D& CRender::getModel() const {
+    return m_model;
+}

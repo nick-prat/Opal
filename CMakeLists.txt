@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(OpenGL)
+project(Opal)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall -Wextra -pedantic -std=c++1z")
 set(CMAKE_CXX_COMPILER /usr/bin/clang++)
@@ -49,10 +49,10 @@ set(SOURCE_FILES
 
 )
 
-add_executable(OpenGL ${SOURCE_FILES})
+add_executable(Opal ${SOURCE_FILES})
 find_package(PkgConfig REQUIRED)
 find_package(Threads REQUIRED)
 find_package(ASSIMP REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
 include_directories(${OPENGL_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIR} ${GLFW_INCLUDE_DIRECTORIES} "src/")
-target_link_libraries(OpenGL -ldl -llua /usr/lib/libfreeimage.so ${OPENGL_gl_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ASSIMP_LIBRARIES})
+target_link_libraries(Opal -ldl -llua /usr/lib/libfreeimage.so ${OPENGL_gl_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ASSIMP_LIBRARIES})

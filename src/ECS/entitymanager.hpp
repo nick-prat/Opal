@@ -176,15 +176,19 @@ public:
     system_t& getSystem() {
         auto system = m_systems.find(system_t::getSystemID());
         if(system != m_systems.end()) {
-            return *(system->second.get());
+            return *(static_cast<system_t*>(system->second.get()));
+        } else {
+            throw GenericException("System not found");
         }
     }
 
     template<typename system_t>
-    const system_t& getSystem() {
+    const system_t& getSystem() const {
         auto system = m_systems.find(system_t::getSystemID());
         if(system != m_systems.end()) {
             return *(system->second.get());
+        } else {
+            throw GenericException("System not found");
         }
     }
 

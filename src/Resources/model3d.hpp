@@ -39,6 +39,8 @@ public:
         void setMatName(const std::string matName);
         std::string getMatName() const;
 
+        std::size_t getIndexCount() const;
+
     private:
         unsigned int m_matIndex;
         GLuint m_vbo, m_ibo;

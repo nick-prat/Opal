@@ -139,3 +139,7 @@ void Model3D::Mesh::setMatName(const std::string matName) {
 std::string Model3D::Mesh::getMatName() const {
     return m_matName;
 }
+
+std::size_t Model3D::Mesh::getIndexCount() const {
+    return m_indices.size();
+}

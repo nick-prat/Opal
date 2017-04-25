@@ -10,6 +10,7 @@
 #include <Render/shader.hpp>
 #include <Render/light.hpp>
 #include <ECS/system.hpp>
+#include <Utilities/log.hpp>
 
 template<typename system_t>
 class RenderSystem : public ISystem<system_t> {
@@ -73,9 +74,22 @@ public:
             glUniform1i(m_shader.getUniformLocation("gSampler"), 0);
             glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 
-            auto& vaos = rc.getVAOs();
+            const auto& vaos = rc.getVAOs();
+            const auto& model = rc.getModel();
             for(unsigned int i = 0; i < vaos.size(); i++) {
+                const auto& mesh = model.getMesh(i);
+
                 glBindVertexArray(vaos[i]);
+
+                auto texture = model.getTexture(mesh.getMatName());
+                if(texture != nullptr) {
+                    texture->bind();
+                } else {
+                    Log::getErrorLog() << "Couldn't get material " << mesh.getMatName() << '\n';
+                    exit(-1);
+                }
+
+                glDrawElements(GL_TRIANGLES, (GLsizei)mesh.getIndexCount(), GL_UNSIGNED_INT, nullptr);
             }
         });
     }

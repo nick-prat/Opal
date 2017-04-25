@@ -159,6 +159,7 @@ void Scene::registerLuaFunctions() {
 
 void Scene::registerSystems() {
     m_entityManager.registerSystem<ModelRenderSystem>(m_resourceHandler.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
+    auto& rs = m_entityManager.getSystem<ModelRenderSystem>();
     m_entityManager.registerSystem<MovementSystem>();
 }
 
