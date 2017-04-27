@@ -267,6 +267,7 @@ Model3D& ResourceHandler::getModel3D(const std::string &name) {
 }
 
 void ResourceHandler::loadModel3D(const std::string& resourcename, const std::string& modelname) {
+    std::cout << "loading " << modelname << '\n';
     if(m_model3Ds.find(resourcename) != m_model3Ds.end()) {
         return;
     }
@@ -300,8 +301,10 @@ void ResourceHandler::loadModel3D(const std::string& resourcename, const std::st
     }
 
     std::vector<Model3D::Mesh> meshes;
+    std::cout << "loadNode\n";
     loadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
 
+    std::cout << "applying texture names\n";
     for(auto& mesh : meshes) {
         aiString aName;
         unsigned int index = mesh.getMatIndex();
@@ -312,7 +315,9 @@ void ResourceHandler::loadModel3D(const std::string& resourcename, const std::st
         }
     }
 
+    std::cout << "creating model\n";
     m_model3Ds.insert(std::make_pair(resourcename, Model3D(std::move(meshes), std::move(textures))));
+    std::cout << "done\n";
 }
 
 void ResourceHandler::copyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
@@ -368,8 +373,7 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::ma
             throw BadResource("Node was missing faces, load canceled");
         }
 
-        auto rmesh = Model3D::Mesh(vertices, indices);
-        rmesh.setMatIndex(mesh->mMaterialIndex);
-        meshes.push_back(std::move(rmesh));
+        meshes.push_back(Model3D::Mesh(vertices, indices));
+        meshes[meshes.size()-1].setMatIndex(mesh->mMaterialIndex);
     }
 }

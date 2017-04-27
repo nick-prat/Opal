@@ -5,13 +5,28 @@
 #include <Resources/texture.hpp>
 #include <Utilities/log.hpp>
 
-Model3D::Model3D(const std::vector<Mesh>& meshes, const std::unordered_map<std::string, Texture*>& textures)
-: m_meshes(generateMeshBuffers(std::move(meshes)))
-, m_textures(textures) {}
+Model3D::Model3D(std::vector<Mesh>&& meshes, const std::unordered_map<std::string, Texture*>& textures)
+: m_meshes(std::move(meshes))
+, m_textures(textures) {
+    std::cout << "creating model3d\n";
+    generateMeshBuffers();
+}
 
 Model3D::Model3D(Model3D&& model)
 : m_meshes(std::move(model.m_meshes))
-, m_textures(std::move(model.m_textures)) {}
+, m_textures(std::move(model.m_textures)) {
+    std::cout << "moving model3d\n";
+}
+
+Model3D::~Model3D() {
+    std::cout << "deleting model3d " << m_meshes.size() << '\n';
+}
+
+Model3D& Model3D::operator=(Model3D&& model) {
+    m_meshes = std::move(model.m_meshes);
+    m_textures = std::move(model.m_textures);
+    return *this;
+}
 
 const Texture& Model3D::getTexture(const std::string& key) const {
     auto tex = m_textures.find(key);
@@ -68,10 +83,8 @@ void Model3D::printTextures() const {
     }
 }
 
-std::vector<Model3D::Mesh> Model3D::generateMeshBuffers(const std::vector<Model3D::Mesh>& meshes) {
-    std::vector<Model3D::Mesh> newMeshes;
-
-    for(auto mesh : meshes) {
+void Model3D::generateMeshBuffers() {
+    for(auto& mesh : m_meshes) {
         glGenBuffers(1, &mesh.m_vbo);
         glGenBuffers(1, &mesh.m_ibo);
 
@@ -80,11 +93,7 @@ std::vector<Model3D::Mesh> Model3D::generateMeshBuffers(const std::vector<Model3
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.m_ibo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned int) * mesh.getIndices().size(), mesh.getIndices().data(), GL_STATIC_DRAW);
-
-        newMeshes.push_back(mesh);
     }
-
-    return newMeshes;
 }
 
 // Model3D::Vertex
@@ -101,6 +110,7 @@ Model3D::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& in
 : m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
 
 Model3D::Mesh::~Mesh() {
+    std::cout << "deleting mesh\n";
     if(glIsBuffer(m_vbo)) {
         glDeleteBuffers(1, &m_vbo);
     }

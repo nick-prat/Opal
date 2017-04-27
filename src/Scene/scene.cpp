@@ -160,6 +160,11 @@ void Scene::registerLuaFunctions() {
 void Scene::registerSystems() {
     m_entityManager.registerSystem<ModelRenderSystem>(m_resourceHandler.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
     auto& rs = m_entityManager.getSystem<ModelRenderSystem>();
+    auto id = m_entityManager.createEntity();
+    auto& ent = m_entityManager.getEntity(id);
+    ent.addComponent<CLocation>();
+    ent.addComponent<CRender>(m_resourceHandler.getModel3D("m3d_bear"));
+    rs.subscribe(id);
     m_entityManager.registerSystem<MovementSystem>();
 }
 

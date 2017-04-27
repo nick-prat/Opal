@@ -49,9 +49,12 @@ public:
         std::vector<Vertex> m_vertices;
     };
 
-    Model3D(const std::vector<Mesh>& meshes, const std::unordered_map<std::string, Texture*>& textures);
+    Model3D(std::vector<Mesh>&& meshes, const std::unordered_map<std::string, Texture*>& textures);
     Model3D(const Model3D&) = delete;
     Model3D(Model3D&& model);
+    ~Model3D();
+
+    Model3D& operator=(Model3D&& model);
 
     const Texture& getTexture(const std::string& key) const;
     const Mesh& getMesh(unsigned int index) const;
@@ -61,11 +64,11 @@ public:
     void printTextures() const;
 
 private:
-    std::vector<Mesh> generateMeshBuffers(const std::vector<Mesh>& meshes);
+    void generateMeshBuffers();
 
 private:
-    const std::vector<Mesh> m_meshes;
-    const std::unordered_map<std::string, Texture*> m_textures;
+    std::vector<Mesh> m_meshes;
+    std::unordered_map<std::string, Texture*> m_textures;
 };
 
 #endif // _MODEL3D_H
