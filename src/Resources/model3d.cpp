@@ -8,19 +8,12 @@
 Model3D::Model3D(std::vector<Mesh>&& meshes, const std::unordered_map<std::string, Texture*>& textures)
 : m_meshes(std::move(meshes))
 , m_textures(textures) {
-    std::cout << "creating model3d\n";
     generateMeshBuffers();
 }
 
 Model3D::Model3D(Model3D&& model)
 : m_meshes(std::move(model.m_meshes))
-, m_textures(std::move(model.m_textures)) {
-    std::cout << "moving model3d\n";
-}
-
-Model3D::~Model3D() {
-    std::cout << "deleting model3d " << m_meshes.size() << '\n';
-}
+, m_textures(std::move(model.m_textures)) {}
 
 Model3D& Model3D::operator=(Model3D&& model) {
     m_meshes = std::move(model.m_meshes);
@@ -110,7 +103,6 @@ Model3D::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& in
 : m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
 
 Model3D::Mesh::~Mesh() {
-    std::cout << "deleting mesh\n";
     if(glIsBuffer(m_vbo)) {
         glDeleteBuffers(1, &m_vbo);
     }

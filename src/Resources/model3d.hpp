@@ -52,7 +52,6 @@ public:
     Model3D(std::vector<Mesh>&& meshes, const std::unordered_map<std::string, Texture*>& textures);
     Model3D(const Model3D&) = delete;
     Model3D(Model3D&& model);
-    ~Model3D();
 
     Model3D& operator=(Model3D&& model);
 
