@@ -10,7 +10,7 @@ set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
 set(SOURCE_FILES
     # Root
     src/main.cpp
-    src/gl3w.c
+    src/GL/gl3w.c
 
     # Render
     src/Render/light.cpp
