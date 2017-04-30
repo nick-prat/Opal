@@ -39,7 +39,7 @@ public:
 
 private:
     void copyaiMat(const aiMatrix4x4* from, glm::mat4& to);
-    void loadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<Model3D::Mesh>& meshes);
+    void loadNode(const aiScene* scene, const aiNode* node, const glm::mat4& parentTransform, std::vector<Model3D::Mesh>& meshes);
 
 private:
     std::unordered_map<std::string, Shader> m_shaders;

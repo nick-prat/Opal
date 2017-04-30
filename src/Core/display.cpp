@@ -73,3 +73,13 @@ void Display::setCursorPosition(float x, float y) const {
 void Display::setCursorVisible(bool visible) const {
 
 }
+
+void Display::setWireFrame(bool wireframe) const {
+    if(wireframe) {
+        glDisable(GL_CULL_FACE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    } else {
+        glEnable(GL_CULL_FACE);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+}

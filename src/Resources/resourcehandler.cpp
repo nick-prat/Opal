@@ -267,7 +267,6 @@ Model3D& ResourceHandler::getModel3D(const std::string &name) {
 }
 
 void ResourceHandler::loadModel3D(const std::string& resourcename, const std::string& modelname) {
-    std::cout << "loading " << modelname << '\n';
     if(m_model3Ds.find(resourcename) != m_model3Ds.end()) {
         return;
     }
@@ -327,7 +326,7 @@ void ResourceHandler::copyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, glm::mat4 parentTransform, std::vector<Model3D::Mesh>& meshes) {
+void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, const glm::mat4& parentTransform, std::vector<Model3D::Mesh>& meshes) {
     glm::mat4x4 transformation;
     copyaiMat(&node->mTransformation, transformation);
     transformation = parentTransform * transformation;

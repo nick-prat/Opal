@@ -26,6 +26,7 @@ public:
 
     void setCursorPosition(float x, float y) const;
     void setCursorVisible(bool visible) const;
+    void setWireFrame(bool wireframe) const;
 
 private:
     unsigned int m_width, m_height;
