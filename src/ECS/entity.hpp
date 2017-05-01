@@ -63,6 +63,10 @@ public:
         return *this;
     }
 
+    bool operator==(const Entity& entity) const {
+        return m_id == entity.m_id;
+    }
+
     unsigned int getID() const {
         return m_id;
     }

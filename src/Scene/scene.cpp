@@ -162,7 +162,7 @@ void Scene::registerSystems() {
     auto id = m_entityManager.createEntity();
     auto& ent = m_entityManager.getEntity(id);
     ent.addComponent<CLocation>();
-    ent.addComponent<CRender>(m_resourceHandler.getModel3D("m3d_bear"));
+    ent.addComponent<CRender>(m_resourceHandler.getModel3D("m3d_deer"));
     rs.subscribe(id);
     m_entityManager.registerSystem<MovementSystem>();
 }
