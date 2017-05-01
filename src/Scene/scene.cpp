@@ -6,7 +6,6 @@
 #include <iostream>
 
 #include <Core/camera.hpp>
-#include <Models/dynamicmodel.hpp>
 #include <Utilities/exceptions.hpp>
 #include <Utilities/log.hpp>
 #include <Render/renderobject.hpp>
@@ -63,7 +62,7 @@ Scene::Scene(const Display& display, const std::string& scenename)
                     if(type == "line") {
                         rObject = m_resourceHandler.generateLine(object);
                     } else if(type == "staticmodel") {
-                        rObject = m_resourceHandler.generateModel(object, m_resourceHandler.getModel3D(object["resource"]));
+                        //rObject = m_resourceHandler.generateModel(object, m_resourceHandler.getModel3D(object["resource"]));
                     }
 
                     if(rObject != nullptr) {

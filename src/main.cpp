@@ -7,8 +7,6 @@
 #include <Utilities/log.hpp>
 #include <Core/glcore.hpp>
 #include <Scene/scene.hpp>
-#include <Models/staticmodel.hpp>
-#include <Models/dynamicmodel.hpp>
 
 // TODO Ensure const correctness is follwed in whole project
 // TODO Implement some sort of collsion detection (bullet physics library?)

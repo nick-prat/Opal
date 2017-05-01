@@ -20,7 +20,6 @@
 #include <Utilities/log.hpp>
 #include <Resources/texture.hpp>
 #include <Models/line.hpp>
-#include <Models/staticmodel.hpp>
 
 using json = nlohmann::json;
 
@@ -43,58 +42,6 @@ void ResourceHandler::loadResources(const json& scene) {
             }
         }
     }
-}
-
-IRenderObject* ResourceHandler::generateModel(const json& object, const Model3D& model3d) {
-    //const auto& model3d = m_model3Ds.find(object["resource"])->second;
-
-    std::string name = "";
-    if(object.find("name") != object.end()) {
-        name = object["name"];
-    } else {
-        name = "null";
-    }
-
-    glm::mat4 transform = glm::mat4(1.0f);
-
-    if(object.find("translation") != object.end()) {
-        std::vector<float> translation = object["translation"];
-        if(translation.size() != 3) {
-            throw BadResource("Translation data size is not 3", name);
-        }
-        transform = glm::translate(transform, glm::vec3(translation[0], translation[1], translation[2]));
-    }
-
-    if(object.find("scale") != object.end()) {
-        std::vector<float> scale = object["scale"];
-        if(scale.size() != 3) {
-            throw BadResource("Scale data size is not 3", name);
-        }
-        transform = glm::scale(transform, glm::vec3(scale[0], scale[1], scale[2]));
-    }
-
-    if(object.find("rotation") != object.end()) {
-        std::vector<float> rotation = object["rotation"];
-        if(rotation.size() != 3) {
-            throw BadResource("Rotation data size is not 3", name);
-        }
-
-        float degrees = *(std::max_element(rotation.begin(), rotation.end()));
-        if(degrees != 0.0f) {
-            glm::vec3 amount = glm::vec3(rotation[0] / degrees, rotation[1] / degrees, rotation[2] / degrees);
-            transform = glm::rotate(transform, degrees, amount);
-        }
-    }
-
-    std::string shadername = object["shader"];
-    auto shader = m_shaders.find(shadername);
-    if(shader == m_shaders.end()) {
-        throw BadResource("requested unknown shader " + shadername, name);
-    }
-
-    auto model = new StaticModel(model3d, transform);
-    shader->second.attachRenderObject(model);
-    return model;
 }
 
 IRenderObject* ResourceHandler::generateLine(const json& object) {
