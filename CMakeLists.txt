@@ -9,41 +9,41 @@ set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
 # Applications source files
 set(SOURCE_FILES
     # Root
-    src/main.cpp
+    src/main.cc
 
     # OpenGL
     src/GL/gl3w.c
 
     # Render
-    src/Render/light.cpp
-    src/Render/renderobject.cpp
-    src/Render/shader.cpp
-    src/Render/sampler.cpp
+    src/Render/light.cc
+    src/Render/renderobject.cc
+    src/Render/shader.cc
+    src/Render/sampler.cc
 
-    # ECS
-    src/ECS/components.cpp
+    # Components
+    src/Components/components.cc
 
     # Scene
-    src/Scene/scene.cpp
+    src/Scene/scene.cc
 
     # Models
-	src/Models/line.cpp
+	src/Models/line.cc
 
     # Resources
-    src/Resources/texture.cpp
-    src/Resources/resourcehandler.cpp
-    src/Resources/model3d.cpp
+    src/Resources/texture.cc
+    src/Resources/resourcehandler.cc
+    src/Resources/model3d.cc
 
     # Utilities
-    src/Utilities/exceptions.cpp
-    src/Utilities/utilities.cpp
-    src/Utilities/log.cpp
+    src/Utilities/exceptions.cc
+    src/Utilities/utilities.cc
+    src/Utilities/log.cc
 
     # Core
-    src/Core/glcore.cpp
-    src/Core/display.cpp
-	src/Core/inputcontroller.cpp
-    src/Core/camera.cpp
+    src/Core/glcore.cc
+    src/Core/display.cc
+	src/Core/inputcontroller.cc
+    src/Core/camera.cc
 
 )
 
