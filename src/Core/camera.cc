@@ -12,6 +12,7 @@ Camera::Camera() {
     m_position = glm::vec3(0.0f, 0.0f, 5.0f);
     m_direction = glm::vec3(0.0f, 0.0f, -1.0f);
     m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+    m_viewMatrix = glm::lookAt(m_position, m_position + m_direction, m_up);
 }
 
 Camera::~Camera() {

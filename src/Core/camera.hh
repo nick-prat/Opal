@@ -8,8 +8,7 @@ public:
     Camera();
     ~Camera();
 
-    bool initCamera();
-    void destroy();
+    void update(float scale);
 
     glm::mat4 getViewMatrix() const;
     void moveCamera(glm::vec3 delta);
