@@ -13,7 +13,6 @@ extern "C" {
 
 #include <Core/display.hh>
 
-class ResourceHandler;
 class Scene;
 
 // TODO Be able to switch between what window is active
@@ -33,7 +32,7 @@ public:
     static void initAPI();
     static void closeAPI();
 
-    bool shouldClose() const;
+    void start();
 
     void setClearColor(const glm::vec4& color);
     void setVsync(bool enabled);
@@ -41,16 +40,15 @@ public:
     GLFWwindow* getWindow() const;
     const Display& getDisplay() const;
     Scene* getCurrentScene() const;
-    Scene createScene(const std::string& scenename);
-    void startScene(Scene* scene);
+    void loadScene(const std::string& scenename);
 
-    void displayFunc();
+private:
     void inputFunc(int key, bool state);
     void mouseFunc(double xpos, double ypos);
 
 private:
+    std::unique_ptr<Scene> m_scene;
     Display m_display;
-    Scene* m_currentScene;
     GLFWwindow* m_window;
 };
 
