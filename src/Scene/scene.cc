@@ -71,9 +71,8 @@ Scene::Scene(const Display& display, const std::string& scenename)
                         std::cout << "Creating staticmodel\n";
                         auto id = m_entityManager.createEntity();
                         m_entityManager.createComponent<CRender>(id, m_resourceHandler.getModel3D(object["resource"]));
-                        m_entityManager.createComponent<CLocation>(id);
-                        auto& cbody = m_entityManager.getComponent<CLocation>(id);
-                        auto& crender = m_entityManager.getComponent<CRender>(id);
+                        m_entityManager.createComponent<CBody>(id);
+                        auto& cbody = m_entityManager.getComponent<CBody>(id);
 
                         std::vector<float> loc, scl, rot;
 
@@ -87,7 +86,7 @@ Scene::Scene(const Display& display, const std::string& scenename)
 
                         if(auto ri = object.find("rotation"); ri != object.end()) {
                             if((*ri).size() == 3) {
-                                // cbody.setRotation({(*ri)[0], (*ri)[1], (*ri)[2]});
+                                cbody.setRotation({(*ri)[0], (*ri)[1], (*ri)[2]});
                             } else {
                                 Log::getErrorLog() << "invalid rotation format for " << name << " size was " << (*ri).size() << " expected 3\n";
                             }
@@ -95,7 +94,7 @@ Scene::Scene(const Display& display, const std::string& scenename)
 
                         if(auto si = object.find("scale"); si != object.end() && (*si).size() == 3) {
                             if((*si).size() == 3) {
-                                // crender.setScale({(*si)[0], (*si)[1], (*si)[2]});
+                                cbody.setScale({(*si)[0], (*si)[1], (*si)[2]});
                             } else {
                                 Log::getErrorLog() << "invalid scale format for " << name << " size was " << (*si).size() << " expected 3\n";
                             }

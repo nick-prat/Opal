@@ -66,12 +66,12 @@ public:
         auto pv = m_display.getProjectionMatrix() * m_display.getCamera()->getViewMatrix();
 
         auto rview = entMan.getComponentView<CRender>();
-        auto lview = entMan.getComponentView<CLocation>();
-        entMan.mapEntities<CRender, CLocation>([this, &rview, &lview, &entMan, &pv](auto ent) {
+        auto lview = entMan.getComponentView<CBody>();
+        entMan.mapEntities<CRender, CBody>([this, &rview, &lview, &entMan, &pv](auto ent) {
             auto& rc = entMan.getComponent<CRender>(ent);
-            auto& loc = entMan.getComponent<CLocation>(ent);
+            auto& loc = entMan.getComponent<CBody>(ent);
 
-            auto mvp = pv * (loc.getLocation() * rc.getRotation() * rc.getScale());
+            auto mvp = pv * (loc.getLocation() * loc.getRotation() * loc.getScale());
 
             glUniform1i(m_shader.getUniformLocation("gSampler"), 0);
             glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
