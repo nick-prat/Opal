@@ -57,6 +57,7 @@ GLCore::GLCore(int width, int height, std::string title)
         if(glCore == nullptr) {
             return;
         }
+
         if(action == GLFW_PRESS) {
             glCore->inputFunc(key, true);
         } else if(action == GLFW_RELEASE) {
@@ -147,6 +148,8 @@ void GLCore::closeAPI() {
 }
 
 void GLCore::start() {
+    m_scene->start();
+
     double timer = glfwGetTime();
     unsigned long frames = 0;
 
