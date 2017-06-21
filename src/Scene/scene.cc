@@ -5,11 +5,13 @@
 
 #include <iostream>
 
+#include <LuaBridge/LuaBridge.h>
 #include <Core/camera.hh>
 #include <Utilities/exceptions.hh>
 #include <Utilities/log.hh>
 #include <Render/renderobject.hh>
 #include <Resources/resourcehandler.hh>
+#include <LuaBridge/LuaBridge.h>
 
 using luabridge::LuaRef;
 using json = nlohmann::json;
@@ -56,17 +58,51 @@ Scene::Scene(const Display& display, const std::string& scenename)
             for(const auto& object : objects) {
                 try {
                     std::string type = object["type"];
-                    IRenderObject* rObject = nullptr;
-
+                    std::string name = "unknown";
+                    if(auto ni = object.find("name"); ni != object.end()) {
+                        name = *ni;
+                    }
                     // NOTE Are there other types of render obects i might want to load?
                     if(type == "line") {
-                        rObject = m_resourceHandler.generateLine(object);
+                        if(IRenderObject* robj = m_resourceHandler.generateLine(object); robj != nullptr) {
+                            m_renderObjects.push_back(std::unique_ptr<IRenderObject>(robj));
+                        }
                     } else if(type == "staticmodel") {
-                        //rObject = m_resourceHandler.generateModel(object, m_resourceHandler.getModel3D(object["resource"]));
-                    }
+                        std::cout << "Creating staticmodel\n";
+                        auto id = m_entityManager.createEntity();
+                        m_entityManager.createComponent<CRender>(id, m_resourceHandler.getModel3D(object["resource"]));
+                        m_entityManager.createComponent<CLocation>(id);
+                        auto& cbody = m_entityManager.getComponent<CLocation>(id);
+                        auto& crender = m_entityManager.getComponent<CRender>(id);
 
-                    if(rObject != nullptr) {
-                        m_renderObjects.push_back(std::unique_ptr<IRenderObject>(rObject));
+                        std::vector<float> loc, scl, rot;
+
+                        if(auto ti = object.find("translation"); ti != object.end()) {
+                            if((*ti).size() == 3) {
+                                cbody.setLocation({(*ti)[0], (*ti)[1], (*ti)[2]});
+                            } else {
+                                Log::getErrorLog() << "invalid translation format for " << name << " size was " << (*ti).size() << " expected 3\n";
+                            }
+                        }
+
+                        if(auto ri = object.find("rotation"); ri != object.end()) {
+                            if((*ri).size() == 3) {
+                                // cbody.setRotation({(*ri)[0], (*ri)[1], (*ri)[2]});
+                            } else {
+                                Log::getErrorLog() << "invalid rotation format for " << name << " size was " << (*ri).size() << " expected 3\n";
+                            }
+                        }
+
+                        if(auto si = object.find("scale"); si != object.end() && (*si).size() == 3) {
+                            if((*si).size() == 3) {
+                                // crender.setScale({(*si)[0], (*si)[1], (*si)[2]});
+                            } else {
+                                Log::getErrorLog() << "invalid scale format for " << name << " size was " << (*si).size() << " expected 3\n";
+                            }
+                        }
+                    } else {
+                        Log::getErrorLog() << "Unknown type " << type << " for " << name << " skipping...\n";
+                        continue;
                     }
                 } catch (BadResource& error) {
                     error.printError();
@@ -134,9 +170,7 @@ void Scene::buildLuaNamespace() {
                 .addFunction("SetAmbientColor", &Scene::setAmbientColor)
                 .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
                 .addFunction("GetCamera", &Scene::getCamera)
-                //.addFunction("GetEntity", &Scene::getEntity)
-                //.addFunction("GetEntityCount", &Scene::getEntityCount)
-                .addFunction("CreateEntity", &Scene::createEntity)
+                // .addFunction("GetEntityCount", &Scene::getEntityCount)
             .endClass()
         .endNamespace();
 
@@ -158,12 +192,6 @@ void Scene::registerLuaFunctions() {
 
 void Scene::registerSystems() {
     m_entityManager.registerSystem<ModelRenderSystem>(m_resourceHandler.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
-    auto& rs = m_entityManager.getSystem<ModelRenderSystem>();
-    auto id = m_entityManager.createEntity();
-
-    m_entityManager.createComponent<CLocation>(id);
-    m_entityManager.createComponent<CRender>(id, m_resourceHandler.getModel3D("m3d_deer"));
-    rs.subscribe(id);
     m_entityManager.registerSystem<MovementSystem>();
 }
 
@@ -209,17 +237,6 @@ Camera* Scene::getCamera() const {
     return m_display.getCamera();
 }
 
-// NOTE Do i want to be able to easily destroy an entity?
-unsigned int Scene::createEntity() {
-    return 0;
-}
-
-/* TODO Fix this function
-Emerald::emerald_id Scene::getEntity(unsigned int id) const {
-    m_entityManager.getEntity(id);
-    return nullptr;
-}
-
-int Scene::getEntityCount() const {
-    return 0;
-}*/
+// int Scene::getEntityCount() const {
+//     return m_entityManager.getEntityCount();
+// }
