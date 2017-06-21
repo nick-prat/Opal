@@ -10,4 +10,4 @@ src/GL
 Makefile
 cmake_install.cmake
 CMakeCache.txt
-OpenGL
+Opal
