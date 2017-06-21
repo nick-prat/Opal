@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <glm/glm.hpp>
-#include <GLFW/glfw3.h>
+
 
 extern "C" {
 #include <lua.h>
@@ -27,17 +27,10 @@ public:
 
     GLCore& operator=(const GLCore&) = delete;
     GLCore& operator=(GLCore&& glCore);
-    void destroy();
-
-    static void initAPI();
-    static void closeAPI();
 
     void start();
 
-    void setClearColor(const glm::vec4& color);
-    void setVsync(bool enabled);
-
-    GLFWwindow* getWindow() const;
+    Display& getDisplay();
     const Display& getDisplay() const;
     Scene* getCurrentScene() const;
     void loadScene(const std::string& scenename);
@@ -47,9 +40,8 @@ private:
     void mouseFunc(double xpos, double ypos);
 
 private:
-    std::unique_ptr<Scene> m_scene;
     Display m_display;
-    GLFWwindow* m_window;
+    std::unique_ptr<Scene> m_scene;
 };
 
 #endif // _GLCORE_H

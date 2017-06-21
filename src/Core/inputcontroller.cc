@@ -44,6 +44,7 @@ void InputController::callKeyLambdas() {
 }
 
 void InputController::updateMousePosition(const double xpos, const double ypos) {
+    std::cout << '[' << xpos << ',' << ypos << "]\n";
     m_mousePos.first = xpos;
     m_mousePos.second = ypos;
 }

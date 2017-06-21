@@ -6,7 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <memory>
-#include <GL/gl3w.h>
+#include <Core/gl.hh>
 
 class Texture;
 

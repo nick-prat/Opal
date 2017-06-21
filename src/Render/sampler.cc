@@ -1,6 +1,6 @@
 #include "sampler.hh"
 
-#include <GL/gl3w.h>
+#include <Core/gl.hh>
 
 Sampler::Sampler() {
     glGenSamplers(1, &m_sampler);

@@ -1,4 +1,3 @@
-#include <GL/gl3w.h>
 #include "glcore.hh"
 
 #include <string>
@@ -10,33 +9,15 @@
 // TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])
 // TODO Implement notification system for entities (entity can post lambda to be called on an event)
 
+constexpr unsigned int major = 4;
+constexpr unsigned int minor = 5;
+
 // Creates a dummy GLCore that doesn't spawn a window
 GLCore::GLCore()
-        : m_display()
-        , m_window(nullptr) {}
+        : m_display() {}
 
 GLCore::GLCore(int width, int height, std::string title)
-        : m_display()
-        , m_window(nullptr) {
-
-    glfwSetErrorCallback([](int error, const char* desc) {
-        Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
-    });
-
-    constexpr int major = 4;
-    constexpr int minor = 5;
-
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    m_window = glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr);
-    if(!m_window) {
-        throw GenericException("Couldn't create window\n");
-    }
-
-    glfwMakeContextCurrent(m_window);
+        : m_display(width, height, major, minor, title) {
 
     if(gl3wInit() == -1) {
         throw GenericException("Couldn't initialize GL3W\n");
@@ -44,46 +25,8 @@ GLCore::GLCore(int width, int height, std::string title)
 
     if(!gl3wIsSupported(major, minor)) {
         Log::getErrorLog() << "Open GL " << major << "." << minor << " is unsupported\n";
-        glfwTerminate();
         exit(-1);
     }
-
-    m_display = Display(width, height);
-
-    glfwSetWindowUserPointer(m_window, this);
-
-    glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
-        GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
-        if(glCore == nullptr) {
-            return;
-        }
-
-        if(action == GLFW_PRESS) {
-            glCore->inputFunc(key, true);
-        } else if(action == GLFW_RELEASE) {
-            glCore->inputFunc(key, false);
-        }
-    });
-
-    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int /*mods*/) {
-        GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
-        if(glCore == nullptr) {
-            return;
-        }
-        if(action == GLFW_PRESS) {
-            glCore->inputFunc(button, true);
-        } else if(action == GLFW_RELEASE) {
-            glCore->inputFunc(button, false);
-        }
-    });
-
-    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) {
-        GLCore* glCore = reinterpret_cast<GLCore*>(glfwGetWindowUserPointer(window));
-        if(glCore == nullptr) {
-            return;
-        }
-        glCore->mouseFunc(xpos, ypos);
-    });
 
     // NOTE You can set input mode with this
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -103,87 +46,38 @@ GLCore::GLCore(int width, int height, std::string title)
 }
 
 GLCore::GLCore(GLCore&& glCore)
-        : m_scene(std::move(glCore.m_scene))
-        , m_display(std::move(glCore.m_display))
-        , m_window(glCore.m_window) {
-    glCore.m_window = nullptr;
-    if(m_window != nullptr) {
-        glfwSetWindowUserPointer(m_window, this);
-    }
-}
+        : m_display(std::move(glCore.m_display))
+        , m_scene(std::move(glCore.m_scene)) {}
 
-GLCore::~GLCore() {
-    destroy();
-}
+GLCore::~GLCore() {}
 
 GLCore& GLCore::operator=(GLCore&& glCore) {
     m_scene = std::move(glCore.m_scene);
     m_display = std::move(glCore.m_display);
-    m_window = glCore.m_window;
-
-    glCore.m_window = nullptr;
-
-    if(m_window != nullptr) {
-        glfwSetWindowUserPointer(m_window, this);
-    }
-
     return *this;
-}
-
-void GLCore::destroy() {
-    if(m_window != nullptr) {
-        glfwDestroyWindow(m_window);
-        m_window = nullptr;
-    }
-}
-
-void GLCore::initAPI() {
-    if(!glfwInit()) {
-        throw GenericException("Couldn't initialize GLFW3\n");
-    }
-}
-
-void GLCore::closeAPI() {
-    glfwTerminate();
 }
 
 void GLCore::start() {
     m_scene->start();
 
-    double timer = glfwGetTime();
-    unsigned long frames = 0;
+    // double timer = glfwGetTime();
+    // unsigned long frames = 0;
 
-    while(!glfwWindowShouldClose(m_window)) {
+    while(!m_display.windowShouldClose()) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         if(m_scene.get() != nullptr) {
             m_scene->gameLoop();
         }
-        m_display.getInputController()->callKeyLambdas();
-        glfwSwapBuffers(m_window);
-        glfwPollEvents();
-
-        frames++;
+        m_display.update();
+        // frames++;
     }
 
-    timer = glfwGetTime() - timer;
-    Log::getLog() << "Average FPS: " << frames / timer << '\n';
+    // timer = glfwGetTime() - timer;
+    // Log::getLog() << "Aversage FPS: " << frames / timer << '\n';
 }
 
-
-void GLCore::setClearColor(const glm::vec4& color) {
-    glClearColor(color.x, color.y, color.z, color.w);
-}
-
-void GLCore::setVsync(bool enabled) {
-    if(enabled) {
-        glfwSwapInterval(1);
-    } else {
-        glfwSwapInterval(0);
-    }
-}
-
-GLFWwindow* GLCore::getWindow() const {
-    return m_window;
+Display& GLCore::getDisplay() {
+    return m_display;
 }
 
 const Display& GLCore::getDisplay() const {
@@ -191,9 +85,9 @@ const Display& GLCore::getDisplay() const {
 }
 
 void GLCore::loadScene(const std::string& scenename) {
-    auto timer = glfwGetTime();
+    // auto timer = glfwGetTime();
     m_scene = std::make_unique<Scene>(m_display, scenename);
-    Log::getLog() << "Scene creation for " << scenename << " in " << glfwGetTime() - timer << " seconds\n";
+    // Log::getLog() << "Scene creation for " << scenename << " in " << glfwGetTime() - timer << " seconds\n";
 }
 
 void GLCore::inputFunc(int key, bool state) {

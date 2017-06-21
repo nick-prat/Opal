@@ -19,7 +19,6 @@
 #include <Utilities/exceptions.hh>
 #include <Utilities/log.hh>
 #include <Resources/texture.hh>
-#include <Models/line.hh>
 
 using json = nlohmann::json;
 
@@ -42,48 +41,6 @@ void ResourceHandler::loadResources(const json& scene) {
             }
         }
     }
-}
-
-IRenderObject* ResourceHandler::generateLine(const json& object) {
-    glm::vec3 head, tail, color;
-    std::string name;
-
-    if(object.find("name") != object.end()) {
-        name = object["name"];
-    } else {
-        name = "null";
-    }
-
-    std::vector<float> head3f = object["head"];
-    if(head3f.size() == 3) {
-        head = glm::vec3(head3f[0], head3f[1], head3f[2]);
-    } else {
-        throw BadResource("head data size is not 3", name);
-    }
-
-    std::vector<float> tail3f = object["tail"];
-    if(tail3f.size() == 3) {
-        tail = glm::vec3(tail3f[0], tail3f[1], tail3f[2]);
-    } else {
-        throw BadResource("tail data size is not 3", name);
-    }
-
-    std::vector<float> color3f = object["color"];
-    if(head3f.size() == 3) {
-        color = glm::vec3(color3f[0], color3f[1], color3f[2]);
-    } else {
-        throw BadResource("color data size is not 3", name);
-    }
-
-    std::string shadername = object["shader"];
-    auto shader = m_shaders.find(shadername);
-    if(shader == m_shaders.end()) {
-        throw BadResource("requested unknown shader " + shadername, name);
-    }
-
-    auto line = new Line(head, tail, color);
-    shader->second.attachRenderObject(line);
-    return line;
 }
 
 const std::unordered_map<std::string, Shader>& ResourceHandler::getShaders() const {

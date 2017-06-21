@@ -1,8 +1,7 @@
-#include <GL/gl3w.h>
-
 #include <iostream>
 #include <memory>
 
+#include <Core/display.hh>
 #include <Utilities/exceptions.hh>
 #include <Utilities/log.hh>
 #include <Core/glcore.hh>
@@ -22,8 +21,6 @@ int main(int argc, char* argv[]) {
     constexpr int width = 1024;
     constexpr int height = 576;
 
-    GLCore::initAPI();
-
     GLCore glCore;
     try {
         glCore = GLCore(width, height, title);
@@ -32,13 +29,12 @@ int main(int argc, char* argv[]) {
         return 1;
     }
 
-    glCore.setClearColor(glm::vec4(0.0f));
-    glCore.setVsync(true);
+    glCore.getDisplay().setMouseCapture(false);
+    glCore.getDisplay().setClearColor(glm::vec4(0.0f));
+    glCore.getDisplay().setVsync(true);
 
     glCore.loadScene(scenename);
     glCore.start();
 
-    glCore.destroy();
-    //GLCore::closeAPI();
     return 0;
 }

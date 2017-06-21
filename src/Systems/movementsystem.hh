@@ -16,11 +16,11 @@ public:
     MovementSystem& operator=(MovementSystem&&) = delete;
 
     void update(Emerald::EntityManager& entMan) {
-        auto lview = entMan.getComponentView<CBody>();
+        /*auto lview = entMan.getComponentView<CBody>();
         entMan.mapEntities<CBody>([&entMan, &lview](auto ent) {
             auto& loc = entMan.getComponent<CBody>(ent);
-            // loc.setLocation(glm::translate(loc.getLocation(), loc.getDirection()));
-        });
+            loc.setLocation(glm::translate(loc.getLocation(), loc.getDirection()));
+        });*/
     }
 };
 

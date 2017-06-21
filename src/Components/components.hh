@@ -4,7 +4,8 @@
 #include <vector>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include <GL/gl3w.h>
+
+#include <Core/gl.hh>
 
 #include <Resources/texture.hh>
 #include <Resources/model3d.hh>

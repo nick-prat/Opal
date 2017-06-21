@@ -1,6 +1,6 @@
 #include "utilities.hh"
 
-#include <GL/gl3w.h>
+#include <Core/gl.hh>
 
 #include <Utilities/log.hh>
 

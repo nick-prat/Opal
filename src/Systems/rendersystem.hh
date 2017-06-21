@@ -3,9 +3,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <GL/gl3w.h>
+#include <Core/gl.hh>
 
-#include <Core/display.hh>
 #include <Core/camera.hh>
 #include <Render/shader.hh>
 #include <Render/light.hh>

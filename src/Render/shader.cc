@@ -1,3 +1,4 @@
+#include <Core/gl.hh>
 #include "shader.hh"
 
 #include <iostream>
@@ -87,7 +88,6 @@ Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum>& ty
 Shader::Shader(Shader&& shader)
 : m_numShaders(shader.m_numShaders)
 , m_shaderProgram(shader.m_shaderProgram)
-, m_renderObjects(std::move(shader.m_renderObjects))
 , m_uniformLocations(std::move(shader.m_uniformLocations)) {
     shader.m_numShaders = 0;
     shader.m_shaderProgram = 0;
@@ -97,19 +97,6 @@ Shader::~Shader() {
     if(glIsProgram(m_shaderProgram)) {
         glDeleteProgram(m_shaderProgram);
     }
-}
-
-void Shader::attachRenderObject(IRenderObject* object) {
-    if(object == nullptr) {
-        Log::getErrorLog() << "Null object atempted attached to render chain\n";
-        return;
-    }
-
-    m_renderObjects.push_back(object);
-}
-
-void Shader::detachRenderObject(IRenderObject* object) {
-    m_renderObjects.remove(object);
 }
 
 void Shader::registerUniform(const std::string& name) {
@@ -131,12 +118,4 @@ GLint Shader::getUniformLocation(const std::string& name) const {
 
 GLuint Shader::getProgram() const {
     return m_shaderProgram;
-}
-
-std::size_t Shader::getRenderCount() const {
-    return m_renderObjects.size();
-}
-
-const std::list<IRenderObject*>& Shader::getRenderObjects() const {
-    return m_renderObjects;
 }

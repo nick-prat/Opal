@@ -24,8 +24,6 @@ public:
     void loadResources(const nlohmann::json& scene);
     void addResource(const std::string& name, const IResource* const resource);
 
-    IRenderObject* generateLine(const nlohmann::json& object);
-
     const std::unordered_map<std::string, Shader>& getShaders() const;
     Shader& getShader(const std::string& shader);
     void loadShader(const nlohmann::json& object);

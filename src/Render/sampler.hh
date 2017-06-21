@@ -1,7 +1,7 @@
 #ifndef _SAMPLER_H
 #define _SAMPLER_H
 
-#include <GL/gl3w.h>
+#include <Core/gl.hh>
 
 // TODO Implement parameter settings
 

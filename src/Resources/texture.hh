@@ -2,7 +2,7 @@
 #define _TEXTURE_H
 
 #include <string>
-#include <GL/gl3w.h>
+#include <Core/gl.hh>
 
 #include <Render/sampler.hh>
 

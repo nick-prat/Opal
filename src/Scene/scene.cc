@@ -1,4 +1,4 @@
-#include <GL/gl3w.h>
+#include <Core/gl.hh>
 #include <GLFW/glfw3.h>
 
 #include "scene.hh"
@@ -9,7 +9,6 @@
 #include <Core/camera.hh>
 #include <Utilities/exceptions.hh>
 #include <Utilities/log.hh>
-#include <Render/renderobject.hh>
 #include <Resources/resourcehandler.hh>
 #include <LuaBridge/LuaBridge.h>
 
@@ -63,11 +62,7 @@ Scene::Scene(const Display& display, const std::string& scenename)
                         name = *ni;
                     }
                     // NOTE Are there other types of render obects i might want to load?
-                    if(type == "line") {
-                        if(IRenderObject* robj = m_resourceHandler.generateLine(object); robj != nullptr) {
-                            m_renderObjects.push_back(std::unique_ptr<IRenderObject>(robj));
-                        }
-                    } else if(type == "staticmodel") {
+                    if(type == "staticmodel") {
                         std::cout << "Creating staticmodel\n";
                         auto id = m_entityManager.createEntity();
                         m_entityManager.createComponent<CRender>(id, m_resourceHandler.getModel3D(object["resource"]));
@@ -121,8 +116,7 @@ Scene::Scene(const Display& display, const std::string& scenename)
 }
 
 Scene::Scene(Scene&& scene)
-: m_renderObjects(std::move(scene.m_renderObjects))
-, m_entityManager(std::move(scene.m_entityManager))
+: m_entityManager(std::move(scene.m_entityManager))
 , m_resourceHandler(std::move(scene.m_resourceHandler))
 , m_scenename(scene.m_scenename)
 , m_luaState(std::move(scene.m_luaState))
@@ -169,7 +163,7 @@ void Scene::buildLuaNamespace() {
                 .addFunction("SetAmbientColor", &Scene::setAmbientColor)
                 .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
                 .addFunction("GetCamera", &Scene::getCamera)
-                // .addFunction("GetEntityCount", &Scene::getEntityCount)
+                .addFunction("GetEntityCount", &Scene::getEntityCount)
             .endClass()
         .endNamespace();
 
@@ -236,6 +230,6 @@ Camera* Scene::getCamera() const {
     return m_display.getCamera();
 }
 
-// int Scene::getEntityCount() const {
-//     return m_entityManager.getEntityCount();
-// }
+std::size_t Scene::getEntityCount() const {
+    return m_entityManager.getEntityCount();
+}

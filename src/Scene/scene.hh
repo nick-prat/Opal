@@ -14,8 +14,6 @@
 #include <Render/light.hh>
 #include <Resources/resourcehandler.hh>
 
-class IRenderObject;
-
 class Scene {
 public:
     Scene(const Display& display, const std::string& scenename);
@@ -36,9 +34,7 @@ public:
     void setAmbientColor(const glm::vec3& color);
     void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
     Camera* getCamera() const;
-    unsigned int createEntity();
-    //int getEntityCount() const;
-    //Emerald::emerald_id getEntity(const unsigned int id) const;
+    std::size_t getEntityCount() const;
 
 private:
     void closeLua();
@@ -47,7 +43,6 @@ private:
     void registerSystems();
 
 private:
-    std::vector<std::unique_ptr<IRenderObject>> m_renderObjects;
     Emerald::EntityManager m_entityManager;
     WorldLight m_worldLight;
     ResourceHandler m_resourceHandler;

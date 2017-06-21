@@ -16,7 +16,6 @@ set(SOURCE_FILES
 
     # Render
     src/Render/light.cc
-    src/Render/renderobject.cc
     src/Render/shader.cc
     src/Render/sampler.cc
 
@@ -25,9 +24,6 @@ set(SOURCE_FILES
 
     # Scene
     src/Scene/scene.cc
-
-    # Models
-	src/Models/line.cc
 
     # Resources
     src/Resources/texture.cc
