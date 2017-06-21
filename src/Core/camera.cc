@@ -17,9 +17,13 @@ Camera::Camera() {
 Camera::~Camera() {
 }
 
+void Camera::update(float scale) {
+    m_position += m_direction * scale;
+}
+
 // NOTE Do i need to build a look at matrix for every object that requests the view matrix?
 glm::mat4 Camera::getViewMatrix() const {
-    return glm::lookAt(m_position, m_position + m_direction, m_up);
+    return m_viewMatrix;
 }
 
 // TODO Implement camera rotation
@@ -27,14 +31,14 @@ glm::mat4 Camera::getViewMatrix() const {
 void Camera::rotateCamera(glm::vec3 rotation) {
 }
 
-// TODO Implement function to move camera towards it's direction
 void Camera::moveCamera(glm::vec3 delta) {
     m_position += delta;
+    m_viewMatrix = glm::lookAt(m_position, m_position + m_direction, m_up);
 }
 
-// NOTE Why is this useful?
 void Camera::setPosition(glm::vec3 position) {
     m_position = position;
+    m_viewMatrix = glm::lookAt(m_position, m_position + m_direction, m_up);
 }
 
 glm::vec3 Camera::getPosition() const {
