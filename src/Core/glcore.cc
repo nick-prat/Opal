@@ -13,13 +13,12 @@
 // Creates a dummy GLCore that doesn't spawn a window
 GLCore::GLCore()
         : m_display()
-        , m_currentScene(nullptr)
         , m_window(nullptr) {}
 
 GLCore::GLCore(int width, int height, std::string title)
         : m_display()
-        , m_currentScene(nullptr)
         , m_window(nullptr) {
+
     glfwSetErrorCallback([](int error, const char* desc) {
         Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
@@ -103,12 +102,10 @@ GLCore::GLCore(int width, int height, std::string title)
 }
 
 GLCore::GLCore(GLCore&& glCore)
-        : m_display(std::move(glCore.m_display))
-        , m_currentScene(glCore.m_currentScene)
+        : m_scene(std::move(glCore.m_scene))
+        , m_display(std::move(glCore.m_display))
         , m_window(glCore.m_window) {
-    glCore.m_currentScene = nullptr;
     glCore.m_window = nullptr;
-
     if(m_window != nullptr) {
         glfwSetWindowUserPointer(m_window, this);
     }
@@ -119,11 +116,10 @@ GLCore::~GLCore() {
 }
 
 GLCore& GLCore::operator=(GLCore&& glCore) {
+    m_scene = std::move(glCore.m_scene);
     m_display = std::move(glCore.m_display);
-    m_currentScene = glCore.m_currentScene;
     m_window = glCore.m_window;
 
-    glCore.m_currentScene = nullptr;
     glCore.m_window = nullptr;
 
     if(m_window != nullptr) {
@@ -131,6 +127,13 @@ GLCore& GLCore::operator=(GLCore&& glCore) {
     }
 
     return *this;
+}
+
+void GLCore::destroy() {
+    if(m_window != nullptr) {
+        glfwDestroyWindow(m_window);
+        m_window = nullptr;
+    }
 }
 
 void GLCore::initAPI() {
@@ -143,16 +146,26 @@ void GLCore::closeAPI() {
     glfwTerminate();
 }
 
-void GLCore::destroy() {
-    if(m_window != nullptr) {
-        glfwDestroyWindow(m_window);
-        m_window = nullptr;
+void GLCore::start() {
+    double timer = glfwGetTime();
+    unsigned long frames = 0;
+
+    while(!glfwWindowShouldClose(m_window)) {
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        if(m_scene.get() != nullptr) {
+            m_scene->gameLoop();
+        }
+        m_display.getInputController()->callKeyLambdas();
+        glfwSwapBuffers(m_window);
+        glfwPollEvents();
+
+        frames++;
     }
+
+    timer = glfwGetTime() - timer;
+    Log::getLog() << "Average FPS: " << frames / timer << '\n';
 }
 
-bool GLCore::shouldClose() const {
-    return glfwWindowShouldClose(m_window);
-}
 
 void GLCore::setClearColor(const glm::vec4& color) {
     glClearColor(color.x, color.y, color.z, color.w);
@@ -174,26 +187,10 @@ const Display& GLCore::getDisplay() const {
     return m_display;
 }
 
-Scene GLCore::createScene(const std::string& scenename) {
+void GLCore::loadScene(const std::string& scenename) {
     auto timer = glfwGetTime();
-    auto scene = Scene(m_display, scenename);
+    m_scene = std::make_unique<Scene>(m_display, scenename);
     Log::getLog() << "Scene creation for " << scenename << " in " << glfwGetTime() - timer << " seconds\n";
-    return scene;
-}
-
-void GLCore::startScene(Scene* scene) {
-    m_currentScene = scene;
-    m_currentScene->start();
-}
-
-void GLCore::displayFunc() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    if(m_currentScene != nullptr) {
-        m_currentScene->gameLoop();
-    }
-    m_display.getInputController()->callKeyLambdas();
-    glfwSwapBuffers(m_window);
-    glfwPollEvents();
 }
 
 void GLCore::inputFunc(int key, bool state) {
