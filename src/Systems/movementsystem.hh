@@ -12,16 +12,10 @@ public:
     MovementSystem() = default;
     MovementSystem(MovementSystem&&) = default;
 
-    MovementSystem& operator=(const MovementSystem&) = delete;
-    MovementSystem& operator=(MovementSystem&&) = delete;
+    MovementSystem &operator=(const MovementSystem&) = delete;
+    MovementSystem &operator=(MovementSystem&&) = delete;
 
-    void update(Emerald::EntityManager& entMan) {
-        /*auto lview = entMan.getComponentView<CBody>();
-        entMan.mapEntities<CBody>([&entMan, &lview](auto ent) {
-            auto& loc = entMan.getComponent<CBody>(ent);
-            loc.setLocation(glm::translate(loc.getLocation(), loc.getDirection()));
-        });*/
-    }
+    void update(Emerald::EntityManager &entMan);
 };
 
 #endif // _MOVEMENT_SYSTEM_H

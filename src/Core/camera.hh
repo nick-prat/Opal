@@ -22,6 +22,7 @@ private:
     glm::mat4 m_viewMatrix;
     glm::vec3 m_position;
     glm::vec3 m_direction;
+    glm::vec3 m_rotation;
     glm::vec3 m_up;
 };
 

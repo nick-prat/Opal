@@ -11,7 +11,7 @@
 #include <Utilities/exceptions.hh>
 #include <Utilities/log.hh>
 
-Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum>& types)
+Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &types)
 : m_numShaders(0)
 , m_shaderProgram(0) {
 
@@ -19,7 +19,7 @@ Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum>& ty
         throw GenericException("Couldn't initialize shader: incorrect information passed");
     }
 
-    for(std::string& filename: fileNames) {
+    for(std::string &filename: fileNames) {
         filename = "Resources/Shaders/" + filename;
     }
 
@@ -81,11 +81,12 @@ Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum>& ty
         throw GenericException("Couldn't validate program");
     }
 
+
     // TODO Implement global lighting
     registerUniform("gAmbientLight");
 }
 
-Shader::Shader(Shader&& shader)
+Shader::Shader(Shader &&shader)
 : m_numShaders(shader.m_numShaders)
 , m_shaderProgram(shader.m_shaderProgram)
 , m_uniformLocations(std::move(shader.m_uniformLocations)) {
@@ -99,16 +100,16 @@ Shader::~Shader() {
     }
 }
 
-void Shader::registerUniform(const std::string& name) {
+void Shader::registerUniform(const std::string &name) {
     auto loc = glGetUniformLocation(m_shaderProgram, name.c_str());
     if(loc != -1) {
         m_uniformLocations[name] = loc;
     } else {
-        Log::getErrorLog() << "uniform " << name << " not found\n";
+        Log::getErrorLog<SyncLogger>() << "uniform " << name << " not found\n";
     }
 }
 
-GLint Shader::getUniformLocation(const std::string& name) const {
+GLint Shader::getUniformLocation(const std::string &name) const {
     auto uniform = m_uniformLocations.find(name);
     if(uniform == m_uniformLocations.end()) {
         return -1;

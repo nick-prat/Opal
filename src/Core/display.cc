@@ -6,15 +6,11 @@
 #include <Utilities/exceptions.hh>
 #include <Utilities/log.hh>
 #include <Core/camera.hh>
-#include <Core/inputcontroller.hh>
 
 Display::Display()
-        : m_inputController(nullptr)
-        , m_camera(nullptr)
-        , m_projMatrix({1.0f}) {
-}
+        : m_projMatrix({1.0f}) {}
 
-Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string& title)
+Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string &title)
         : m_width(width)
         , m_height(height)
         , m_projMatrix(glm::mat4(1.0f)) {
@@ -24,10 +20,11 @@ Display::Display(unsigned int width, unsigned int height, unsigned int major, un
     }
 
     glfwSetErrorCallback([](int error, const char* desc) {
-        Log::getErrorLog() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
+        Log::getErrorLog<SyncLogger>() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
 
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -41,6 +38,10 @@ Display::Display(unsigned int width, unsigned int height, unsigned int major, un
 
     glfwSetWindowUserPointer(m_window, this);
 
+    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+    });
+
     glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
         Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
         if(display == nullptr) {
@@ -48,9 +49,9 @@ Display::Display(unsigned int width, unsigned int height, unsigned int major, un
         }
 
         if(action == GLFW_PRESS) {
-            display->getInputController()->updateKey(key, true);
+            display->updateKey(key, true);
         } else if(action == GLFW_RELEASE) {
-            display->getInputController()->updateKey(key, false);
+            display->updateKey(key, false);
         }
     });
 
@@ -60,9 +61,9 @@ Display::Display(unsigned int width, unsigned int height, unsigned int major, un
             return;
         }
         if(action == GLFW_PRESS) {
-            display->getInputController()->updateKey(button, true);
+            display->updateKey(button, true);
         } else if(action == GLFW_RELEASE) {
-            display->getInputController()->updateKey(button, false);
+            display->updateKey(button, false);
         }
     });
 
@@ -71,20 +72,17 @@ Display::Display(unsigned int width, unsigned int height, unsigned int major, un
         if(display == nullptr) {
             return;
         }
-        display->getInputController()->updateMousePosition(xpos, ypos);
+        display->updateCursorPosition(xpos, ypos);
     });
 
     m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
-    m_inputController = std::make_unique<InputController>();
-    m_camera = std::make_unique<Camera>();
 }
 
-Display::Display(Display&& display)
+Display::Display(Display &&display)
         : m_window(display.m_window)
+        , m_camera(std::move(display.m_camera))
         , m_width(display.m_width)
         , m_height(display.m_height)
-        , m_inputController(std::move(display.m_inputController))
-        , m_camera(std::move(display.m_camera))
         , m_projMatrix(std::move(display.m_projMatrix)) {
     display.m_window = nullptr;
     display.m_width = 0;
@@ -97,11 +95,10 @@ Display::~Display() {
     glfwDestroyWindow(m_window);
 }
 
-Display& Display::operator=(Display&& display) {
+Display &Display::operator=(Display &&display) {
     m_window = display.m_window;
     m_width = display.m_width;
     m_height = display.m_height;
-    m_inputController = std::move(display.m_inputController);
     m_camera = std::move(display.m_camera);
     m_projMatrix = std::move(display.m_projMatrix);
 
@@ -116,24 +113,25 @@ Display& Display::operator=(Display&& display) {
     return *this;
 }
 
-void Display::resize() {
-    int width, height;
-    glfwGetFramebufferSize(m_window, &width, &height);
-    glViewport(0, 0, width, height);
+void Display::resize(int width, int height) {
+    glfwSetWindowSize(m_window, width, height);
 }
 
 void Display::update() {
-    getInputController()->callKeyLambdas();
+    double time = glfwGetTime();
+    m_timeScale = (time - m_prevTime) * 60;
+    m_prevTime = time;
+    callKeyLambdas();
     glfwSwapBuffers(m_window);
     glfwPollEvents();
 }
 
-InputController* Display::getInputController() const {
-    return m_inputController.get();
+Camera &Display::getCamera() {
+    return m_camera;
 }
 
-Camera* Display::getCamera() const {
-    return m_camera.get();
+const Camera &Display::getCamera() const {
+    return m_camera;
 }
 
 glm::mat4 Display::getProjectionMatrix() const {
@@ -160,7 +158,7 @@ void Display::setMouseCapture(bool capture) {
     }
 }
 
-void Display::setClearColor(const glm::vec4& color) {
+void Display::setClearColor(const glm::vec4 &color) {
     glClearColor(color.x, color.y, color.z, color.w);
 }
 
@@ -174,8 +172,9 @@ void Display::setVsync(bool enabled) {
 
 // TODO Implement set cursor position
 void Display::setCursorPosition(float x, float y) {
-    glm::clamp(x, 0.0f, 1.0f);
-    glm::clamp(y, 0.0f, 1.0f);
+    if(m_window != nullptr) {
+        glfwSetCursorPos(m_window, glm::clamp(x, 0.0f, 1.0f), glm::clamp(y, 0.0f, 1.0f));
+    }
 }
 
 // TODO Implement set cursor visible
@@ -190,5 +189,79 @@ void Display::setWireFrame(bool wireframe) {
     } else {
         glEnable(GL_CULL_FACE);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+}
+
+void Display::clearWhileKeyPressed() {
+    m_whileKeyPressed.clear();
+}
+
+void Display::deregisterWhileKeyPressed(const InputKey key) {
+    m_whileKeyPressed.erase(key);
+}
+
+void Display::registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)> &lambda) {
+    m_whileKeyPressed[key] = lambda;
+}
+
+void Display::clearOnKeyPressed() {
+    m_onKeyPressed.clear();
+}
+
+void Display::deregisterOnKeyPressed(const InputKey key) {
+    m_onKeyPressed.erase(key);
+}
+
+void Display::registerOnKeyPressed(const InputKey key, const std::function<void(InputKey)> &lambda) {
+    m_onKeyPressed[key] = lambda;
+}
+
+void Display::centerCursor() {
+
+}
+
+void Display::bindCursorUpdate(std::function<void(int, int)> func) {
+    m_cursorFunc = func;
+}
+
+void Display::callKeyLambdas() {
+    for(auto &[key, repeat] : m_pressedKeys) {
+        auto lambda = m_whileKeyPressed.find(key);
+        if(lambda != m_whileKeyPressed.end()) {
+            lambda->second(key);
+        }
+
+        if(!repeat) {
+            repeat = true;
+            if(auto lambda = m_onKeyPressed.find(key); lambda != m_onKeyPressed.end()) {
+                lambda->second(key);
+            }
+        }
+    }
+}
+
+void Display::updateCursorPosition(const int xpos, const int ypos) {
+    m_cursorPos.first = xpos;
+    m_cursorPos.second = ypos;
+    if(m_cursorFunc) {
+        m_cursorFunc(xpos, ypos);
+    }
+}
+
+const std::pair<int, int> &Display::getCursorPosition() const {
+    return m_cursorPos;
+}
+
+bool Display::isKeyPressed(const InputKey key) const {
+    return m_pressedKeys.find(key) != m_pressedKeys.end();
+}
+
+void Display::updateKey(const int key, const bool pressed) {
+    InputKey ikey = static_cast<InputKey>(key);
+
+    if(pressed  &&m_pressedKeys.find(ikey) == m_pressedKeys.end()) {
+        m_pressedKeys[ikey] = false;
+    } else {
+        m_pressedKeys.erase(ikey);
     }
 }

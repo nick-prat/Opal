@@ -7,7 +7,6 @@
 
 #include <Utilities/lua.hh>
 #include <Core/display.hh>
-#include <Core/inputcontroller.hh>
 #include <Emerald/emerald.hh>
 #include <Systems/rendersystem.hh>
 #include <Systems/movementsystem.hh>
@@ -16,47 +15,47 @@
 
 class Scene {
 public:
-    Scene(const Display& display, const std::string& scenename);
+    Scene(Display &display, const std::string &scenename);
     Scene(const Scene&) = delete;
-    Scene(Scene&& scene);
+    Scene(Scene &&scene);
     ~Scene();
 
-    Scene& operator=(const Scene&) = delete;
-    Scene& operator=(Scene&& scene) = delete;
+    Scene &operator=(const Scene&) = delete;
+    Scene &operator=(Scene &&scene) = delete;
 
     void start();
     void gameLoop();
 
-    inline ResourceHandler& getResourceHandler() {return m_resourceHandler;};
+    inline ResourceHandler &getResourceHandler() {return m_resourceHandler;};
 
     // Lua proxy functions
     void setAmbientIntensity(float intensity);
-    void setAmbientColor(const glm::vec3& color);
+    void setAmbientColor(const glm::vec3 &color);
     void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
-    Camera* getCamera() const;
+    Camera &getCamera();
     std::size_t getEntityCount() const;
+
+protected:
+    virtual void registerSystems();
 
 private:
     void closeLua();
     void buildLuaNamespace();
     void registerLuaFunctions();
-    void registerSystems();
 
-private:
+protected:
     Emerald::EntityManager m_entityManager;
     WorldLight m_worldLight;
     ResourceHandler m_resourceHandler;
-
+    Display &m_display;
     const std::string m_scenename;
 
-    // Lua related members
+private:
     LuaState m_luaState;
     std::unordered_map<InputKey, std::unique_ptr<luabridge::LuaRef>> m_luaKeyBinds;
     std::unique_ptr<luabridge::LuaRef> m_startFunc;
     std::unique_ptr<luabridge::LuaRef> m_renderFunc;
-
     bool m_luaEnabled;
-    const Display& m_display;
 };
 
 #endif // _SCENE_H

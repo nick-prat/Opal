@@ -21,22 +21,22 @@ class Texture;
 
 class ResourceHandler {
 public:
-    void loadResources(const nlohmann::json& scene);
-    void addResource(const std::string& name, const IResource* const resource);
+    void loadResources(const nlohmann::json &scene);
+    void addResource(const std::string &name, const IResource* const resource);
 
-    const std::unordered_map<std::string, Shader>& getShaders() const;
-    Shader& getShader(const std::string& shader);
-    void loadShader(const nlohmann::json& object);
+    const std::unordered_map<std::string, Shader> &getShaders() const;
+    Shader &getShader(const std::string &shader);
+    void loadShader(const nlohmann::json &object);
 
-    Texture& getTexture(const std::string& name);
-    void loadTexture(const std::string& resourcename, const std::string& filename, bool genMipMaps);
+    Texture &getTexture(const std::string &name);
+    void loadTexture(const std::string &resourcename, const std::string &filename, bool genMipMaps);
 
-    Model3D& getModel3D(const std::string& name);
-    void loadModel3D(const std::string& resourcename, const std::string& filename);
+    Model3D &getModel3D(const std::string &name);
+    void loadModel3D(const std::string &resourcename, const std::string &filename);
 
 private:
-    void copyaiMat(const aiMatrix4x4* from, glm::mat4& to);
-    void loadNode(const aiScene* scene, const aiNode* node, const glm::mat4& parentTransform, std::vector<Model3D::Mesh>& meshes);
+    void copyaiMat(const aiMatrix4x4* from, glm::mat4 &to);
+    void loadNode(const aiScene* scene, const aiNode* node, const glm::mat4 &parentTransform, std::vector<Model3D::Mesh> &meshes);
 
 private:
     std::unordered_map<std::string, Shader> m_shaders;

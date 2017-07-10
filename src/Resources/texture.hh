@@ -8,19 +8,19 @@
 
 class Texture {
 public:
-    Texture(const GLuint glTexture, const std::string& filename);
+    Texture(const GLuint glTexture, const std::string &filename);
     Texture(const Texture&) = delete;
-    Texture(Texture&& texture);
+    Texture(Texture &&texture);
     ~Texture();
 
-    Texture& operator=(const Texture&) = delete;
-    Texture& operator=(Texture&&) = delete;
+    Texture &operator=(const Texture&) = delete;
+    Texture &operator=(Texture&&) = delete;
 
     std::string getFileName() const;
     void bind() const;
 
-    Sampler& getSampler();
-    const Sampler& getSampler() const;
+    Sampler &getSampler();
+    const Sampler &getSampler() const;
 
 private:
     Sampler m_sampler;

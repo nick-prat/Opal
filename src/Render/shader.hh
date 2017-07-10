@@ -13,16 +13,16 @@
 // TODO Implmenet shader destructor
 class Shader {
 public:
-    Shader(std::vector<std::string> fileNames, const std::vector<GLenum>& types);
+    Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &types);
     Shader(const Shader&) = delete;
-    Shader(Shader&& shader);
+    Shader(Shader &&shader);
     ~Shader();
 
-    Shader& operator=(const Shader&) = delete;
-    Shader& operator=(Shader&&) = delete;
+    Shader &operator=(const Shader&) = delete;
+    Shader &operator=(Shader&&) = delete;
 
-    void registerUniform(const std::string& name);
-    GLint getUniformLocation(const std::string& name) const;
+    void registerUniform(const std::string &name);
+    GLint getUniformLocation(const std::string &name) const;
 
     GLuint getProgram() const;
     std::size_t getRenderCount() const;

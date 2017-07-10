@@ -8,6 +8,6 @@ void Utilities::PrintGLErrors()
 {
     for(GLenum glErr = glGetError(); glErr != GL_NO_ERROR; glErr = glGetError())
     {
-        Log::getErrorLog() << "~~  GLError (" << glErr << ") " << glErr << " ~~\n";
+        Log::getErrorLog<SyncLogger>() << "~~  GLError (" << glErr << ") " << glErr << " ~~\n";
     }
 }

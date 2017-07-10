@@ -12,32 +12,36 @@ extern "C" {
 }
 
 #include <Core/display.hh>
-
-class Scene;
+#include <Scene/scene.hh>
 
 // TODO Be able to switch between what window is active
 
 class GLCore {
 public:
-    GLCore();
+    GLCore() = default;
     GLCore(int width, int height, std::string scene);
     GLCore(const GLCore&) = delete;
-    GLCore(GLCore&& glCore);
-    ~GLCore();
+    GLCore(GLCore &&glCore);
 
-    GLCore& operator=(const GLCore&) = delete;
-    GLCore& operator=(GLCore&& glCore);
+    GLCore &operator=(const GLCore&) = delete;
+    GLCore &operator=(GLCore &&glCore);
 
     void start();
 
-    Display& getDisplay();
-    const Display& getDisplay() const;
+    Display &getDisplay();
+    const Display &getDisplay() const;
     Scene* getCurrentScene() const;
-    void loadScene(const std::string& scenename);
 
-private:
-    void inputFunc(int key, bool state);
-    void mouseFunc(double xpos, double ypos);
+    template<typename scene_t, typename... args_t>
+    void loadScene(const std::string &scenename, args_t&&... args) {
+        static_assert(std::is_base_of<Scene, scene_t>::value, "Scene type doesn't inherit base Scene");
+        m_scene = std::make_unique<scene_t>(m_display, scenename, std::forward<args_t>(args)...);
+    }
+
+    template<typename scene_t = Scene>
+    void loadScene(const std::string &scenename) {
+        m_scene = std::make_unique<scene_t>(m_display, scenename);
+    }
 
 private:
     Display m_display;

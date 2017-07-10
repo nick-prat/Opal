@@ -22,12 +22,12 @@
 
 using json = nlohmann::json;
 
-void ResourceHandler::loadResources(const json& scene) {
+void ResourceHandler::loadResources(const json &scene) {
     // TODO Implement texture loading
     // NOTE What other types of resources might i want to load on scene start
     if(scene.find("resources") != scene.end()) {
         std::vector<json> resources = scene["resources"];
-        for(const json& resource : resources) {
+        for(const json &resource : resources) {
             try {
                 std::string type = resource["type"];
 
@@ -36,18 +36,18 @@ void ResourceHandler::loadResources(const json& scene) {
                 } else if(type == "shader") {
                     loadShader(resource);
                 }
-            } catch(std::domain_error& error) {
-                Log::getErrorLog() << error.what() << '\n';
+            } catch(std::domain_error &error) {
+                Log::getErrorLog<SyncLogger>() << error.what() << '\n';
             }
         }
     }
 }
 
-const std::unordered_map<std::string, Shader>& ResourceHandler::getShaders() const {
+const std::unordered_map<std::string, Shader> &ResourceHandler::getShaders() const {
     return m_shaders;
 }
 
-Shader& ResourceHandler::getShader(const std::string& shader) {
+Shader &ResourceHandler::getShader(const std::string &shader) {
     auto ret = m_shaders.find(shader);
     if(ret != m_shaders.end()) {
         return ret->second;
@@ -55,7 +55,7 @@ Shader& ResourceHandler::getShader(const std::string& shader) {
     throw BadResource("Couldn't find shader", shader);
 }
 
-void ResourceHandler::loadShader(const json& object) {
+void ResourceHandler::loadShader(const json &object) {
     std::string name = object["resourcename"];
     if(m_shaders.find(name) != m_shaders.end()) {
         return;
@@ -66,15 +66,17 @@ void ResourceHandler::loadShader(const json& object) {
     if(files.size() == 0) {
         throw BadResource("types is empty", name);
     }
-
     std::vector<GLenum> types;
-    for(auto& file : files) {
+    for(auto &file : files) {
         if(file == "fragment") {
             types.push_back(GL_FRAGMENT_SHADER);
             file = filename + '/' + filename + "_fs.glsl";
         } else if(file == "vertex") {
             types.push_back(GL_VERTEX_SHADER);
             file = filename + '/' + filename + "_vs.glsl";
+        } else if(file == "geometry") {
+            types.push_back(GL_GEOMETRY_SHADER);
+            file = filename + '/' + filename + "_gs.glsl";
         }
     }
 
@@ -82,7 +84,7 @@ void ResourceHandler::loadShader(const json& object) {
 
     if(object.find("uniforms") != object.end()) {
         std::vector<std::string> uniforms = object["uniforms"];
-        for(const auto& uniform : uniforms) {
+        for(const auto &uniform : uniforms) {
             shader.registerUniform(uniform);
         }
     }
@@ -90,7 +92,7 @@ void ResourceHandler::loadShader(const json& object) {
     m_shaders.insert(std::make_pair(name, std::move(shader)));
 }
 
-Texture& ResourceHandler::getTexture(const std::string &name) {
+Texture &ResourceHandler::getTexture(const std::string &name) {
     auto res = m_textures.find(name);
     if(res != m_textures.end()) {
         return res->second;
@@ -99,7 +101,7 @@ Texture& ResourceHandler::getTexture(const std::string &name) {
     }
 }
 
-void ResourceHandler::loadTexture(const std::string& resourcename, const std::string& name, bool genMipMaps) {
+void ResourceHandler::loadTexture(const std::string &resourcename, const std::string &name, bool genMipMaps) {
     if(m_textures.find(resourcename) != m_textures.end()) {
         return;
     }
@@ -161,7 +163,7 @@ void ResourceHandler::loadTexture(const std::string& resourcename, const std::st
     m_textures.insert(std::make_pair(resourcename, Texture(glTexture, resourcename)));
 }
 
-Model3D& ResourceHandler::getModel3D(const std::string &name) {
+Model3D &ResourceHandler::getModel3D(const std::string &name) {
     auto res = m_model3Ds.find(name);
     if(res != m_model3Ds.end()) {
         return res->second;
@@ -170,7 +172,7 @@ Model3D& ResourceHandler::getModel3D(const std::string &name) {
     }
 }
 
-void ResourceHandler::loadModel3D(const std::string& resourcename, const std::string& modelname) {
+void ResourceHandler::loadModel3D(const std::string &resourcename, const std::string &modelname) {
     if(m_model3Ds.find(resourcename) != m_model3Ds.end()) {
         return;
     }
@@ -181,7 +183,7 @@ void ResourceHandler::loadModel3D(const std::string& resourcename, const std::st
         aiProcess_CalcTangentSpace |
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
-        aiProcess_SortByPType);
+        aiProcess_SortByPType );
 
     if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE) {
         throw BadResource(importer.GetErrorString(), filename);
@@ -198,7 +200,7 @@ void ResourceHandler::loadModel3D(const std::string& resourcename, const std::st
         try {
             loadTexture(texresname, texfilename, true);
             textures[texresname] = &(getTexture(texresname));
-        } catch(BadResource& error) {
+        } catch(BadResource &error) {
             error.printError();
         }
     }
@@ -206,7 +208,7 @@ void ResourceHandler::loadModel3D(const std::string& resourcename, const std::st
     std::vector<Model3D::Mesh> meshes;
     loadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
 
-    for(auto& mesh : meshes) {
+    for(auto &mesh : meshes) {
         aiString aName;
         unsigned int index = mesh.getMatIndex();
         if(index < scene->mNumMaterials) {
@@ -219,7 +221,7 @@ void ResourceHandler::loadModel3D(const std::string& resourcename, const std::st
     m_model3Ds.insert(std::make_pair(resourcename, Model3D(std::move(meshes), std::move(textures))));
 }
 
-void ResourceHandler::copyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
+void ResourceHandler::copyaiMat(const aiMatrix4x4* from, glm::mat4 &to) {
     to[0][0] = from->a1; to[1][0] = from->a2;
     to[2][0] = from->a3; to[3][0] = from->a4;
     to[0][1] = from->b1; to[1][1] = from->b2;
@@ -230,7 +232,7 @@ void ResourceHandler::copyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, const glm::mat4& parentTransform, std::vector<Model3D::Mesh>& meshes) {
+void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, const glm::mat4 &parentTransform, std::vector<Model3D::Mesh> &meshes) {
     glm::mat4x4 transformation;
     copyaiMat(&node->mTransformation, transformation);
     transformation = parentTransform * transformation;

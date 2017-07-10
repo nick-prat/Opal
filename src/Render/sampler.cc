@@ -11,7 +11,7 @@ Sampler::Sampler() {
     glSamplerParameteri(m_sampler, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-Sampler::Sampler(Sampler&& sampler)
+Sampler::Sampler(Sampler &&sampler)
 : m_sampler(sampler.m_sampler)
 , m_magnification(sampler.m_magnification)
 , m_minification(sampler.m_minification) {
@@ -26,7 +26,7 @@ Sampler::~Sampler() {
     }
 }
 
-Sampler& Sampler::operator=(Sampler&& sampler) {
+Sampler &Sampler::operator=(Sampler &&sampler) {
     m_sampler = sampler.m_sampler;
     m_magnification = sampler.m_magnification;
     m_minification = sampler.m_minification;

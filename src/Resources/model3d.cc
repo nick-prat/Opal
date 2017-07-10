@@ -5,23 +5,25 @@
 #include <Resources/texture.hh>
 #include <Utilities/log.hh>
 
-Model3D::Model3D(std::vector<Mesh>&& meshes, const std::unordered_map<std::string, Texture*>& textures)
+Model3D::Model3D(std::vector<Mesh> &&meshes, const std::unordered_map<std::string, Texture*> &textures)
 : m_meshes(std::move(meshes))
 , m_textures(textures) {
     generateMeshBuffers();
+    generateBoundingBox();
 }
 
-Model3D::Model3D(Model3D&& model)
+Model3D::Model3D(Model3D &&model)
 : m_meshes(std::move(model.m_meshes))
 , m_textures(std::move(model.m_textures)) {}
 
-Model3D& Model3D::operator=(Model3D&& model) {
+Model3D &Model3D::operator=(Model3D &&model) {
     m_meshes = std::move(model.m_meshes);
     m_textures = std::move(model.m_textures);
+    m_boundingBox = model.m_boundingBox;
     return *this;
 }
 
-const Texture& Model3D::getTexture(const std::string& key) const {
+const Texture &Model3D::getTexture(const std::string &key) const {
     auto tex = m_textures.find(key);
     if(tex != m_textures.end()) {
         return *(tex->second);
@@ -30,7 +32,7 @@ const Texture& Model3D::getTexture(const std::string& key) const {
     }
 }
 
-const Model3D::Mesh& Model3D::getMesh(unsigned int index) const {
+const Model3D::Mesh &Model3D::getMesh(unsigned int index) const {
     return m_meshes[index];
 }
 
@@ -40,7 +42,7 @@ unsigned int Model3D::getMeshCount() const {
 
 unsigned int Model3D::getFaceCount() const {
     unsigned int faceCount = 0;
-    for(const auto& mesh : m_meshes) {
+    for(const auto &mesh : m_meshes) {
         faceCount += mesh.getIndices().size() / 3;
     }
     return faceCount;
@@ -49,7 +51,7 @@ unsigned int Model3D::getFaceCount() const {
 std::vector<GLuint> Model3D::generateVAOs() const {
     std::vector<GLuint> vaos;
 
-    for(const auto& mesh : m_meshes) {
+    for(const auto &mesh : m_meshes) {
         GLuint vao = 0;
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
@@ -72,12 +74,12 @@ std::vector<GLuint> Model3D::generateVAOs() const {
 
 void Model3D::printTextures() const {
     for(const auto texture : m_textures) {
-        Log::getLog() << texture.first << " : " << texture.second->getFileName() << '\n';
+        Log::getLog<SyncLogger>() << texture.first << " : " << texture.second->getFileName() << '\n';
     }
 }
 
 void Model3D::generateMeshBuffers() {
-    for(auto& mesh : m_meshes) {
+    for(auto &mesh : m_meshes) {
         glGenBuffers(1, &mesh.m_vbo);
         glGenBuffers(1, &mesh.m_ibo);
 
@@ -86,6 +88,31 @@ void Model3D::generateMeshBuffers() {
 
         glBindBuffer(GL_ARRAY_BUFFER, mesh.m_ibo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned int) * mesh.getIndices().size(), mesh.getIndices().data(), GL_STATIC_DRAW);
+    }
+}
+
+void Model3D::generateBoundingBox() {
+    for(const auto &mesh : m_meshes) {
+        for(const auto &vec : mesh.m_vertices) {
+            if(vec.position.x > m_boundingBox[1].x) {
+                m_boundingBox[1].x = vec.position.x;
+            }
+            if(vec.position.x < m_boundingBox[0].x) {
+                m_boundingBox[0].x = vec.position.x;
+            }
+            if(vec.position.y > m_boundingBox[1].y) {
+                m_boundingBox[1].y = vec.position.y;
+            }
+            if(vec.position.y < m_boundingBox[0].y) {
+                m_boundingBox[0].y = vec.position.y;
+            }
+            if(vec.position.z > m_boundingBox[1].z) {
+                m_boundingBox[1].z = vec.position.z;
+            }
+            if(vec.position.z < m_boundingBox[0].z) {
+                m_boundingBox[0].z = vec.position.z;
+            }
+        }
     }
 }
 
@@ -99,7 +126,7 @@ Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
 
 // Model3D::Mesh
 
-Model3D::Mesh::Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices)
+Model3D::Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices)
 : m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
 
 Model3D::Mesh::~Mesh() {

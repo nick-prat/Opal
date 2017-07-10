@@ -25,7 +25,7 @@ public:
     class Mesh {
         friend class Model3D;
     public:
-        Mesh(std::vector<Vertex>& vertices, std::vector<unsigned int>& indices);
+        Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices);
         ~Mesh();
 
         std::vector<Vertex> getVertices() const;
@@ -49,14 +49,14 @@ public:
         std::vector<Vertex> m_vertices;
     };
 
-    Model3D(std::vector<Mesh>&& meshes, const std::unordered_map<std::string, Texture*>& textures);
+    Model3D(std::vector<Mesh> &&meshes, const std::unordered_map<std::string, Texture*> &textures);
     Model3D(const Model3D&) = delete;
-    Model3D(Model3D&& model);
+    Model3D(Model3D &&model);
 
-    Model3D& operator=(Model3D&& model);
+    Model3D &operator=(Model3D &&model);
 
-    const Texture& getTexture(const std::string& key) const;
-    const Mesh& getMesh(unsigned int index) const;
+    const Texture &getTexture(const std::string &key) const;
+    const Mesh &getMesh(unsigned int index) const;
     unsigned int getMeshCount() const;
     unsigned int getFaceCount() const;
     std::vector<GLuint> generateVAOs() const;
@@ -64,8 +64,10 @@ public:
 
 private:
     void generateMeshBuffers();
+    void generateBoundingBox();
 
 private:
+    std::array<glm::vec3, 2> m_boundingBox;
     std::vector<Mesh> m_meshes;
     std::unordered_map<std::string, Texture*> m_textures;
 };

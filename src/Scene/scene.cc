@@ -4,6 +4,7 @@
 #include "scene.hh"
 
 #include <iostream>
+#include <fstream>
 
 #include <LuaBridge/LuaBridge.h>
 #include <Core/camera.hh>
@@ -21,10 +22,12 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-Scene::Scene(const Display& display, const std::string& scenename)
-: m_scenename(scenename)
-, m_luaEnabled(true)
-, m_display(display) {
+Scene::Scene(Display &display, const std::string &scenename)
+: m_display(display)
+, m_scenename(scenename)
+, m_luaEnabled(true) {
+    m_display.setWireFrame(false);
+
     luaL_openlibs(m_luaState.get());
 
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
@@ -48,13 +51,14 @@ Scene::Scene(const Display& display, const std::string& scenename)
         throw GenericException(filename + " doesn't exist");
     }
 
+    auto log = Log::getErrorLog<SyncLogger>();
     try {
         const json scene = json::parse(contents);
         m_resourceHandler.loadResources(scene);
 
         if(scene.find("staticObjects") != scene.end()) {
             std::vector<json> objects = scene["staticObjects"];
-            for(const auto& object : objects) {
+            for(const auto &object : objects) {
                 try {
                     std::string type = object["type"];
                     std::string name = "unknown";
@@ -63,11 +67,10 @@ Scene::Scene(const Display& display, const std::string& scenename)
                     }
                     // NOTE Are there other types of render obects i might want to load?
                     if(type == "staticmodel") {
-                        std::cout << "Creating staticmodel\n";
                         auto id = m_entityManager.createEntity();
                         m_entityManager.createComponent<CRender>(id, m_resourceHandler.getModel3D(object["resource"]));
                         m_entityManager.createComponent<CBody>(id);
-                        auto& cbody = m_entityManager.getComponent<CBody>(id);
+                        auto &cbody = m_entityManager.getComponent<CBody>(id);
 
                         std::vector<float> loc, scl, rot;
 
@@ -75,7 +78,8 @@ Scene::Scene(const Display& display, const std::string& scenename)
                             if((*ti).size() == 3) {
                                 cbody.setLocation({(*ti)[0], (*ti)[1], (*ti)[2]});
                             } else {
-                                Log::getErrorLog() << "invalid translation format for " << name << " size was " << (*ti).size() << " expected 3\n";
+                                log << "invalid translation format for "
+                                        << name << " size was " << (*ti).size() << " expected 3\n";
                             }
                         }
 
@@ -83,48 +87,48 @@ Scene::Scene(const Display& display, const std::string& scenename)
                             if((*ri).size() == 3) {
                                 cbody.setRotation({(*ri)[0], (*ri)[1], (*ri)[2]});
                             } else {
-                                Log::getErrorLog() << "invalid rotation format for " << name << " size was " << (*ri).size() << " expected 3\n";
+                                log << "invalid rotation format for " << name << " size was " << (*ri).size() << " expected 3\n";
                             }
                         }
 
-                        if(auto si = object.find("scale"); si != object.end() && (*si).size() == 3) {
+                        if(auto si = object.find("scale"); si != object.end()  &&(*si).size() == 3) {
                             if((*si).size() == 3) {
                                 cbody.setScale({(*si)[0], (*si)[1], (*si)[2]});
                             } else {
-                                Log::getErrorLog() << "invalid scale format for " << name << " size was " << (*si).size() << " expected 3\n";
+                                log << "invalid scale format for " << name << " size was " << (*si).size() << " expected 3\n";
                             }
                         }
                     } else {
-                        Log::getErrorLog() << "Unknown type " << type << " for " << name << " skipping...\n";
+                        log << "Unknown type " << type << " for " << name << " skipping...\n";
                         continue;
                     }
-                } catch (BadResource& error) {
+                } catch (BadResource &error) {
                     error.printError();
-                } catch (std::domain_error& error) {
-                    Log::getErrorLog() << error.what() << '\n';
+                } catch (std::domain_error &error) {
+                    log << error.what() << '\n';
                 }
             }
         }
-    } catch(std::exception& error) {
-        Log::getErrorLog() << "Parsing of " << filename << " failed: " << error.what() << '\n';
+    } catch(std::exception &error) {
+        log << "Parsing of " << filename << " failed: " << error.what() << '\n';
     }
 
     m_worldLight.setAmbientColor({1.0f, 1.0f, 1.0f});
-    m_worldLight.setAmbientIntensity(1.0f);
+    m_worldLight.setAmbientIntensity(0.6f);
 
     registerSystems();
 }
 
-Scene::Scene(Scene&& scene)
+Scene::Scene(Scene &&scene)
 : m_entityManager(std::move(scene.m_entityManager))
 , m_resourceHandler(std::move(scene.m_resourceHandler))
+, m_display(scene.m_display)
 , m_scenename(scene.m_scenename)
 , m_luaState(std::move(scene.m_luaState))
 , m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
 , m_startFunc(std::move(scene.m_startFunc))
 , m_renderFunc(std::move(scene.m_renderFunc))
-, m_luaEnabled(scene.m_luaEnabled)
-, m_display(scene.m_display) {
+, m_luaEnabled(scene.m_luaEnabled) {
     scene.m_luaEnabled = false;
 }
 
@@ -157,6 +161,7 @@ void Scene::buildLuaNamespace() {
                 .addFunction("SetCamera", &Camera::setPosition)
                 .addFunction("GetPosition", &Camera::getPosition)
                 .addFunction("GetDirection", &Camera::getDirection)
+                .addFunction("Update", &Camera::update)
             .endClass()
             .beginClass<Scene>("Scene")
                 .addFunction("SetAmbientIntensity", &Scene::setAmbientIntensity)
@@ -188,12 +193,10 @@ void Scene::registerSystems() {
     m_entityManager.registerSystem<MovementSystem>();
 }
 
-// Is this the best way to do it?
 void Scene::start() {
     (*m_startFunc)();
 }
 
-// NOTE Do I want to call the render func or perform a render first?
 void Scene::gameLoop() {
     m_entityManager.updateSystems(1.0f);
     (*m_renderFunc)();
@@ -208,11 +211,11 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     InputKey key = (InputKey)ikey;
     m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
     if(repeat) {
-        m_display.getInputController()->registerWhileKeyPressed(key, [this](InputKey key) {
+        m_display.registerWhileKeyPressed(key, [this](InputKey key) {
             m_luaKeyBinds[key]->operator()();
         });
     } else {
-        m_display.getInputController()->registerOnKeyPressed(key, [this](InputKey key) {
+        m_display.registerOnKeyPressed(key, [this](InputKey key) {
             m_luaKeyBinds[key]->operator()();
         });
     }
@@ -226,7 +229,7 @@ void Scene::setAmbientColor(const glm::vec3 &color) {
     m_worldLight.setAmbientColor(color);
 }
 
-Camera* Scene::getCamera() const {
+Camera &Scene::getCamera() {
     return m_display.getCamera();
 }
 

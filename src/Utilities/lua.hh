@@ -19,7 +19,7 @@ public:
 
     LuaState(const LuaState&) = delete;
 
-    LuaState(LuaState&& luaState)
+    LuaState(LuaState &&luaState)
     : m_lState(luaState.m_lState) {
         luaState.m_lState = nullptr;
     }
@@ -31,9 +31,9 @@ public:
         }
     }
 
-    LuaState& operator=(LuaState&) = delete;
+    LuaState &operator=(LuaState&) = delete;
 
-    inline LuaState& operator=(LuaState&& luaState) {
+    inline LuaState &operator=(LuaState &&luaState) {
         m_lState = luaState.m_lState;
         luaState.m_lState = nullptr;
         return *this;

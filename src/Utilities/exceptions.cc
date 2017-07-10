@@ -2,11 +2,11 @@
 
 #include <Utilities/log.hh>
 
-GenericException::GenericException(const std::string& error)
+GenericException::GenericException(const std::string &error)
 : m_error(error) {}
 
 void GenericException::printError() const {
-    Log::error(m_error, Log::OUT_LOG_CONS);
+    Log::getErrorLog<SyncLogger>() << m_error << '\n';
 }
 
 std::string GenericException::getError() const {
@@ -17,12 +17,12 @@ const char* GenericException::what() const noexcept {
     return m_error.c_str();
 }
 
-BadResource::BadResource(const std::string& error, const std::string& resourcename)
+BadResource::BadResource(const std::string &error, const std::string &resourcename)
 : GenericException(error)
 , m_resourcename(resourcename) {}
 
 void BadResource::printError() const {
-    Log::error("[" + m_resourcename + "] " + m_error + '\n', Log::OUT_LOG_CONS);
+    Log::getErrorLog<SyncLogger>() << "[" << m_resourcename << "] " << m_error << '\n';
 }
 
 std::string BadResource::getResourceName() const {
