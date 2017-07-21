@@ -63,6 +63,14 @@ CRender::CRender(const Model3D &model)
 : m_model(model)
 , m_vaos(m_model.generateVAOs()) {}
 
+void CRender::bind(unsigned int i) const {
+    glBindVertexArray(m_vaos[i]);
+}
+
+unsigned int CRender::getIndexCount(unsigned int i) const {
+    return m_model.getMesh(i).getIndexCount();
+}
+
 const std::vector<GLuint> CRender::getVAOs() const {
     return m_vaos;
 }

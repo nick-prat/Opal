@@ -8,7 +8,7 @@ NormalRenderSystem::NormalRenderSystem(const Shader &shader, const Display &disp
 : RenderSystem<NormalRenderSystem>(shader, display, worldLight) {}
 
 void NormalRenderSystem::update(Emerald::EntityManager &entMan) {
-    glUseProgram(m_shader.getProgram());
+    m_shader.useProgram();
 
     auto pv = m_display.getProjectionMatrix() * m_display.getCamera().getViewMatrix();
     entMan.mapEntities<CRender, CBody>([this, &entMan, &pv](auto ent) {
@@ -16,7 +16,9 @@ void NormalRenderSystem::update(Emerald::EntityManager &entMan) {
         auto &loc = entMan.getComponent<CBody>(ent);
 
         auto mvp = pv * (loc.getLocation() * loc.getRotation() * loc.getScale());
+        auto normalMatrix = glm::transpose(glm::inverse(glm::mat3x3(mvp)));
 
+        glUniformMatrix3fv(m_shader.getUniformLocation("gNM"), 1, GL_FALSE, glm::value_ptr(normalMatrix));
         glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 
         const auto &vaos = rc.getVAOs();

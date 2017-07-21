@@ -80,10 +80,6 @@ Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &ty
     if(status != GL_TRUE) {
         throw GenericException("Couldn't validate program");
     }
-
-
-    // TODO Implement global lighting
-    registerUniform("gAmbientLight");
 }
 
 Shader::Shader(Shader &&shader)
@@ -110,11 +106,14 @@ void Shader::registerUniform(const std::string &name) {
 }
 
 GLint Shader::getUniformLocation(const std::string &name) const {
-    auto uniform = m_uniformLocations.find(name);
-    if(uniform == m_uniformLocations.end()) {
-        return -1;
+    if(auto uniform = m_uniformLocations.find(name); uniform != m_uniformLocations.end()) {
+        return uniform->second;
     }
-    return uniform->second;
+    return -1;
+}
+
+void Shader::useProgram() const {
+    glUseProgram(m_shaderProgram);
 }
 
 GLuint Shader::getProgram() const {

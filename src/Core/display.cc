@@ -171,9 +171,9 @@ void Display::setVsync(bool enabled) {
 }
 
 // TODO Implement set cursor position
-void Display::setCursorPosition(float x, float y) {
+void Display::setCursorPosition(const glm::vec2 &pos) {
     if(m_window != nullptr) {
-        glfwSetCursorPos(m_window, glm::clamp(x, 0.0f, 1.0f), glm::clamp(y, 0.0f, 1.0f));
+        glfwSetCursorPos(m_window, glm::clamp(pos.x, 0.0f, 1.0f), glm::clamp(pos.y, 0.0f, 1.0f));
     }
 }
 

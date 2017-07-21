@@ -51,6 +51,8 @@ public:
     CRender() = default;
     CRender(const Model3D &model);
 
+    void bind(unsigned int i) const;
+    unsigned int getIndexCount(unsigned int i) const;
     const std::vector<GLuint> getVAOs() const;
     const Model3D &getModel() const;
 

@@ -4,11 +4,6 @@
 #include <glm/glm.hpp>
 #include <Core/gl.hh>
 
-struct SunLight {
-    glm::vec4 color;
-    glm::vec4 location;
-};
-
 class WorldLight {
 public:
     WorldLight();
@@ -27,9 +22,13 @@ public:
 private:
     void updateSunUBO();
 
+    struct SunLight {
+        glm::vec4 color;
+        glm::vec4 location;
+    } m_sunLight;
+
 private:
     glm::vec4 m_ambientLight;
-    SunLight m_sunLight;
     GLuint m_sunUBO;
 };
 

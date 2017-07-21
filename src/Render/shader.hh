@@ -24,8 +24,8 @@ public:
     void registerUniform(const std::string &name);
     GLint getUniformLocation(const std::string &name) const;
 
+    void useProgram() const;
     GLuint getProgram() const;
-    std::size_t getRenderCount() const;
 
 private:
     ulong m_numShaders;

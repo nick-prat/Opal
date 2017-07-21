@@ -5,9 +5,9 @@
 #include <Resources/texture.hh>
 #include <Utilities/log.hh>
 
-Model3D::Model3D(std::vector<Mesh> &&meshes, const std::unordered_map<std::string, Texture*> &textures)
+Model3D::Model3D(std::vector<Mesh> &&meshes, const std::unordered_map<std::string, Texture*> &&textures)
 : m_meshes(std::move(meshes))
-, m_textures(textures) {
+, m_textures(std::move(textures)) {
     generateMeshBuffers();
     generateBoundingBox();
 }
@@ -20,6 +20,7 @@ Model3D &Model3D::operator=(Model3D &&model) {
     m_meshes = std::move(model.m_meshes);
     m_textures = std::move(model.m_textures);
     m_boundingBox = model.m_boundingBox;
+
     return *this;
 }
 
@@ -38,6 +39,7 @@ const Model3D::Mesh &Model3D::getMesh(unsigned int index) const {
 
 unsigned int Model3D::getMeshCount() const {
     return m_meshes.size();
+
 }
 
 unsigned int Model3D::getFaceCount() const {
@@ -86,8 +88,8 @@ void Model3D::generateMeshBuffers() {
         glBindBuffer(GL_ARRAY_BUFFER, mesh.m_vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh.getVertices().size(), mesh.getVertices().data(), GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.m_ibo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(unsigned int) * mesh.getIndices().size(), mesh.getIndices().data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.m_ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.getIndices().size(), mesh.getIndices().data(), GL_STATIC_DRAW);
     }
 }
 
@@ -118,15 +120,12 @@ void Model3D::generateBoundingBox() {
 
 // Model3D::Vertex
 
-Model3D::Vertex::Vertex() {
-}
-
 Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
 : position(pos), normal(norm), texCoord(tex) {}
 
 // Model3D::Mesh
 
-Model3D::Mesh::Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices)
+Model3D::Mesh::Mesh(std::vector<Vertex> &&vertices, std::vector<unsigned int> &&indices)
 : m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
 
 Model3D::Mesh::~Mesh() {

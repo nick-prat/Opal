@@ -47,7 +47,7 @@ public:
     void setMouseCapture(bool capture);
     void setClearColor(const glm::vec4 &color);
     void setVsync(bool enabled);
-    void setCursorPosition(float x, float y);
+    void setCursorPosition(const glm::vec2 &pos);
     void setCursorVisible(bool visible);
     void setWireFrame(bool wireframe);
 

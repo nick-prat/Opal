@@ -8,9 +8,9 @@ BoundingBoxRenderSystem::BoundingBoxRenderSystem(const Shader &shader, const Dis
 : RenderSystem(shader, display, light) {}
 
 void BoundingBoxRenderSystem::update(Emerald::EntityManager &entMan) {
-    glUseProgram(m_shader.getProgram());
+    m_shader.useProgram();
     auto pv = m_display.getProjectionMatrix() * m_display.getCamera().getViewMatrix();
     entMan.mapEntities<CBody, CRender>([this, &entMan, &pv](auto ent) {
-        
+
     });
 }

@@ -17,6 +17,7 @@ Camera::Camera() {
 }
 
 Camera::~Camera() {
+    
 }
 
 void Camera::update(float scale) {

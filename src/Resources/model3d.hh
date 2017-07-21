@@ -15,7 +15,7 @@ class Model3D {
 public:
     // NOTE Does a vertex struct need any functions?
     struct Vertex {
-        Vertex();
+        Vertex() = default;
         Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoord);
         glm::vec3 position;
         glm::vec3 normal;
@@ -25,7 +25,7 @@ public:
     class Mesh {
         friend class Model3D;
     public:
-        Mesh(std::vector<Vertex> &vertices, std::vector<unsigned int> &indices);
+        Mesh(std::vector<Vertex> &&vertices, std::vector<unsigned int> &&indices);
         ~Mesh();
 
         std::vector<Vertex> getVertices() const;
@@ -42,14 +42,14 @@ public:
         std::size_t getIndexCount() const;
 
     private:
-        unsigned int m_matIndex;
         GLuint m_vbo, m_ibo;
+        unsigned int m_matIndex;
         std::string m_matName;
         std::vector<unsigned int> m_indices;
         std::vector<Vertex> m_vertices;
     };
 
-    Model3D(std::vector<Mesh> &&meshes, const std::unordered_map<std::string, Texture*> &textures);
+    Model3D(std::vector<Mesh> &&meshes, const std::unordered_map<std::string, Texture*> &&textures);
     Model3D(const Model3D&) = delete;
     Model3D(Model3D &&model);
 

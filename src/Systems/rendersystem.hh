@@ -47,10 +47,7 @@ public:
     inline static const std::string shaderName = "shader_staticmodel";
 
     ModelRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-    void update(Emerald::EntityManager &entMan);
-
-private:
-    float m_angle;
+    void update(Emerald::EntityManager &entMan) override final;
 };
 
 class NormalRenderSystem : public RenderSystem<NormalRenderSystem> {
@@ -58,7 +55,7 @@ public:
     inline static const std::string shaderName = "shader_normal";
 
     NormalRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-    void update(Emerald::EntityManager &entMan);
+    void update(Emerald::EntityManager &entMan) override final;
 };
 
 class BoundingBoxRenderSystem : public RenderSystem<BoundingBoxRenderSystem> {
@@ -66,7 +63,7 @@ public:
     inline static const std::string shaderName = "shader_bbox";
 
     BoundingBoxRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-    void update(Emerald::EntityManager &entMan);
+    void update(Emerald::EntityManager &entMan) override final;
 };
 
 #endif // _RENDER_SYSTEM_H

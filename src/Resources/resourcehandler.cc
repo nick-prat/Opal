@@ -89,7 +89,7 @@ void ResourceHandler::loadShader(const json &object) {
         }
     }
 
-    m_shaders.insert(std::make_pair(name, std::move(shader)));
+    m_shaders.emplace(name, std::move(shader));
 }
 
 Texture &ResourceHandler::getTexture(const std::string &name) {
@@ -160,7 +160,8 @@ void ResourceHandler::loadTexture(const std::string &resourcename, const std::st
 
     FreeImage_Unload(img);
 
-    m_textures.insert(std::make_pair(resourcename, Texture(glTexture, resourcename)));
+    m_textures.emplace(resourcename, Texture(glTexture, resourcename));
+    // m_textures.insert(std::make_pair(resourcename, Texture(glTexture, resourcename)));
 }
 
 Model3D &ResourceHandler::getModel3D(const std::string &name) {
@@ -218,7 +219,7 @@ void ResourceHandler::loadModel3D(const std::string &resourcename, const std::st
         }
     }
 
-    m_model3Ds.insert(std::make_pair(resourcename, Model3D(std::move(meshes), std::move(textures))));
+    m_model3Ds.emplace(resourcename, Model3D(std::move(meshes), std::move(textures)));
 }
 
 void ResourceHandler::copyaiMat(const aiMatrix4x4* from, glm::mat4 &to) {
@@ -252,9 +253,10 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, const g
             glm::vec4 position = transformation * glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f);
             vertex.position = glm::vec3(position.x, position.y, position.z);
 
-            vertex.normal = (mesh->HasNormals())
+            glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transformation)));
+            vertex.normal = normalMatrix * (mesh->HasNormals()
                 ? glm::vec3(mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z)
-                : glm::vec3(0.0f, 0.0f, 0.0f);
+                : glm::vec3(0.0f, 0.0f, 0.0f));
 
             vertex.texCoord = (mesh->HasTextureCoords(0))
                 ? glm::vec2(mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y)
@@ -274,7 +276,7 @@ void ResourceHandler::loadNode(const aiScene* scene, const aiNode* node, const g
             throw BadResource("Node was missing faces, load canceled");
         }
 
-        meshes.push_back(Model3D::Mesh(vertices, indices));
-        meshes[meshes.size()-1].setMatIndex(mesh->mMaterialIndex);
+        meshes.emplace_back(std::move(vertices), std::move(indices));
+        meshes.back().setMatIndex(mesh->mMaterialIndex);
     }
 }

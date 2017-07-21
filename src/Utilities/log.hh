@@ -31,7 +31,7 @@ public:
 
     template<typename T>
     ASyncLogger &operator<<(const T &value) {
-        std::thread([&stream = m_stream, &mutex = m_mutex, &value]() {
+        std::thread([&stream = m_stream, &mutex = m_mutex, &value] {
             std::lock_guard<std::mutex> mut(mutex);
             stream << value;
         }).detach();

@@ -3,7 +3,7 @@
 #include <cstring>
 
 WorldLight::WorldLight() {
-    m_sunLight.color = glm::vec4(1.0f, 1.0f, 1.0f, 1.0f);
+    m_sunLight.color = glm::vec4(1.0f, 1.0f, 1.0f, 10.0f);
     m_sunLight.location = glm::vec4(10.0f, 10.0f, 10.0f, 0.0f);
 
     glGenBuffers(1, &m_sunUBO);
