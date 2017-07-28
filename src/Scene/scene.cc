@@ -10,11 +10,9 @@
 #include <Core/camera.hh>
 #include <Utilities/exceptions.hh>
 #include <Utilities/log.hh>
-#include <Resources/resourcehandler.hh>
 #include <LuaBridge/LuaBridge.h>
 
 using luabridge::LuaRef;
-using json = nlohmann::json;
 
 // TODO Implement some sort of multithreading in lua (coroutines?)
 // TODO Check to see if main.lua exists (a scene doesn't need to have lua support)
@@ -22,8 +20,9 @@ using json = nlohmann::json;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-Scene::Scene(Display &display, const std::string &scenename)
-: m_display(display)
+Opal::Scene::Scene(Display &display, const std::string &scenename)
+: m_assetStore(scenename)
+, m_display(display)
 , m_scenename(scenename)
 , m_luaEnabled(true) {
     m_display.setWireFrame(false);
@@ -51,10 +50,10 @@ Scene::Scene(Display &display, const std::string &scenename)
         throw GenericException(filename + " doesn't exist");
     }
 
-    auto log = Log::getErrorLog<SyncLogger>();
+    /*auto log = Log::getErrorLog<SyncLogger>();
     try {
         const json scene = json::parse(contents);
-        m_resourceHandler.loadResources(scene);
+        m_assetStore.loadResources(scene);
 
         if(scene.find("staticObjects") != scene.end()) {
             std::vector<json> objects = scene["staticObjects"];
@@ -68,7 +67,7 @@ Scene::Scene(Display &display, const std::string &scenename)
                     // NOTE Are there other types of render obects i might want to load?
                     if(type == "staticmodel") {
                         auto id = m_entityManager.createEntity();
-                        m_entityManager.createComponent<CRender>(id, m_resourceHandler.getModel3D(object["resource"]));
+                        m_entityManager.createComponent<CRender>(id, m_assetStore.getModel3D(object["resource"]));
                         m_entityManager.createComponent<CBody>(id);
                         auto &cbody = m_entityManager.getComponent<CBody>(id);
 
@@ -111,7 +110,7 @@ Scene::Scene(Display &display, const std::string &scenename)
         }
     } catch(std::exception &error) {
         log << "Parsing of " << filename << " failed: " << error.what() << '\n';
-    }
+    // }*/
 
     m_worldLight.setAmbientColor({1.0f, 1.0f, 1.0f});
     m_worldLight.setAmbientIntensity(0.6f);
@@ -119,9 +118,9 @@ Scene::Scene(Display &display, const std::string &scenename)
     registerSystems();
 }
 
-Scene::Scene(Scene &&scene)
+Opal::Scene::Scene(Scene &&scene)
 : m_entityManager(std::move(scene.m_entityManager))
-, m_resourceHandler(std::move(scene.m_resourceHandler))
+, m_assetStore(std::move(scene.m_assetStore))
 , m_display(scene.m_display)
 , m_scenename(scene.m_scenename)
 , m_luaState(std::move(scene.m_luaState))
@@ -132,10 +131,10 @@ Scene::Scene(Scene &&scene)
     scene.m_luaEnabled = false;
 }
 
-Scene::~Scene() {}
+Opal::Scene::~Scene() {}
 
 // NOTE What other functions are necessary to expose to lua?
-void Scene::buildLuaNamespace() {
+void Opal::Scene::buildLuaNamespace() {
     luabridge::getGlobalNamespace(m_luaState.get())
         .beginClass<glm::vec2>("vec2")
             .addConstructor<void(*)(float, float)>()
@@ -164,11 +163,11 @@ void Scene::buildLuaNamespace() {
                 .addFunction("Update", &Camera::update)
             .endClass()
             .beginClass<Scene>("Scene")
-                .addFunction("SetAmbientIntensity", &Scene::setAmbientIntensity)
-                .addFunction("SetAmbientColor", &Scene::setAmbientColor)
-                .addFunction("BindFunctionToKey", &Scene::bindFunctionToKey)
-                .addFunction("GetCamera", &Scene::getCamera)
-                .addFunction("GetEntityCount", &Scene::getEntityCount)
+                .addFunction("SetAmbientIntensity", &Opal::Scene::setAmbientIntensity)
+                .addFunction("SetAmbientColor", &Opal::Scene::setAmbientColor)
+                .addFunction("BindFunctionToKey", &Opal::Scene::bindFunctionToKey)
+                .addFunction("GetCamera", &Opal::Scene::getCamera)
+                .addFunction("GetEntityCount", &Opal::Scene::getEntityCount)
             .endClass()
         .endNamespace();
 
@@ -176,7 +175,7 @@ void Scene::buildLuaNamespace() {
 }
 
 // NOTE Are there other necessary function the engine might want to call?
-void Scene::registerLuaFunctions() {
+void Opal::Scene::registerLuaFunctions() {
     m_startFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState.get(), "Start"));
     if(!m_startFunc->isFunction()) {
         throw GenericException("Start function wasn't found");
@@ -188,22 +187,22 @@ void Scene::registerLuaFunctions() {
     }
 }
 
-void Scene::registerSystems() {
-    m_entityManager.registerSystem<ModelRenderSystem>(m_resourceHandler.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
+void Opal::Scene::registerSystems() {
+    m_entityManager.registerSystem<ModelRenderSystem>(m_assetStore.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
     m_entityManager.registerSystem<MovementSystem>();
 }
 
-void Scene::start() {
+void Opal::Scene::start() {
     (*m_startFunc)();
 }
 
-void Scene::gameLoop() {
+void Opal::Scene::gameLoop() {
     m_entityManager.updateSystems(1.0f);
     (*m_renderFunc)();
 }
 
 // TODO Find some way to expose what keys are pressed to lua
-void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
+void Opal::Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     if(!function.isFunction()) {
         throw GenericException("function wasn't found");
     }
@@ -221,18 +220,18 @@ void Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     }
 }
 
-void Scene::setAmbientIntensity(float intensity) {
+void Opal::Scene::setAmbientIntensity(float intensity) {
     m_worldLight.setAmbientIntensity(intensity);
 }
 
-void Scene::setAmbientColor(const glm::vec3 &color) {
+void Opal::Scene::setAmbientColor(const glm::vec3 &color) {
     m_worldLight.setAmbientColor(color);
 }
 
-Camera &Scene::getCamera() {
+Opal::Camera &Opal::Scene::getCamera() {
     return m_display.getCamera();
 }
 
-std::size_t Scene::getEntityCount() const {
+std::size_t Opal::Scene::getEntityCount() const {
     return m_entityManager.getEntityCount();
 }

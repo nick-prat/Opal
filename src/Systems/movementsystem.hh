@@ -7,15 +7,19 @@
 #include <Components/components.hh>
 #include <Emerald/system.hh>
 
-class MovementSystem : public Emerald::ISystem<MovementSystem> {
-public:
-    MovementSystem() = default;
-    MovementSystem(MovementSystem&&) = default;
+namespace Opal {
 
-    MovementSystem &operator=(const MovementSystem&) = delete;
-    MovementSystem &operator=(MovementSystem&&) = delete;
+    class MovementSystem : public Emerald::ISystem<MovementSystem> {
+    public:
+        MovementSystem() = default;
+        MovementSystem(MovementSystem&&) = default;
 
-    void update(Emerald::EntityManager &entMan);
-};
+        MovementSystem &operator=(const MovementSystem&) = delete;
+        MovementSystem &operator=(MovementSystem&&) = delete;
+
+        void update(Emerald::EntityManager &entMan);
+    };
+
+}
 
 #endif // _MOVEMENT_SYSTEM_H

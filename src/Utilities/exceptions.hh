@@ -6,29 +6,33 @@
 
 // NOTE Are there other exceptions that I might need to implement?
 
-class GenericException : public std::exception {
-public:
-    GenericException(const std::string &error);
-    virtual ~GenericException() = default;
+namespace Opal {
 
-    virtual void printError() const;
-    virtual std::string getError() const;
+    class GenericException : public std::exception {
+    public:
+        GenericException(const std::string &error);
+        virtual ~GenericException() = default;
 
-    virtual const char* what() const noexcept override;
+        virtual void printError() const;
+        virtual std::string getError() const;
 
-protected:
-    std::string m_error;
-};
+        virtual const char* what() const noexcept override;
 
-class BadResource : public GenericException {
-public:
-    BadResource(const std::string &error, const std::string &resourcename = "null");
+    protected:
+        std::string m_error;
+    };
 
-    void printError() const override;
-    std::string getResourceName() const;
+    class BadResource : public GenericException {
+    public:
+        BadResource(const std::string &error, const std::string &resourcename = "null");
 
-private:
-    std::string m_resourcename;
-};
+        void printError() const override;
+        std::string getResourceName() const;
+
+    private:
+        std::string m_resourcename;
+    };
+
+}
 
 #endif // _EXCEPTIONS_H

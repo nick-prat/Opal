@@ -8,29 +8,33 @@
 
 #include <Core/gl.hh>
 
-// NOTE What else are shader's capable of? Do i need to implement more functions in this wrapper?
-// TODO Implement lighting in shaders
-// TODO Implmenet shader destructor
-class Shader {
-public:
-    Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &types);
-    Shader(const Shader&) = delete;
-    Shader(Shader &&shader);
-    ~Shader();
+namespace Opal {
 
-    Shader &operator=(const Shader&) = delete;
-    Shader &operator=(Shader&&) = delete;
+    // NOTE What else are shader's capable of? Do i need to implement more functions in this wrapper?
+    // TODO Implement lighting in shaders
+    // TODO Implmenet shader destructor
+    class Shader {
+    public:
+        Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &types);
+        Shader(const Shader&) = delete;
+        Shader(Shader &&shader);
+        ~Shader();
 
-    void registerUniform(const std::string &name);
-    GLint getUniformLocation(const std::string &name) const;
+        Shader &operator=(const Shader&) = delete;
+        Shader &operator=(Shader&&) = delete;
 
-    void useProgram() const;
-    GLuint getProgram() const;
+        void registerUniform(const std::string &name);
+        GLint getUniformLocation(const std::string &name) const;
 
-private:
-    ulong m_numShaders;
-    GLuint m_shaderProgram;
-    std::unordered_map<std::string, GLint> m_uniformLocations;
-};
+        void useProgram() const;
+        GLuint getProgram() const;
+
+    private:
+        ulong m_numShaders;
+        GLuint m_shaderProgram;
+        std::unordered_map<std::string, GLint> m_uniformLocations;
+    };
+
+}
 
 #endif // _SHADER_H

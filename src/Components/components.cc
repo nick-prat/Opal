@@ -3,6 +3,8 @@
 #include <iostream>
 #include <glm/gtx/transform.hpp>
 
+using namespace Opal;
+
 CBody::CBody(const glm::vec3 &loc)
 : m_rotate(glm::mat4(1.0f))
 , m_location(glm::translate(loc)) {}
@@ -68,10 +70,10 @@ void CRender::bind(unsigned int i) const {
 }
 
 unsigned int CRender::getIndexCount(unsigned int i) const {
-    return m_model.getMesh(i).getIndexCount();
+    return m_model.getIndexCount(i);
 }
 
-const std::vector<GLuint> CRender::getVAOs() const {
+const std::vector<GLuint> &CRender::getVAOs() const {
     return m_vaos;
 }
 

@@ -7,63 +7,67 @@
 #include <Render/light.hh>
 #include <Emerald/emerald.hh>
 
-template<typename system_t>
-class RenderSystem : public Emerald::ISystem<system_t> {
-public:
-    RenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight)
-    : m_display(display)
-    , m_shader(shader)
-    , m_worldLight(worldLight) {}
+namespace Opal {
 
-    RenderSystem(const RenderSystem &renderSystem)
-    : m_display(renderSystem.m_display)
-    , m_shader(renderSystem.m_shader)
-    , m_worldLight(renderSystem.m_worldLight) {}
+    template<typename system_t>
+    class RenderSystem : public Emerald::ISystem<system_t> {
+    public:
+        RenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight)
+        : m_display(display)
+        , m_shader(shader)
+        , m_worldLight(worldLight) {}
 
-    RenderSystem(RenderSystem &&renderSystem)
-    : m_display(renderSystem.m_display)
-    , m_shader(renderSystem.m_shader)
-    , m_worldLight(renderSystem.m_worldLight) {}
+        RenderSystem(const RenderSystem &renderSystem)
+        : m_display(renderSystem.m_display)
+        , m_shader(renderSystem.m_shader)
+        , m_worldLight(renderSystem.m_worldLight) {}
 
-    RenderSystem &operator=(const RenderSystem&) = delete;
-    RenderSystem &operator=(RenderSystem&&) = delete;
+        RenderSystem(RenderSystem &&renderSystem)
+        : m_display(renderSystem.m_display)
+        , m_shader(renderSystem.m_shader)
+        , m_worldLight(renderSystem.m_worldLight) {}
 
-    void setDisplay(const Display* const display) {
-        m_display = display;
-    }
+        RenderSystem &operator=(const RenderSystem&) = delete;
+        RenderSystem &operator=(RenderSystem&&) = delete;
 
-    std::size_t getRenderCount() const {
-        return this->m_entities.size();
-    }
+        void setDisplay(const Display* const display) {
+            m_display = display;
+        }
 
-protected:
-    const Display &m_display;
-    const Shader &m_shader;
-    WorldLight &m_worldLight;
-};
+        std::size_t getRenderCount() const {
+            return this->m_entities.size();
+        }
 
-class ModelRenderSystem : public RenderSystem<ModelRenderSystem> {
-public:
-    inline static const std::string shaderName = "shader_staticmodel";
+    protected:
+        const Display &m_display;
+        const Shader &m_shader;
+        WorldLight &m_worldLight;
+    };
 
-    ModelRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-    void update(Emerald::EntityManager &entMan) override final;
-};
+    class ModelRenderSystem : public RenderSystem<ModelRenderSystem> {
+    public:
+        inline static const std::string shaderName = "shader_staticmodel";
 
-class NormalRenderSystem : public RenderSystem<NormalRenderSystem> {
-public:
-    inline static const std::string shaderName = "shader_normal";
+        ModelRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
+        void update(Emerald::EntityManager &entMan) override final;
+    };
 
-    NormalRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-    void update(Emerald::EntityManager &entMan) override final;
-};
+    class NormalRenderSystem : public RenderSystem<NormalRenderSystem> {
+    public:
+        inline static const std::string shaderName = "shader_normal";
 
-class BoundingBoxRenderSystem : public RenderSystem<BoundingBoxRenderSystem> {
-public:
-    inline static const std::string shaderName = "shader_bbox";
+        NormalRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
+        void update(Emerald::EntityManager &entMan) override final;
+    };
 
-    BoundingBoxRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-    void update(Emerald::EntityManager &entMan) override final;
-};
+    class BoundingBoxRenderSystem : public RenderSystem<BoundingBoxRenderSystem> {
+    public:
+        inline static const std::string shaderName = "shader_bbox";
+
+        BoundingBoxRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
+        void update(Emerald::EntityManager &entMan) override final;
+    };
+
+}
 
 #endif // _RENDER_SYSTEM_H

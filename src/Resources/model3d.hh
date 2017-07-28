@@ -8,68 +8,37 @@
 #include <memory>
 #include <Core/gl.hh>
 
-class Texture;
+#include "resources.hh"
+#include "texture.hh"
 
-// NOTE Are there model types that aren't 3D, if so implement them
-class Model3D {
-public:
-    // NOTE Does a vertex struct need any functions?
-    struct Vertex {
-        Vertex() = default;
-        Vertex(glm::vec3 position, glm::vec3 normal, glm::vec2 texCoord);
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 texCoord;
-    };
+namespace Opal {
 
-    class Mesh {
-        friend class Model3D;
+    class Model3D : protected Resources::RModel3D {
     public:
-        Mesh(std::vector<Vertex> &&vertices, std::vector<unsigned int> &&indices);
-        ~Mesh();
+        Model3D(Resources::RModel3D &&model3d, std::unordered_map<std::string, Texture*> &&m_textures);
+        Model3D(const Model3D&) = delete;
+        Model3D(Model3D &&model);
 
-        std::vector<Vertex> getVertices() const;
-        std::vector<unsigned int> getIndices() const;
-        GLuint getVBO() const;
-        GLuint getIBO() const;
+        Model3D &operator=(Model3D &&model);
 
-        void setMatIndex(const unsigned int matIndex);
-        unsigned int getMatIndex() const;
-
-        void setMatName(const std::string matName);
-        std::string getMatName() const;
-
-        std::size_t getIndexCount() const;
+        const Texture &getTexture(const std::string &key) const;
+        unsigned int getIndexCount(unsigned int i) const;
+        std::string getMatName(unsigned int i) const;
+        unsigned int getMeshCount() const;
+        unsigned int getFaceCount() const;
+        std::vector<GLuint> generateVAOs() const;
+        void printTextures() const;
 
     private:
-        GLuint m_vbo, m_ibo;
-        unsigned int m_matIndex;
-        std::string m_matName;
-        std::vector<unsigned int> m_indices;
-        std::vector<Vertex> m_vertices;
+        void generateMeshBuffers();
+        void generateBoundingBox();
+
+    private:
+        std::array<glm::vec3, 2> m_boundingBox;
+        std::vector<GLuint> m_meshVBOs, m_meshIBOs;
+        std::unordered_map<std::string, Texture*> m_textures;
     };
 
-    Model3D(std::vector<Mesh> &&meshes, const std::unordered_map<std::string, Texture*> &&textures);
-    Model3D(const Model3D&) = delete;
-    Model3D(Model3D &&model);
-
-    Model3D &operator=(Model3D &&model);
-
-    const Texture &getTexture(const std::string &key) const;
-    const Mesh &getMesh(unsigned int index) const;
-    unsigned int getMeshCount() const;
-    unsigned int getFaceCount() const;
-    std::vector<GLuint> generateVAOs() const;
-    void printTextures() const;
-
-private:
-    void generateMeshBuffers();
-    void generateBoundingBox();
-
-private:
-    std::array<glm::vec3, 2> m_boundingBox;
-    std::vector<Mesh> m_meshes;
-    std::unordered_map<std::string, Texture*> m_textures;
-};
+}
 
 #endif // _MODEL3D_H

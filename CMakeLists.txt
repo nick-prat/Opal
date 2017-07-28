@@ -6,6 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall -Wextra -pedantic -std=c++1
 set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/debug)
 set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 
 # Applications source files
@@ -31,9 +32,11 @@ set(SOURCE_FILES
     src/Scene/scene.cc
 
     # Resources
-    src/Resources/texture.cc
-    src/Resources/resourcehandler.cc
+    src/Resources/assetstore.cc
     src/Resources/model3d.cc
+    src/Resources/resources.cc
+    src/Resources/texture.cc
+    src/Resources/util.cc
 
     # Utilities
     src/Utilities/exceptions.cc

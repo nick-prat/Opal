@@ -4,7 +4,7 @@
 
 #include <Utilities/log.hh>
 
-void Utilities::PrintGLErrors()
+void Opal::Util::PrintGLErrors()
 {
     for(GLenum glErr = glGetError(); glErr != GL_NO_ERROR; glErr = glGetError())
     {

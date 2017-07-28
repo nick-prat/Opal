@@ -6,26 +6,33 @@
 
 #include <Render/sampler.hh>
 
-class Texture {
-public:
-    Texture(const GLuint glTexture, const std::string &filename);
-    Texture(const Texture&) = delete;
-    Texture(Texture &&texture);
-    ~Texture();
+#include "resources.hh"
 
-    Texture &operator=(const Texture&) = delete;
-    Texture &operator=(Texture&&) = delete;
+namespace Opal {
 
-    std::string getFileName() const;
-    void bind() const;
+    class Texture : protected Resources::RTexture {
+    public:
+        Texture(const GLuint glTexture, const std::string &filename);
+        Texture(const Texture&) = delete;
+        Texture(Texture &&texture);
+        Texture(Resources::RTexture &&texture);
+        ~Texture();
 
-    Sampler &getSampler();
-    const Sampler &getSampler() const;
+        Texture &operator=(const Texture&) = delete;
+        Texture &operator=(Texture&&) = delete;
 
-private:
-    Sampler m_sampler;
-    GLuint m_glTexture;
-    std::string m_filename;
-};
+        std::string getFileName() const;
+        void bind() const;
+
+        Sampler &getSampler();
+        const Sampler &getSampler() const;
+
+    private:
+        Sampler m_sampler;
+        GLuint m_glTexture;
+        std::string m_filename;
+    };
+
+}
 
 #endif // _TEXTURE_H

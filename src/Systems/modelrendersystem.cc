@@ -5,7 +5,7 @@
 
 #include <Components/components.hh>
 
-ModelRenderSystem::ModelRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight)
+Opal::ModelRenderSystem::ModelRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight)
 : RenderSystem<ModelRenderSystem>(shader, display, worldLight) {
     GLint sunUBOLoc = glGetUniformBlockIndex(m_shader.getProgram(), "SunLight");
     if(sunUBOLoc != -1) {
@@ -13,7 +13,7 @@ ModelRenderSystem::ModelRenderSystem(const Shader &shader, const Display &displa
     }
 }
 
-void ModelRenderSystem::update(Emerald::EntityManager &entMan) {
+void Opal::ModelRenderSystem::update(Emerald::EntityManager &entMan) {
     m_shader.useProgram();
 
     GLint ambientLightLocation = m_shader.getUniformLocation("gAmbientLight");
@@ -35,12 +35,10 @@ void ModelRenderSystem::update(Emerald::EntityManager &entMan) {
         const auto &vaos = rc.getVAOs();
         const auto &model = rc.getModel();
         for(unsigned int i = 0; i < vaos.size(); i++) {
-            const auto &mesh = model.getMesh(i);
-
             glBindVertexArray(vaos[i]);
 
-            model.getTexture(mesh.getMatName()).bind();
-            glDrawElements(GL_TRIANGLES, (GLsizei)mesh.getIndexCount(), GL_UNSIGNED_INT, nullptr);
+            model.getTexture(model.getMatName(i)).bind();
+            glDrawElements(GL_TRIANGLES, (GLsizei)model.getIndexCount(i), GL_UNSIGNED_INT, nullptr);
         }
     });
 }

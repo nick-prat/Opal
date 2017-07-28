@@ -3,27 +3,31 @@
 
 #include <glm/glm.hpp>
 
-class Camera {
-public:
-    Camera();
-    ~Camera();
+namespace Opal {
 
-    void update(float scale);
+    class Camera {
+    public:
+        Camera();
+        ~Camera();
 
-    glm::mat4 getViewMatrix() const;
-    void moveCamera(glm::vec3 delta);
-    void rotateCamera(glm::vec3 rotation);
+        void update(float scale);
 
-    void setPosition(glm::vec3 position);
-    glm::vec3 getPosition() const;
-    glm::vec3 getDirection() const;
+        glm::mat4 getViewMatrix() const;
+        void moveCamera(glm::vec3 delta);
+        void rotateCamera(glm::vec3 rotation);
 
-private:
-    glm::mat4 m_viewMatrix;
-    glm::vec3 m_position;
-    glm::vec3 m_direction;
-    glm::vec3 m_rotation;
-    glm::vec3 m_up;
-};
+        void setPosition(glm::vec3 position);
+        glm::vec3 getPosition() const;
+        glm::vec3 getDirection() const;
+
+    private:
+        glm::mat4 m_viewMatrix;
+        glm::vec3 m_position;
+        glm::vec3 m_direction;
+        glm::vec3 m_rotation;
+        glm::vec3 m_up;
+    };
+
+}
 
 #endif // _CAMERA_H

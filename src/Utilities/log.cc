@@ -2,28 +2,28 @@
 
 #include <iostream>
 
-void Log::setLogStream(std::ostream &stream) {
+void Opal::Log::setLogStream(std::ostream &stream) {
     std::lock_guard<std::mutex> logMutex(m_log->m_logMutex);
     std::lock_guard<std::mutex> errorMutex(m_log->m_errorMutex);
     m_log.reset(new Log{stream, m_log->m_errorStream});
 }
 
-void Log::setErrorStream(std::ostream &stream) {
+void Opal::Log::setErrorStream(std::ostream &stream) {
     std::lock_guard<std::mutex> logMutex(m_log->m_logMutex);
     std::lock_guard<std::mutex> errorMutex(m_log->m_errorMutex);
     m_log.reset(new Log{m_log->m_logStream, stream});
 }
 
-Log::Log()
+Opal::Log::Log()
 : m_logStream(std::cout)
 , m_errorStream(std::cerr) {}
 
-Log::Log(std::ostream &logStream, std::ostream &errorStream)
+Opal::Log::Log(std::ostream &logStream, std::ostream &errorStream)
 : m_logStream(logStream)
 , m_errorStream(errorStream) {}
 
-SyncLogger::SyncLogger(std::ostream &logStream, std::mutex &errorStream)
+Opal::SyncLogger::SyncLogger(std::ostream &logStream, std::mutex &errorStream)
 : ILogger<SyncLogger>(logStream, errorStream) {}
 
-ASyncLogger::ASyncLogger(std::ostream &logStream, std::mutex &errorStream)
+Opal::ASyncLogger::ASyncLogger(std::ostream &logStream, std::mutex &errorStream)
 : ILogger<ASyncLogger>(logStream, errorStream) {}

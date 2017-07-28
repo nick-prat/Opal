@@ -2,29 +2,29 @@
 
 #include <Utilities/log.hh>
 
-GenericException::GenericException(const std::string &error)
+Opal::GenericException::GenericException(const std::string &error)
 : m_error(error) {}
 
-void GenericException::printError() const {
+void Opal::GenericException::printError() const {
     Log::getErrorLog<SyncLogger>() << m_error << '\n';
 }
 
-std::string GenericException::getError() const {
+std::string Opal::GenericException::getError() const {
     return m_error;
 }
 
-const char* GenericException::what() const noexcept {
+const char* Opal::GenericException::what() const noexcept {
     return m_error.c_str();
 }
 
-BadResource::BadResource(const std::string &error, const std::string &resourcename)
+Opal::BadResource::BadResource(const std::string &error, const std::string &resourcename)
 : GenericException(error)
 , m_resourcename(resourcename) {}
 
-void BadResource::printError() const {
+void Opal::BadResource::printError() const {
     Log::getErrorLog<SyncLogger>() << "[" << m_resourcename << "] " << m_error << '\n';
 }
 
-std::string BadResource::getResourceName() const {
+std::string Opal::BadResource::getResourceName() const {
     return m_resourcename;
 }

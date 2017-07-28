@@ -4,16 +4,21 @@
 
 #include <Utilities/log.hh>
 
+using namespace Opal;
+
 Texture::Texture(const GLuint glTexture, const std::string &filename)
-: m_glTexture(glTexture)
-, m_filename(filename) {}
+: m_glTexture{glTexture}
+, m_filename{filename} {}
 
 Texture::Texture(Texture &&texture)
-: m_glTexture(texture.m_glTexture)
-, m_filename(texture.m_filename) {
+: m_glTexture{texture.m_glTexture}
+, m_filename{texture.m_filename} {
     texture.m_glTexture = 0;
     texture.m_filename = "invalid";
 }
+
+Texture::Texture(Resources::RTexture &&texture)
+: RTexture{std::move(texture)} {}
 
 Texture::~Texture() {
     if(glIsTexture(m_glTexture)) {

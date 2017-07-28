@@ -1,6 +1,6 @@
 #include "movementsystem.hh"
 
-void MovementSystem::update(Emerald::EntityManager &entMan) {
+void Opal::MovementSystem::update(Emerald::EntityManager &entMan) {
     entMan.mapEntities<CBody, CPhysics>([&entMan](auto ent) {
         auto &loc = entMan.getComponent<CBody>(ent);
         auto &phys = entMan.getComponent<CPhysics>(ent);

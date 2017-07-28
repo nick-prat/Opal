@@ -4,66 +4,76 @@
 
 #include <Resources/texture.hh>
 #include <Utilities/log.hh>
+#include <Utilities/exceptions.hh>
 
-Model3D::Model3D(std::vector<Mesh> &&meshes, const std::unordered_map<std::string, Texture*> &&textures)
-: m_meshes(std::move(meshes))
-, m_textures(std::move(textures)) {
+Opal::Model3D::Model3D(Resources::RModel3D &&model3d, std::unordered_map<std::string, Texture*> &&textures)
+: RModel3D{std::move(model3d)}
+, m_textures{std::move(textures)} {
     generateMeshBuffers();
     generateBoundingBox();
 }
 
-Model3D::Model3D(Model3D &&model)
-: m_meshes(std::move(model.m_meshes))
-, m_textures(std::move(model.m_textures)) {}
+Opal::Model3D::Model3D(Model3D &&model)
+: RModel3D{std::move(model)}
+, m_textures{std::move(model.m_textures)} {}
 
-Model3D &Model3D::operator=(Model3D &&model) {
-    m_meshes = std::move(model.m_meshes);
+Opal::Model3D &Opal::Model3D::operator=(Model3D &&model) {
+    meshes = std::move(model.meshes);
     m_textures = std::move(model.m_textures);
     m_boundingBox = model.m_boundingBox;
 
     return *this;
 }
 
-const Texture &Model3D::getTexture(const std::string &key) const {
-    auto tex = m_textures.find(key);
-    if(tex != m_textures.end()) {
+const Opal::Texture &Opal::Model3D::getTexture(const std::string &key) const {
+    if(auto tex{m_textures.find(key)}; tex != m_textures.end()) {
         return *(tex->second);
     } else {
-        throw std::invalid_argument(key + " texture not found");
+        throw BadResource{"texture not found", key};
     }
 }
 
-const Model3D::Mesh &Model3D::getMesh(unsigned int index) const {
-    return m_meshes[index];
+unsigned int Opal::Model3D::getIndexCount(unsigned int index) const {
+    return meshes[index].indices.size();
 }
 
-unsigned int Model3D::getMeshCount() const {
-    return m_meshes.size();
-
+std::string Opal::Model3D::getMatName(unsigned int i) const {
+    if(i < meshes.size()) {
+        return meshes[i].matName;
+    } else {
+        // TODO Throw proper error
+        return "";
+    }
 }
 
-unsigned int Model3D::getFaceCount() const {
+unsigned int Opal::Model3D::getMeshCount() const {
+    return meshes.size();
+}
+
+unsigned int Opal::Model3D::getFaceCount() const {
     unsigned int faceCount = 0;
-    for(const auto &mesh : m_meshes) {
-        faceCount += mesh.getIndices().size() / 3;
+    for(const auto &mesh : meshes) {
+        faceCount += mesh.indices.size() / 3;
     }
     return faceCount;
 }
 
-std::vector<GLuint> Model3D::generateVAOs() const {
+std::vector<GLuint> Opal::Model3D::generateVAOs() const {
     std::vector<GLuint> vaos;
 
-    for(const auto &mesh : m_meshes) {
-        GLuint vao = 0;
+    for(const auto &mesh : meshes) {
+        GLuint vao{0};
+        GLuint vbo{0};
+        GLuint ibo{0};
         glGenVertexArrays(1, &vao);
         glBindVertexArray(vao);
 
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.m_vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.m_ibo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), 0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)sizeof(glm::vec3));
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Model3D::Vertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Resources::RVertex), 0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Resources::RVertex), (GLvoid*)sizeof(glm::vec3));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Resources::RVertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
@@ -74,101 +84,50 @@ std::vector<GLuint> Model3D::generateVAOs() const {
     return vaos;
 }
 
-void Model3D::printTextures() const {
-    for(const auto texture : m_textures) {
+void Opal::Model3D::printTextures() const {
+    for(const auto &texture : m_textures) {
         Log::getLog<SyncLogger>() << texture.first << " : " << texture.second->getFileName() << '\n';
     }
 }
 
-void Model3D::generateMeshBuffers() {
-    for(auto &mesh : m_meshes) {
-        glGenBuffers(1, &mesh.m_vbo);
-        glGenBuffers(1, &mesh.m_ibo);
+void Opal::Model3D::generateMeshBuffers() {
+    for(auto &mesh : meshes) {
+        GLuint vbo, ibo;
+        glGenBuffers(1, &vbo);
+        glGenBuffers(1, &ibo);
 
-        glBindBuffer(GL_ARRAY_BUFFER, mesh.m_vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(Model3D::Vertex) * mesh.getVertices().size(), mesh.getVertices().data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(Resources::RVertex) * mesh.vertices.size(), mesh.vertices.data(), GL_STATIC_DRAW);
 
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh.m_ibo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.getIndices().size(), mesh.getIndices().data(), GL_STATIC_DRAW);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(unsigned int) * mesh.indices.size(), mesh.indices.data(), GL_STATIC_DRAW);
+
+        m_meshVBOs.push_back(vbo);
+        m_meshIBOs.push_back(ibo);
     }
 }
 
-void Model3D::generateBoundingBox() {
-    for(const auto &mesh : m_meshes) {
-        for(const auto &vec : mesh.m_vertices) {
-            if(vec.position.x > m_boundingBox[1].x) {
-                m_boundingBox[1].x = vec.position.x;
+void Opal::Model3D::generateBoundingBox() {
+    for(const auto &mesh : meshes) {
+        for(const auto &vec : mesh.vertices) {
+            if(vec.position[0] > m_boundingBox[1].x) {
+                m_boundingBox[1].x = vec.position[0];
             }
-            if(vec.position.x < m_boundingBox[0].x) {
-                m_boundingBox[0].x = vec.position.x;
+            if(vec.position[0] < m_boundingBox[0].x) {
+                m_boundingBox[0].x = vec.position[0];
             }
-            if(vec.position.y > m_boundingBox[1].y) {
-                m_boundingBox[1].y = vec.position.y;
+            if(vec.position[1] > m_boundingBox[1].y) {
+                m_boundingBox[1].y = vec.position[1];
             }
-            if(vec.position.y < m_boundingBox[0].y) {
-                m_boundingBox[0].y = vec.position.y;
+            if(vec.position[1] < m_boundingBox[0].y) {
+                m_boundingBox[0].y = vec.position[1];
             }
-            if(vec.position.z > m_boundingBox[1].z) {
-                m_boundingBox[1].z = vec.position.z;
+            if(vec.position[2] > m_boundingBox[1].z) {
+                m_boundingBox[1].z = vec.position[2];
             }
-            if(vec.position.z < m_boundingBox[0].z) {
-                m_boundingBox[0].z = vec.position.z;
+            if(vec.position[2] < m_boundingBox[0].z) {
+                m_boundingBox[0].z = vec.position[2];
             }
         }
     }
-}
-
-// Model3D::Vertex
-
-Model3D::Vertex::Vertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tex)
-: position(pos), normal(norm), texCoord(tex) {}
-
-// Model3D::Mesh
-
-Model3D::Mesh::Mesh(std::vector<Vertex> &&vertices, std::vector<unsigned int> &&indices)
-: m_matIndex(0), m_matName("null"), m_indices(std::move(indices)), m_vertices(std::move(vertices)) {}
-
-Model3D::Mesh::~Mesh() {
-    if(glIsBuffer(m_vbo)) {
-        glDeleteBuffers(1, &m_vbo);
-    }
-    if(glIsBuffer(m_ibo)) {
-        glDeleteBuffers(1, &m_ibo);
-    }
-}
-
-std::vector<Model3D::Vertex> Model3D::Mesh::getVertices() const {
-    return m_vertices;
-}
-
-std::vector<unsigned int> Model3D::Mesh::getIndices() const {
-    return m_indices;
-}
-
-GLuint Model3D::Mesh::getVBO() const {
-    return m_vbo;
-}
-
-GLuint Model3D::Mesh::getIBO() const {
-    return m_ibo;
-}
-
-void Model3D::Mesh::setMatIndex(const unsigned int matIndex) {
-    m_matIndex = matIndex;
-}
-
-unsigned int Model3D::Mesh::getMatIndex() const {
-    return m_matIndex;
-}
-
-void Model3D::Mesh::setMatName(const std::string matName) {
-    m_matName = matName;
-}
-
-std::string Model3D::Mesh::getMatName() const {
-    return m_matName;
-}
-
-std::size_t Model3D::Mesh::getIndexCount() const {
-    return m_indices.size();
 }

@@ -13,7 +13,7 @@
 constexpr unsigned int major = 4;
 constexpr unsigned int minor = 5;
 
-GLCore::GLCore(int width, int height, std::string title)
+Opal::GLCore::GLCore(int width, int height, std::string title)
         : m_display(width, height, major, minor, title) {
 
     if(gl3wInit() == -1) {
@@ -135,17 +135,17 @@ GLCore::GLCore(int width, int height, std::string title)
     log << "GL Context created\n";
 }
 
-GLCore::GLCore(GLCore &&glCore)
+Opal::GLCore::GLCore(GLCore &&glCore)
         : m_display(std::move(glCore.m_display))
         , m_scene(std::move(glCore.m_scene)) {}
 
-GLCore &GLCore::operator=(GLCore &&glCore) {
+Opal::GLCore &Opal::GLCore::operator=(GLCore &&glCore) {
     m_scene = std::move(glCore.m_scene);
     m_display = std::move(glCore.m_display);
     return *this;
 }
 
-void GLCore::start() {
+void Opal::GLCore::start() {
     m_scene->start();
     while(!m_display.windowShouldClose()) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -156,10 +156,10 @@ void GLCore::start() {
     }
 }
 
-Display &GLCore::getDisplay() {
+Opal::Display &Opal::GLCore::getDisplay() {
     return m_display;
 }
 
-const Display &GLCore::getDisplay() const {
+const Opal::Display &Opal::GLCore::getDisplay() const {
     return m_display;
 }

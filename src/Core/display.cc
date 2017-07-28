@@ -7,10 +7,10 @@
 #include <Utilities/log.hh>
 #include <Core/camera.hh>
 
-Display::Display()
+Opal::Display::Display()
         : m_projMatrix({1.0f}) {}
 
-Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string &title)
+Opal::Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string &title)
         : m_width(width)
         , m_height(height)
         , m_projMatrix(glm::mat4(1.0f)) {
@@ -78,7 +78,7 @@ Display::Display(unsigned int width, unsigned int height, unsigned int major, un
     m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 }
 
-Display::Display(Display &&display)
+Opal::Display::Display(Display &&display)
         : m_window(display.m_window)
         , m_camera(std::move(display.m_camera))
         , m_width(display.m_width)
@@ -91,11 +91,11 @@ Display::Display(Display &&display)
     glfwTerminate();
 }
 
-Display::~Display() {
+Opal::Display::~Display() {
     glfwDestroyWindow(m_window);
 }
 
-Display &Display::operator=(Display &&display) {
+Opal::Display &Opal::Display::operator=(Display &&display) {
     m_window = display.m_window;
     m_width = display.m_width;
     m_height = display.m_height;
@@ -113,11 +113,11 @@ Display &Display::operator=(Display &&display) {
     return *this;
 }
 
-void Display::resize(int width, int height) {
+void Opal::Display::resize(int width, int height) {
     glfwSetWindowSize(m_window, width, height);
 }
 
-void Display::update() {
+void Opal::Display::update() {
     double time = glfwGetTime();
     m_timeScale = (time - m_prevTime) * 60;
     m_prevTime = time;
@@ -126,31 +126,31 @@ void Display::update() {
     glfwPollEvents();
 }
 
-Camera &Display::getCamera() {
+Opal::Camera &Opal::Display::getCamera() {
     return m_camera;
 }
 
-const Camera &Display::getCamera() const {
+const Opal::Camera &Opal::Display::getCamera() const {
     return m_camera;
 }
 
-glm::mat4 Display::getProjectionMatrix() const {
+glm::mat4 Opal::Display::getProjectionMatrix() const {
     return m_projMatrix;
 }
 
-unsigned int Display::getWidth() const {
+unsigned int Opal::Display::getWidth() const {
     return m_width;
 }
 
-unsigned int Display::getHeight() const {
+unsigned int Opal::Display::getHeight() const {
     return m_height;
 }
 
-bool Display::windowShouldClose() const {
+bool Opal::Display::windowShouldClose() const {
     return glfwWindowShouldClose(m_window);
 }
 
-void Display::setMouseCapture(bool capture) {
+void Opal::Display::setMouseCapture(bool capture) {
     if(capture) {
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     } else {
@@ -158,11 +158,11 @@ void Display::setMouseCapture(bool capture) {
     }
 }
 
-void Display::setClearColor(const glm::vec4 &color) {
+void Opal::Display::setClearColor(const glm::vec4 &color) {
     glClearColor(color.x, color.y, color.z, color.w);
 }
 
-void Display::setVsync(bool enabled) {
+void Opal::Display::setVsync(bool enabled) {
     if(enabled) {
         glfwSwapInterval(1);
     } else {
@@ -171,18 +171,18 @@ void Display::setVsync(bool enabled) {
 }
 
 // TODO Implement set cursor position
-void Display::setCursorPosition(const glm::vec2 &pos) {
+void Opal::Display::setCursorPosition(const glm::vec2 &pos) {
     if(m_window != nullptr) {
         glfwSetCursorPos(m_window, glm::clamp(pos.x, 0.0f, 1.0f), glm::clamp(pos.y, 0.0f, 1.0f));
     }
 }
 
 // TODO Implement set cursor visible
-void Display::setCursorVisible(bool visible) {
+void Opal::Display::setCursorVisible(bool visible) {
 
 }
 
-void Display::setWireFrame(bool wireframe) {
+void Opal::Display::setWireFrame(bool wireframe) {
     if(wireframe) {
         glDisable(GL_CULL_FACE);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -192,39 +192,39 @@ void Display::setWireFrame(bool wireframe) {
     }
 }
 
-void Display::clearWhileKeyPressed() {
+void Opal::Display::clearWhileKeyPressed() {
     m_whileKeyPressed.clear();
 }
 
-void Display::deregisterWhileKeyPressed(const InputKey key) {
+void Opal::Display::deregisterWhileKeyPressed(const InputKey key) {
     m_whileKeyPressed.erase(key);
 }
 
-void Display::registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)> &lambda) {
+void Opal::Display::registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)> &lambda) {
     m_whileKeyPressed[key] = lambda;
 }
 
-void Display::clearOnKeyPressed() {
+void Opal::Display::clearOnKeyPressed() {
     m_onKeyPressed.clear();
 }
 
-void Display::deregisterOnKeyPressed(const InputKey key) {
+void Opal::Display::deregisterOnKeyPressed(const InputKey key) {
     m_onKeyPressed.erase(key);
 }
 
-void Display::registerOnKeyPressed(const InputKey key, const std::function<void(InputKey)> &lambda) {
+void Opal::Display::registerOnKeyPressed(const InputKey key, const std::function<void(InputKey)> &lambda) {
     m_onKeyPressed[key] = lambda;
 }
 
-void Display::centerCursor() {
+void Opal::Display::centerCursor() {
 
 }
 
-void Display::bindCursorUpdate(std::function<void(int, int)> func) {
+void Opal::Display::bindCursorUpdate(std::function<void(int, int)> func) {
     m_cursorFunc = func;
 }
 
-void Display::callKeyLambdas() {
+void Opal::Display::callKeyLambdas() {
     for(auto &[key, repeat] : m_pressedKeys) {
         auto lambda = m_whileKeyPressed.find(key);
         if(lambda != m_whileKeyPressed.end()) {
@@ -240,7 +240,7 @@ void Display::callKeyLambdas() {
     }
 }
 
-void Display::updateCursorPosition(const int xpos, const int ypos) {
+void Opal::Display::updateCursorPosition(const int xpos, const int ypos) {
     m_cursorPos.first = xpos;
     m_cursorPos.second = ypos;
     if(m_cursorFunc) {
@@ -248,15 +248,15 @@ void Display::updateCursorPosition(const int xpos, const int ypos) {
     }
 }
 
-const std::pair<int, int> &Display::getCursorPosition() const {
+const std::pair<int, int> &Opal::Display::getCursorPosition() const {
     return m_cursorPos;
 }
 
-bool Display::isKeyPressed(const InputKey key) const {
+bool Opal::Display::isKeyPressed(const InputKey key) const {
     return m_pressedKeys.find(key) != m_pressedKeys.end();
 }
 
-void Display::updateKey(const int key, const bool pressed) {
+void Opal::Display::updateKey(const int key, const bool pressed) {
     InputKey ikey = static_cast<InputKey>(key);
 
     if(pressed  &&m_pressedKeys.find(ikey) == m_pressedKeys.end()) {

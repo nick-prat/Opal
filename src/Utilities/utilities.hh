@@ -3,7 +3,7 @@
 
 #include <Utilities/exceptions.hh>
 
-namespace Utilities {
+namespace Opal::Util {
 
     void PrintGLErrors();
 

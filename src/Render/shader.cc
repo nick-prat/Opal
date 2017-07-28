@@ -11,7 +11,7 @@
 #include <Utilities/exceptions.hh>
 #include <Utilities/log.hh>
 
-Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &types)
+Opal::Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &types)
 : m_numShaders(0)
 , m_shaderProgram(0) {
 
@@ -82,7 +82,7 @@ Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &ty
     }
 }
 
-Shader::Shader(Shader &&shader)
+Opal::Shader::Shader(Shader &&shader)
 : m_numShaders(shader.m_numShaders)
 , m_shaderProgram(shader.m_shaderProgram)
 , m_uniformLocations(std::move(shader.m_uniformLocations)) {
@@ -90,13 +90,13 @@ Shader::Shader(Shader &&shader)
     shader.m_shaderProgram = 0;
 }
 
-Shader::~Shader() {
+Opal::Shader::~Shader() {
     if(glIsProgram(m_shaderProgram)) {
         glDeleteProgram(m_shaderProgram);
     }
 }
 
-void Shader::registerUniform(const std::string &name) {
+void Opal::Shader::registerUniform(const std::string &name) {
     auto loc = glGetUniformLocation(m_shaderProgram, name.c_str());
     if(loc != -1) {
         m_uniformLocations[name] = loc;
@@ -105,17 +105,17 @@ void Shader::registerUniform(const std::string &name) {
     }
 }
 
-GLint Shader::getUniformLocation(const std::string &name) const {
+GLint Opal::Shader::getUniformLocation(const std::string &name) const {
     if(auto uniform = m_uniformLocations.find(name); uniform != m_uniformLocations.end()) {
         return uniform->second;
     }
     return -1;
 }
 
-void Shader::useProgram() const {
+void Opal::Shader::useProgram() const {
     glUseProgram(m_shaderProgram);
 }
 
-GLuint Shader::getProgram() const {
+GLuint Opal::Shader::getProgram() const {
     return m_shaderProgram;
 }

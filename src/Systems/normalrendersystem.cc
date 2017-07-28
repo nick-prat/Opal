@@ -4,10 +4,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <Components/components.hh>
 
-NormalRenderSystem::NormalRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight)
+Opal::NormalRenderSystem::NormalRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight)
 : RenderSystem<NormalRenderSystem>(shader, display, worldLight) {}
 
-void NormalRenderSystem::update(Emerald::EntityManager &entMan) {
+void Opal::NormalRenderSystem::update(Emerald::EntityManager &entMan) {
     m_shader.useProgram();
 
     auto pv = m_display.getProjectionMatrix() * m_display.getCamera().getViewMatrix();
@@ -24,11 +24,9 @@ void NormalRenderSystem::update(Emerald::EntityManager &entMan) {
         const auto &vaos = rc.getVAOs();
         const auto &model = rc.getModel();
         for(unsigned int i = 0; i < vaos.size(); i++) {
-            const auto &mesh = model.getMesh(i);
-
             glBindVertexArray(vaos[i]);
-            model.getTexture(mesh.getMatName()).bind();
-            glDrawElements(GL_POINTS, (GLsizei)mesh.getIndexCount(), GL_UNSIGNED_INT, nullptr);
+            model.getTexture(model.getMatName(i)).bind();
+            glDrawElements(GL_POINTS, (GLsizei)model.getIndexCount(i), GL_UNSIGNED_INT, nullptr);
         }
     });
 }

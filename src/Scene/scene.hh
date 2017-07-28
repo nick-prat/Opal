@@ -11,51 +11,55 @@
 #include <Systems/rendersystem.hh>
 #include <Systems/movementsystem.hh>
 #include <Render/light.hh>
-#include <Resources/resourcehandler.hh>
+#include <Resources/assetstore.hh>
 
-class Scene {
-public:
-    Scene(Display &display, const std::string &scenename);
-    Scene(const Scene&) = delete;
-    Scene(Scene &&scene);
-    ~Scene();
+namespace Opal {
 
-    Scene &operator=(const Scene&) = delete;
-    Scene &operator=(Scene &&scene) = delete;
+    class Scene {
+    public:
+        Scene(Display &display, const std::string &scenename);
+        Scene(const Scene&) = delete;
+        Scene(Scene &&scene);
+        ~Scene();
 
-    void start();
-    void gameLoop();
+        Scene &operator=(const Scene&) = delete;
+        Scene &operator=(Scene &&scene) = delete;
 
-    inline ResourceHandler &getResourceHandler() {return m_resourceHandler;};
+        void start();
+        void gameLoop();
 
-    // Lua proxy functions
-    void setAmbientIntensity(float intensity);
-    void setAmbientColor(const glm::vec3 &color);
-    void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
-    Camera &getCamera();
-    std::size_t getEntityCount() const;
+        inline AssetStore &getAssetStore() {return m_assetStore;};
 
-protected:
-    virtual void registerSystems();
+        // Lua proxy functions
+        void setAmbientIntensity(float intensity);
+        void setAmbientColor(const glm::vec3 &color);
+        void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
+        Camera &getCamera();
+        std::size_t getEntityCount() const;
 
-private:
-    void closeLua();
-    void buildLuaNamespace();
-    void registerLuaFunctions();
+    protected:
+        virtual void registerSystems();
 
-protected:
-    Emerald::EntityManager m_entityManager;
-    WorldLight m_worldLight;
-    ResourceHandler m_resourceHandler;
-    Display &m_display;
-    const std::string m_scenename;
+    private:
+        void closeLua();
+        void buildLuaNamespace();
+        void registerLuaFunctions();
 
-private:
-    LuaState m_luaState;
-    std::unordered_map<InputKey, std::unique_ptr<luabridge::LuaRef>> m_luaKeyBinds;
-    std::unique_ptr<luabridge::LuaRef> m_startFunc;
-    std::unique_ptr<luabridge::LuaRef> m_renderFunc;
-    bool m_luaEnabled;
-};
+    protected:
+        Emerald::EntityManager m_entityManager;
+        WorldLight m_worldLight;
+        AssetStore m_assetStore;
+        Display &m_display;
+        const std::string m_scenename;
+
+    private:
+        LuaState m_luaState;
+        std::unordered_map<InputKey, std::unique_ptr<luabridge::LuaRef>> m_luaKeyBinds;
+        std::unique_ptr<luabridge::LuaRef> m_startFunc;
+        std::unique_ptr<luabridge::LuaRef> m_renderFunc;
+        bool m_luaEnabled;
+    };
+
+}
 
 #endif // _SCENE_H
