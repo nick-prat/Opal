@@ -21,10 +21,10 @@ using luabridge::LuaRef;
 // NOTE What should lua be capable of doing?
 
 Opal::Scene::Scene(Display &display, const std::string &scenename)
-: m_assetStore(scenename)
-, m_display(display)
-, m_scenename(scenename)
-, m_luaEnabled(true) {
+: m_assetStore{scenename}
+, m_display{display}
+, m_scenename{scenename}
+, m_luaEnabled{true} {
     m_display.setWireFrame(false);
 
     luaL_openlibs(m_luaState.get());
@@ -119,15 +119,15 @@ Opal::Scene::Scene(Display &display, const std::string &scenename)
 }
 
 Opal::Scene::Scene(Scene &&scene)
-: m_entityManager(std::move(scene.m_entityManager))
-, m_assetStore(std::move(scene.m_assetStore))
-, m_display(scene.m_display)
-, m_scenename(scene.m_scenename)
-, m_luaState(std::move(scene.m_luaState))
-, m_luaKeyBinds(std::move(scene.m_luaKeyBinds))
-, m_startFunc(std::move(scene.m_startFunc))
-, m_renderFunc(std::move(scene.m_renderFunc))
-, m_luaEnabled(scene.m_luaEnabled) {
+: m_entityManager{std::move(scene.m_entityManager)}
+, m_assetStore{std::move(scene.m_assetStore)}
+, m_display{scene.m_display}
+, m_scenename{scene.m_scenename}
+, m_luaState{std::move(scene.m_luaState)}
+, m_luaKeyBinds{std::move(scene.m_luaKeyBinds)}
+, m_startFunc{std::move(scene.m_startFunc)}
+, m_renderFunc{std::move(scene.m_renderFunc)}
+, m_luaEnabled{scene.m_luaEnabled} {
     scene.m_luaEnabled = false;
 }
 

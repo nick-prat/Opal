@@ -59,10 +59,10 @@ namespace Opal::Resources {
         RShader() = default;
         RShader(RShader &&shader);
         RShader(std::istream &stream);
-        RShader(std::unordered_map<char, std::vector<unsigned char>> files);
+        RShader(std::unordered_map<char, std::vector<char>> files);
 
         std::string name;
-        std::unordered_map<char, std::vector<unsigned char>> files;
+        std::unordered_map<char, std::vector<char>> files;
     };
 
     struct Object {

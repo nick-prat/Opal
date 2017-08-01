@@ -51,28 +51,31 @@ namespace Opal::Util {
     constexpr unsigned char RES_TEXTURE_BPP = 4;
     constexpr unsigned short VERSION = 1;
 
-    std::string readString(std::istream &stream);
-
     std::vector<std::string> splitString(const std::string &string, const char delim);
-
-    void writeString(std::ostream &stream, const std::string &buff);
 
     void copyaiMat(const aiMatrix4x4* from, glm::mat4 &to);
 
     template<typename data_t>
-    std::enable_if_t<!std::is_pointer<data_t>::value> write(std::ostream &stream, data_t data) {
+    std::enable_if_t<!std::is_pointer<data_t>::value, void> write(std::ostream &stream, data_t data) {
         static_assert(std::is_standard_layout<data_t>(), "write failed, data isn't standard layout");
         stream.write((char*)&data, sizeof(std::decay_t<data_t>));
     }
 
     template<typename data_t>
-    std::enable_if_t<std::is_pointer<data_t>::value> write(std::ostream &stream, data_t data) {
+    std::enable_if_t<std::is_pointer<data_t>::value, void> write(std::ostream &stream, data_t data) {
         static_assert(std::is_standard_layout<std::decay<data_t>>(), "write failed, data isn't standard layout");
         stream.write(data, sizeof(std::decay_t<data_t>));
     }
 
+    template<>
+    void write<const std::string&>(std::ostream &stream, const std::string &data) {
+        std::vector<char> vec(data.begin(), data.end());
+        stream.write(vec.data(), vec.size());
+        stream.write("\0", sizeof(char));
+    }
+
     template<typename data_t>
-    std::enable_if_t<std::is_pointer<data_t>::value> write(std::ostream &stream, data_t data, std::size_t size) {
+    std::enable_if_t<std::is_pointer<data_t>::value, void> write(std::ostream &stream, data_t data, std::size_t size) {
         static_assert(std::is_standard_layout<std::decay<data_t>>(), "write failed, data isn't standard layout");
         stream.write((char*)data, size);
     }
@@ -83,6 +86,20 @@ namespace Opal::Util {
         data_t data;
         stream.read((char*)&data, sizeof(std::decay_t<data_t>));
         return data;
+    }
+
+    template<>
+    std::string read<std::string>(std::istream &stream) {
+        std::vector<char> vec;
+        char in = '\0';
+        while(true) {
+            stream.read(&in, sizeof(char));
+            if(in == '\0') {
+                break;
+            }
+            vec.push_back(in);
+        }
+        return std::string(vec.begin(), vec.end());
     }
 
     template<std::size_t length>

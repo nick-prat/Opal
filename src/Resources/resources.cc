@@ -30,7 +30,7 @@ Opal::Resources::RMesh::RMesh(std::istream &stream) {
     auto size{read<std::size_t>(stream)};
 
     stream >> matIndex;
-    matName = readString(stream);
+    matName = read<std::string>(stream);
 
     auto vsize{read<std::size_t>(stream)};
     vertices.resize(vsize);
@@ -63,7 +63,7 @@ Opal::Resources::RTexture::RTexture(RTexture &&texture)
 , height{texture.height} {}
 
 Opal::Resources::RTexture::RTexture(std::istream &stream) {
-    name = readString(stream);
+    name = read<std::string>(stream);
     width = read<unsigned int>(stream);
     height = read<unsigned int>(stream);
     bytes.reserve(width * height * Util::RES_TEXTURE_BPP);
@@ -80,10 +80,20 @@ Opal::Resources::RShader::RShader(RShader &&shader)
 , files{std::move(shader.files)} {}
 
 Opal::Resources::RShader::RShader(std::istream &stream) {
-
+    name = read<std::string>(stream);
+    auto size{read<std::size_t>(stream)};
+    for(auto i{0u}; i < size; i++) {
+        auto type{read<char>(stream)};
+        auto size{read<std::size_t>(stream)};
+        if(auto iter = files.emplace(type, std::vector<char>{}); iter.second) {
+            stream.read(iter.first->second.data(), size);
+        } else {
+            throw std::runtime_error("Shader " + name + " contains multiple shaders of same type");
+        }
+    }
 }
 
-Opal::Resources::RShader::RShader(std::unordered_map<char, std::vector<unsigned char>> files)
+Opal::Resources::RShader::RShader(std::unordered_map<char, std::vector<char>> files)
 : files{std::move(files)} {}
 
 Opal::Resources::Object::Object(std::istream &stream) {
@@ -100,7 +110,7 @@ std::size_t Opal::Resources::Object::size() const {
 
 void Opal::Resources::Object::writeToStream(std::ostream &stream) {
     write(stream, type);
-    writeString(stream, resourceName);
+    write(stream, resourceName);
     write(stream, position);
     write(stream, rotation);
     write(stream, scale);
@@ -108,7 +118,7 @@ void Opal::Resources::Object::writeToStream(std::ostream &stream) {
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RModel3D &model3d) {
     write(stream, Opal::Util::ResType::Model3D);
-    writeString(stream, model3d.name);
+    write(stream, model3d.name);
     write(stream, model3d.meshes.size());
     for(auto& mesh : model3d.meshes) {
         stream << mesh;
@@ -119,7 +129,7 @@ std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RModel3D &
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RMesh &mesh) {
     write(stream, size(mesh));
     write(stream, mesh.matIndex);
-    writeString(stream, mesh.matName);
+    write(stream, mesh.matName);
 
     write(stream, mesh.vertices.size());
     for(auto &vert : mesh.vertices) {
@@ -142,7 +152,7 @@ std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RVertex &v
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RTexture &texture) {
     write(stream, Opal::Util::ResType::Texture);
-    writeString(stream, texture.name);
+    write(stream, texture.name);
     write(stream, texture.width);
     write(stream, texture.height);
     write(stream, texture.bytes.data(), texture.bytes.size());
@@ -151,6 +161,13 @@ std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RTexture &
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RShader &shader) {
     write(stream, Opal::Util::ResType::Shader);
+    write(stream, shader.name);
+    write(stream, shader.files.size());
+    for(const auto &[type, bytes] : shader.files) {
+        write(stream, type);
+        write(stream, bytes.size());
+        write(stream, bytes.data(), bytes.size());
+    }
     return stream;
 }
 
@@ -292,7 +309,7 @@ std::pair<Opal::Resources::RModel3D, std::unordered_map<std::string, Opal::Resou
 
 Opal::Resources::RModel3D Opal::Resources::loadModel3D(std::istream &stream) {
     RModel3D m3d;
-    m3d.name = readString(stream);
+    m3d.name = read<std::string>(stream);
     auto meshSize{read<std::size_t>(stream)};
     for(auto i = 0u; i < meshSize; i++) {
         m3d.meshes.emplace_back();
@@ -300,7 +317,7 @@ Opal::Resources::RModel3D Opal::Resources::loadModel3D(std::istream &stream) {
 
         std::size_t size = read<std::size_t>(stream);
         mesh.matIndex = read<decltype(mesh.matIndex)>(stream);
-        mesh.matName = readString(stream);
+        mesh.matName = read<std::string>(stream);
 
         std::size_t vsize = read<std::size_t>(stream);
         mesh.vertices.resize(vsize);
@@ -356,7 +373,7 @@ Opal::Resources::RTexture Opal::Resources::loadTexture(const std::string &name) 
 
 Opal::Resources::RTexture Opal::Resources::loadTexture(std::istream &stream) {
     RTexture texture;
-    texture.name = readString(stream);
+    texture.name = read<std::string>(stream);
     texture.width = read<decltype(texture.width)>(stream);
     texture.height = read<decltype(texture.height)>(stream);
     texture.bytes.resize(texture.width * texture.height * RES_TEXTURE_BPP);
