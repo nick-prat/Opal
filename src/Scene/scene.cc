@@ -197,7 +197,7 @@ void Opal::Scene::start() {
 }
 
 void Opal::Scene::gameLoop() {
-    m_entityManager.updateSystems(1.0f);
+    m_entityManager.updateSystems();
     (*m_renderFunc)();
 }
 
