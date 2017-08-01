@@ -1,6 +1,6 @@
 #include "exceptions.hh"
 
-#include <Utilities/log.hh>
+#include <Util/log.hh>
 
 Opal::GenericException::GenericException(const std::string &error)
 : m_error(error) {}

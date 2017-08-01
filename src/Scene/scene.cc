@@ -8,8 +8,8 @@
 
 #include <LuaBridge/LuaBridge.h>
 #include <Core/camera.hh>
-#include <Utilities/exceptions.hh>
-#include <Utilities/log.hh>
+#include <Util/exceptions.hh>
+#include <Util/log.hh>
 #include <LuaBridge/LuaBridge.h>
 
 using luabridge::LuaRef;

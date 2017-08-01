@@ -5,7 +5,7 @@
 #include <string>
 #include <vector>
 
-#include <Utilities/lua.hh>
+#include <Util/lua.hh>
 #include <Core/display.hh>
 #include <Emerald/emerald.hh>
 #include <Systems/rendersystem.hh>

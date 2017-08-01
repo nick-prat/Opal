@@ -2,13 +2,9 @@
 
 #include <iostream>
 
-#include <Utilities/log.hh>
+#include <Util/log.hh>
 
 using namespace Opal;
-
-Texture::Texture(const GLuint glTexture, const std::string &filename)
-: m_glTexture{glTexture}
-, m_filename{filename} {}
 
 Texture::Texture(Texture &&texture)
 : m_glTexture{texture.m_glTexture}
@@ -18,7 +14,11 @@ Texture::Texture(Texture &&texture)
 }
 
 Texture::Texture(Resources::RTexture &&texture)
-: RTexture{std::move(texture)} {}
+: RTexture{std::move(texture)} {
+    glGenTextures(1, &m_glTexture);
+    glBindTexture(GL_TEXTURE_2D, m_glTexture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture.bytes.data());
+}
 
 Texture::~Texture() {
     if(glIsTexture(m_glTexture)) {

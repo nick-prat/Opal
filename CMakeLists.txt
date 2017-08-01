@@ -2,12 +2,10 @@ cmake_minimum_required(VERSION 3.5)
 
 project(opal)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall -Wextra -pedantic -std=c++1z")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -Wall -Wextra -pedantic -std=c++1z -fcolor-diagnostics")
 set(CMAKE_CXX_COMPILER /usr/bin/clang++)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}/bin/debug)
 set(CMAKE_RUNTIME_OUTPUT_DURECTORY_RELEASE ${CMAKE_BINARY_DIR}/bin/release)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
 
 # Applications source files
 set(SOURCE_FILES
@@ -36,12 +34,11 @@ set(SOURCE_FILES
     src/Resources/model3d.cc
     src/Resources/resources.cc
     src/Resources/texture.cc
-    src/Resources/util.cc
 
     # Utilities
-    src/Utilities/exceptions.cc
-    src/Utilities/utilities.cc
-    src/Utilities/log.cc
+    src/Util/exceptions.cc
+    src/Util/util.cc
+    src/Util/log.cc
 
     # Core
     src/Core/glcore.cc

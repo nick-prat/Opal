@@ -6,7 +6,7 @@
 #include <vector>
 #include <glm/glm.hpp>
 
-#include <Utilities/exceptions.hh>
+#include <Util/exceptions.hh>
 #include <Render/shader.hh>
 #include <Resources/model3d.hh>
 #include <Resources/texture.hh>

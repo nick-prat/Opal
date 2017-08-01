@@ -3,8 +3,8 @@
 #include <string>
 
 #include <Scene/scene.hh>
-#include <Utilities/exceptions.hh>
-#include <Utilities/log.hh>
+#include <Util/exceptions.hh>
+#include <Util/log.hh>
 #include <iostream>
 
 // TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])

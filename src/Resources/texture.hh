@@ -12,7 +12,6 @@ namespace Opal {
 
     class Texture : protected Resources::RTexture {
     public:
-        Texture(const GLuint glTexture, const std::string &filename);
         Texture(const Texture&) = delete;
         Texture(Texture &&texture);
         Texture(Resources::RTexture &&texture);

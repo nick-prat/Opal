@@ -1,7 +1,7 @@
 #include "scenehandler.hh"
 #include "resources.hh"
-#include "util.hh"
 
+#include <Util/util.hh>
 #include <json.hpp>
 
 using json = nlohmann::json;
@@ -80,7 +80,7 @@ void Opal::Resources::SceneHandler::readFromBIN(std::ifstream &file) {
 
     std::size_t modelcount = Opal::Util::read<std::size_t>(file);
     for(auto i = 0u; i < modelcount; i++) {
-        if(Opal::Util::read<char>(file) == Opal::Util::RES_MODEL3D) {
+        if(Opal::Util::read<char>(file) == Util::ResType::Model3D) {
             auto [name, m3d] = loadModel3D(file);
             addModel3D(name, std::move(m3d));
         }
@@ -88,7 +88,7 @@ void Opal::Resources::SceneHandler::readFromBIN(std::ifstream &file) {
 
     std::size_t texturecount = Opal::Util::read<std::size_t>(file);
     for(auto i = 0u; i < texturecount; i++) {
-        if(Opal::Util::read<char>(file) == Opal::Util::RES_TEXTURE) {
+        if(Opal::Util::read<char>(file) == Util::ResType::Texture) {
             auto tex = loadTexture(file);
             addTexture(tex.name, std::move(tex));
         }

@@ -8,8 +8,8 @@
 #include <cstring>
 #include <list>
 
-#include <Utilities/exceptions.hh>
-#include <Utilities/log.hh>
+#include <Util/exceptions.hh>
+#include <Util/log.hh>
 
 Opal::Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &types)
 : m_numShaders(0)

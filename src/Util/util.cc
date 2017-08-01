@@ -1,6 +1,16 @@
 #include "util.hh"
 
-#include <iostream>
+#include <Core/gl.hh>
+
+#include <Util/log.hh>
+
+void Opal::Util::PrintGLErrors()
+{
+    for(GLenum glErr = glGetError(); glErr != GL_NO_ERROR; glErr = glGetError())
+    {
+        Log::getErrorLog<SyncLogger>() << "~~  GLError (" << glErr << ") " << glErr << " ~~\n";
+    }
+}
 
 std::string Opal::Util::readString(std::istream &stream) {
     std::vector<char> vec;

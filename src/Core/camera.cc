@@ -3,7 +3,7 @@
 #include <iostream>
 #include <glm/gtx/transform.hpp>
 
-#include <Utilities/exceptions.hh>
+#include <Util/exceptions.hh>
 
 // TODO Be able to bind camera position to an entity
 // NOTE Should i be able to make the camera direction bind to an entity as well?

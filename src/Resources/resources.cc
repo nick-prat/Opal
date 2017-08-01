@@ -6,6 +6,8 @@
 #include <assimp/postprocess.h>
 #include <iostream>
 
+#include <Util/util.hh>
+
 using namespace Opal::Util;
 
 Opal::Resources::RVertex::RVertex(std::istream &stream) {
@@ -15,58 +17,74 @@ Opal::Resources::RVertex::RVertex(std::istream &stream) {
 }
 
 Opal::Resources::RVertex::RVertex(RVertex &&vert)
-: position(vert.position)
-, normal(vert.normal)
-, texCoord(vert.texCoord) {}
+: position{vert.position}
+, normal{vert.normal}
+, texCoord{vert.texCoord} {}
 
 Opal::Resources::RVertex::RVertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tc)
-: position(pos)
-, normal(norm)
-, texCoord(tc) {}
+: position{pos}
+, normal{norm}
+, texCoord{tc} {}
 
 Opal::Resources::RMesh::RMesh(std::istream &stream) {
-    std::size_t size = read<std::size_t>(stream);
+    auto size{read<std::size_t>(stream)};
+
     stream >> matIndex;
     matName = readString(stream);
 
-    std::size_t vsize = read<std::size_t>(stream);
+    auto vsize{read<std::size_t>(stream)};
     vertices.resize(vsize);
     stream.read((char*)vertices.data(), sizeof(RVertex) * vsize);
 
-    std::size_t isize = read<std::size_t>(stream);
+    auto isize{read<std::size_t>(stream)};
     indices.resize(isize);
     stream.read((char*)indices.data(), sizeof(unsigned int) * isize);
 }
 
 Opal::Resources::RMesh::RMesh(RMesh &&mesh)
-: matIndex(mesh.matIndex)
-, matName(std::move(mesh.matName))
-, vertices(std::move(mesh.vertices))
-, indices(std::move(mesh.indices)) {}
+: matIndex{mesh.matIndex}
+, matName{std::move(mesh.matName)}
+, vertices{std::move(mesh.vertices)}
+, indices{std::move(mesh.indices)} {}
 
 Opal::Resources::RMesh::RMesh(std::vector<RVertex> &&verts, std::vector<unsigned int> &&inds)
-: vertices(std::move(verts))
-, indices(std::move(inds)) {}
+: vertices{std::move(verts)}
+, indices{std::move(inds)} {}
 
 Opal::Resources::RModel3D::RModel3D(RModel3D &&m3d)
-: meshes(std::move(m3d.meshes)) {}
+: meshes{std::move(m3d.meshes)} {}
 
 Opal::Resources::RModel3D::RModel3D(std::vector<RMesh> &&meshes_)
-: meshes(std::move(meshes_)) {}
+: meshes{std::move(meshes_)} {}
 
 Opal::Resources::RTexture::RTexture(RTexture &&texture)
-: bytes(std::move(texture.bytes))
-, width(texture.width)
-, height(texture.height) {}
+: bytes{std::move(texture.bytes)}
+, width{texture.width}
+, height{texture.height} {}
 
 Opal::Resources::RTexture::RTexture(std::istream &stream) {
-    // TODO Implement this
+    name = readString(stream);
+    width = read<unsigned int>(stream);
+    height = read<unsigned int>(stream);
+    bytes.reserve(width * height * Util::RES_TEXTURE_BPP);
+    stream.read((char*)bytes.data(), bytes.size());
 }
 
 Opal::Resources::RTexture::RTexture(std::vector<unsigned char> &&bytes_, unsigned int width_, unsigned int height_)
-: bytes(std::move(bytes_))
-, width(width_)
-, height(height_) {}
+: bytes{std::move(bytes_)}
+, width{width_}
+, height{height_} {}
+
+Opal::Resources::RShader::RShader(RShader &&shader)
+: name{shader.name}
+, files{std::move(shader.files)} {}
+
+Opal::Resources::RShader::RShader(std::istream &stream) {
+
+}
+
+Opal::Resources::RShader::RShader(std::unordered_map<char, std::vector<unsigned char>> files)
+: files{std::move(files)} {}
 
 Opal::Resources::Object::Object(std::istream &stream) {
 
@@ -89,7 +107,7 @@ void Opal::Resources::Object::writeToStream(std::ostream &stream) {
 }
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RModel3D &model3d) {
-    write(stream, Opal::Util::RES_MODEL3D);
+    write(stream, Opal::Util::ResType::Model3D);
     writeString(stream, model3d.name);
     write(stream, model3d.meshes.size());
     for(auto& mesh : model3d.meshes) {
@@ -123,7 +141,7 @@ std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RVertex &v
 }
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RTexture &texture) {
-    write(stream, Opal::Util::RES_TEXTURE);
+    write(stream, Opal::Util::ResType::Texture);
     writeString(stream, texture.name);
     write(stream, texture.width);
     write(stream, texture.height);
@@ -132,11 +150,12 @@ std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RTexture &
 }
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RShader &shader) {
+    write(stream, Opal::Util::ResType::Shader);
     return stream;
 }
 
 std::size_t Opal::Resources::size(const RModel3D &model3d) {
-    std::size_t size = 0;
+    std::size_t size{0};
     for(auto &mesh : model3d.meshes) {
         size += Opal::Resources::size(mesh);
     }
@@ -163,8 +182,11 @@ std::size_t Opal::Resources::size(const RTexture &texture) {
 }
 
 std::size_t Opal::Resources::size(const RShader &shader) {
-    // TODO Implement this
-    return 0;
+    std::size_t size{0};
+    for(auto &[type, bytes] : shader.files) {
+        size += bytes.size();
+    }
+    return size;
 }
 
 void loadNode(const aiScene* scene, const aiNode* node, const glm::mat4 &parentTransform, std::vector<Opal::Resources::RMesh> &meshes) {
@@ -172,19 +194,19 @@ void loadNode(const aiScene* scene, const aiNode* node, const glm::mat4 &parentT
     copyaiMat(&node->mTransformation, transformation);
     transformation = parentTransform * transformation;
 
-    for(auto i = 0u; i < node->mNumChildren; i++) {
+    for(auto i{0u}; i < node->mNumChildren; i++) {
         loadNode(scene, node->mChildren[i], transformation, meshes);
     }
 
-    for(auto i = 0u; i < node->mNumMeshes; i++) {
+    for(auto i{0u}; i < node->mNumMeshes; i++) {
         aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
         std::vector<Opal::Resources::RVertex> vertices;
         std::vector<unsigned int> indices;
 
-        for(auto j = 0u; j < mesh->mNumVertices; j++) {
+        for(auto j{0u}; j < mesh->mNumVertices; j++) {
             Opal::Resources::RVertex vertex;
 
-            glm::vec4 position = transformation * glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f);
+            glm::vec4 position{transformation * glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f)};
             vertex.position = glm::vec3{position.x, position.y, position.z};
 
             vertex.normal = (mesh->HasNormals())
@@ -216,30 +238,30 @@ void loadNode(const aiScene* scene, const aiNode* node, const glm::mat4 &parentT
 }
 
 std::pair<Opal::Resources::RModel3D, std::unordered_map<std::string, Opal::Resources::RTexture>> Opal::Resources::loadModel3D(const std::string &modelname) {
-    std::string filename = "Resources/Models/" + modelname + ".3ds";
+    std::string filename{"Resources/Models/" + modelname + ".3ds"};
     Assimp::Importer importer;
-    const aiScene* scene = importer.ReadFile(filename.c_str(),
+    const aiScene* scene{importer.ReadFile(filename.c_str(),
         aiProcess_CalcTangentSpace |
         aiProcess_Triangulate |
         aiProcess_JoinIdenticalVertices |
-        aiProcess_SortByPType);
+        aiProcess_SortByPType)};
 
     std::vector<RMesh> meshes;
 
     if(!scene || !scene->mRootNode || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE) {
-        throw std::runtime_error("Loading model " + filename + " failed");
+        throw std::runtime_error{"Loading model " + filename + " failed"};
         exit(-1);
     }
 
     std::unordered_map<std::string, RTexture> textures;
 
-    aiMaterial** materials = scene->mMaterials;
-    for(auto i = 0u; i < scene->mNumMaterials; i++) {
+    aiMaterial** materials{scene->mMaterials};
+    for(auto i{0u}; i < scene->mNumMaterials; i++) {
         aiString aName;
         materials[i]->Get(AI_MATKEY_NAME, aName);
-        std::string texname = std::string(aName.C_Str());
-        std::string texresname = "tex_" + modelname + "_" + texname;
-        std::string texfilename = modelname + "/" + texname;
+        auto texname{std::string(aName.C_Str())};
+        auto texresname{"tex_" + modelname + "_" + texname};
+        auto texfilename{modelname + "/" + texname};
         if(textures.find(texresname) == textures.end()) {
             try {
                 textures.emplace(texresname, loadTexture(texfilename));
@@ -253,11 +275,11 @@ std::pair<Opal::Resources::RModel3D, std::unordered_map<std::string, Opal::Resou
 
     for(auto &mesh : meshes) {
         aiString aName;
-        unsigned int index = mesh.matIndex;
+        unsigned int index{mesh.matIndex};
         if(index < scene->mNumMaterials) {
             materials[mesh.matIndex]->Get(AI_MATKEY_NAME, aName);
-            std::string resname = "tex_" + modelname + "_" + aName.C_Str();
-            if(auto iter = textures.find(resname); iter != textures.end()) {
+            std::string resname{"tex_" + modelname + "_" + aName.C_Str()};
+            if(auto iter{textures.find(resname)}; iter != textures.end()) {
                 mesh.matName = iter->first;
             } else {
                 throw std::runtime_error(modelname + " missing unknown texture " + resname);
@@ -271,7 +293,7 @@ std::pair<Opal::Resources::RModel3D, std::unordered_map<std::string, Opal::Resou
 Opal::Resources::RModel3D Opal::Resources::loadModel3D(std::istream &stream) {
     RModel3D m3d;
     m3d.name = readString(stream);
-    auto meshSize = read<std::size_t>(stream);
+    auto meshSize{read<std::size_t>(stream)};
     for(auto i = 0u; i < meshSize; i++) {
         m3d.meshes.emplace_back();
         auto &mesh = m3d.meshes.back();

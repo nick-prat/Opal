@@ -1,19 +1,53 @@
-#ifndef _UTIL_H
-#define _UTIL_H
+#ifndef _UTILITIES_H
+#define _UTILITIES_H
 
-#include <fstream>
-#include <string>
-#include <array>
+#include <Util/exceptions.hh>
 #include <vector>
-
+#include <string>
+#include <fstream>
 #include <assimp/matrix4x4.h>
 #include <glm/glm.hpp>
 
 namespace Opal::Util {
 
+    void PrintGLErrors();
+
+    template<typename T, typename U = void, typename... Ts>
+    static constexpr bool contains() {
+        if(std::is_same<U, void>::value) {
+            return false;
+        } else if(std::is_same<T, U>::value) {
+            return true;
+        } else {
+            return contains<T, Ts...>();
+        }
+    }
+
+    template<typename T, typename U = void, typename... Ts>
+    static constexpr unsigned int index(int i = 0) {
+        if(std::is_same<T, U>::value) {
+            return i;
+        } else if (!std::is_same<U, void>::value) {
+            return index<T, Ts...>(++i);
+        } else {
+            return -1;
+        }
+    }
+
     constexpr char OPLTAG[3]{'\x4F', '\x50', '\x4C'};
-    constexpr char RES_MODEL3D = '\x01';
-    constexpr char RES_TEXTURE = '\x02';
+
+    enum ResType : unsigned char {
+        Model3D = 0x01,
+        Texture,
+        Shader,
+        ShaderVert,
+        ShaderGeo,
+        ShaderTessCtrl,
+        ShaderTessEval,
+        ShaderFrag,
+        ShaderComp
+    };
+
     constexpr unsigned char RES_TEXTURE_BPP = 4;
     constexpr unsigned short VERSION = 1;
 
@@ -63,4 +97,4 @@ namespace Opal::Util {
 
 }
 
-#endif // _UTIL_h
+#endif // _UTILITIES_H

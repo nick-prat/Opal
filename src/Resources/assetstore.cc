@@ -1,10 +1,3 @@
-/*
- *  Resource Handler: functions for loading all supported data types
- *      - Loads JSON scene information from jsoncpp (https://github.com/open-source-parsers/jsoncpp)
- *      - Loads TGA textures via FreeImage
- *      - Loads 3Ds models via Assimp
- */
-
 #include <Resources/assetstore.hh>
 
 #include <glm/glm.hpp>
@@ -13,8 +6,8 @@
 #include <vector>
 #include <fstream>
 
-#include <Utilities/exceptions.hh>
-#include <Utilities/log.hh>
+#include <Util/exceptions.hh>
+#include <Util/log.hh>
 #include <Resources/texture.hh>
 
 #include "scenehandler.hh"
@@ -26,10 +19,6 @@ Opal::AssetStore::AssetStore(const std::string &scene) {
         throw std::runtime_error{"Couldn't open file " + scene};
     }
 
-    if(!file.is_open()) {
-        throw std::runtime_error{"Couldn't open file " + scene};
-    }
-
     Resources::SceneHandler sh;
     sh.readFromBIN(file);
 
@@ -37,7 +26,7 @@ Opal::AssetStore::AssetStore(const std::string &scene) {
         m_textures.emplace(std::move(name), Texture(std::move(texture)));
     }
 
-    auto &model3ds = sh.getModel3Ds();
+    auto &model3ds{sh.getModel3Ds()};
 
     for(auto &[name, m3d] : sh.getModel3Ds()) {
         std::unordered_map<std::string, Texture*> textures;
@@ -107,7 +96,7 @@ Opal::Model3D &Opal::AssetStore::getModel3D(const std::string &name) {
     if(auto res{m_model3Ds.find(name)}; res != m_model3Ds.end()) {
         return res->second;
     } else {
-        throw BadResource{"Model3D not found", name};
+        throw std::invalid_argument{"Model3D " + name + " not found"};
     }
 }
 
@@ -115,7 +104,7 @@ const Opal::Model3D &Opal::AssetStore::getModel3D(const std::string &name) const
     if(auto res{m_model3Ds.find(name)}; res != m_model3Ds.end()) {
         return res->second;
     } else {
-        throw BadResource{"Model3D not found", name};
+        throw std::invalid_argument{"Model3D " + name + " not found"};
     }
 }
 
@@ -123,7 +112,7 @@ Opal::Texture &Opal::AssetStore::getTexture(const std::string &name) {
     if(auto res{m_textures.find(name)}; res != m_textures.end()) {
         return res->second;
     } else {
-        throw BadResource{"Texture not found", name};
+        throw std::invalid_argument{"Texture " + name + " not found"};
     }
 }
 
@@ -131,6 +120,6 @@ const Opal::Texture &Opal::AssetStore::getTexture(const std::string &name) const
     if(auto res{m_textures.find(name)}; res != m_textures.end()) {
         return res->second;
     } else {
-        throw BadResource{"Texture not found", name};
+        throw std::invalid_argument{"Texture " + name + " not found"};
     }
 }

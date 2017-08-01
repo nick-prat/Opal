@@ -3,8 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <Utilities/exceptions.hh>
-#include <Utilities/log.hh>
+#include <Util/exceptions.hh>
+#include <Util/log.hh>
 #include <Core/camera.hh>
 
 Opal::Display::Display()

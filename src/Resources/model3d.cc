@@ -3,8 +3,8 @@
 #include <iostream>
 
 #include <Resources/texture.hh>
-#include <Utilities/log.hh>
-#include <Utilities/exceptions.hh>
+#include <Util/log.hh>
+#include <Util/exceptions.hh>
 
 Opal::Model3D::Model3D(Resources::RModel3D &&model3d, std::unordered_map<std::string, Texture*> &&textures)
 : RModel3D{std::move(model3d)}
@@ -29,7 +29,7 @@ const Opal::Texture &Opal::Model3D::getTexture(const std::string &key) const {
     if(auto tex{m_textures.find(key)}; tex != m_textures.end()) {
         return *(tex->second);
     } else {
-        throw BadResource{"texture not found", key};
+        throw std::invalid_argument{"texture " + key + " not found"};
     }
 }
 
@@ -41,8 +41,7 @@ std::string Opal::Model3D::getMatName(unsigned int i) const {
     if(i < meshes.size()) {
         return meshes[i].matName;
     } else {
-        // TODO Throw proper error
-        return "";
+        throw std::invalid_argument{"Index out of range"};
     }
 }
 
@@ -51,7 +50,7 @@ unsigned int Opal::Model3D::getMeshCount() const {
 }
 
 unsigned int Opal::Model3D::getFaceCount() const {
-    unsigned int faceCount = 0;
+    auto faceCount{0u};
     for(const auto &mesh : meshes) {
         faceCount += mesh.indices.size() / 3;
     }
@@ -60,16 +59,14 @@ unsigned int Opal::Model3D::getFaceCount() const {
 
 std::vector<GLuint> Opal::Model3D::generateVAOs() const {
     std::vector<GLuint> vaos;
+    vaos.reserve(meshes.size());
+    glGenVertexArrays(meshes.size(), vaos.data());
 
-    for(const auto &mesh : meshes) {
-        GLuint vao{0};
-        GLuint vbo{0};
-        GLuint ibo{0};
-        glGenVertexArrays(1, &vao);
-        glBindVertexArray(vao);
+    for(auto i = 0u; i < meshes.size(); i++) {
+        glBindVertexArray(vaos[i]);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
+        glBindBuffer(GL_ARRAY_BUFFER, m_meshVBOs[i]);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshIBOs[i]);
 
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Resources::RVertex), 0);
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Resources::RVertex), (GLvoid*)sizeof(glm::vec3));
@@ -77,8 +74,6 @@ std::vector<GLuint> Opal::Model3D::generateVAOs() const {
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
         glEnableVertexAttribArray(2);
-
-        vaos.push_back(vao);
     }
 
     return vaos;

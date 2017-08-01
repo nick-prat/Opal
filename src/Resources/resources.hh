@@ -6,8 +6,7 @@
 #include <array>
 #include <iostream>
 #include <unordered_map>
-
-#include "util.hh"
+#include <glm/glm.hpp>
 
 namespace Opal::Resources {
 
@@ -57,7 +56,13 @@ namespace Opal::Resources {
     };
 
     struct RShader {
+        RShader() = default;
+        RShader(RShader &&shader);
+        RShader(std::istream &stream);
+        RShader(std::unordered_map<char, std::vector<unsigned char>> files);
+
         std::string name;
+        std::unordered_map<char, std::vector<unsigned char>> files;
     };
 
     struct Object {
