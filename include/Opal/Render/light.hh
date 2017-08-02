@@ -1,8 +1,8 @@
 #ifndef _LIGHT_H
 #define _LIGHT_H
 
+#include <Opal/Core/gl.hh>
 #include <glm/glm.hpp>
-#include <Core/gl.hh>
 
 namespace Opal {
 

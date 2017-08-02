@@ -1,10 +1,10 @@
 #ifndef _MOVEMENT_SYSTEM_H
 #define _MOVEMENT_SYSTEM_H
 
-#include <glm/gtx/transform.hpp>
+#include <Opal/Components/components.hh>
 
+#include <glm/gtx/transform.hpp>
 #include <Emerald/emerald.hh>
-#include <Components/components.hh>
 #include <Emerald/system.hh>
 
 namespace Opal {

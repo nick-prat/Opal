@@ -1,17 +1,17 @@
 #ifndef _SCENE_H
 #define _SCENE_H
 
+#include <Opal/Util/lua.hh>
+#include <Opal/Core/display.hh>
+#include <Opal/Systems/rendersystem.hh>
+#include <Opal/Systems/movementsystem.hh>
+#include <Opal/Resources/assetstore.hh>
+#include <Opal/Render/light.hh>
+
+#include <Emerald/emerald.hh>
 #include <unordered_map>
 #include <string>
 #include <vector>
-
-#include <Util/lua.hh>
-#include <Core/display.hh>
-#include <Emerald/emerald.hh>
-#include <Systems/rendersystem.hh>
-#include <Systems/movementsystem.hh>
-#include <Render/light.hh>
-#include <Resources/assetstore.hh>
 
 namespace Opal {
 

@@ -1,15 +1,13 @@
-#include <Core/gl.hh>
-#include <GLFW/glfw3.h>
-
-#include "scene.hh"
+#include <Opal/Scene/scene.hh>
+#include <Opal/Core/gl.hh>
+#include <Opal/Core/camera.hh>
+#include <Opal/Util/exceptions.hh>
+#include <Opal/Util/log.hh>
 
 #include <iostream>
 #include <fstream>
 
 #include <LuaBridge/LuaBridge.h>
-#include <Core/camera.hh>
-#include <Util/exceptions.hh>
-#include <Util/log.hh>
 #include <LuaBridge/LuaBridge.h>
 
 using luabridge::LuaRef;

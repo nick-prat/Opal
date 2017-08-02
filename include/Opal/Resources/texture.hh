@@ -1,12 +1,11 @@
 #ifndef _TEXTURE_H
 #define _TEXTURE_H
 
+#include <Opal/Core/gl.hh>
+#include <Opal/Render/sampler.hh>
+#include <Opal/Resources/resources.hh>
+
 #include <string>
-#include <Core/gl.hh>
-
-#include <Render/sampler.hh>
-
-#include "resources.hh"
 
 namespace Opal {
 

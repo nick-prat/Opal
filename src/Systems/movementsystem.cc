@@ -1,4 +1,4 @@
-#include "movementsystem.hh"
+#include <Opal/Systems/movementsystem.hh>
 
 void Opal::MovementSystem::update(Emerald::EntityManager &entMan) {
     entMan.mapEntities<CBody, CPhysics>([&entMan](auto ent) {

@@ -1,4 +1,4 @@
-#include "light.hh"
+#include <Opal/Render/light.hh>
 
 #include <cstring>
 

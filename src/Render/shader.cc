@@ -1,5 +1,7 @@
-#include <Core/gl.hh>
-#include "shader.hh"
+#include <Opal/Core/gl.hh>
+#include <Opal/Render/shader.hh>
+#include <Opal/Util/exceptions.hh>
+#include <Opal/Util/log.hh>
 
 #include <iostream>
 #include <fstream>
@@ -7,9 +9,6 @@
 #include <string>
 #include <cstring>
 #include <list>
-
-#include <Util/exceptions.hh>
-#include <Util/log.hh>
 
 Opal::Shader::Shader(std::vector<std::string> fileNames, const std::vector<GLenum> &types)
 : m_numShaders(0)

@@ -5,7 +5,7 @@
 #include <fstream>
 #include <unordered_map>
 
-#include "resources.hh"
+#include <Opal/Resources/resources.hh>
 
 namespace Opal::Resources {
 

@@ -1,7 +1,7 @@
 #ifndef _SAMPLER_H
 #define _SAMPLER_H
 
-#include <Core/gl.hh>
+#include <Opal/Core/gl.hh>
 
 namespace Opal {
 

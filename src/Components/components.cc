@@ -1,4 +1,4 @@
-#include "components.hh"
+#include <Opal/Components/components.hh>
 
 #include <iostream>
 #include <glm/gtx/transform.hpp>

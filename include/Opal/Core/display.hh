@@ -1,13 +1,12 @@
 #ifndef _DISPLAY_H
 #define _DISPLAY_H
 
-#include <Core/gl.hh>
+#include <Opal/Core/gl.hh>
+#include <Opal/Core/camera.hh>
 
 #include <unordered_map>
 #include <memory>
 #include <glm/glm.hpp>
-
-#include <Core/camera.hh>
 
 namespace Opal {
 

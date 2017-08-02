@@ -1,12 +1,12 @@
 #ifndef _SHADER_H
 #define _SHADER_H
 
+#include <Opal/Core/gl.hh>
+
 #include <vector>
 #include <string>
 #include <list>
 #include <unordered_map>
-
-#include <Core/gl.hh>
 
 namespace Opal {
 

@@ -1,18 +1,17 @@
 #ifndef _GLCORE_H
 #define _GLCORE_H
 
+#include <Opal/Core/display.hh>
+#include <Opal/Scene/scene.hh>
+
 #include <memory>
 #include <glm/glm.hpp>
-
 
 extern "C" {
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 }
-
-#include <Core/display.hh>
-#include <Scene/scene.hh>
 
 // TODO Be able to switch between what window is active
 

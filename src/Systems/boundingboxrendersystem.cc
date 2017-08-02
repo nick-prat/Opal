@@ -1,8 +1,8 @@
-#include "rendersystem.hh"
+#include <Opal/Systems/rendersystem.hh>
+#include <Opal/Components/components.hh>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <Components/components.hh>
 
 Opal::BoundingBoxRenderSystem::BoundingBoxRenderSystem(const Shader &shader, const Display &display, WorldLight &light)
 : RenderSystem(shader, display, light) {}

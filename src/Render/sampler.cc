@@ -1,6 +1,5 @@
-#include "sampler.hh"
-
-#include <Core/gl.hh>
+#include <Opal/Render/sampler.hh>
+#include <Opal/Core/gl.hh>
 
 Opal::Sampler::Sampler() {
     glGenSamplers(1, &m_sampler);

@@ -1,10 +1,9 @@
-#include "model3d.hh"
+#include <Opal/Resources/model3d.hh>
+#include <Opal/Resources/texture.hh>
+#include <Opal/Util/log.hh>
+#include <Opal/Util/exceptions.hh>
 
 #include <iostream>
-
-#include <Resources/texture.hh>
-#include <Util/log.hh>
-#include <Util/exceptions.hh>
 
 Opal::Model3D::Model3D(Resources::RModel3D &&model3d, std::unordered_map<std::string, Texture*> &&textures)
 : RModel3D{std::move(model3d)}

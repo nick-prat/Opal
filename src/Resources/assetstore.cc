@@ -1,16 +1,14 @@
-#include <Resources/assetstore.hh>
+#include <Opal/Resources/scenehandler.hh>
+#include <Opal/Resources/assetstore.hh>
+#include <Opal/Util/exceptions.hh>
+#include <Opal/Util/log.hh>
+#include <Opal/Resources/texture.hh>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/transform.hpp>
 #include <memory>
 #include <vector>
 #include <fstream>
-
-#include <Util/exceptions.hh>
-#include <Util/log.hh>
-#include <Resources/texture.hh>
-
-#include "scenehandler.hh"
 
 Opal::AssetStore::AssetStore(const std::string &scene) {
 
@@ -38,7 +36,7 @@ Opal::AssetStore::AssetStore(const std::string &scene) {
             }
         }
 
-        m_model3Ds.emplace(name, Model3D(std::move(m3d), std::move(textures)));
+        m_model3Ds.emplace(name, Model3D{std::move(m3d), std::move(textures)});
     }
 
     // TODO Create Entities from SceneHandler to ResourceHandler

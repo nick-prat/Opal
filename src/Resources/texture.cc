@@ -1,8 +1,7 @@
-#include "texture.hh"
+#include <Opal/Resources/texture.hh>
+#include <Opal/Util/log.hh>
 
 #include <iostream>
-
-#include <Util/log.hh>
 
 using namespace Opal;
 

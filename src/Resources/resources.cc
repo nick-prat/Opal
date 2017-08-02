@@ -1,12 +1,11 @@
-#include "resources.hh"
+#include <Opal/Resources/resources.hh>
+#include <Opal/Util/util.hh>
 
 #include <FreeImage.h>
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <iostream>
-
-#include <Util/util.hh>
 
 using namespace Opal::Util;
 
@@ -80,6 +79,7 @@ Opal::Resources::RShader::RShader(RShader &&shader)
 , files{std::move(shader.files)} {}
 
 Opal::Resources::RShader::RShader(std::istream &stream) {
+    auto base{stream.tellg()};
     name = read<std::string>(stream);
     auto size{read<std::size_t>(stream)};
     for(auto i{0u}; i < size; i++) {
@@ -88,6 +88,7 @@ Opal::Resources::RShader::RShader(std::istream &stream) {
         if(auto iter = files.emplace(type, std::vector<char>{}); iter.second) {
             stream.read(iter.first->second.data(), size);
         } else {
+            stream.seekg(base);
             throw std::runtime_error("Shader " + name + " contains multiple shaders of same type");
         }
     }
@@ -118,6 +119,8 @@ void Opal::Resources::Object::writeToStream(std::ostream &stream) {
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RModel3D &model3d) {
     write(stream, Opal::Util::ResType::Model3D);
+    write(stream, size(model3d));
+
     write(stream, model3d.name);
     write(stream, model3d.meshes.size());
     for(auto& mesh : model3d.meshes) {
@@ -152,6 +155,8 @@ std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RVertex &v
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RTexture &texture) {
     write(stream, Opal::Util::ResType::Texture);
+    write(stream, size(texture));
+
     write(stream, texture.name);
     write(stream, texture.width);
     write(stream, texture.height);
@@ -161,6 +166,8 @@ std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RTexture &
 
 std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RShader &shader) {
     write(stream, Opal::Util::ResType::Shader);
+    write(stream, size(shader));
+
     write(stream, shader.name);
     write(stream, shader.files.size());
     for(const auto &[type, bytes] : shader.files) {
@@ -172,7 +179,7 @@ std::ostream &Opal::Resources::operator<<(std::ostream &stream, const RShader &s
 }
 
 std::size_t Opal::Resources::size(const RModel3D &model3d) {
-    std::size_t size{0};
+    std::size_t size{model3d.name.size() + 1};
     for(auto &mesh : model3d.meshes) {
         size += Opal::Resources::size(mesh);
     }
@@ -195,11 +202,14 @@ std::size_t Opal::Resources::size(const RVertex &vertex) {
 }
 
 std::size_t Opal::Resources::size(const RTexture &texture) {
-    return texture.bytes.size();
+    return texture.name.size() + 1
+        + sizeof(decltype(texture.width))
+        + sizeof(decltype(texture.height))
+        + texture.bytes.size();
 }
 
 std::size_t Opal::Resources::size(const RShader &shader) {
-    std::size_t size{0};
+    std::size_t size{shader.name.size() + 1};
     for(auto &[type, bytes] : shader.files) {
         size += bytes.size();
     }

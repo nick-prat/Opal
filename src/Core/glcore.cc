@@ -1,10 +1,9 @@
-#include "glcore.hh"
+#include <Opal/Core/glcore.hh>
+#include <Opal/Scene/scene.hh>
+#include <Opal/Util/exceptions.hh>
+#include <Opal/Util/log.hh>
 
 #include <string>
-
-#include <Scene/scene.hh>
-#include <Util/exceptions.hh>
-#include <Util/log.hh>
 #include <iostream>
 
 // TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])

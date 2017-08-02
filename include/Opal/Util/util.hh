@@ -1,7 +1,7 @@
 #ifndef _UTILITIES_H
 #define _UTILITIES_H
 
-#include <Util/exceptions.hh>
+#include <Opal/Util/exceptions.hh>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -68,11 +68,7 @@ namespace Opal::Util {
     }
 
     template<>
-    void write<const std::string&>(std::ostream &stream, const std::string &data) {
-        std::vector<char> vec(data.begin(), data.end());
-        stream.write(vec.data(), vec.size());
-        stream.write("\0", sizeof(char));
-    }
+    void write<const std::string&>(std::ostream &stream, const std::string &data);
 
     template<typename data_t>
     std::enable_if_t<std::is_pointer<data_t>::value, void> write(std::ostream &stream, data_t data, std::size_t size) {
@@ -89,18 +85,7 @@ namespace Opal::Util {
     }
 
     template<>
-    std::string read<std::string>(std::istream &stream) {
-        std::vector<char> vec;
-        char in = '\0';
-        while(true) {
-            stream.read(&in, sizeof(char));
-            if(in == '\0') {
-                break;
-            }
-            vec.push_back(in);
-        }
-        return std::string(vec.begin(), vec.end());
-    }
+    std::string read<std::string>(std::istream &stream);
 
     template<std::size_t length>
     bool bytecmp(const char* const l, const char* const r) {

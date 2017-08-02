@@ -1,11 +1,10 @@
-#include "display.hh"
+#include <Opal/Core/display.hh>
+#include <Opal/Util/exceptions.hh>
+#include <Opal/Util/log.hh>
+#include <Opal/Core/camera.hh>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-
-#include <Util/exceptions.hh>
-#include <Util/log.hh>
-#include <Core/camera.hh>
 
 Opal::Display::Display()
         : m_projMatrix({1.0f}) {}

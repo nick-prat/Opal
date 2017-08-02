@@ -1,10 +1,10 @@
 #ifndef _RENDER_SYSTEM_H
 #define _RENDER_SYSTEM_H
 
-#include <Core/display.hh>
+#include <Opal/Core/display.hh>
+#include <Opal/Render/shader.hh>
+#include <Opal/Render/light.hh>
 
-#include <Render/shader.hh>
-#include <Render/light.hh>
 #include <Emerald/emerald.hh>
 
 namespace Opal {

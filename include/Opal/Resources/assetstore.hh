@@ -1,15 +1,15 @@
 #ifndef _RESOURCE_HANDLER_H
 #define _RESOURCE_HANDLER_H
 
+#include <Opal/Util/exceptions.hh>
+#include <Opal/Render/shader.hh>
+#include <Opal/Resources/model3d.hh>
+#include <Opal/Resources/texture.hh>
+
 #include <unordered_map>
 #include <memory>
 #include <vector>
 #include <glm/glm.hpp>
-
-#include <Util/exceptions.hh>
-#include <Render/shader.hh>
-#include <Resources/model3d.hh>
-#include <Resources/texture.hh>
 
 // TODO Might be a good idea to store any resource in ogl buffers instead
 

@@ -1,15 +1,15 @@
 #ifndef _MODEL3D_H
 #define _MODEL3D_H
 
+#include <Opal/Core/gl.hh>
+#include <Opal/Resources/resources.hh>
+#include <Opal/Resources/texture.hh>
+
 #include <glm/glm.hpp>
 #include <string>
 #include <unordered_map>
 #include <vector>
 #include <memory>
-#include <Core/gl.hh>
-
-#include "resources.hh"
-#include "texture.hh"
 
 namespace Opal {
 

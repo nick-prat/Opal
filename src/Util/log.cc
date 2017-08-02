@@ -1,4 +1,4 @@
-#include "log.hh"
+#include <Opal/Util/log.hh>
 
 #include <iostream>
 

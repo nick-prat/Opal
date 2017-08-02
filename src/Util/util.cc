@@ -1,8 +1,6 @@
-#include "util.hh"
-
-#include <Core/gl.hh>
-
-#include <Util/log.hh>
+#include <Opal/Util/util.hh>
+#include <Opal/Core/gl.hh>
+#include <Opal/Util/log.hh>
 
 void Opal::Util::PrintGLErrors()
 {
@@ -36,4 +34,25 @@ void Opal::Util::copyaiMat(const aiMatrix4x4* from, glm::mat4 &to) {
     to[2][2] = from->c3; to[3][2] = from->c4;
     to[0][3] = from->d1; to[1][3] = from->d2;
     to[2][3] = from->d3; to[3][3] = from->d4;
+}
+
+template<>
+void Opal::Util::write<const std::string&>(std::ostream &stream, const std::string &data) {
+    std::vector<char> vec(data.begin(), data.end());
+    stream.write(vec.data(), vec.size());
+    stream.write("\0", sizeof(char));
+}
+
+template<>
+std::string Opal::Util::read<std::string>(std::istream &stream)  {
+    std::vector<char> vec;
+    char in = '\0';
+    while(true) {
+        stream.read(&in, sizeof(char));
+        if(in == '\0') {
+            break;
+        }
+        vec.push_back(in);
+    }
+    return std::string(vec.begin(), vec.end());
 }

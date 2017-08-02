@@ -1,7 +1,7 @@
-#include "scenehandler.hh"
-#include "resources.hh"
+#include <Opal/Resources/scenehandler.hh>
+#include <Opal/Resources/resources.hh>
+#include <Opal/Util/util.hh>
 
-#include <Util/util.hh>
 #include <json.hpp>
 
 using json = nlohmann::json;
