@@ -30,6 +30,7 @@ set(SOURCE_FILES
     src/Scene/scene.cc
 
     # Resources
+    src/Resources/scenehandler.cc
     src/Resources/assetstore.cc
     src/Resources/model3d.cc
     src/Resources/resources.cc

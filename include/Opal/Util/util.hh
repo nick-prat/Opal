@@ -67,9 +67,6 @@ namespace Opal::Util {
         stream.write(data, sizeof(std::decay_t<data_t>));
     }
 
-    template<>
-    void write<const std::string&>(std::ostream &stream, const std::string &data);
-
     template<typename data_t>
     std::enable_if_t<std::is_pointer<data_t>::value, void> write(std::ostream &stream, data_t data, std::size_t size) {
         static_assert(std::is_standard_layout<std::decay<data_t>>(), "write failed, data isn't standard layout");
@@ -84,8 +81,9 @@ namespace Opal::Util {
         return data;
     }
 
-    template<>
-    std::string read<std::string>(std::istream &stream);
+    void writeString(std::ostream &stream, const std::string &data);
+    
+    std::string readString(std::istream &stream);
 
     template<std::size_t length>
     bool bytecmp(const char* const l, const char* const r) {

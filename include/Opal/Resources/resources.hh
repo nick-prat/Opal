@@ -81,18 +81,17 @@ namespace Opal::Resources {
 
     std::ostream &operator<<(std::ostream &stream, const RModel3D &model3d);
     std::ostream &operator<<(std::ostream &stream, const RMesh &mesh);
-    std::ostream &operator<<(std::ostream &stream, const RVertex &vertex);
     std::ostream &operator<<(std::ostream &stream, const RTexture &texture);
     std::ostream &operator<<(std::ostream &stream, const RShader &shader);
 
     std::size_t size(const RModel3D &model3d);
     std::size_t size(const RMesh &mesh);
-    std::size_t size(const RVertex &vertex);
     std::size_t size(const RTexture &texture);
     std::size_t size(const RShader &shader);
 
     std::pair<RModel3D, std::unordered_map<std::string, RTexture>> loadModel3D(const std::string &filename);
     RModel3D loadModel3D(std::istream &stream);
+    RMesh loadMesh(std::istream &stream);
     RTexture loadTexture(const std::string &filename);
     RTexture loadTexture(std::istream &stream);
     RShader loadShader(const std::string &filename);

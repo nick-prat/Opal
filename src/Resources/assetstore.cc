@@ -12,13 +12,12 @@
 
 Opal::AssetStore::AssetStore(const std::string &scene) {
 
-    std::ifstream file{scene};
+    std::ifstream file{scene, std::ios::binary};
     if(!file.is_open()) {
         throw std::runtime_error{"Couldn't open file " + scene};
     }
 
-    Resources::SceneHandler sh;
-    sh.readFromBIN(file);
+    Resources::SceneHandler sh{file};
 
     for(auto &[name, texture] : sh.getTextures()) {
         m_textures.emplace(std::move(name), Texture(std::move(texture)));
@@ -119,5 +118,21 @@ const Opal::Texture &Opal::AssetStore::getTexture(const std::string &name) const
         return res->second;
     } else {
         throw std::invalid_argument{"Texture " + name + " not found"};
+    }
+}
+
+Opal::Shader &Opal::AssetStore::getShader(const std::string &name) {
+    if( auto res{m_shaders.find(name)}; res != m_shaders.end()) {
+        return res->second;
+    } else {
+        throw std::invalid_argument{"Shader " + name + " not found"};
+    }
+}
+
+const Opal::Shader &Opal::AssetStore::getShader(const std::string &name) const {
+    if( auto res{m_shaders.find(name)}; res != m_shaders.end()) {
+        return res->second;
+    } else {
+        throw std::invalid_argument{"Shader " + name + " not found"};
     }
 }

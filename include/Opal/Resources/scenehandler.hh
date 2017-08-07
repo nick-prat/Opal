@@ -12,11 +12,10 @@ namespace Opal::Resources {
     class SceneHandler {
     public:
         SceneHandler() = default;
+        SceneHandler(std::istream &stream);
 
-        void readFromJSON(std::ifstream &file);
-        void readFromBIN(std::ifstream &file);
-        void writeToJSON();
-        void writeToBIN();
+        void writeToJSON(std::ostream &stream);
+        void writeToBIN(std::ostream &stream);
 
         void deleteModel3D(const std::string &name);
         void deleteTexture(const std::string &name);
@@ -34,6 +33,10 @@ namespace Opal::Resources {
         void info();
         void model3DInfo();
         void textureInfo();
+
+    private:
+        void readJSON(std::istream &stream);
+        void readBIN(std::istream &stream);
 
     private:
         std::string m_sceneName;

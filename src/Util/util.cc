@@ -36,15 +36,13 @@ void Opal::Util::copyaiMat(const aiMatrix4x4* from, glm::mat4 &to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-template<>
-void Opal::Util::write<const std::string&>(std::ostream &stream, const std::string &data) {
+void Opal::Util::writeString(std::ostream &stream, const std::string &data) {
     std::vector<char> vec(data.begin(), data.end());
     stream.write(vec.data(), vec.size());
     stream.write("\0", sizeof(char));
 }
 
-template<>
-std::string Opal::Util::read<std::string>(std::istream &stream)  {
+std::string Opal::Util::readString(std::istream &stream)  {
     std::vector<char> vec;
     char in = '\0';
     while(true) {
