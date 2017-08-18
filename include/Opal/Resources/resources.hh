@@ -7,8 +7,19 @@
 #include <iostream>
 #include <unordered_map>
 #include <glm/glm.hpp>
+#include <json.hpp>
 
 namespace Opal::Resources {
+
+    struct RFile {
+        RFile() = default;
+        RFile(const RFile &file) = default;
+        RFile(RFile &&file);
+        RFile(std::istream &stream);
+        RFile(std::vector<char> &&bytes);
+
+        std::vector<char> bytes;
+    };
 
     struct RVertex {
         RVertex() = default;
@@ -41,6 +52,7 @@ namespace Opal::Resources {
         RModel3D(std::vector<RMesh> &&meshes);
 
         std::string name;
+        std::string filename;
         std::vector<RMesh> meshes;
     };
 
@@ -48,10 +60,11 @@ namespace Opal::Resources {
         RTexture() = default;
         RTexture(RTexture &&texture);
         RTexture(std::istream &stream);
-        RTexture(std::vector<unsigned char> &&bytes, unsigned int width, unsigned int height);
+        RTexture(std::vector<char> &&bytes, unsigned int width, unsigned int height);
 
         std::string name;
-        std::vector<unsigned char> bytes;
+        std::string filename;
+        std::vector<char> bytes;
         unsigned int width, height;
     };
 
@@ -59,18 +72,15 @@ namespace Opal::Resources {
         RShader() = default;
         RShader(RShader &&shader);
         RShader(std::istream &stream);
-        RShader(std::unordered_map<char, std::vector<char>> files);
+        RShader(std::unordered_map<char, RFile> &&files);
 
         std::string name;
-        std::unordered_map<char, std::vector<char>> files;
+        std::unordered_map<char, RFile> files;
     };
 
-    struct Object {
-        Object() = default;
-        Object(std::istream &stream);
-
-        std::size_t size() const;
-        void writeToStream(std::ostream &stream);
+    struct RObject {
+        RObject() = default;
+        RObject(std::istream &stream);
 
         char type;
         std::string resourceName;
@@ -83,18 +93,24 @@ namespace Opal::Resources {
     std::ostream &operator<<(std::ostream &stream, const RMesh &mesh);
     std::ostream &operator<<(std::ostream &stream, const RTexture &texture);
     std::ostream &operator<<(std::ostream &stream, const RShader &shader);
+    std::ostream &operator<<(std::ostream &stream, const RFile &file);
+    std::ostream &operator<<(std::ostream &stream, const RObject &object);
 
-    std::size_t size(const RModel3D &model3d);
-    std::size_t size(const RMesh &mesh);
-    std::size_t size(const RTexture &texture);
-    std::size_t size(const RShader &shader);
+    std::size_t sizeOf(const RFile &file);
+    std::size_t sizeOf(const RModel3D &model3d);
+    std::size_t sizeOf(const RMesh &mesh);
+    std::size_t sizeOf(const RTexture &texture);
+    std::size_t sizeOf(const RShader &shader);
+    std::size_t sizeOf(const RObject &object);
 
-    std::pair<RModel3D, std::unordered_map<std::string, RTexture>> loadModel3D(const std::string &filename);
+    RFile loadFile(const std::string &filename);
+    RFile loadFile(std::istream &stream);
+    std::pair<RModel3D, std::unordered_map<std::string, RTexture>> loadModel3D(const std::string &filename, const std::string &resourcename);
     RModel3D loadModel3D(std::istream &stream);
     RMesh loadMesh(std::istream &stream);
-    RTexture loadTexture(const std::string &filename);
+    RTexture loadTexture(const std::string &texture);
     RTexture loadTexture(std::istream &stream);
-    RShader loadShader(const std::string &filename);
+    RShader loadShader(const nlohmann::json &shader);
     RShader loadShader(std::istream &stream);
 }
 

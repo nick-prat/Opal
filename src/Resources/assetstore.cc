@@ -12,12 +12,7 @@
 
 Opal::AssetStore::AssetStore(const std::string &scene) {
 
-    std::ifstream file{scene, std::ios::binary};
-    if(!file.is_open()) {
-        throw std::runtime_error{"Couldn't open file " + scene};
-    }
-
-    Resources::SceneHandler sh{file};
+    Resources::SceneHandler sh{scene};
 
     for(auto &[name, texture] : sh.getTextures()) {
         m_textures.emplace(std::move(name), Texture(std::move(texture)));
@@ -41,53 +36,6 @@ Opal::AssetStore::AssetStore(const std::string &scene) {
     // TODO Create Entities from SceneHandler to ResourceHandler
 
 }
-
-/*
-Shader &Opal::AssetStore::getShader(const std::string &shader) {
-    auto ret = m_shaders.find(shader);
-    if(ret != m_shaders.end()) {
-        return ret->second;
-    }
-    throw BadResource("Couldn't find shader", shader);
-}
-
-void AssetStore::loadShader(const json &object) {
-    std::string name = object["resourcename"];
-    if(m_shaders.find(name) != m_shaders.end()) {
-        return;
-    }
-
-    std::string filename = object["filename"];
-    std::vector<std::string> files = object["types"];
-    if(files.size() == 0) {
-        throw BadResource("types is empty", name);
-    }
-    std::vector<GLenum> types;
-    for(auto &file : files) {
-        if(file == "fragment") {
-            types.push_back(GL_FRAGMENT_SHADER);
-            file = filename + '/' + filename + "_fs.glsl";
-        } else if(file == "vertex") {
-            types.push_back(GL_VERTEX_SHADER);
-            file = filename + '/' + filename + "_vs.glsl";
-        } else if(file == "geometry") {
-            types.push_back(GL_GEOMETRY_SHADER);
-            file = filename + '/' + filename + "_gs.glsl";
-        }
-    }
-
-    Shader shader(files, types);
-
-    if(object.find("uniforms") != object.end()) {
-        std::vector<std::string> uniforms = object["uniforms"];
-        for(const auto &uniform : uniforms) {
-            shader.registerUniform(uniform);
-        }
-    }
-
-    m_shaders.emplace(name, std::move(shader));
-}
-*/
 
 Opal::Model3D &Opal::AssetStore::getModel3D(const std::string &name) {
     if(auto res{m_model3Ds.find(name)}; res != m_model3Ds.end()) {

@@ -41,6 +41,8 @@ namespace Opal {
 
         template<typename scene_t = Scene>
         void loadScene(const std::string &scenename) {
+            std::cout << "saaah\n";
+            static_assert(std::is_base_of<Scene, scene_t>::value || std::is_same<scene_t, Scene>::value, "Scene type doesn't inherit base Scene");
             m_scene = std::make_unique<scene_t>(m_display, scenename);
         }
 

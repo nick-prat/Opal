@@ -36,7 +36,7 @@ Opal::Scene::Scene(Display &display, const std::string &scenename)
 
     registerLuaFunctions();
 
-    std::string contents;
+    /*std::string contents;
     std::ifstream in(filename, std::ios::in | std::ios::binary);
     if (in) {
         in.seekg(0, std::ios::end);
@@ -46,7 +46,7 @@ Opal::Scene::Scene(Display &display, const std::string &scenename)
         in.close();
     } else {
         throw GenericException(filename + " doesn't exist");
-    }
+    }*/
 
     /*auto log = Log::getErrorLog<SyncLogger>();
     try {
@@ -112,8 +112,6 @@ Opal::Scene::Scene(Display &display, const std::string &scenename)
 
     m_worldLight.setAmbientColor({1.0f, 1.0f, 1.0f});
     m_worldLight.setAmbientIntensity(0.6f);
-
-    registerSystems();
 }
 
 Opal::Scene::Scene(Scene &&scene)
@@ -176,27 +174,36 @@ void Opal::Scene::buildLuaNamespace() {
 void Opal::Scene::registerLuaFunctions() {
     m_startFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState.get(), "Start"));
     if(!m_startFunc->isFunction()) {
-        throw GenericException("Start function wasn't found");
+        m_startFunc.release();
+        // throw GenericException("Start function wasn't found");
     }
 
     m_renderFunc = std::make_unique<LuaRef>(luabridge::getGlobal(m_luaState.get(), "GameLoop"));
     if(!m_renderFunc->isFunction()) {
-        throw GenericException("Render function wasn't found");
+        m_renderFunc.release();
+        // throw GenericException("Render function wasn't found");
     }
 }
 
 void Opal::Scene::registerSystems() {
+    std::cout << "Registering systems [Scene]\n";
     m_entityManager.registerSystem<ModelRenderSystem>(m_assetStore.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
     m_entityManager.registerSystem<MovementSystem>();
 }
 
 void Opal::Scene::start() {
-    (*m_startFunc)();
+    registerSystems();
+
+    if(m_startFunc) {
+        (*m_startFunc)();
+    }
 }
 
 void Opal::Scene::gameLoop() {
     m_entityManager.updateSystems();
-    (*m_renderFunc)();
+    if(m_renderFunc) {
+        (*m_renderFunc)();
+    }
 }
 
 // TODO Find some way to expose what keys are pressed to lua

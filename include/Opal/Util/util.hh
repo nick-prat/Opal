@@ -39,6 +39,7 @@ namespace Opal::Util {
     enum ResType : unsigned char {
         Model3D = 0x01,
         Texture,
+        File,
         Shader,
         ShaderVert,
         ShaderGeo,
@@ -62,27 +63,25 @@ namespace Opal::Util {
     }
 
     template<typename data_t>
-    std::enable_if_t<std::is_pointer<data_t>::value, void> write(std::ostream &stream, data_t data) {
-        static_assert(std::is_standard_layout<std::decay<data_t>>(), "write failed, data isn't standard layout");
-        stream.write(data, sizeof(std::decay_t<data_t>));
-    }
-
-    template<typename data_t>
-    std::enable_if_t<std::is_pointer<data_t>::value, void> write(std::ostream &stream, data_t data, std::size_t size) {
-        static_assert(std::is_standard_layout<std::decay<data_t>>(), "write failed, data isn't standard layout");
-        stream.write((char*)data, size);
-    }
-
-    template<typename data_t>
     std::enable_if_t<!std::is_pointer<data_t>::value, data_t> read(std::istream &stream) {
-        static_assert(std::is_standard_layout<data_t>(), "read failed, data isn't standard layout");
+        static_assert(std::is_standard_layout<data_t>(), "can't read data into non standard layout type");
         data_t data;
-        stream.read((char*)&data, sizeof(std::decay_t<data_t>));
+        stream.read((char*)&data, sizeof(data_t));
+        return data;
+    }
+
+    template<typename data_t>
+    std::enable_if_t<!std::is_pointer<data_t>::value, data_t> peek(std::istream &stream) {
+        static_assert(std::is_standard_layout<data_t>(), "can't read data into non standard layout type");
+        data_t data;
+        auto byteSize{sizeof(data_t)};
+        stream.read((char*)&data, sizeof(byteSize));
+        stream.seekg(-byteSize, std::ios::cur);
         return data;
     }
 
     void writeString(std::ostream &stream, const std::string &data);
-    
+
     std::string readString(std::istream &stream);
 
     template<std::size_t length>
