@@ -31,7 +31,9 @@ namespace Opal {
 
         Display& getDisplay();
         const Display& getDisplay() const;
-        Scene* getCurrentScene() const;
+        Scene& getCurrentScene();
+        const Scene& getCurrentScene() const;
+
 
         template<typename scene_t, typename... args_t>
         void loadScene(const std::string& scenename, args_t&&... args) {

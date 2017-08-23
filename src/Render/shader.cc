@@ -39,9 +39,6 @@ Opal::Shader::Shader(const Resources::RShader& shader)
         auto dataPtr = file.bytes.data();
         int length = file.bytes.size();
 
-        // std::cout << file.bytes.size();
-        // std::cout.write(file.bytes.data(), file.bytes.size());
-
         glShaderSource(shader, 1, (const GLchar *const *) &dataPtr, &length);
         glCompileShader(shader);
 
@@ -100,8 +97,10 @@ void Opal::Shader::registerUniform(const std::string& name) {
 GLint Opal::Shader::getUniformLocation(const std::string& name) const {
     if(auto uniform = m_uniformLocations.find(name); uniform != m_uniformLocations.end()) {
         return uniform->second;
+    } else {
+        Log::getErrorLog<SyncLogger>() << "uniform " << name << " not found\n";
+        return -1;
     }
-    return -1;
 }
 
 void Opal::Shader::useProgram() const {

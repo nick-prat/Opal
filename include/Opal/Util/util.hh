@@ -81,6 +81,8 @@ namespace Opal::Util {
         return true;
     }
 
+    void printMatrix(const glm::mat4x4& matrix);
+
 }
 
 #endif // _UTILITIES_H

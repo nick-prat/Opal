@@ -1,6 +1,7 @@
 #include <Opal/Util/util.hh>
 #include <Opal/Core/gl.hh>
 #include <Opal/Util/log.hh>
+#include <glm/gtc/type_ptr.hpp>
 
 void Opal::Util::PrintGLErrors()
 {
@@ -53,4 +54,15 @@ std::string Opal::Util::readString(std::istream& stream)  {
         vec.push_back(in);
     }
     return std::string(vec.begin(), vec.end());
+}
+
+void Opal::Util::printMatrix(const glm::mat4x4& mat) {
+    const float* matPtr = glm::value_ptr(mat);
+    for(auto i{0u}; i < 4; i++) {
+        std::cout << '[';
+        for(auto j{0u}; j < 4; j++) {
+            std::cout << matPtr[i*4+j] << ',';
+        }
+        std::cout << "]\n";
+    }
 }

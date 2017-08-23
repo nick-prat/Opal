@@ -122,6 +122,7 @@ Opal::GLCore::GLCore(int width, int height, std::string title)
     auto log = Log::getLog<SyncLogger>();
     log << "\nInformation: \n";
     log << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
+    log << "\tGL Shading Version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << '\n';
     log << "\tGLCore Address: " << this << '\n';
 
     glEnable(GL_DEPTH_TEST);
@@ -160,4 +161,12 @@ Opal::Display& Opal::GLCore::getDisplay() {
 
 const Opal::Display& Opal::GLCore::getDisplay() const {
     return m_display;
+}
+
+Opal::Scene& Opal::GLCore::getCurrentScene() {
+    return *m_scene.get();
+}
+
+const Opal::Scene& Opal::GLCore::getCurrentScene() const {
+    return *m_scene.get();
 }

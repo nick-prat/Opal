@@ -27,12 +27,10 @@ Opal::AssetStore::AssetStore(const std::string& scene) {
                 throw BadResource{"Couldn't find texture " + mesh.matName, name};
             }
         }
-        std::cout << "Inserting model: " << name << '\n';
         m_model3Ds.emplace(name, Model3D{m3d, std::move(textures)});
     }
 
     for(auto& [name, shader] : sh.getShaders()) {
-        std::cout << "Inserting shader: " << name << "\n";
         m_shaders.emplace(name, shader);
     }
 

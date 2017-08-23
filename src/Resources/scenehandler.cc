@@ -46,7 +46,6 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
     std::cout << "Reading JSON file...\n";
     std::string contents;
     stream.seekg(0, std::ios::end);
-    std::cout << stream.tellg() << '\n';
     contents.resize(stream.tellg());
     stream.seekg(0, std::ios::beg);
     stream.read(&contents[0], contents.size());
@@ -67,7 +66,6 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
                 }
 
                 const std::string resourcename = resource["resourcename"];
-                std::cout << "Loading " << resourcename << '\n';
 
                 if(resource.find("filename") == resource.end()) {
                     throw std::runtime_error("Resource " + resourcename + " missing property \'filename\'");
