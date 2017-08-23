@@ -14,10 +14,10 @@ namespace Opal {
         MovementSystem() = default;
         MovementSystem(MovementSystem&&) = default;
 
-        MovementSystem &operator=(const MovementSystem&) = delete;
-        MovementSystem &operator=(MovementSystem&&) = delete;
+        MovementSystem& operator=(const MovementSystem&) = delete;
+        MovementSystem& operator=(MovementSystem&&) = delete;
 
-        void update(Emerald::EntityManager &entMan);
+        void update(Emerald::EntityManager& entMan);
     };
 
 }

@@ -10,11 +10,11 @@ void Opal::Util::PrintGLErrors()
     }
 }
 
-std::vector<std::string> Opal::Util::splitString(const std::string &string, const char delim) {
+std::vector<std::string> Opal::Util::splitString(const std::string& string, const char delim) {
     std::vector<std::string> strings;
     std::size_t locs = 0;
     std::size_t loce = string.find(delim);
-    while(loce != std::string::npos  &&locs < string.size()) {
+    while(loce != std::string::npos&& locs < string.size()) {
         strings.push_back(string.substr(locs, loce-locs));
         locs = loce + 1;
         loce = string.find(delim, locs);
@@ -25,7 +25,7 @@ std::vector<std::string> Opal::Util::splitString(const std::string &string, cons
     return strings;
 }
 
-void Opal::Util::copyaiMat(const aiMatrix4x4* from, glm::mat4 &to) {
+void Opal::Util::copyaiMat(const aiMatrix4x4* from, glm::mat4& to) {
     to[0][0] = from->a1; to[1][0] = from->a2;
     to[2][0] = from->a3; to[3][0] = from->a4;
     to[0][1] = from->b1; to[1][1] = from->b2;
@@ -36,13 +36,13 @@ void Opal::Util::copyaiMat(const aiMatrix4x4* from, glm::mat4 &to) {
     to[2][3] = from->d3; to[3][3] = from->d4;
 }
 
-void Opal::Util::writeString(std::ostream &stream, const std::string &data) {
+void Opal::Util::writeString(std::ostream& stream, const std::string& data) {
     std::vector<char> vec(data.begin(), data.end());
     stream.write(vec.data(), vec.size());
     stream.write("\0", sizeof(char));
 }
 
-std::string Opal::Util::readString(std::istream &stream)  {
+std::string Opal::Util::readString(std::istream& stream)  {
     std::vector<char> vec;
     char in = '\0';
     while(true) {

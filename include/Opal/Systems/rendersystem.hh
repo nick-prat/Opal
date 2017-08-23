@@ -12,23 +12,23 @@ namespace Opal {
     template<typename system_t>
     class RenderSystem : public Emerald::ISystem<system_t> {
     public:
-        RenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight)
+        RenderSystem(const Shader& shader, const Display& display, WorldLight& worldLight)
         : m_display(display)
         , m_shader(shader)
         , m_worldLight(worldLight) {}
 
-        RenderSystem(const RenderSystem &renderSystem)
+        RenderSystem(const RenderSystem& renderSystem)
         : m_display(renderSystem.m_display)
         , m_shader(renderSystem.m_shader)
         , m_worldLight(renderSystem.m_worldLight) {}
 
-        RenderSystem(RenderSystem &&renderSystem)
+        RenderSystem(RenderSystem&& renderSystem)
         : m_display(renderSystem.m_display)
         , m_shader(renderSystem.m_shader)
         , m_worldLight(renderSystem.m_worldLight) {}
 
-        RenderSystem &operator=(const RenderSystem&) = delete;
-        RenderSystem &operator=(RenderSystem&&) = delete;
+        RenderSystem& operator=(const RenderSystem&) = delete;
+        RenderSystem& operator=(RenderSystem&&) = delete;
 
         void setDisplay(const Display* const display) {
             m_display = display;
@@ -39,33 +39,33 @@ namespace Opal {
         }
 
     protected:
-        const Display &m_display;
-        const Shader &m_shader;
-        WorldLight &m_worldLight;
+        const Display& m_display;
+        const Shader& m_shader;
+        WorldLight& m_worldLight;
     };
 
     class ModelRenderSystem : public RenderSystem<ModelRenderSystem> {
     public:
         inline static const std::string shaderName = "shader_staticmodel";
 
-        ModelRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-        void update(Emerald::EntityManager &entMan) override final;
+        ModelRenderSystem(const Shader& shader, const Display& display, WorldLight& worldLight);
+        void update(Emerald::EntityManager& entMan) override final;
     };
 
     class NormalRenderSystem : public RenderSystem<NormalRenderSystem> {
     public:
         inline static const std::string shaderName = "shader_normal";
 
-        NormalRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-        void update(Emerald::EntityManager &entMan) override final;
+        NormalRenderSystem(const Shader& shader, const Display& display, WorldLight& worldLight);
+        void update(Emerald::EntityManager& entMan) override final;
     };
 
     class BoundingBoxRenderSystem : public RenderSystem<BoundingBoxRenderSystem> {
     public:
         inline static const std::string shaderName = "shader_bbox";
 
-        BoundingBoxRenderSystem(const Shader &shader, const Display &display, WorldLight &worldLight);
-        void update(Emerald::EntityManager &entMan) override final;
+        BoundingBoxRenderSystem(const Shader& shader, const Display& display, WorldLight& worldLight);
+        void update(Emerald::EntityManager& entMan) override final;
     };
 
 }

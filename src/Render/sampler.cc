@@ -10,7 +10,7 @@ Opal::Sampler::Sampler() {
     glSamplerParameteri(m_sampler, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
-Opal::Sampler::Sampler(Sampler &&sampler)
+Opal::Sampler::Sampler(Sampler&& sampler)
 : m_sampler(sampler.m_sampler)
 , m_magnification(sampler.m_magnification)
 , m_minification(sampler.m_minification) {
@@ -25,7 +25,7 @@ Opal::Sampler::~Sampler() {
     }
 }
 
-Opal::Sampler &Opal::Sampler::operator=(Sampler &&sampler) {
+Opal::Sampler& Opal::Sampler::operator=(Sampler&& sampler) {
     m_sampler = sampler.m_sampler;
     m_magnification = sampler.m_magnification;
     m_minification = sampler.m_minification;

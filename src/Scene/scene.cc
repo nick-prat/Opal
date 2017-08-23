@@ -18,7 +18,7 @@ using luabridge::LuaRef;
 // NOTE How slow is calling lua functions?
 // NOTE What should lua be capable of doing?
 
-Opal::Scene::Scene(Display &display, const std::string &scenename)
+Opal::Scene::Scene(Display& display, const std::string& scenename)
 : m_assetStore{scenename}
 , m_display{display}
 , m_scenename{scenename}
@@ -28,7 +28,6 @@ Opal::Scene::Scene(Display &display, const std::string &scenename)
     luaL_openlibs(m_luaState.get());
 
     std::string script =  "Resources/Scenes/" + scenename + "/main.lua";
-    std::string filename = "Resources/Scenes/" + scenename + "/scene.json";
 
     buildLuaNamespace();
 
@@ -36,85 +35,11 @@ Opal::Scene::Scene(Display &display, const std::string &scenename)
 
     registerLuaFunctions();
 
-    /*std::string contents;
-    std::ifstream in(filename, std::ios::in | std::ios::binary);
-    if (in) {
-        in.seekg(0, std::ios::end);
-        contents.resize(in.tellg());
-        in.seekg(0, std::ios::beg);
-        in.read(&contents[0], contents.size());
-        in.close();
-    } else {
-        throw GenericException(filename + " doesn't exist");
-    }*/
-
-    /*auto log = Log::getErrorLog<SyncLogger>();
-    try {
-        const json scene = json::parse(contents);
-        m_assetStore.loadResources(scene);
-
-        if(scene.find("staticObjects") != scene.end()) {
-            std::vector<json> objects = scene["staticObjects"];
-            for(const auto &object : objects) {
-                try {
-                    std::string type = object["type"];
-                    std::string name = "unknown";
-                    if(auto ni = object.find("name"); ni != object.end()) {
-                        name = *ni;
-                    }
-                    // NOTE Are there other types of render obects i might want to load?
-                    if(type == "staticmodel") {
-                        auto id = m_entityManager.createEntity();
-                        m_entityManager.createComponent<CRender>(id, m_assetStore.getModel3D(object["resource"]));
-                        m_entityManager.createComponent<CBody>(id);
-                        auto &cbody = m_entityManager.getComponent<CBody>(id);
-
-                        std::vector<float> loc, scl, rot;
-
-                        if(auto ti = object.find("translation"); ti != object.end()) {
-                            if((*ti).size() == 3) {
-                                cbody.setLocation({(*ti)[0], (*ti)[1], (*ti)[2]});
-                            } else {
-                                log << "invalid translation format for "
-                                        << name << " size was " << (*ti).size() << " expected 3\n";
-                            }
-                        }
-
-                        if(auto ri = object.find("rotation"); ri != object.end()) {
-                            if((*ri).size() == 3) {
-                                cbody.setRotation({(*ri)[0], (*ri)[1], (*ri)[2]});
-                            } else {
-                                log << "invalid rotation format for " << name << " size was " << (*ri).size() << " expected 3\n";
-                            }
-                        }
-
-                        if(auto si = object.find("scale"); si != object.end()  &&(*si).size() == 3) {
-                            if((*si).size() == 3) {
-                                cbody.setScale({(*si)[0], (*si)[1], (*si)[2]});
-                            } else {
-                                log << "invalid scale format for " << name << " size was " << (*si).size() << " expected 3\n";
-                            }
-                        }
-                    } else {
-                        log << "Unknown type " << type << " for " << name << " skipping...\n";
-                        continue;
-                    }
-                } catch (BadResource &error) {
-                    error.printError();
-                } catch (std::domain_error &error) {
-                    log << error.what() << '\n';
-                }
-            }
-        }
-    } catch(std::exception &error) {
-        log << "Parsing of " << filename << " failed: " << error.what() << '\n';
-    // }*/
-
     m_worldLight.setAmbientColor({1.0f, 1.0f, 1.0f});
     m_worldLight.setAmbientIntensity(0.6f);
 }
 
-Opal::Scene::Scene(Scene &&scene)
+Opal::Scene::Scene(Scene&& scene)
 : m_entityManager{std::move(scene.m_entityManager)}
 , m_assetStore{std::move(scene.m_assetStore)}
 , m_display{scene.m_display}
@@ -186,7 +111,6 @@ void Opal::Scene::registerLuaFunctions() {
 }
 
 void Opal::Scene::registerSystems() {
-    std::cout << "Registering systems [Scene]\n";
     m_entityManager.registerSystem<ModelRenderSystem>(m_assetStore.getShader(ModelRenderSystem::shaderName), m_display, m_worldLight);
     m_entityManager.registerSystem<MovementSystem>();
 }
@@ -229,11 +153,11 @@ void Opal::Scene::setAmbientIntensity(float intensity) {
     m_worldLight.setAmbientIntensity(intensity);
 }
 
-void Opal::Scene::setAmbientColor(const glm::vec3 &color) {
+void Opal::Scene::setAmbientColor(const glm::vec3& color) {
     m_worldLight.setAmbientColor(color);
 }
 
-Opal::Camera &Opal::Scene::getCamera() {
+Opal::Camera& Opal::Scene::getCamera() {
     return m_display.getCamera();
 }
 

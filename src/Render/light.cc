@@ -12,7 +12,7 @@ Opal::WorldLight::WorldLight() {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void Opal::WorldLight::setAmbientColor(const glm::vec3 &color) {
+void Opal::WorldLight::setAmbientColor(const glm::vec3& color) {
     m_ambientLight.r = color.r;
     m_ambientLight.g = color.g;
     m_ambientLight.b = color.b;
@@ -22,11 +22,11 @@ void Opal::WorldLight::setAmbientIntensity(const float intensity) {
     m_ambientLight.a = intensity;
 }
 
-const glm::vec4 &Opal::WorldLight::getAmbientColor() const {
+const glm::vec4& Opal::WorldLight::getAmbientColor() const {
     return m_ambientLight;
 }
 
-void Opal::WorldLight::setSunColor(const glm::vec3 &color) {
+void Opal::WorldLight::setSunColor(const glm::vec3& color) {
     m_sunLight.color.r = color.r;
     m_sunLight.color.g = color.g;
     m_sunLight.color.b = color.b;
@@ -38,18 +38,18 @@ void Opal::WorldLight::setSunIntensity(const float intensity) {
     updateSunUBO();
 }
 
-void Opal::WorldLight::setSunLocation(const glm::vec3 &location) {
+void Opal::WorldLight::setSunLocation(const glm::vec3& location) {
     m_sunLight.location.x = location.x;
     m_sunLight.location.y = location.y;
     m_sunLight.location.z = location.z;
     updateSunUBO();
 }
 
-const glm::vec4 &Opal::WorldLight::getSunColor() const {
+const glm::vec4& Opal::WorldLight::getSunColor() const {
     return m_sunLight.color;
 }
 
-const glm::vec4 &Opal::WorldLight::getSunLocation() const {
+const glm::vec4& Opal::WorldLight::getSunLocation() const {
     return m_sunLight.location;
 }
 

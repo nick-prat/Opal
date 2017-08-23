@@ -6,28 +6,28 @@
 
 using json = nlohmann::json;
 
-Opal::Resources::SceneHandler::SceneHandler(const std::string &scene)
+Opal::Resources::SceneHandler::SceneHandler(const std::string& scene)
 : m_sceneName(scene) {
-    std::ifstream file{scene + "/scene.json", std::ios::binary};
+    std::ifstream file{scene + ".json"};
     if(file.is_open()) {
         read(file);
     } else {
-        throw std::runtime_error("Couldn't load file " + m_sceneName + "/scene.json");
+        throw std::runtime_error("Couldn't load file " + m_sceneName + ".json");
     }
 }
 
-Opal::Resources::SceneHandler::SceneHandler(std::istream &stream) {
+Opal::Resources::SceneHandler::SceneHandler(std::istream& stream) {
     read(stream);
 }
 
-Opal::Resources::SceneHandler &Opal::Resources::SceneHandler::operator=(SceneHandler &&scene) noexcept {
+Opal::Resources::SceneHandler& Opal::Resources::SceneHandler::operator=(SceneHandler&& scene) noexcept {
     m_sceneName = std::move(scene.m_sceneName);
     m_textures = std::move(scene.m_textures);
     m_model3ds = std::move(scene.m_model3ds);
     return *this;
 }
 
-void Opal::Resources::SceneHandler::read(std::istream &stream) {
+void Opal::Resources::SceneHandler::read(std::istream& stream) {
     m_textures.clear();
     m_model3ds.clear();
 
@@ -42,7 +42,7 @@ void Opal::Resources::SceneHandler::read(std::istream &stream) {
     }
 }
 
-void Opal::Resources::SceneHandler::readJSON(std::istream &stream) {
+void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
     std::cout << "Reading JSON file...\n";
     std::string contents;
     stream.seekg(0, std::ios::end);
@@ -61,12 +61,13 @@ void Opal::Resources::SceneHandler::readJSON(std::istream &stream) {
 
     if(auto jresources = scene.find("resources"); jresources != scene.end()) {
         try {
-            for(auto &resource : *jresources) {
+            for(auto& resource : *jresources) {
                 if(resource.find("resourcename") == resource.end()) {
                     throw std::runtime_error("resource missing property \'field\'");
                 }
 
                 const std::string resourcename = resource["resourcename"];
+                std::cout << "Loading " << resourcename << '\n';
 
                 if(resource.find("filename") == resource.end()) {
                     throw std::runtime_error("Resource " + resourcename + " missing property \'filename\'");
@@ -81,13 +82,19 @@ void Opal::Resources::SceneHandler::readJSON(std::istream &stream) {
                 const std::string type = resource["type"];
 
                 if(type == "model3d") {
-                    const std::string filepath = m_sceneName + "/Resources/Models/" + filename + ".3ds";
                     if(m_model3ds.find(resourcename) == m_model3ds.end()) {
-                        auto [m3d, textures] = loadModel3D(filepath, resourcename);
-                        if(auto [iter, placed] = m_model3ds.emplace(resourcename, std::move(m3d)); placed) {
-                            for(auto &[name, texture] : textures) {
-                                if(!addTexture(std::move(texture))) {
-                                    std::cerr << "Texture " << name << " already added, skipping\n";
+                        const std::string filepath = "Resources/Models/" + filename + ".3ds";
+                        auto [m3d, texturenames] = loadModel3D(filepath, resourcename);
+                        if(const auto [iter, placed] = m_model3ds.emplace(resourcename, std::move(m3d)); placed) {
+                            for(const auto& texture : texturenames) {
+                                const auto texresourcename{resourcename + "_" + texture};
+                                const auto filename{"Resources/Textures/" + resourcename + "/" + texture + ".tga"};
+                                try {
+                                    if(!addTexture(loadTexture(filename, texresourcename))) {
+                                        std::cerr << "Texture " << texresourcename << " already added, skipping\n";
+                                    }
+                                } catch (const std::runtime_error &error) {
+                                    std::cerr << texresourcename << " failed to load: " << error.what() << " skipping\n";
                                 }
                             }
                         } else {
@@ -97,13 +104,16 @@ void Opal::Resources::SceneHandler::readJSON(std::istream &stream) {
                         std::cerr << "Model3D " << resourcename << " already added, skipping...\n";
                     }
                 } else if(type == "texture") {
-                    const std::string filepath = m_sceneName + "/Resources/Textures/" + filename + ".tga";
                     if(m_textures.find(resourcename) == m_textures.end()) {
-                        auto texture = loadTexture(filepath);
-                        texture.name = resourcename;
-                        texture.filename = filepath;
-                        if(!addTexture(std::move(texture))) {
+                        const std::string filepath{"Resources/Textures/" + filename + ".tga"};
+                        if(!addTexture(loadTexture(filepath, resourcename))) {
                             std::cerr << "Texture " << resourcename << " already added, skipping\n";
+                        }
+                    }
+                } else if(type == "shader") {
+                    if(m_shaders.find(resourcename) == m_shaders.end()) {
+                        if(!addShader(loadShader(resource))) {
+                            std::cerr << "Shader " << resourcename << " already added, skipping\n";
                         }
                     }
                 } else {
@@ -111,20 +121,20 @@ void Opal::Resources::SceneHandler::readJSON(std::istream &stream) {
                 }
             }
         } catch(std::runtime_error& error) {
-            std::cerr << error.what() << '\n';
+            std::cerr << "Error parsing scene.json: " << error.what() << '\n';
         }
     }
     std::cout << "Done\n";
 }
 
-void Opal::Resources::SceneHandler::readBIN(std::istream &stream) {
+void Opal::Resources::SceneHandler::readBIN(std::istream& stream) {
     auto tag{Opal::Util::read<std::array<char, 3>>(stream)};
     auto version{Opal::Util::read<unsigned short>(stream)};
     m_sceneName = Opal::Util::readString(stream);
 
     auto modelcount{Opal::Util::read<std::size_t>(stream)};
     for(auto i{0u}; i < modelcount; i++) {
-        if(Opal::Util::read<char>(stream) == Util::ResType::Model3D) {
+        if(Opal::Util::read<char>(stream) == ResType::Model3D) {
             auto m3d = loadModel3D(stream);
             addModel3D(std::move(m3d));
         }
@@ -132,14 +142,14 @@ void Opal::Resources::SceneHandler::readBIN(std::istream &stream) {
 
     auto texturecount{Opal::Util::read<std::size_t>(stream)};
     for(auto i{0u}; i < texturecount; i++) {
-        if(Opal::Util::read<char>(stream) == Util::ResType::Texture) {
+        if(Opal::Util::read<char>(stream) == ResType::Texture) {
             auto tex = loadTexture(stream);
             addTexture(std::move(tex));
         }
     }
 }
 
-void Opal::Resources::SceneHandler::writeToJSON(std::ostream &stream) {
+void Opal::Resources::SceneHandler::writeToJSON(std::ostream& stream) {
     json scene;
     scene["name"] = m_sceneName;
     scene["resources"] = std::vector<json>{};
@@ -163,23 +173,23 @@ void Opal::Resources::SceneHandler::writeToJSON(std::ostream &stream) {
     stream << scene.dump(4);
 }
 
-void Opal::Resources::SceneHandler::writeToBIN(std::ostream &stream) {
+void Opal::Resources::SceneHandler::writeToBIN(std::ostream& stream) {
     stream.write(Opal::Util::OPLTAG, 3);
     Opal::Util::write(stream, Opal::Util::VERSION);
     Opal::Util::writeString(stream, m_sceneName);
 
     Opal::Util::write(stream, m_model3ds.size());
-    for(auto &[name, model] : m_model3ds) {
+    for(auto& [name, model] : m_model3ds) {
         stream << model;
     }
 
     Opal::Util::write(stream, m_textures.size());
-    for(auto &[name, texture] : m_textures) {
+    for(auto& [name, texture] : m_textures) {
         stream << texture;
     }
 }
 
-void Opal::Resources::SceneHandler::deleteModel3D(const std::string &name) {
+void Opal::Resources::SceneHandler::deleteModel3D(const std::string& name) {
     if(auto iter = m_model3ds.find(name); iter != m_model3ds.end()) {
         m_model3ds.erase(iter);
     } else {
@@ -187,7 +197,7 @@ void Opal::Resources::SceneHandler::deleteModel3D(const std::string &name) {
     }
 }
 
-void Opal::Resources::SceneHandler::deleteTexture(const std::string &name) {
+void Opal::Resources::SceneHandler::deleteTexture(const std::string& name) {
     if(auto iter = m_textures.find(name); iter != m_textures.end()) {
         m_textures.erase(iter);
     } else {
@@ -197,20 +207,20 @@ void Opal::Resources::SceneHandler::deleteTexture(const std::string &name) {
 
 void Opal::Resources::SceneHandler::info() {
     std::cout << "Texture count: " << m_textures.size() << '\n';
-    for(auto &[name, texture] : m_textures) {
+    for(auto& [name, texture] : m_textures) {
         std::cout << '\t' << name << " [" << texture.width << ',' << texture.height << "]\n";
     }
     std::cout << "Model3D count: " << m_model3ds.size() << '\n';
-    for(auto &[name, model] : m_model3ds) {
+    for(auto& [name, model] : m_model3ds) {
         std::cout << '\t' << name << " [" << model.meshes.size() << "]\n";
     }
 }
 
 void Opal::Resources::SceneHandler::model3DInfo() {
-    for(auto &model : m_model3ds) {
+    for(auto& model : m_model3ds) {
         std::cout << model.first << '\n';
         for(auto i = 0u; i < model.second.meshes.size(); i++) {
-            auto &mesh = model.second.meshes[i];
+            auto& mesh = model.second.meshes[i];
             std::cout << "Mesh [" << i << "]\n";
             std::cout << '\t' << "Texture: " << mesh.matName << '\n';
             std::cout << '\t' << "Vertex Size: " << mesh.vertices.size() << '\n';
@@ -220,28 +230,37 @@ void Opal::Resources::SceneHandler::model3DInfo() {
 }
 
 void Opal::Resources::SceneHandler::textureInfo() {
-    for(auto &texture : m_textures) {
+    for(auto& texture : m_textures) {
         std::cout << texture.first << '\n';
         std::cout << '\t' << "Width: " << texture.second.width << '\n';
         std::cout << '\t' << "Height: " << texture.second.height << '\n';
     }
 }
 
-std::unordered_map<std::string, Opal::Resources::RTexture> &Opal::Resources::SceneHandler::getTextures() {
+std::unordered_map<std::string, Opal::Resources::RTexture>& Opal::Resources::SceneHandler::getTextures() {
     return m_textures;
 }
 
-std::unordered_map<std::string, Opal::Resources::RModel3D> &Opal::Resources::SceneHandler::getModel3Ds() {
+std::unordered_map<std::string, Opal::Resources::RModel3D>& Opal::Resources::SceneHandler::getModel3Ds() {
     return m_model3ds;
 }
 
-bool Opal::Resources::SceneHandler::addModel3D(RModel3D &&model) {
+std::unordered_map<std::string, Opal::Resources::RShader>& Opal::Resources::SceneHandler::getShaders() {
+    return m_shaders;
+}
+
+bool Opal::Resources::SceneHandler::addModel3D(RModel3D&& model) {
     auto [iter, placed] = m_model3ds.emplace(model.name, std::move(model));
     return placed;
 }
 
-bool Opal::Resources::SceneHandler::addTexture(RTexture &&texture) {
+bool Opal::Resources::SceneHandler::addTexture(RTexture&& texture) {
     auto [iter, placed] = m_textures.emplace(texture.name, std::move(texture));
+    return placed;
+}
+
+bool Opal::Resources::SceneHandler::addShader(RShader&& shader) {
+    auto [iter, placed] = m_shaders.emplace(shader.name, std::move(shader));
     return placed;
 }
 

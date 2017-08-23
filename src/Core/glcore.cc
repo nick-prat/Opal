@@ -123,7 +123,6 @@ Opal::GLCore::GLCore(int width, int height, std::string title)
     log << "\nInformation: \n";
     log << "\tGL Version: " << glGetString(GL_VERSION) << '\n';
     log << "\tGLCore Address: " << this << '\n';
-    log << "\tDisplay Address: " << &m_display << '\n' << '\n';
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
@@ -134,11 +133,11 @@ Opal::GLCore::GLCore(int width, int height, std::string title)
     log << "GL Context created\n";
 }
 
-Opal::GLCore::GLCore(GLCore &&glCore)
+Opal::GLCore::GLCore(GLCore&& glCore)
         : m_display(std::move(glCore.m_display))
         , m_scene(std::move(glCore.m_scene)) {}
 
-Opal::GLCore &Opal::GLCore::operator=(GLCore &&glCore) {
+Opal::GLCore& Opal::GLCore::operator=(GLCore&& glCore) {
     m_scene = std::move(glCore.m_scene);
     m_display = std::move(glCore.m_display);
     return *this;
@@ -148,17 +147,17 @@ void Opal::GLCore::start() {
     m_scene->start();
     while(!m_display.windowShouldClose()) {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        if(m_scene.get() != nullptr) {
+        if(m_scene) {
             m_scene->gameLoop();
         }
         m_display.update();
     }
 }
 
-Opal::Display &Opal::GLCore::getDisplay() {
+Opal::Display& Opal::GLCore::getDisplay() {
     return m_display;
 }
 
-const Opal::Display &Opal::GLCore::getDisplay() const {
+const Opal::Display& Opal::GLCore::getDisplay() const {
     return m_display;
 }

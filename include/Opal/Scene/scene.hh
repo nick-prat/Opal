@@ -17,24 +17,24 @@ namespace Opal {
 
     class Scene {
     public:
-        Scene(Display &display, const std::string &scenename);
+        Scene(Display& display, const std::string& scenename);
         Scene(const Scene&) = delete;
-        Scene(Scene &&scene);
+        Scene(Scene&& scene);
         ~Scene();
 
-        Scene &operator=(const Scene&) = delete;
-        Scene &operator=(Scene &&scene) = delete;
+        Scene& operator=(const Scene&) = delete;
+        Scene& operator=(Scene&& scene) = delete;
 
         void start();
         void gameLoop();
 
-        inline AssetStore &getAssetStore() {return m_assetStore;};
+        inline AssetStore& getAssetStore() {return m_assetStore;};
 
         // Lua proxy functions
         void setAmbientIntensity(float intensity);
-        void setAmbientColor(const glm::vec3 &color);
+        void setAmbientColor(const glm::vec3& color);
         void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
-        Camera &getCamera();
+        inline Camera& getCamera();
         std::size_t getEntityCount() const;
 
     protected:
@@ -49,7 +49,7 @@ namespace Opal {
         Emerald::EntityManager m_entityManager;
         WorldLight m_worldLight;
         AssetStore m_assetStore;
-        Display &m_display;
+        Display& m_display;
         const std::string m_scenename;
 
     private:

@@ -14,19 +14,19 @@ namespace Opal {
     class CBody {
     public:
         CBody() = default;
-        CBody(const glm::vec3 &loc);
+        CBody(const glm::vec3& loc);
 
-        void setLocation(const glm::vec3 &loc);
-        void setLocation(const glm::mat4 &loc);
-        const glm::mat4 &getLocation() const;
+        void setLocation(const glm::vec3& loc);
+        void setLocation(const glm::mat4& loc);
+        const glm::mat4& getLocation() const;
 
-        void setRotation(const glm::vec3 &rotation);
-        void setRotation(const glm::mat4 &rotation);
-        const glm::mat4 &getRotation() const;
+        void setRotation(const glm::vec3& rotation);
+        void setRotation(const glm::mat4& rotation);
+        const glm::mat4& getRotation() const;
 
-        void setScale(const glm::vec3 &scale);
-        void setScale(const glm::mat4 &scale);
-        const glm::mat4 &getScale() const;
+        void setScale(const glm::vec3& scale);
+        void setScale(const glm::mat4& scale);
+        const glm::mat4& getScale() const;
 
 
     private:
@@ -38,9 +38,9 @@ namespace Opal {
     class CPhysics {
     public:
         CPhysics() = default;
-        CPhysics(const glm::vec3 &dir);
+        CPhysics(const glm::vec3& dir);
 
-        void setDirection(const glm::vec3 &dir);
+        void setDirection(const glm::vec3& dir);
         glm::vec3 getDirection() const;
 
     private:
@@ -50,15 +50,15 @@ namespace Opal {
     class CRender {
     public:
         CRender() = default;
-        CRender(const Model3D &model);
+        CRender(const Model3D& model);
 
         void bind(unsigned int i) const;
         unsigned int getIndexCount(unsigned int i) const;
-        const std::vector<GLuint> &getVAOs() const;
-        const Model3D &getModel() const;
+        const std::vector<GLuint>& getVAOs() const;
+        const Model3D& getModel() const;
 
     private:
-        const Model3D &m_model;
+        const Model3D& m_model;
         std::vector<GLuint> m_vaos;
     };
 

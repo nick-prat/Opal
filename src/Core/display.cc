@@ -9,7 +9,7 @@
 Opal::Display::Display()
         : m_projMatrix({1.0f}) {}
 
-Opal::Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string &title)
+Opal::Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string& title)
         : m_width(width)
         , m_height(height)
         , m_projMatrix(glm::mat4(1.0f)) {
@@ -77,7 +77,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
     m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 }
 
-Opal::Display::Display(Display &&display)
+Opal::Display::Display(Display&& display)
         : m_window(display.m_window)
         , m_camera(std::move(display.m_camera))
         , m_width(display.m_width)
@@ -94,7 +94,7 @@ Opal::Display::~Display() {
     glfwDestroyWindow(m_window);
 }
 
-Opal::Display &Opal::Display::operator=(Display &&display) {
+Opal::Display& Opal::Display::operator=(Display&& display) {
     m_window = display.m_window;
     m_width = display.m_width;
     m_height = display.m_height;
@@ -125,16 +125,20 @@ void Opal::Display::update() {
     glfwPollEvents();
 }
 
-Opal::Camera &Opal::Display::getCamera() {
+Opal::Camera& Opal::Display::getCamera() {
     return m_camera;
 }
 
-const Opal::Camera &Opal::Display::getCamera() const {
+const Opal::Camera& Opal::Display::getCamera() const {
     return m_camera;
 }
 
 glm::mat4 Opal::Display::getProjectionMatrix() const {
     return m_projMatrix;
+}
+
+glm::mat4 Opal::Display::getProjectionViewMatrix() const {
+    return m_projMatrix * m_camera.getViewMatrix();
 }
 
 unsigned int Opal::Display::getWidth() const {
@@ -157,7 +161,7 @@ void Opal::Display::setMouseCapture(bool capture) {
     }
 }
 
-void Opal::Display::setClearColor(const glm::vec4 &color) {
+void Opal::Display::setClearColor(const glm::vec4& color) {
     glClearColor(color.x, color.y, color.z, color.w);
 }
 
@@ -170,7 +174,7 @@ void Opal::Display::setVsync(bool enabled) {
 }
 
 // TODO Implement set cursor position
-void Opal::Display::setCursorPosition(const glm::vec2 &pos) {
+void Opal::Display::setCursorPosition(const glm::vec2& pos) {
     if(m_window != nullptr) {
         glfwSetCursorPos(m_window, glm::clamp(pos.x, 0.0f, 1.0f), glm::clamp(pos.y, 0.0f, 1.0f));
     }
@@ -199,7 +203,7 @@ void Opal::Display::deregisterWhileKeyPressed(const InputKey key) {
     m_whileKeyPressed.erase(key);
 }
 
-void Opal::Display::registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)> &lambda) {
+void Opal::Display::registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_whileKeyPressed[key] = lambda;
 }
 
@@ -211,7 +215,7 @@ void Opal::Display::deregisterOnKeyPressed(const InputKey key) {
     m_onKeyPressed.erase(key);
 }
 
-void Opal::Display::registerOnKeyPressed(const InputKey key, const std::function<void(InputKey)> &lambda) {
+void Opal::Display::registerOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_onKeyPressed[key] = lambda;
 }
 
@@ -224,7 +228,7 @@ void Opal::Display::bindCursorUpdate(std::function<void(int, int)> func) {
 }
 
 void Opal::Display::callKeyLambdas() {
-    for(auto &[key, repeat] : m_pressedKeys) {
+    for(auto& [key, repeat] : m_pressedKeys) {
         auto lambda = m_whileKeyPressed.find(key);
         if(lambda != m_whileKeyPressed.end()) {
             lambda->second(key);
@@ -247,7 +251,7 @@ void Opal::Display::updateCursorPosition(const int xpos, const int ypos) {
     }
 }
 
-const std::pair<int, int> &Opal::Display::getCursorPosition() const {
+const std::pair<int, int>& Opal::Display::getCursorPosition() const {
     return m_cursorPos;
 }
 
@@ -258,7 +262,7 @@ bool Opal::Display::isKeyPressed(const InputKey key) const {
 void Opal::Display::updateKey(const int key, const bool pressed) {
     InputKey ikey = static_cast<InputKey>(key);
 
-    if(pressed  &&m_pressedKeys.find(ikey) == m_pressedKeys.end()) {
+    if(pressed&&  m_pressedKeys.find(ikey) == m_pressedKeys.end()) {
         m_pressedKeys[ikey] = false;
     } else {
         m_pressedKeys.erase(ikey);

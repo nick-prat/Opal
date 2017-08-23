@@ -10,7 +10,7 @@ namespace Opal {
 
     class GenericException : public std::exception {
     public:
-        GenericException(const std::string &error);
+        GenericException(const std::string& error);
         virtual ~GenericException() = default;
 
         virtual void printError() const;
@@ -24,7 +24,7 @@ namespace Opal {
 
     class BadResource : public GenericException {
     public:
-        BadResource(const std::string &error, const std::string &resourcename = "null");
+        BadResource(const std::string& error, const std::string& resourcename = "null");
 
         void printError() const override;
         std::string getResourceName() const;

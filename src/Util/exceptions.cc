@@ -1,7 +1,7 @@
 #include <Opal/Util/exceptions.hh>
 #include <Opal/Util/log.hh>
 
-Opal::GenericException::GenericException(const std::string &error)
+Opal::GenericException::GenericException(const std::string& error)
 : m_error(error) {}
 
 void Opal::GenericException::printError() const {
@@ -16,7 +16,7 @@ const char* Opal::GenericException::what() const noexcept {
     return m_error.c_str();
 }
 
-Opal::BadResource::BadResource(const std::string &error, const std::string &resourcename)
+Opal::BadResource::BadResource(const std::string& error, const std::string& resourcename)
 : GenericException(error)
 , m_resourcename(resourcename) {}
 

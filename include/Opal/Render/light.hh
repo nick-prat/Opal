@@ -10,15 +10,15 @@ namespace Opal {
     public:
         WorldLight();
 
-        void setAmbientColor(const glm::vec3 &color);
+        void setAmbientColor(const glm::vec3& color);
         void setAmbientIntensity(const float intensity);
-        const glm::vec4 &getAmbientColor() const;
+        const glm::vec4& getAmbientColor() const;
 
-        void setSunColor(const glm::vec3 &color);
+        void setSunColor(const glm::vec3& color);
         void setSunIntensity(const float intensity);
-        void setSunLocation(const glm::vec3 &direction);
-        const glm::vec4 &getSunColor() const;
-        const glm::vec4 &getSunLocation() const;
+        void setSunLocation(const glm::vec3& direction);
+        const glm::vec4& getSunColor() const;
+        const glm::vec4& getSunLocation() const;
         GLuint getSunUBO() const;
 
     private:

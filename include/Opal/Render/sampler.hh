@@ -10,11 +10,11 @@ namespace Opal {
     public:
         Sampler();
         Sampler(const Sampler&) = delete;
-        Sampler(Sampler &&sampler);
+        Sampler(Sampler&& sampler);
         ~Sampler();
 
-        Sampler &operator=(const Sampler&) = delete;
-        Sampler &operator=(Sampler &&sampler);
+        Sampler& operator=(const Sampler&) = delete;
+        Sampler& operator=(Sampler&& sampler);
 
         void bind() const;
         void setParameter(GLenum pname, GLint param);

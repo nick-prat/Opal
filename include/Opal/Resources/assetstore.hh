@@ -17,14 +17,14 @@ namespace Opal {
 
     class AssetStore {
     public:
-        AssetStore(const std::string &scene);
+        AssetStore(const std::string& scene);
 
-        Model3D &getModel3D(const std::string &name);
-        const Model3D &getModel3D(const std::string &name) const;
-        Texture &getTexture(const std::string &name);
-        const Texture &getTexture(const std::string &name) const;
-        Shader &getShader(const std::string &name);
-        const Shader &getShader(const std::string &name) const;
+        Model3D& getModel3D(const std::string& name);
+        const Model3D& getModel3D(const std::string& name) const;
+        Texture& getTexture(const std::string& name);
+        const Texture& getTexture(const std::string& name) const;
+        Shader& getShader(const std::string& name);
+        const Shader& getShader(const std::string& name) const;
 
     private:
         bool scan();

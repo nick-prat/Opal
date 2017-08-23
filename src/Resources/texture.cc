@@ -5,18 +5,21 @@
 
 using namespace Opal;
 
-Texture::Texture(Texture &&texture)
+Texture::Texture(Texture&& texture)
 : m_glTexture{texture.m_glTexture}
+, m_width{texture.m_width}
+, m_height{texture.m_height}
 , m_filename{texture.m_filename} {
     texture.m_glTexture = 0;
     texture.m_filename = "invalid";
 }
 
-Texture::Texture(Resources::RTexture &&texture)
-: RTexture{std::move(texture)} {
+Texture::Texture(const Resources::RTexture& texture)
+: m_width{texture.width}
+, m_height{texture.height} {
     glGenTextures(1, &m_glTexture);
     glBindTexture(GL_TEXTURE_2D, m_glTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture.bytes.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture.bytes.data());
 }
 
 Texture::~Texture() {
@@ -35,10 +38,10 @@ void Texture::bind() const {
     glBindTexture(GL_TEXTURE_2D, m_glTexture);
 }
 
-Sampler &Texture::getSampler() {
+Sampler& Texture::getSampler() {
     return m_sampler;
 }
 
-const Sampler &Texture::getSampler() const {
+const Sampler& Texture::getSampler() const {
     return m_sampler;
 }
