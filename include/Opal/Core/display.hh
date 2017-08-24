@@ -46,7 +46,7 @@ namespace Opal {
         unsigned int getHeight() const;
         bool windowShouldClose() const;
 
-        void setMouseCapture(bool capture);
+        void setCursorCapture(bool capture);
         void setClearColor(const glm::vec4& color);
         void setVsync(bool enabled);
         void setCursorPosition(const glm::vec2& pos);
@@ -54,12 +54,12 @@ namespace Opal {
         void setWireFrame(bool wireframe);
 
         void clearWhileKeyPressed();
-        void deregisterWhileKeyPressed(const InputKey key);
-        void registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda);
+        void unbindWhileKeyPressed(const InputKey key);
+        void bindWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda);
 
         void clearOnKeyPressed();
-        void deregisterOnKeyPressed(const InputKey key);
-        void registerOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda);
+        void unbindOnKeyPressed(const InputKey key);
+        void bindOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda);
 
         void centerCursor();
         void bindCursorUpdate(std::function<void(int, int)> func);

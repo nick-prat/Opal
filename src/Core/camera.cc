@@ -32,11 +32,7 @@ glm::mat4 Opal::Camera::getViewMatrix() const {
 // NOTE How far should the camera be able to move?
 void Opal::Camera::rotateCamera(glm::vec3 rotation) {
     m_rotation += rotation;
-    if(m_rotation.x > 0.9f) {
-        m_rotation.x = 0.9f;
-    } else if(m_rotation.x < -0.9f) {
-        m_rotation.x = -0.9f;
-    }
+    glm::clamp(m_rotation.x, -0.9f, 0.9f);
     m_direction = glm::vec3(
             glm::sin(m_rotation.y) * glm::cos(m_rotation.x),
             -glm::sin(m_rotation.x),
@@ -56,6 +52,14 @@ glm::vec3 Opal::Camera::getPosition() const {
     return m_position;
 }
 
+glm::vec3 Opal::Camera::getDirection2D() const {
+    return {m_direction.x, 0.0f, m_direction.z};
+}
+
 glm::vec3 Opal::Camera::getDirection() const {
     return m_direction;
+}
+
+glm::vec3 Opal::Camera::getUpDirection() const {
+    return m_up;
 }

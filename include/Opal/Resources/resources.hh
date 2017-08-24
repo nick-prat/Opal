@@ -14,7 +14,9 @@ namespace Opal::Resources {
 
     enum ResType : unsigned char {
         Model3D = 0x01,
-        Texture,
+        Texture2D,
+        Texture3D,
+        TextureCube,
         File,
         Shader,
         ShaderVert,
@@ -89,6 +91,7 @@ namespace Opal::Resources {
         RShader(std::unordered_map<char, RFile>&& files);
 
         std::string name;
+        std::vector<std::string> uniforms;
         std::unordered_map<char, RFile> files;
     };
 

@@ -153,7 +153,7 @@ bool Opal::Display::windowShouldClose() const {
     return glfwWindowShouldClose(m_window);
 }
 
-void Opal::Display::setMouseCapture(bool capture) {
+void Opal::Display::setCursorCapture(bool capture) {
     if(capture) {
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     } else {
@@ -199,11 +199,11 @@ void Opal::Display::clearWhileKeyPressed() {
     m_whileKeyPressed.clear();
 }
 
-void Opal::Display::deregisterWhileKeyPressed(const InputKey key) {
+void Opal::Display::unbindWhileKeyPressed(const InputKey key) {
     m_whileKeyPressed.erase(key);
 }
 
-void Opal::Display::registerWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
+void Opal::Display::bindWhileKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_whileKeyPressed[key] = lambda;
 }
 
@@ -211,11 +211,11 @@ void Opal::Display::clearOnKeyPressed() {
     m_onKeyPressed.clear();
 }
 
-void Opal::Display::deregisterOnKeyPressed(const InputKey key) {
+void Opal::Display::unbindOnKeyPressed(const InputKey key) {
     m_onKeyPressed.erase(key);
 }
 
-void Opal::Display::registerOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
+void Opal::Display::bindOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_onKeyPressed[key] = lambda;
 }
 

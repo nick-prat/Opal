@@ -94,6 +94,7 @@ Opal::Resources::RTexture::RTexture(std::vector<char>&& bytes, unsigned int widt
 
 Opal::Resources::RShader::RShader(RShader&& shader)
 : name{shader.name}
+, uniforms{std::move(shader.uniforms)}
 , files{std::move(shader.files)} {}
 
 Opal::Resources::RShader::RShader(std::istream& stream) {
@@ -145,7 +146,7 @@ std::ostream& Opal::Resources::operator<<(std::ostream& stream, const RMesh& mes
 }
 
 std::ostream& Opal::Resources::operator<<(std::ostream& stream, const RTexture& texture) {
-    write(stream, ResType::Texture);
+    write(stream, ResType::Texture2D);
     write(stream, sizeOf(texture));
     writeString(stream, texture.name);
     write(stream, texture.width);
@@ -458,15 +459,18 @@ RShader Opal::Resources::loadShader(const json& shader) {
         }
     }
 
-    /*if(object.find("uniforms") != object.end()) {
-        std::vector<std::string> uniforms = object["uniforms"];
+    std::vector<std::string> shaderUniforms;
+    if(auto iter = shader.find("uniforms"); iter != shader.end()) {
+        const auto& uniforms = iter->get<std::vector<std::string>>();
         for(const auto& uniform : uniforms) {
-            shader.registerUniform(uniform);
+            shaderUniforms.push_back(uniform);
+            std::cout << "Found uniform " << uniform << '\n';
         }
-    }*/
+    }
 
     RShader rshader{std::move(shaderFiles)};
     rshader.name = resourcename;
+    rshader.uniforms = std::move(shaderUniforms);
     return rshader;
 }
 

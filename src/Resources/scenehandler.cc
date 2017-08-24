@@ -140,7 +140,7 @@ void Opal::Resources::SceneHandler::readBIN(std::istream& stream) {
 
     auto texturecount{Opal::Util::read<std::size_t>(stream)};
     for(auto i{0u}; i < texturecount; i++) {
-        if(Opal::Util::read<char>(stream) == ResType::Texture) {
+        if(Opal::Util::read<char>(stream) == ResType::Texture2D) {
             auto tex = loadTexture(stream);
             addTexture(std::move(tex));
         }

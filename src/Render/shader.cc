@@ -69,6 +69,10 @@ Opal::Shader::Shader(const Resources::RShader& shader)
     if(status != GL_TRUE) {
         throw GenericException("Couldn't validate program");
     }
+
+    for(const auto& uniform : shader.uniforms) {
+        registerUniform(uniform);
+    }
 }
 
 Opal::Shader::Shader(Shader&& shader)

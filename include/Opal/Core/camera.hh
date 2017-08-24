@@ -19,6 +19,8 @@ namespace Opal {
         void setPosition(glm::vec3 position);
         glm::vec3 getPosition() const;
         glm::vec3 getDirection() const;
+        glm::vec3 getDirection2D() const;
+        glm::vec3 getUpDirection() const;
 
     private:
         glm::mat4 m_viewMatrix;
