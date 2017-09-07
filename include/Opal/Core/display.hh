@@ -64,12 +64,11 @@ namespace Opal {
         void centerCursor();
         void bindCursorUpdate(std::function<void(int, int)> func);
         void callKeyLambdas();
-        const std::pair<int, int>& getCursorPosition() const;
+        glm::vec2 getCursorPosition() const;
         bool isKeyPressed(const InputKey key) const;
 
     private:
         void updateKey(const int key, const bool pressed);
-        void updateCursorPosition(const int xpos, const int ypos);
 
     private:
         GLFWwindow* m_window;
@@ -81,7 +80,6 @@ namespace Opal {
         std::unordered_map<InputKey, std::function<void(InputKey)>> m_whileKeyPressed;
         std::unordered_map<InputKey, std::function<void(InputKey)>> m_onKeyPressed;
         std::function<void(int, int)> m_cursorFunc;
-        std::pair<int, int> m_cursorPos;
     };
 
 }

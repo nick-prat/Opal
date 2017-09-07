@@ -71,7 +71,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
         if(display == nullptr) {
             return;
         }
-        display->updateCursorPosition(xpos, ypos);
+        display->setCursorPosition({xpos, ypos});
     });
 
     m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
@@ -243,16 +243,10 @@ void Opal::Display::callKeyLambdas() {
     }
 }
 
-void Opal::Display::updateCursorPosition(const int xpos, const int ypos) {
-    m_cursorPos.first = xpos;
-    m_cursorPos.second = ypos;
-    if(m_cursorFunc) {
-        m_cursorFunc(xpos, ypos);
-    }
-}
-
-const std::pair<int, int>& Opal::Display::getCursorPosition() const {
-    return m_cursorPos;
+glm::vec2 Opal::Display::getCursorPosition() const {
+    double x, y;
+    glfwGetCursorPos(m_window, &x, &y);
+    return {x, y};
 }
 
 bool Opal::Display::isKeyPressed(const InputKey key) const {

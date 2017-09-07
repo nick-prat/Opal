@@ -85,3 +85,28 @@ const Opal::Shader& Opal::AssetStore::getShader(const std::string& name) const {
         throw std::invalid_argument{"Shader " + name + " not found"};
     }
 }
+
+std::unordered_map<std::string, Opal::Shader>& Opal::AssetStore::getShaders() {
+    return m_shaders;
+}
+
+const std::unordered_map<std::string, Opal::Shader>& Opal::AssetStore::getShaders() const {
+    return m_shaders;
+}
+
+std::unordered_map<std::string, Opal::Texture>& Opal::AssetStore::getTextures() {
+    std::cout << "Getting textures\n";
+    return m_textures;
+}
+
+const std::unordered_map<std::string, Opal::Texture>& Opal::AssetStore::getTextures() const {
+    return m_textures;
+}
+
+std::unordered_map<std::string, Opal::Model3D>& Opal::AssetStore::getModel3Ds() {
+    return m_model3Ds;
+}
+
+const std::unordered_map<std::string, Opal::Model3D>& Opal::AssetStore::getModel3Ds() const {
+    return m_model3Ds;
+}

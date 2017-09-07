@@ -26,6 +26,13 @@ namespace Opal {
         Shader& getShader(const std::string& name);
         const Shader& getShader(const std::string& name) const;
 
+        std::unordered_map<std::string, Shader>& getShaders();
+        const std::unordered_map<std::string, Shader>& getShaders() const;
+        std::unordered_map<std::string, Texture>& getTextures();
+        const std::unordered_map<std::string, Texture>& getTextures() const;
+        std::unordered_map<std::string, Model3D>& getModel3Ds();
+        const std::unordered_map<std::string, Model3D>& getModel3Ds() const;
+
     private:
         bool scan();
 
