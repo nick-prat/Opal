@@ -7,12 +7,6 @@
 #include <memory>
 #include <glm/glm.hpp>
 
-extern "C" {
-#include <lua.h>
-#include <lauxlib.h>
-#include <lualib.h>
-}
-
 // TODO Be able to switch between what window is active
 
 namespace Opal {
