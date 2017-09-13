@@ -7,19 +7,19 @@
 // TODO Be able to bind camera position to an entity
 // NOTE Should i be able to make the camera direction bind to an entity as well?
 
-Opal::Camera::Camera() {
-    m_position = glm::vec3(0.0f, 0.0f, 5.0f);
-    m_direction = glm::vec3(0.0f, 0.0f, -1.0f);
-    m_rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-    m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-    m_viewMatrix = glm::lookAt(m_position, m_position + m_direction, m_up);
-}
+Opal::Camera::Camera()
+: m_position{0.0f, 0.0f, 5.0f}
+, m_direction{0.0f, 0.0f, -1.0f}
+, m_rotation{0.0f, 0.0f, 0.0f}
+, m_up{0.0f, 1.0f, 0.0f}
+, m_rotationClamp{-0.9f, 0.9f}
+, m_viewMatrix{glm::lookAt(m_position, m_position + m_direction, m_up)} {}
 
 Opal::Camera::~Camera() {
 
 }
 
-void Opal::Camera::update(float scale) {
+void Opal::Camera::update(const float scale) {
     m_position += m_direction * scale;
 }
 
@@ -30,7 +30,7 @@ glm::mat4 Opal::Camera::getViewMatrix() const {
 
 // TODO Implement camera rotation
 // NOTE How far should the camera be able to move?
-void Opal::Camera::rotateCamera(glm::vec3 rotation) {
+void Opal::Camera::rotateCamera(const glm::vec3 rotation) {
     m_rotation += rotation;
     glm::clamp(m_rotation.x, -0.9f, 0.9f);
     m_direction = glm::vec3(
@@ -40,12 +40,16 @@ void Opal::Camera::rotateCamera(glm::vec3 rotation) {
     );
 }
 
-void Opal::Camera::moveCamera(glm::vec3 delta) {
+void Opal::Camera::moveCamera(const glm::vec3 delta) {
     m_position += delta;
 }
 
-void Opal::Camera::setPosition(glm::vec3 position) {
+void Opal::Camera::setPosition(const glm::vec3 position) {
     m_position = position;
+}
+
+void Opal::Camera::setRotationClamp(const glm::vec2 clamp) {
+    m_rotationClamp = clamp;
 }
 
 glm::vec3 Opal::Camera::getPosition() const {
