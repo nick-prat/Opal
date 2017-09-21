@@ -9,9 +9,9 @@
 #include <unordered_map>
 #include <glm/glm.hpp>
 #include <json.hpp>
+#include <string>
 
 namespace Opal::Resources {
-
     enum ResType : unsigned char {
         Model3D = 0x01,
         Texture2D,
