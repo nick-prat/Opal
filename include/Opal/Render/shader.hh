@@ -31,6 +31,7 @@ namespace Opal {
         GLuint getProgram() const;
 
     private:
+        std::string m_shaderName;
         ulong m_numShaders;
         GLuint m_shaderProgram;
         std::unordered_map<std::string, GLint> m_uniformLocations;

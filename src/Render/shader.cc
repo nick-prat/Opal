@@ -11,7 +11,8 @@
 #include <list>
 
 Opal::Shader::Shader(const Resources::RShader& shader)
-: m_numShaders(0)
+: m_shaderName(shader.name)
+, m_numShaders(0)
 , m_shaderProgram(0) {
     GLint success;
     GLchar info[1024];
@@ -94,7 +95,7 @@ void Opal::Shader::registerUniform(const std::string& name) {
     if(loc != -1) {
         m_uniformLocations[name] = loc;
     } else {
-        Log::getErrorLog<SyncLogger>() << "uniform " << name << " not found\n";
+        Log::getErrorLog<SyncLogger>() << "uniform " << name << " not found for shader " << m_shaderName << '\n';
     }
 }
 
@@ -102,7 +103,7 @@ GLint Opal::Shader::getUniformLocation(const std::string& name) const {
     if(auto uniform = m_uniformLocations.find(name); uniform != m_uniformLocations.end()) {
         return uniform->second;
     } else {
-        Log::getErrorLog<SyncLogger>() << "uniform " << name << " not found\n";
+        Log::getErrorLog<SyncLogger>() << "uniform " << name << " not found for shader " << m_shaderName << '\n';
         return -1;
     }
 }
