@@ -13,7 +13,7 @@ constexpr unsigned int major = 4;
 constexpr unsigned int minor = 5;
 
 Opal::GLCore::GLCore(int width, int height, std::string title)
-        : m_display(width, height, major, minor, title) {
+: m_display(width, height, major, minor, title) {
 
     if(gl3wInit() == -1) {
         throw GenericException("Couldn't initialize GL3W\n");
@@ -135,8 +135,8 @@ Opal::GLCore::GLCore(int width, int height, std::string title)
 }
 
 Opal::GLCore::GLCore(GLCore&& glCore)
-        : m_display(std::move(glCore.m_display))
-        , m_scene(std::move(glCore.m_scene)) {}
+: m_display(std::move(glCore.m_display))
+, m_scene(std::move(glCore.m_scene)) {}
 
 Opal::GLCore& Opal::GLCore::operator=(GLCore&& glCore) {
     m_scene = std::move(glCore.m_scene);
