@@ -95,7 +95,6 @@ const std::unordered_map<std::string, Opal::Shader>& Opal::AssetStore::getShader
 }
 
 std::unordered_map<std::string, Opal::Texture>& Opal::AssetStore::getTextures() {
-    std::cout << "Getting textures\n";
     return m_textures;
 }
 

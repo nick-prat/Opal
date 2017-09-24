@@ -10,6 +10,8 @@ Opal::Model3D::Model3D(const Resources::RModel3D& model3d, std::unordered_map<st
     for(auto& rmesh : model3d.meshes) {
         m_meshes.emplace_back();
         auto& mesh = m_meshes.back();
+        mesh.m_matName = rmesh.matName;
+        mesh.m_indexCount = rmesh.indices.size();
 
         glGenBuffers(1, &mesh.m_vbo);
         glGenBuffers(1, &mesh.m_ibo);
@@ -89,10 +91,9 @@ unsigned int Opal::Model3D::getFaceCount() const {
     return faceCount;
 }
 
-// TODO Maybe this isn't the best way to do this
 std::vector<GLuint> Opal::Model3D::generateVAOs() const {
     std::vector<GLuint> vaos;
-    vaos.reserve(m_meshes.size());
+    vaos.resize(m_meshes.size());
     glGenVertexArrays(m_meshes.size(), vaos.data());
 
     for(auto i = 0u; i < m_meshes.size(); i++) {

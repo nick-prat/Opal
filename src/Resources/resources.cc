@@ -318,7 +318,7 @@ std::pair<RModel3D, std::unordered_set<std::string>> Opal::Resources::loadModel3
     }
 
     loadNode(scene, scene->mRootNode, glm::mat4(1.0f), meshes);
-
+    
     for(auto& mesh : meshes) {
         aiString aName;
         unsigned int index{mesh.matIndex};
