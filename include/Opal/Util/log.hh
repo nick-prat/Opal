@@ -72,7 +72,7 @@ namespace Opal {
         template<typename logger_t>
         static logger_t getErrorLog() {
             static_assert(std::is_base_of<ILogger<logger_t>, logger_t>::value, "Specified logger type doesn't inherit ILogger");
-            return  logger_t(m_log->m_logStream, m_log->m_logMutex);
+            return  logger_t(m_log->m_errorStream, m_log->m_errorMutex);
         }
 
     private:
