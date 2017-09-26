@@ -35,7 +35,6 @@ void Opal::ModelRenderSystem::update(Emerald::EntityManager& entMan) {
         const auto& model = rc.getModel();
         for(unsigned int i = 0; i < vaos.size(); i++) {
             glBindVertexArray(vaos[i]);
-
             model.getTexture(model.getMatName(i)).bind();
             glDrawElements(GL_TRIANGLES, (GLsizei)model.getIndexCount(i), GL_UNSIGNED_INT, nullptr);
         }

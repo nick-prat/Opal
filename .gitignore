@@ -1,13 +1,6 @@
-*.o
-*.d
 logs
 .idea
 .vscode
-CMakeFiles
 src/GL
 include/Opal/GL
-Makefile
-cmake_install.cmake
-CMakeCache.txt
-libopal.so
-*.ninja*
+build
