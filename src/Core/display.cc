@@ -252,7 +252,6 @@ bool Opal::Display::isKeyPressed(const InputKey key) const {
 }
 
 void Opal::Display::onKeyUpdated(const InputKey key, const int action) {
-    std::cout << "Key " << (int)key << " action " << action << '\n';
     switch(action) {
     case GLFW_PRESS:
         m_pressedKeys[key] = false;
