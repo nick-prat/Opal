@@ -47,11 +47,8 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
             return;
         }
 
-        if(action == GLFW_PRESS) {
-            display->updateKey(key, true);
-        } else if(action == GLFW_RELEASE) {
-            display->updateKey(key, false);
-        }
+        auto ikey = static_cast<InputKey>(key);
+        display->onKeyUpdated(ikey, action);
     });
 
     glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int /*mods*/) {
@@ -59,10 +56,12 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
         if(display == nullptr) {
             return;
         }
+
+        auto ikey = static_cast<InputKey>(button);
         if(action == GLFW_PRESS) {
-            display->updateKey(button, true);
+            display->onKeyUpdated(ikey, action);
         } else if(action == GLFW_RELEASE) {
-            display->updateKey(button, false);
+            display->onKeyUpdated(ikey, action);
         }
     });
 
@@ -71,7 +70,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
         if(display == nullptr) {
             return;
         }
-        display->setCursorPosition({xpos, ypos});
+        display->onCursorUpdated({xpos, ypos});
     });
 
     m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
@@ -173,7 +172,6 @@ void Opal::Display::setVsync(bool enabled) {
     }
 }
 
-// TODO Implement set cursor position
 void Opal::Display::setCursorPosition(const glm::vec2& pos) {
     if(m_window != nullptr) {
         glfwSetCursorPos(m_window, glm::clamp(pos.x, 0.0f, 1.0f), glm::clamp(pos.y, 0.0f, 1.0f));
@@ -223,7 +221,7 @@ void Opal::Display::centerCursor() {
 
 }
 
-void Opal::Display::bindCursorUpdate(std::function<void(int, int)> func) {
+void Opal::Display::bindCursorUpdate(std::function<void(float, float)> func) {
     m_cursorFunc = func;
 }
 
@@ -253,12 +251,18 @@ bool Opal::Display::isKeyPressed(const InputKey key) const {
     return m_pressedKeys.find(key) != m_pressedKeys.end();
 }
 
-void Opal::Display::updateKey(const int key, const bool pressed) {
-    InputKey ikey = static_cast<InputKey>(key);
-
-    if(pressed&&  m_pressedKeys.find(ikey) == m_pressedKeys.end()) {
-        m_pressedKeys[ikey] = false;
-    } else {
-        m_pressedKeys.erase(ikey);
+void Opal::Display::onKeyUpdated(const InputKey key, const int action) {
+    std::cout << "Key " << (int)key << " action " << action << '\n';
+    switch(action) {
+    case GLFW_PRESS:
+        m_pressedKeys[key] = false;
+        break;
+    case GLFW_RELEASE:
+        m_pressedKeys.erase(key);
+        break;
     }
+}
+
+void Opal::Display::onCursorUpdated(const glm::vec2& pos) {
+    m_cursorFunc(pos.x, pos.y);
 }
