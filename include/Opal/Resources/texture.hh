@@ -20,7 +20,7 @@ namespace Opal {
         Texture& operator=(Texture&&) = delete;
 
         std::string getFileName() const;
-        void bind() const;
+        void bind(const unsigned int loc) const;
 
         Sampler& getSampler();
         const Sampler& getSampler() const;
