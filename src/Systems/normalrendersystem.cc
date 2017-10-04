@@ -11,7 +11,7 @@ void Opal::NormalRenderSystem::update(Emerald::EntityManager& entMan) {
     m_shader.useProgram();
 
     auto pv = m_display.getProjectionMatrix() * m_display.getCamera().getViewMatrix();
-    entMan.mapEntities<CRender, CBody>([this, &entMan, &pv](auto ent) {
+    entMan.mapEntities<CRender, CBody>([this, &entMan, &pv] (auto ent) {
         auto& rc = entMan.getComponent<CRender>(ent);
         auto& loc = entMan.getComponent<CBody>(ent);
 

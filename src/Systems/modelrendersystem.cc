@@ -22,20 +22,21 @@ void Opal::ModelRenderSystem::update(Emerald::EntityManager& entMan) {
 
     auto pv = m_display.getProjectionMatrix() * m_display.getCamera().getViewMatrix();
 
-    entMan.mapEntities<CRender, CBody>([this, &entMan, &pv](auto ent) {
+    entMan.mapEntities<CRender, CBody>([this, &entMan, &pv] (auto ent) {
         auto& rc = entMan.getComponent<CRender>(ent);
         auto& loc = entMan.getComponent<CBody>(ent);
 
         auto mvp = pv * (loc.getLocation() * loc.getRotation() * loc.getScale());
 
-        glUniform1i(m_shader.getUniformLocation("gSampler"), 0);
         glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
 
         const auto& vaos = rc.getVAOs();
         const auto& model = rc.getModel();
+        const auto samplerLoc = m_shader.getUniformLocation("gSampler");
         for(unsigned int i = 0; i < vaos.size(); i++) {
+            glUniform1i(samplerLoc, model.getTexture(model.getMatName(i)).getTextureUnit());
             glBindVertexArray(vaos[i]);
-            model.getTexture(model.getMatName(i)).bind(0);
+            // model.getTexture(model.getMatName(i)).bind(0);
             glDrawElements(GL_TRIANGLES, (GLsizei)model.getIndexCount(i), GL_UNSIGNED_INT, nullptr);
         }
     });

@@ -139,11 +139,11 @@ void Opal::Scene::bindFunctionToKey(int ikey, LuaRef function, bool repeat) {
     InputKey key = (InputKey)ikey;
     m_luaKeyBinds[key] = std::make_unique<LuaRef>(function);
     if(repeat) {
-        m_display.bindWhileKeyPressed(key, [this](InputKey key) {
+        m_display.bindWhileKeyPressed(key, [this] (InputKey key) {
             m_luaKeyBinds[key]->operator()();
         });
     } else {
-        m_display.bindOnKeyPressed(key, [this](InputKey key) {
+        m_display.bindOnKeyPressed(key, [this] (InputKey key) {
             m_luaKeyBinds[key]->operator()();
         });
     }

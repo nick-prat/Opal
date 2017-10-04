@@ -24,7 +24,7 @@ Opal::GLCore::GLCore(int width, int height, std::string title)
         exit(-1);
     }
 
-    glDebugMessageCallback([](GLenum source, GLenum type, GLuint id,
+    glDebugMessageCallback([] (GLenum source, GLenum type, GLuint id,
             GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
     {
         auto errorLog = [severity] {

@@ -7,18 +7,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Opal::Display::Display()
-        : m_projMatrix({1.0f}) {}
+: m_projMatrix({1.0f}) {}
 
 Opal::Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string& title)
-        : m_width(width)
-        , m_height(height)
-        , m_projMatrix(glm::mat4(1.0f)) {
+: m_width(width)
+, m_height(height)
+, m_projMatrix(glm::mat4(1.0f)) {
 
     if(!glfwInit()) {
         throw GenericException("Couldn't initialize GLFW3\n");
     }
 
-    glfwSetErrorCallback([](int error, const char* desc) {
+    glfwSetErrorCallback([] (int error, const char* desc) {
         Log::getErrorLog<SyncLogger>() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
 
@@ -37,11 +37,11 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
 
     glfwSetWindowUserPointer(m_window, this);
 
-    glfwSetFramebufferSizeCallback(m_window, [](GLFWwindow* window, int width, int height) {
+    glfwSetFramebufferSizeCallback(m_window, [] (GLFWwindow* window, int width, int height) {
         glViewport(0, 0, width, height);
     });
 
-    glfwSetKeyCallback(m_window, [](GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
+    glfwSetKeyCallback(m_window, [] (GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
         Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
         if(display == nullptr) {
             return;
@@ -51,7 +51,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
         display->onKeyUpdated(ikey, action);
     });
 
-    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, int button, int action, int /*mods*/) {
+    glfwSetMouseButtonCallback(m_window, [] (GLFWwindow* window, int button, int action, int /*mods*/) {
         Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
         if(display == nullptr) {
             return;
@@ -65,7 +65,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
         }
     });
 
-    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, double xpos, double ypos) {
+    glfwSetCursorPosCallback(m_window, [] (GLFWwindow* window, double xpos, double ypos) {
         Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
         if(display == nullptr) {
             return;
@@ -172,6 +172,12 @@ void Opal::Display::setVsync(bool enabled) {
     }
 }
 
+void Opal::Display::centerCursor() {
+    if(m_window != nullptr) {
+        glfwSetCursorPos(m_window, 0.0f, 0.0f);
+    }
+}
+
 void Opal::Display::setCursorPosition(const glm::vec2& pos) {
     if(m_window != nullptr) {
         glfwSetCursorPos(m_window, glm::clamp(pos.x, 0.0f, 1.0f), glm::clamp(pos.y, 0.0f, 1.0f));
@@ -215,10 +221,6 @@ void Opal::Display::unbindOnKeyPressed(const InputKey key) {
 
 void Opal::Display::bindOnKeyPressed(const InputKey key, const std::function<void(InputKey)>& lambda) {
     m_onKeyPressed[key] = lambda;
-}
-
-void Opal::Display::centerCursor() {
-
 }
 
 void Opal::Display::bindCursorUpdate(std::function<void(float, float)> func) {

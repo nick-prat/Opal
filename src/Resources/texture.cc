@@ -8,10 +8,11 @@ using namespace Opal;
 Texture::Texture(const Resources::RTexture& texture)
 : m_width{texture.width}
 , m_height{texture.height}
+, m_textureType{GL_TEXTURE_2D}
 , m_filename{texture.filename} {
     glGenTextures(1, &m_glTexture);
-    glBindTexture(GL_TEXTURE_2D, m_glTexture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, texture.width, texture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture.bytes.data());
+    glBindTexture(m_textureType, m_glTexture);
+    glTexImage2D(m_textureType, 0, GL_RGBA8, texture.width, texture.height, 0, GL_BGRA, GL_UNSIGNED_BYTE, texture.bytes.data());
 }
 
 Texture::Texture(Texture&& texture)
@@ -34,9 +35,29 @@ std::string Texture::getFileName() const {
     return m_filename;
 }
 
-void Texture::bind(const unsigned int loc) const {
+void Texture::bind(const int loc) const {
+    m_textureUnit = loc;
     glActiveTexture(GL_TEXTURE0 + loc);
-    glBindTexture(GL_TEXTURE_2D, m_glTexture);
+    glBindTexture(m_textureType, m_glTexture);
+}
+
+void Texture::unbind() const {
+    GLint currentTextureUnit = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &currentTextureUnit);
+    if(currentTextureUnit == m_textureUnit) {
+        m_textureUnit = 0;
+        glBindTexture(m_textureType, 0);
+    }
+}
+
+bool Texture::isBound() const {
+    GLint currentTextureUnit = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &currentTextureUnit);
+    return currentTextureUnit == m_textureUnit;
+}
+
+int Texture::getTextureUnit() const {
+    return m_textureUnit;
 }
 
 Sampler& Texture::getSampler() {

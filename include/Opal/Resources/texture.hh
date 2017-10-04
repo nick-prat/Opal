@@ -20,7 +20,10 @@ namespace Opal {
         Texture& operator=(Texture&&) = delete;
 
         std::string getFileName() const;
-        void bind(const unsigned int loc) const;
+        void bind(const int loc) const;
+        void unbind() const;
+        bool isBound() const;
+        int getTextureUnit() const;
 
         Sampler& getSampler();
         const Sampler& getSampler() const;
@@ -29,7 +32,9 @@ namespace Opal {
         Sampler m_sampler;
         GLuint m_glTexture;
         unsigned int m_width, m_height;
+        GLint m_textureType;
         std::string m_filename;
+        mutable int m_textureUnit;
     };
 
 }

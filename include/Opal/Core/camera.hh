@@ -8,7 +8,6 @@ namespace Opal {
     class Camera {
     public:
         Camera();
-        ~Camera();
 
         void update(const float scale);
 
