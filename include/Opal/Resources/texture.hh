@@ -6,6 +6,7 @@
 #include <Opal/Resources/resources.hh>
 
 #include <string>
+#include <utility>
 
 namespace Opal {
 
@@ -24,7 +25,8 @@ namespace Opal {
         void unbind() const;
         bool isBound() const;
         int getTextureUnit() const;
-
+        std::vector<int> getBytes() const;
+        std::pair<unsigned int, unsigned int> getDimensions() const;
         Sampler& getSampler();
         const Sampler& getSampler() const;
 

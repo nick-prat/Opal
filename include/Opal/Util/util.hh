@@ -2,6 +2,7 @@
 #define _UTILITIES_H
 
 #include <Opal/Util/exceptions.hh>
+#include <Opal/Resources/texture.hh>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -10,7 +11,9 @@
 
 namespace Opal::Util {
 
-    void PrintGLErrors();
+    constexpr char OPLTAG[3]{'\x4F', '\x50', '\x4C'};
+    constexpr unsigned char RES_TEXTURE_BPP = 4;
+    constexpr unsigned short VERSION = 1;
 
     template<typename T, typename U = void, typename... Ts>
     static constexpr bool contains() {
@@ -33,15 +36,6 @@ namespace Opal::Util {
             return -1;
         }
     }
-
-    constexpr char OPLTAG[3]{'\x4F', '\x50', '\x4C'};
-
-    constexpr unsigned char RES_TEXTURE_BPP = 4;
-    constexpr unsigned short VERSION = 1;
-
-    std::vector<std::string> splitString(const std::string& string, const char delim);
-
-    void copyaiMat(const aiMatrix4x4* from, glm::mat4& to);
 
     template<typename data_t>
     std::enable_if_t<!std::is_pointer<data_t>::value, void> write(std::ostream& stream, data_t data) {
@@ -67,10 +61,6 @@ namespace Opal::Util {
         return data;
     }
 
-    void writeString(std::ostream& stream, const std::string& data);
-
-    std::string readString(std::istream& stream);
-
     template<std::size_t length>
     bool bytecmp(const char* const l, const char* const r) {
         for(unsigned int i = 0; i < length; i++) {
@@ -81,6 +71,12 @@ namespace Opal::Util {
         return true;
     }
 
+    void PrintGLErrors();
+    void saveTextureToFile(const Texture& texture, const std::string& filename);
+    std::vector<std::string> splitString(const std::string& string, const char delim);
+    void copyaiMat(const aiMatrix4x4* from, glm::mat4& to);
+    void writeString(std::ostream& stream, const std::string& data);
+    std::string readString(std::istream& stream);
     void printMatrix(const glm::mat4x4& matrix);
 
 }

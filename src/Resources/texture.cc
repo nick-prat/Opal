@@ -1,9 +1,10 @@
 #include <Opal/Resources/texture.hh>
 #include <Opal/Util/log.hh>
+#include <FreeImage.h>
 
 #include <iostream>
 
-using namespace Opal;
+using  Opal::Texture;
 
 Texture::Texture(const Resources::RTexture& texture)
 : m_width{texture.width}
@@ -19,6 +20,7 @@ Texture::Texture(Texture&& texture)
 : m_glTexture{texture.m_glTexture}
 , m_width{texture.m_width}
 , m_height{texture.m_height}
+, m_textureType{texture.m_textureType}
 , m_filename{texture.m_filename} {
     texture.m_glTexture = 0;
     texture.m_filename = "invalid";
@@ -60,10 +62,21 @@ int Texture::getTextureUnit() const {
     return m_textureUnit;
 }
 
-Sampler& Texture::getSampler() {
+std::vector<int> Texture::getBytes() const {
+    std::vector<int> bytes;
+    bytes.resize(m_width * m_height);
+    glGetTextureImage(m_glTexture, 0, GL_BGRA, GL_UNSIGNED_BYTE, m_width * m_height * 4, bytes.data());
+    return bytes;
+}
+
+std::pair<unsigned int, unsigned int> Texture::getDimensions() const {
+    return {m_width, m_height};
+}
+
+Opal::Sampler& Texture::getSampler() {
     return m_sampler;
 }
 
-const Sampler& Texture::getSampler() const {
+const Opal::Sampler& Texture::getSampler() const {
     return m_sampler;
 }
