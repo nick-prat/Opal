@@ -4,6 +4,7 @@
 #include <Opal/Core/gl.hh>
 #include <Opal/Core/camera.hh>
 
+#include <functional>
 #include <unordered_map>
 #include <memory>
 #include <glm/glm.hpp>
