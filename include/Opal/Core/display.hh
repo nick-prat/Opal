@@ -22,7 +22,8 @@ namespace Opal {
         SPACE = 32,
         LCLICK = 0,
         RCLICK = 1,
-        MCLICK = 2
+        MCLICK = 2,
+        ESC = 256
     };
 
     class Display {
@@ -46,6 +47,7 @@ namespace Opal {
         unsigned int getWidth() const;
         unsigned int getHeight() const;
         bool windowShouldClose() const;
+        void exit() const;
 
         void setCursorCapture(bool capture);
         void setClearColor(const glm::vec4& color);

@@ -53,8 +53,16 @@ find_package(Threads REQUIRED)
 find_package(ASSIMP REQUIRED)
 find_package(Lua51 REQUIRED)
 pkg_search_module(GLFW REQUIRED glfw3)
-target_include_directories(opal PUBLIC ${OPENGL_INCLUDE_DIR} ${LUA_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIR} ${GLFW_INCLUDE_DIRECTORIES} "./include/")
-target_link_libraries(opal -ldl -llua5.1 -lpthread /usr/lib/x86_64-linux-gnu/libfreeimage.so ${OPENGL_gl_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ASSIMP_LIBRARIES})
+
+target_include_directories(opal PUBLIC
+    "./include/"
+    ${OPENGL_INCLUDE_DIR} ${LUA_INCLUDE_DIR} ${ASSIMP_INCLUDE_DIR} ${GLFW_INCLUDE_DIRECTORIES}
+)
+
+target_link_libraries(opal
+    -ldl -llua5.1 -lpthread /usr/lib/x86_64-linux-gnu/libfreeimage.so
+    ${OPENGL_gl_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ASSIMP_LIBRARIES}
+)
 
 install(TARGETS opal DESTINATION /usr/local/lib)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/Opal DESTINATION /usr/local/include)

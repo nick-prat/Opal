@@ -152,6 +152,10 @@ bool Opal::Display::windowShouldClose() const {
     return glfwWindowShouldClose(m_window);
 }
 
+void Opal::Display::exit() const {
+    glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+}
+
 void Opal::Display::setCursorCapture(bool capture) {
     if(capture) {
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
