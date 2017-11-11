@@ -16,7 +16,7 @@ namespace Opal {
         Sampler& operator=(const Sampler&) = delete;
         Sampler& operator=(Sampler&& sampler);
 
-        void bind() const;
+        void bind(const unsigned int textureUnit) const;
         void setParameter(GLenum pname, GLint param);
 
     private:

@@ -41,6 +41,6 @@ void Opal::Sampler::setParameter(GLenum pname, GLint param) {
     glSamplerParameteri(m_sampler, pname, param);
 }
 
-void Opal::Sampler::bind() const {
-    glBindSampler(0, m_sampler);
+void Opal::Sampler::bind(const unsigned int textureUnit) const {
+    glBindSampler(textureUnit, m_sampler);
 }

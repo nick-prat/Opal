@@ -40,6 +40,7 @@ std::string Texture::getFileName() const {
 void Texture::bind(const int loc) const {
     m_textureUnit = loc;
     glActiveTexture(GL_TEXTURE0 + loc);
+    m_sampler.bind(loc);
     glBindTexture(m_textureType, m_glTexture);
 }
 
