@@ -55,6 +55,7 @@ namespace Opal {
         void setCursorPosition(const glm::vec2& pos);
         void setCursorVisible(bool visible);
         void setWireFrame(bool wireframe);
+        void setSize(int width, int height);
 
         void clearWhileKeyPressed();
         void unbindWhileKeyPressed(const InputKey key);
@@ -71,6 +72,8 @@ namespace Opal {
         bool isKeyPressed(const InputKey key) const;
 
     private:
+        void bindCallbacks();
+        void updateProjectionMatrix();
         void onKeyUpdated(const InputKey key, const int action);
         void onCursorUpdated(const glm::vec2& pos);
 

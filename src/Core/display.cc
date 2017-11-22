@@ -23,6 +23,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
     });
 
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_FOCUSED, GLFW_FALSE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
@@ -34,46 +35,8 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
     }
 
     glfwMakeContextCurrent(m_window);
-
-    glfwSetWindowUserPointer(m_window, this);
-
-    glfwSetFramebufferSizeCallback(m_window, [] (GLFWwindow* window, int width, int height) {
-        glViewport(0, 0, width, height);
-    });
-
-    glfwSetKeyCallback(m_window, [] (GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
-        Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
-        if(display == nullptr) {
-            return;
-        }
-
-        auto ikey = static_cast<InputKey>(key);
-        display->onKeyUpdated(ikey, action);
-    });
-
-    glfwSetMouseButtonCallback(m_window, [] (GLFWwindow* window, int button, int action, int /*mods*/) {
-        Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
-        if(display == nullptr) {
-            return;
-        }
-
-        auto ikey = static_cast<InputKey>(button);
-        if(action == GLFW_PRESS) {
-            display->onKeyUpdated(ikey, action);
-        } else if(action == GLFW_RELEASE) {
-            display->onKeyUpdated(ikey, action);
-        }
-    });
-
-    glfwSetCursorPosCallback(m_window, [] (GLFWwindow* window, double xpos, double ypos) {
-        Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
-        if(display == nullptr) {
-            return;
-        }
-        display->onCursorUpdated({xpos, ypos});
-    });
-
-    m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
+    bindCallbacks();
+    updateProjectionMatrix();
 }
 
 Opal::Display::Display(Display&& display)
@@ -160,7 +123,7 @@ void Opal::Display::setCursorCapture(bool capture) {
     if(capture) {
         glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     } else {
-        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     }
 }
 
@@ -201,6 +164,14 @@ void Opal::Display::setWireFrame(bool wireframe) {
         glEnable(GL_CULL_FACE);
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
+}
+
+// TODO Doesn't seem to adjust window size
+void Opal::Display::setSize(int width, int height) {
+    m_width = width;
+    m_height = height;
+    glfwSetWindowSize(m_window, m_width, m_height);
+    updateProjectionMatrix();
 }
 
 void Opal::Display::clearWhileKeyPressed() {
@@ -255,6 +226,58 @@ glm::vec2 Opal::Display::getCursorPosition() const {
 
 bool Opal::Display::isKeyPressed(const InputKey key) const {
     return m_pressedKeys.find(key) != m_pressedKeys.end();
+}
+
+void Opal::Display::bindCallbacks() {
+    glfwSetWindowUserPointer(m_window, this);
+
+    glfwSetFramebufferSizeCallback(m_window, [] (GLFWwindow* window, int width, int height) {
+        glViewport(0, 0, width, height);
+    });
+
+    glfwSetKeyCallback(m_window, [] (GLFWwindow* window, int key, int /*scancode*/, int action, int /*mods*/) {
+        Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
+        if(display == nullptr) {
+            return;
+        }
+
+        auto ikey = static_cast<InputKey>(key);
+        display->onKeyUpdated(ikey, action);
+    });
+
+    glfwSetMouseButtonCallback(m_window, [] (GLFWwindow* window, int button, int action, int /*mods*/) {
+        Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
+        if(display == nullptr) {
+            return;
+        }
+
+        auto ikey = static_cast<InputKey>(button);
+        if(action == GLFW_PRESS) {
+            display->onKeyUpdated(ikey, action);
+        } else if(action == GLFW_RELEASE) {
+            display->onKeyUpdated(ikey, action);
+        }
+    });
+
+    glfwSetCursorPosCallback(m_window, [] (GLFWwindow* window, double xpos, double ypos) {
+        Display* display = reinterpret_cast<Display*>(glfwGetWindowUserPointer(window));
+        if(display == nullptr) {
+            return;
+        }
+        display->onCursorUpdated({xpos, ypos});
+    });
+
+    glfwSetCursorEnterCallback(m_window, [] (GLFWwindow* window, int entered) {
+        if (entered) {
+            std::cout << "Entered\n";
+        } else {
+            std::cout << "Exited\n";
+        }
+    });
+}
+
+void Opal::Display::updateProjectionMatrix() {
+    m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(m_width) / static_cast<float>(m_height), 0.1f, 100.0f);
 }
 
 void Opal::Display::onKeyUpdated(const InputKey key, const int action) {
