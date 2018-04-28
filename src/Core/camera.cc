@@ -2,7 +2,7 @@
 #include <Opal/Util/exceptions.hh>
 
 #include <iostream>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 // TODO Be able to bind camera position to an entity
 // NOTE Should i be able to make the camera direction bind to an entity as well?

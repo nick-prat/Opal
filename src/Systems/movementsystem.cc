@@ -1,4 +1,5 @@
 #include <Opal/Systems/movementsystem.hh>
+#include <glm/gtc/matrix_transform.hpp>
 
 void Opal::MovementSystem::update(Emerald::EntityManager& entMan) {
     entMan.mapEntities<CBody, CPhysics>([&entMan] (auto ent) {

@@ -67,7 +67,7 @@ namespace Opal {
         void centerCursor();
         void bindCursorUpdate(std::function<void(float, float)> func);
         void callKeyLambdas();
-        glm::vec2 getCursorPosition() const;
+        std::pair<double, double> getCursorPosition() const;
         bool isKeyPressed(const InputKey key) const;
 
     private:
