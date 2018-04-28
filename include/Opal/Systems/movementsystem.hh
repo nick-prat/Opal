@@ -3,7 +3,6 @@
 
 #include <Opal/Components/components.hh>
 
-#include <glm/gtx/transform.hpp>
 #include <Emerald/emerald.hh>
 #include <Emerald/system.hh>
 

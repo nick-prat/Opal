@@ -7,13 +7,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 Opal::Display::Display()
-: m_projMatrix({1.0f}) {}
+: m_projMatrix(1.0f) {}
 
 Opal::Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string& title)
 : m_width(width)
 , m_height(height)
-, m_projMatrix(glm::mat4(1.0f)) {
-
+, m_projMatrix(1.0f) {
     if(!glfwInit()) {
         throw GenericException("Couldn't initialize GLFW3\n");
     }
@@ -23,6 +22,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
     });
 
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+    glfwWindowHint(GLFW_FOCUSED, GLFW_FALSE);
     glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, major);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, minor);
@@ -34,6 +34,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
     }
 
     glfwMakeContextCurrent(m_window);
+    glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 
     glfwSetWindowUserPointer(m_window, this);
 
@@ -247,7 +248,7 @@ void Opal::Display::callKeyLambdas() {
     }
 }
 
-glm::vec2 Opal::Display::getCursorPosition() const {
+std::pair<double, double> Opal::Display::getCursorPosition() const {
     double x, y;
     glfwGetCursorPos(m_window, &x, &y);
     return {x, y};

@@ -1,16 +1,16 @@
 #include <Opal/Components/components.hh>
 
 #include <iostream>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 using namespace Opal;
 
 CBody::CBody(const glm::vec3& loc)
 : m_rotate(glm::mat4(1.0f))
-, m_location(glm::translate(loc)) {}
+, m_location(glm::translate(glm::mat4x4(1.0f), loc)) {}
 
 void CBody::setLocation(const glm::vec3& loc) {
-    m_location = glm::translate(loc);
+    m_location = glm::translate(glm::mat4x4(1.0f), loc);
 }
 
 void CBody::setLocation(const glm::mat4& loc) {
@@ -35,7 +35,7 @@ const glm::mat4& CBody::getRotation() const {
 }
 
 void CBody::setScale(const glm::vec3& scale) {
-    m_scale = glm::scale(scale);
+    m_scale = glm::scale(glm::mat4x4(1.0f), scale);
 }
 
 void CBody::setScale(const glm::mat4& scale) {
