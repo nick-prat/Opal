@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Opal::BoundingBoxRenderSystem::BoundingBoxRenderSystem(const Shader& shader, const Display& display, WorldLight& light)
-: RenderSystem(shader, display, light) {}
+Opal::BoundingBoxRenderSystem::BoundingBoxRenderSystem(const Shader& shader, const Display& display)
+: RenderSystem{shader, display} {}
 
 void Opal::BoundingBoxRenderSystem::update(Emerald::EntityManager& entMan) {
     m_shader.useProgram();

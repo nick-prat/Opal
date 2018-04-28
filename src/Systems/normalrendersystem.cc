@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-Opal::NormalRenderSystem::NormalRenderSystem(const Shader& shader, const Display& display, WorldLight& worldLight)
-: RenderSystem<NormalRenderSystem>(shader, display, worldLight) {}
+Opal::NormalRenderSystem::NormalRenderSystem(const Shader& shader, const Display& display)
+: RenderSystem<NormalRenderSystem>{shader, display} {}
 
 void Opal::NormalRenderSystem::update(Emerald::EntityManager& entMan) {
     m_shader.useProgram();

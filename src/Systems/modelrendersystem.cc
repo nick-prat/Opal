@@ -5,7 +5,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 Opal::ModelRenderSystem::ModelRenderSystem(const Shader& shader, const Display& display, WorldLight& worldLight)
-: RenderSystem<ModelRenderSystem>(shader, display, worldLight) {
+: RenderSystem<ModelRenderSystem>{shader, display}
+, m_worldLight{worldLight} {
     GLint sunUBOLoc = glGetUniformBlockIndex(m_shader.getProgram(), "SunLight");
     if(sunUBOLoc != -1) {
         glBindBufferBase(GL_UNIFORM_BUFFER, sunUBOLoc, m_worldLight.getSunUBO());
