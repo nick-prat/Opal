@@ -7,6 +7,7 @@ using namespace Opal;
 
 CBody::CBody(const glm::vec3& loc)
 : m_rotate(glm::mat4(1.0f))
+, m_scale(glm::mat4(1.0f))
 , m_location(glm::translate(glm::mat4x4(1.0f), loc)) {}
 
 void CBody::setLocation(const glm::vec3& loc) {
