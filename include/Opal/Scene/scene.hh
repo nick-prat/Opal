@@ -20,7 +20,7 @@ namespace Opal {
         Scene(Display& display, const std::string& scenename);
         Scene(const Scene&) = delete;
         Scene(Scene&& scene);
-        ~Scene();
+        virtual ~Scene();
 
         Scene& operator=(const Scene&) = delete;
         Scene& operator=(Scene&& scene) = delete;
