@@ -3,8 +3,8 @@
 #include <cstring>
 
 Opal::WorldLight::WorldLight() {
-    m_sunLight.color = glm::vec4(1.0f, 1.0f, 1.0f, 10.0f);
-    m_sunLight.location = glm::vec4(10.0f, 10.0f, 10.0f, 0.0f);
+    m_sunLight.color = glm::vec4{1.0f, 1.0f, 1.0f, 10.0f};
+    m_sunLight.direction = glm::vec4{10.0f, 10.0f, 10.0f, 0.0f};
 
     glGenBuffers(1, &m_sunUBO);
     glBindBuffer(GL_UNIFORM_BUFFER, m_sunUBO);
@@ -12,45 +12,45 @@ Opal::WorldLight::WorldLight() {
     glBindBuffer(GL_UNIFORM_BUFFER, 0);
 }
 
-void Opal::WorldLight::setAmbientColor(const glm::vec3& color) {
+void Opal::WorldLight::setAmbientColor(glm::vec3 const& color) {
     m_ambientLight.r = color.r;
     m_ambientLight.g = color.g;
     m_ambientLight.b = color.b;
 }
 
-void Opal::WorldLight::setAmbientIntensity(const float intensity) {
+void Opal::WorldLight::setAmbientIntensity(float const intensity) {
     m_ambientLight.a = intensity;
 }
 
-const glm::vec4& Opal::WorldLight::getAmbientColor() const {
+glm::vec4 const& Opal::WorldLight::getAmbientColor() const {
     return m_ambientLight;
 }
 
-void Opal::WorldLight::setSunColor(const glm::vec3& color) {
+void Opal::WorldLight::setSunColor(glm::vec3 const& color) {
     m_sunLight.color.r = color.r;
     m_sunLight.color.g = color.g;
     m_sunLight.color.b = color.b;
     updateSunUBO();
 }
 
-void Opal::WorldLight::setSunIntensity(const float intensity) {
+void Opal::WorldLight::setSunIntensity(float const intensity) {
     m_sunLight.color.a = intensity;
     updateSunUBO();
 }
 
-void Opal::WorldLight::setSunLocation(const glm::vec3& location) {
-    m_sunLight.location.x = location.x;
-    m_sunLight.location.y = location.y;
-    m_sunLight.location.z = location.z;
+void Opal::WorldLight::setSunDirection(glm::vec3 const& direction) {
+    m_sunLight.direction.x = direction.x;
+    m_sunLight.direction.y = direction.y;
+    m_sunLight.direction.z = direction.z;
     updateSunUBO();
 }
 
-const glm::vec4& Opal::WorldLight::getSunColor() const {
+glm::vec4 const& Opal::WorldLight::getSunColor() const {
     return m_sunLight.color;
 }
 
-const glm::vec4& Opal::WorldLight::getSunLocation() const {
-    return m_sunLight.location;
+glm::vec4 const& Opal::WorldLight::getSunDirection() const {
+    return m_sunLight.direction;
 }
 
 void Opal::WorldLight::updateSunUBO() {
