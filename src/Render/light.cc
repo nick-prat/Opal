@@ -56,7 +56,7 @@ glm::vec4 const& Opal::WorldLight::getSunDirection() const {
 void Opal::WorldLight::updateSunUBO() {
     glBindBuffer(GL_UNIFORM_BUFFER, m_sunUBO);
 
-    GLvoid* buff = glMapBuffer(GL_UNIFORM_BUFFER, GL_WRITE_ONLY);
+    GLvoid* buff = glMapBufferRange(GL_UNIFORM_BUFFER, 0, sizeof(SunLight), GL_MAP_INVALIDATE_BUFFER_BIT | GL_MAP_WRITE_BIT);
     memcpy(buff, &m_sunLight, sizeof(SunLight));
     glUnmapBuffer(GL_UNIFORM_BUFFER);
 }
