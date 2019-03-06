@@ -113,12 +113,12 @@ namespace Opal::Resources {
     std::ostream& operator<<(std::ostream& stream, const RFile& file);
     std::ostream& operator<<(std::ostream& stream, const RObject& object);
 
-    std::size_t sizeOf(const RFile& file);
-    std::size_t sizeOf(const RModel3D& model3d);
-    std::size_t sizeOf(const RMesh& mesh);
-    std::size_t sizeOf(const RTexture& texture);
-    std::size_t sizeOf(const RShader& shader);
-    std::size_t sizeOf(const RObject& object);
+    opal::size_t sizeOf(const RFile& file);
+    opal::size_t sizeOf(const RModel3D& model3d);
+    opal::size_t sizeOf(const RMesh& mesh);
+    opal::size_t sizeOf(const RTexture& texture);
+    opal::size_t sizeOf(const RShader& shader);
+    opal::size_t sizeOf(const RObject& object);
 
     RFile loadFile(const std::string& filename);
     RFile loadFile(std::istream& stream);

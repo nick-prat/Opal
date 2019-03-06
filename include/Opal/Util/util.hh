@@ -11,6 +11,8 @@
 
 namespace Opal::Util {
 
+    using size_t = uint32_t;
+
     constexpr char OPLTAG[3]{'\x4F', '\x50', '\x4C'};
     constexpr unsigned char RES_TEXTURE_BPP = 4;
     constexpr unsigned short VERSION = 1;
