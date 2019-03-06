@@ -11,7 +11,10 @@
 #include <json.hpp>
 #include <string>
 
+#include <Opal/Util/util.hh>
+
 namespace Opal::Resources {
+
     enum ResType : unsigned char {
         Model3D = 0x01,
         Texture2D,
@@ -113,12 +116,12 @@ namespace Opal::Resources {
     std::ostream& operator<<(std::ostream& stream, const RFile& file);
     std::ostream& operator<<(std::ostream& stream, const RObject& object);
 
-    opal::size_t sizeOf(const RFile& file);
-    opal::size_t sizeOf(const RModel3D& model3d);
-    opal::size_t sizeOf(const RMesh& mesh);
-    opal::size_t sizeOf(const RTexture& texture);
-    opal::size_t sizeOf(const RShader& shader);
-    opal::size_t sizeOf(const RObject& object);
+    Util::size_t sizeOf(const RFile& file);
+    Util::size_t sizeOf(const RModel3D& model3d);
+    Util::size_t sizeOf(const RMesh& mesh);
+    Util::size_t sizeOf(const RTexture& texture);
+    Util::size_t sizeOf(const RShader& shader);
+    Util::size_t sizeOf(const RObject& object);
 
     RFile loadFile(const std::string& filename);
     RFile loadFile(std::istream& stream);

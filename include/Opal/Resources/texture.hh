@@ -39,6 +39,10 @@ namespace Opal {
         mutable int m_textureUnit;
     };
 
+    namespace Util {
+        void saveTextureToFile(const Texture& texture, const std::string& filename);
+    }
+
 }
 
 #endif // _TEXTURE_H

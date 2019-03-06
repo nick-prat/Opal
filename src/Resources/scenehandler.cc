@@ -8,7 +8,7 @@ using json = nlohmann::json;
 
 Opal::Resources::SceneHandler::SceneHandler(const std::string& scene)
 : m_sceneName(scene) {
-    std::ifstream file = scene + ".json";
+    auto file = std::ifstream{scene + ".json"};
     if(file.is_open()) {
         read(file);
     } else {

@@ -2,7 +2,6 @@
 #define _UTILITIES_H
 
 #include <Opal/Util/exceptions.hh>
-#include <Opal/Resources/texture.hh>
 #include <vector>
 #include <string>
 #include <fstream>
@@ -74,7 +73,6 @@ namespace Opal::Util {
     }
 
     void PrintGLErrors();
-    void saveTextureToFile(const Texture& texture, const std::string& filename);
     std::vector<std::string> splitString(const std::string& string, const char delim);
     void copyaiMat(const aiMatrix4x4* from, glm::mat4& to);
     void writeString(std::ostream& stream, const std::string& data);

@@ -81,3 +81,25 @@ Opal::Sampler& Texture::getSampler() {
 const Opal::Sampler& Texture::getSampler() const {
     return m_sampler;
 }
+
+void Opal::Util::saveTextureToFile(const Texture& texture, const std::string& filename) {
+    auto data = texture.getBytes();
+    auto [width, height] = texture.getDimensions();
+    auto img = FreeImage_Allocate(width, height, 32);
+
+    RGBQUAD color;
+    for(int h = 0; h < height; h++) {
+        for(int w = 0; w < width; w++) {
+            int i = h * width + w;
+            color.rgbBlue = (data[i] & 0x000000FF) >> 0;
+            color.rgbGreen = (data[i] & 0x0000FF00) >> 8;
+            color.rgbRed = (data[i] & 0x00FF0000) >> 16;
+            color.rgbReserved = (data[i] & 0xFF000000) >> 24;
+            FreeImage_SetPixelColor(img, w, h, &color);
+        }
+    }
+
+    if(FreeImage_Save(FIF_PNG, img, filename.c_str(), 0)) {
+        std::cout << "Saved texture " << texture.getFileName() << " to file " << filename << '\n';
+    }
+}
