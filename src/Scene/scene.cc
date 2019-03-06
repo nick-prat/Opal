@@ -4,6 +4,9 @@
 #include <Opal/Util/exceptions.hh>
 #include <Opal/Util/log.hh>
 
+#include <Opal/Systems/movementsystem.hh>
+#include <Opal/Systems/rendersystem.hh>
+
 #include <iostream>
 #include <fstream>
 
@@ -155,6 +158,10 @@ void Opal::Scene::setAmbientIntensity(float intensity) {
 
 void Opal::Scene::setAmbientColor(const glm::vec3& color) {
     m_worldLight.setAmbientColor(color);
+}
+
+Opal::AssetStore& Opal::Scene::getAssetStore() {
+    return m_assetStore;
 }
 
 Opal::Camera& Opal::Scene::getCamera() {

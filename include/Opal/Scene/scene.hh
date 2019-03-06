@@ -3,8 +3,6 @@
 
 #include <Opal/Util/lua.hh>
 #include <Opal/Core/display.hh>
-#include <Opal/Systems/rendersystem.hh>
-#include <Opal/Systems/movementsystem.hh>
 #include <Opal/Resources/assetstore.hh>
 #include <Opal/Render/light.hh>
 
@@ -28,13 +26,13 @@ namespace Opal {
         void start();
         void gameLoop();
 
-        inline AssetStore& getAssetStore() {return m_assetStore;};
-
         // Lua proxy functions
         void setAmbientIntensity(float intensity);
         void setAmbientColor(const glm::vec3& color);
         void bindFunctionToKey(int key, luabridge::LuaRef function, bool repeat);
-        inline Camera& getCamera();
+
+        AssetStore& getAssetStore();
+        Camera& getCamera();
         std::size_t getEntityCount() const;
 
     protected:
