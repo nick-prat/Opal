@@ -8,11 +8,11 @@ using json = nlohmann::json;
 
 Opal::Resources::SceneHandler::SceneHandler(const std::string& scene)
 : m_sceneName(scene) {
-    std::ifstream file{scene + ".json"};
+    std::ifstream file = scene + ".json";
     if(file.is_open()) {
         read(file);
     } else {
-        throw std::runtime_error("Couldn't load file " + m_sceneName + ".json");
+        throw std::runtime_error{"Couldn't load file " + m_sceneName + ".json"};
     }
 }
 
