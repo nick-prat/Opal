@@ -85,8 +85,8 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
                         auto [m3d, texturenames] = loadModel3D(filepath, resourcename);
                         if(const auto [iter, placed] = m_model3ds.emplace(resourcename, std::move(m3d)); placed) {
                             for(const auto& texture : texturenames) {
-                                const auto texresourcename{resourcename + "_" + texture};
-                                const auto filename{"Resources/Textures/" + resourcename + "/" + texture + ".tga"};
+                                const auto texresourcename = resourcename + "_" + texture;
+                                const auto filename = "Resources/Textures/" + resourcename + "/" + texture + ".tga";
                                 try {
                                     if(!addTexture(loadTexture(filename, texresourcename))) {
                                         std::cerr << "Texture " << texresourcename << " already added, skipping\n";
@@ -126,20 +126,20 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
 }
 
 void Opal::Resources::SceneHandler::readBIN(std::istream& stream) {
-    auto tag{Opal::Util::read<std::array<char, 3>>(stream)};
-    auto version{Opal::Util::read<unsigned short>(stream)};
-    m_sceneName = Opal::Util::readString(stream);
+    auto tag = Util::read<std::array<char, 3>>(stream);
+    auto version = Util::read<unsigned short>(stream);
+    m_sceneName = Util::readString(stream);
 
-    auto modelcount{Opal::Util::read<std::size_t>(stream)};
-    for(auto i{0u}; i < modelcount; i++) {
+    auto modelcount = Util::read<Util::size_t>(stream);
+    for(auto i = 0u; i < modelcount; i++) {
         if(Opal::Util::read<char>(stream) == ResType::Model3D) {
             auto m3d = loadModel3D(stream);
             addModel3D(std::move(m3d));
         }
     }
 
-    auto texturecount{Opal::Util::read<std::size_t>(stream)};
-    for(auto i{0u}; i < texturecount; i++) {
+    auto texturecount = Util::read<Util::size_t>(stream);
+    for(auto i = 0u; i < texturecount; i++) {
         if(Opal::Util::read<char>(stream) == ResType::Texture2D) {
             auto tex = loadTexture(stream);
             addTexture(std::move(tex));
@@ -176,12 +176,12 @@ void Opal::Resources::SceneHandler::writeToBIN(std::ostream& stream) {
     Opal::Util::write(stream, Opal::Util::VERSION);
     Opal::Util::writeString(stream, m_sceneName);
 
-    Opal::Util::write(stream, m_model3ds.size());
+    Opal::Util::write(stream, static_cast<Util::size_t>(m_model3ds.size()));
     for(auto& [name, model] : m_model3ds) {
         stream << model;
     }
 
-    Opal::Util::write(stream, m_textures.size());
+    Opal::Util::write(stream, static_cast<Util::size_t>(m_textures.size()));
     for(auto& [name, texture] : m_textures) {
         stream << texture;
     }
