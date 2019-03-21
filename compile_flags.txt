@@ -1,0 +1,3 @@
+-I./include/
+-I/usr/include/lua5.1
+-std=c++17
