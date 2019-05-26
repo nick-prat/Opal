@@ -98,16 +98,23 @@ std::vector<GLuint> Opal::Model3D::generateVAOs() const {
 
     for(auto i = 0u; i < m_meshes.size(); i++) {
         glBindVertexArray(vaos[i]);
-
-        glBindBuffer(GL_ARRAY_BUFFER, m_meshes[i].m_vbo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_meshes[i].m_ibo);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Resources::RVertex), 0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Resources::RVertex), (GLvoid*)sizeof(glm::vec3));
-        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Resources::RVertex), (GLvoid*)(sizeof(glm::vec3) + sizeof(glm::vec3)));
+        glBindVertexBuffer(0, m_meshes[i].m_vbo, 0, sizeof(Resources::RVertex));
+
         glEnableVertexAttribArray(0);
+        glVertexAttribFormat(0, 3, GL_FLOAT, GL_FALSE, 0);
+        glVertexAttribBinding(0, 0);
+
         glEnableVertexAttribArray(1);
+        glVertexAttribFormat(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3));
+        glVertexAttribBinding(1, 0);
+
         glEnableVertexAttribArray(2);
+        glVertexAttribFormat(2, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec3) + sizeof(glm::vec3));
+        glVertexAttribBinding(2, 0);
+
+        glBindVertexArray(0);
     }
 
     return vaos;
