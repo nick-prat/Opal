@@ -9,7 +9,6 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
-#include <memory>
 
 namespace Opal {
 
@@ -39,7 +38,6 @@ namespace Opal {
     private:
         std::array<glm::vec3, 2> m_boundingBox;
         std::vector<Mesh> m_meshes;
-        // std::vector<GLuint> m_meshVBOs, m_meshIBOs;
         std::unordered_map<std::string, Texture*> m_textures;
     };
 

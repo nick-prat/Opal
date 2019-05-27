@@ -70,7 +70,10 @@ namespace Opal::Util {
             }
         }
         return true;
-    }
+    }   
+    
+    uint32_t toRGB32(uint8_t const r, uint8_t const g, uint8_t const b);
+    std::tuple<uint8_t, uint8_t, uint8_t> fromRGB32(uint32_t const rgb32);
 
     void PrintGLErrors();
     std::vector<std::string> splitString(const std::string& string, const char delim);

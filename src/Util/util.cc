@@ -67,3 +67,21 @@ void Opal::Util::printMatrix(const glm::mat4x4& mat) {
         std::cout << "]\n";
     }
 }
+
+uint32_t Opal::Util::toRGB32(uint8_t const r, uint8_t const g, uint8_t const b) {
+    uint32_t rgb32 = 0;
+    rgb32 = (rgb32 | r) << 8;
+    rgb32 = (rgb32 | g) << 8;
+    rgb32 = rgb32 | b;
+    return rgb32;
+}
+
+std::tuple<uint8_t, uint8_t, uint8_t> Opal::Util::fromRGB32(uint32_t const rgb32) {
+    uint8_t r, g, b;
+
+    r = (rgb32 & 0x00FF0000) >> 16;
+    g = (rgb32 & 0x0000FF00) >> 8;
+    b = rgb32 & 0x000000FF;
+
+    return {r, g, b};
+}
