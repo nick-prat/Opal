@@ -1,14 +1,11 @@
 #ifndef _RESOURCES_H
 #define _RESOURCES_H
 
-#include <fstream>
 #include <vector>
-#include <array>
-#include <iostream>
 #include <unordered_set>
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 #include <string>
 
 #include <Opal/Util/util.hh>
@@ -98,6 +95,13 @@ namespace Opal::Resources {
         std::unordered_map<char, RFile> files;
     };
 
+    struct RTerrain {
+        std::string name;
+        std::vector<char> bytes;
+        unsigned int width, height;
+        glm::vec3 u, v, n;
+    };
+
     struct RObject {
         RObject() = default;
         RObject(std::istream& stream);
@@ -132,6 +136,7 @@ namespace Opal::Resources {
     RTexture loadTexture(std::istream& stream);
     RShader loadShader(const nlohmann::json& shader);
     RShader loadShader(std::istream& stream);
+    RTerrain loadTerrain(nlohmann::json const& terrain);
 }
 
 #endif // _RESOURCES_H

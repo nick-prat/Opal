@@ -2,11 +2,9 @@
 #define _COMPONENTS_H
 
 #include <Opal/Core/gl.hh>
-#include <Opal/Resources/texture.hh>
 #include <Opal/Resources/model3d.hh>
 
 #include <vector>
-#include <unordered_map>
 #include <glm/glm.hpp>
 
 namespace Opal {
@@ -60,6 +58,10 @@ namespace Opal {
     private:
         const Model3D& m_model;
         std::vector<GLuint> m_vaos;
+    };
+
+    struct CTerrain {
+        GLuint vao;
     };
 
 }

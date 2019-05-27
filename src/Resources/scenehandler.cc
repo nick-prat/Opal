@@ -1,8 +1,10 @@
+#include <iostream>
+
 #include <Opal/Resources/scenehandler.hh>
 #include <Opal/Resources/resources.hh>
 #include <Opal/Util/util.hh>
 
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
@@ -114,11 +116,15 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
                             std::cerr << "Shader " << resourcename << " already added, skipping\n";
                         }
                     }
+                } else if(type == "terrain") {
+                    // TODO Implement
                 } else {
                     std::cerr << "Unknown resource type " << type << '\n';
                 }
             }
         } catch(std::runtime_error& error) {
+            std::cerr << "Error parsing scene.json: " << error.what() << '\n';
+        } catch(json::exception const& error) {
             std::cerr << "Error parsing scene.json: " << error.what() << '\n';
         }
     }

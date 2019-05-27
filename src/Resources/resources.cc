@@ -11,6 +11,56 @@ using namespace Opal::Util;
 using namespace Opal::Resources;
 using json = nlohmann::json;
 
+namespace {
+    void loadNode(const aiScene* scene, const aiNode* node, const glm::mat4& parentTransform, std::vector<RMesh>& meshes) {
+        glm::mat4x4 transformation;
+        copyaiMat(&node->mTransformation, transformation);
+        transformation = parentTransform * transformation;
+
+        for(auto i{0u}; i < node->mNumChildren; i++) {
+            loadNode(scene, node->mChildren[i], transformation, meshes);
+        }
+
+        for(auto i{0u}; i < node->mNumMeshes; i++) {
+            aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
+            std::vector<RVertex> vertices;
+            std::vector<unsigned int> indices;
+
+            for(auto j{0u}; j < mesh->mNumVertices; j++) {
+                RVertex vertex;
+
+                glm::vec4 position{transformation * glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f)};
+                vertex.position = glm::vec3{position.x, position.y, position.z};
+
+                vertex.normal = (mesh->HasNormals())
+                    ? glm::vec3{mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z}
+                    : glm::vec3{0.0f, 0.0f, 0.0f};
+
+                vertex.texCoord = (mesh->HasTextureCoords(0))
+                    ? glm::vec2{mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y}
+                    : glm::vec2{0.0f, 0.0f};
+
+                vertices.push_back(vertex);
+            }
+
+            if(mesh->HasFaces()) {
+                for(auto j = 0u; j < mesh->mNumFaces; j++) {
+                    aiFace face = mesh->mFaces[j];
+                    for(auto k = 0u; k < face.mNumIndices; k++) {
+                        indices.emplace_back(face.mIndices[k]);
+                    }
+                }
+            } else {
+                std::cerr << "Node was missing faces, quitting...\n";
+                exit(-1);
+            }
+
+            meshes.emplace_back(std::move(vertices), std::move(indices));
+            meshes.back().matIndex = mesh->mMaterialIndex;
+        }
+    }
+};
+
 Opal::Resources::RFile::RFile(RFile&& file)
 : bytes{std::move(file.bytes)} {}
 
@@ -231,54 +281,6 @@ Opal::Util::size_t Opal::Resources::sizeOf(const RObject& object) {
         + sizeof(object.scale);
 }
 
-void loadNode(const aiScene* scene, const aiNode* node, const glm::mat4& parentTransform, std::vector<RMesh>& meshes) {
-    glm::mat4x4 transformation;
-    copyaiMat(&node->mTransformation, transformation);
-    transformation = parentTransform * transformation;
-
-    for(auto i{0u}; i < node->mNumChildren; i++) {
-        loadNode(scene, node->mChildren[i], transformation, meshes);
-    }
-
-    for(auto i{0u}; i < node->mNumMeshes; i++) {
-        aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-        std::vector<RVertex> vertices;
-        std::vector<unsigned int> indices;
-
-        for(auto j{0u}; j < mesh->mNumVertices; j++) {
-            RVertex vertex;
-
-            glm::vec4 position{transformation * glm::vec4(mesh->mVertices[j].x, mesh->mVertices[j].y, mesh->mVertices[j].z, 1.0f)};
-            vertex.position = glm::vec3{position.x, position.y, position.z};
-
-            vertex.normal = (mesh->HasNormals())
-                ? glm::vec3{mesh->mNormals[j].x, mesh->mNormals[j].y, mesh->mNormals[j].z}
-                : glm::vec3{0.0f, 0.0f, 0.0f};
-
-            vertex.texCoord = (mesh->HasTextureCoords(0))
-                ? glm::vec2{mesh->mTextureCoords[0][j].x, mesh->mTextureCoords[0][j].y}
-                : glm::vec2{0.0f, 0.0f};
-
-            vertices.push_back(vertex);
-        }
-
-        if(mesh->HasFaces()) {
-            for(auto j = 0u; j < mesh->mNumFaces; j++) {
-                aiFace face = mesh->mFaces[j];
-                for(auto k = 0u; k < face.mNumIndices; k++) {
-                    indices.emplace_back(face.mIndices[k]);
-                }
-            }
-        } else {
-            std::cerr << "Node was missing faces, quitting...\n";
-            exit(-1);
-        }
-
-        meshes.emplace_back(std::move(vertices), std::move(indices));
-        meshes.back().matIndex = mesh->mMaterialIndex;
-    }
-}
-
 RFile Opal::Resources::loadFile(const std::string& filename) {
     std::ifstream file{filename};
     if(!file.is_open()) {
@@ -415,7 +417,7 @@ RTexture Opal::Resources::loadTexture(const std::string& filename, const std::st
 }
 
 RTexture Opal::Resources::loadTexture(std::istream& stream) {
-    RTexture texture;
+    RTexture texture{};
     auto size = read<Util::size_t>(stream);
     texture.name = readString(stream);
     texture.width = read<decltype(texture.width)>(stream);
@@ -478,4 +480,16 @@ RShader Opal::Resources::loadShader(std::istream& stream) {
     RShader shader;
 
     return shader;
+}
+
+RTerrain Opal::Resources::loadTerrain(const json &terrain) {
+    auto const resourceName = terrain.at("resourcename").get<std::string>();
+
+    auto texture = loadTexture("Resources/Terrains/" + resourceName + "/heightmap.tga", resourceName + "_heightmap");
+
+    auto const u = glm::vec3{terrain.at("xScale").get<float>(), 0.0f, 0.0f};
+    auto const v = glm::vec3{0.0f, terrain.at("yScale").get<float>(), 0.0f};
+    auto const n = glm::vec3{0.0f, 0.0f, terrain.at("zScale").get<float>()};
+
+    return {resourceName, texture.bytes, texture.width, texture.height, u, v, n};
 }
