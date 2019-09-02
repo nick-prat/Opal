@@ -117,7 +117,11 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
                         }
                     }
                 } else if(type == "terrain") {
-                    // TODO Implement
+                    if(m_terrains.find(resourcename) == m_terrains.end()) {
+                        if(!addTerrain(loadTerrain(resource))) {
+                            std::cerr << "Terrain " << resourcename << " already added, skipping\n";
+                        }
+                    }
                 } else {
                     std::cerr << "Unknown resource type " << type << '\n';
                 }
@@ -128,12 +132,11 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
             std::cerr << "Error parsing scene.json: " << error.what() << '\n';
         }
     }
-    std::cout << "Done\n";
 }
 
 void Opal::Resources::SceneHandler::readBIN(std::istream& stream) {
-    auto tag = Util::read<std::array<char, 3>>(stream);
-    auto version = Util::read<unsigned short>(stream);
+    /* auto tag = */ Util::read<std::array<char, 3>>(stream);
+    /* auto version = */ Util::read<unsigned short>(stream);
     m_sceneName = Util::readString(stream);
 
     auto modelcount = Util::read<Util::size_t>(stream);
@@ -253,6 +256,10 @@ std::unordered_map<std::string, Opal::Resources::RShader>& Opal::Resources::Scen
     return m_shaders;
 }
 
+std::unordered_map<std::string, Opal::Resources::RTerrain>& Opal::Resources::SceneHandler::getTerrains() {
+    return m_terrains;
+}
+
 bool Opal::Resources::SceneHandler::addModel3D(RModel3D&& model) {
     auto [iter, placed] = m_model3ds.emplace(model.name, std::move(model));
     return placed;
@@ -265,6 +272,11 @@ bool Opal::Resources::SceneHandler::addTexture(RTexture&& texture) {
 
 bool Opal::Resources::SceneHandler::addShader(RShader&& shader) {
     auto [iter, placed] = m_shaders.emplace(shader.name, std::move(shader));
+    return placed;
+}
+
+bool Opal::Resources::SceneHandler::addTerrain(RTerrain&& terrain) {
+    auto [iter, placed] = m_terrains.emplace(terrain.name, std::move(terrain));
     return placed;
 }
 

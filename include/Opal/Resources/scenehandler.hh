@@ -33,10 +33,12 @@ namespace Opal::Resources {
         bool addTexture(RTexture&& texture);
         bool addTexture(std::tuple<std::string, RModel3D>&& texture);
         bool addShader(RShader&& shader);
+        bool addTerrain(RTerrain&& terrain);
 
         std::unordered_map<std::string, RTexture>& getTextures();
         std::unordered_map<std::string, RModel3D>& getModel3Ds();
         std::unordered_map<std::string, RShader>& getShaders();
+        std::unordered_map<std::string, RTerrain>& getTerrains();
 
         void info();
         void model3DInfo();
@@ -49,6 +51,7 @@ namespace Opal::Resources {
         std::unordered_map<std::string, RTexture> m_textures;
         std::unordered_map<std::string, RModel3D> m_model3ds;
         std::unordered_map<std::string, RShader> m_shaders;
+        std::unordered_map<std::string, RTerrain> m_terrains;
     };
 
 }

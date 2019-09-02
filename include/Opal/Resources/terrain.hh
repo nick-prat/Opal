@@ -20,11 +20,14 @@ namespace Opal {
     public:
         // TerrainPatch(char const * const bytes, int const width, int const height, float const& u, float const& v, float const& n);
         TerrainPatch(Resources::RTerrain const& texture);
+        ~TerrainPatch();
+
+        GLuint getVAO();
+        unsigned int getIndexCount() const;
 
     private:
-        std::vector<Vertex> m_patch;
-        std::vector<unsigned int> m_indices;
         std::array<GLuint, 2> m_buffers;
+        unsigned int m_indexCount;
         GLuint m_vao;
     };
 

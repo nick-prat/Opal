@@ -1,3 +1,5 @@
 -I./include/
 -I/usr/include/lua5.1
+-Wall
+-Wextra
 -std=c++17

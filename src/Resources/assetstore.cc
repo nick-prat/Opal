@@ -6,9 +6,6 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include <memory>
-#include <vector>
-#include <fstream>
 
 Opal::AssetStore::AssetStore(const std::string& scene) {
 
@@ -32,6 +29,10 @@ Opal::AssetStore::AssetStore(const std::string& scene) {
 
     for(auto& [name, shader] : sh.getShaders()) {
         m_shaders.emplace(name, shader);
+    }
+
+    for(auto const& [name, terrain] : sh.getTerrains()) {
+        m_terrainPatches.emplace(name, terrain);
     }
 
     // TODO Create Entities from SceneHandler to ResourceHandler
@@ -84,6 +85,22 @@ const Opal::Shader& Opal::AssetStore::getShader(const std::string& name) const {
     } else {
         throw std::invalid_argument{"Shader " + name + " not found"};
     }
+}
+
+Opal::TerrainPatch& Opal::AssetStore::getTerrainPatch(std::string const& name) {
+    if( auto res{m_terrainPatches.find(name)}; res != m_terrainPatches.end()) {
+        return res->second;
+    } else {
+        throw std::invalid_argument{"Shader " + name + " not found"};
+    }
+}
+
+Opal::TerrainPatch const& Opal::AssetStore::getTerrainPatch(std::string const& name) const {
+    if( auto res{m_terrainPatches.find(name)}; res != m_terrainPatches.end()) {
+        return res->second;
+    } else {
+        throw std::invalid_argument{"Shader " + name + " not found"};
+    } 
 }
 
 std::unordered_map<std::string, Opal::Shader>& Opal::AssetStore::getShaders() {

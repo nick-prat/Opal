@@ -90,7 +90,7 @@ Opal::Resources::RVertex::RVertex(glm::vec3 pos, glm::vec3 norm, glm::vec2 tc)
 , texCoord{tc} {}
 
 Opal::Resources::RMesh::RMesh(std::istream& stream) {
-    auto size = read<Util::size_t>(stream);
+    /* auto size = */ read<Util::size_t>(stream);
 
     stream >> matIndex;
     matName = readString(stream);
@@ -134,10 +134,10 @@ Opal::Resources::RTexture::RTexture(std::istream& stream) {
     width = read<decltype(width)>(stream);
     height = read<decltype(height)>(stream);
     bytes.reserve(width * height * Util::RES_TEXTURE_BPP);
-    stream.read(bytes.data(), bytes.size());
+    stream.read(reinterpret_cast<char*>(bytes.data()), bytes.size());
 }
 
-Opal::Resources::RTexture::RTexture(std::vector<char>&& bytes, unsigned int width, unsigned int height)
+Opal::Resources::RTexture::RTexture(std::vector<unsigned char>&& bytes, unsigned int width, unsigned int height)
 : bytes{std::move(bytes)}
 , width{width}
 , height{height} {}
@@ -166,7 +166,7 @@ Opal::Resources::RShader::RShader(std::istream& stream) {
 Opal::Resources::RShader::RShader(std::unordered_map<char, RFile>&& files)
 : files{std::move(files)} {}
 
-Opal::Resources::RObject::RObject(std::istream& stream) {
+Opal::Resources::RObject::RObject(std::istream&) {
 
 }
 
@@ -201,7 +201,7 @@ std::ostream& Opal::Resources::operator<<(std::ostream& stream, const RTexture& 
     writeString(stream, texture.name);
     write(stream, texture.width);
     write(stream, texture.height);
-    stream.write(texture.bytes.data(), texture.bytes.size());
+    stream.write(reinterpret_cast<char const*>(texture.bytes.data()), texture.bytes.size());
     return stream;
 }
 
@@ -323,7 +323,7 @@ std::pair<RModel3D, std::unordered_set<std::string>> Opal::Resources::loadModel3
 
     for(auto& mesh : meshes) {
         aiString aName;
-        unsigned int index{mesh.matIndex};
+        auto index = mesh.matIndex;
         if(index < scene->mNumMaterials) {
             materials[mesh.matIndex]->Get(AI_MATKEY_NAME, aName);
             std::string texfilename = aName.C_Str();
@@ -345,7 +345,7 @@ std::pair<RModel3D, std::unordered_set<std::string>> Opal::Resources::loadModel3
 RModel3D Opal::Resources::loadModel3D(std::istream& stream) {
     RModel3D m3d;
 
-    auto modelSize = read<Util::size_t>(stream);
+    /* auto modelSize = */ read<Util::size_t>(stream);
     m3d.name = readString(stream);
     auto meshSize = read<Util::size_t>(stream);
 
@@ -358,7 +358,7 @@ RModel3D Opal::Resources::loadModel3D(std::istream& stream) {
 
 RMesh Opal::Resources::loadMesh(std::istream& stream) {
     RMesh mesh;
-    auto size = read<Util::size_t>(stream);
+    /* auto size = */ read<Util::size_t>(stream);
     mesh.matIndex = read<decltype(mesh.matIndex)>(stream);
     mesh.matName = readString(stream);
 
@@ -371,6 +371,50 @@ RMesh Opal::Resources::loadMesh(std::istream& stream) {
     stream.read((char*)mesh.indices.data(), mesh.indices.size() * sizeof(unsigned int));
 
     return mesh;
+}
+
+RTexture Opal::Resources::loadHeightMap(std::string const& filename, std::string const& resourcename) {
+    FREE_IMAGE_FORMAT format = FreeImage_GetFIFFromFilename(filename.c_str());
+
+    if(!FreeImage_FIFSupportsReading(format)) {
+        throw std::runtime_error(filename + " couldn't be read by FreeImage");
+    }
+
+    if(format == FIF_UNKNOWN) {
+        throw std::runtime_error(filename + " has unknown format");
+    }
+
+    FIBITMAP *img = FreeImage_Load(format, filename.c_str());
+
+    if(!img) {
+        throw std::runtime_error(filename + " image data couldn't be loaded");
+    }
+
+    if(FreeImage_GetBPP(img) != (RES_HEIGHTMAP_BPP * 8)) {
+        FIBITMAP* oldImg = img;
+        img = FreeImage_ConvertToGreyscale(oldImg);
+        FreeImage_Unload(oldImg);
+    }
+
+    unsigned int height, width;
+    width = FreeImage_GetWidth(img);
+    height = FreeImage_GetHeight(img);
+
+    unsigned char* bytes = FreeImage_GetBits(img);
+
+    if(bytes == nullptr) {
+        FreeImage_Unload(img);
+        throw std::runtime_error("couldn't load image bytes for " + filename);
+    }
+
+    std::vector<unsigned char> vb{bytes, bytes + width * height * RES_HEIGHTMAP_BPP};
+    FreeImage_Unload(img);
+
+    RTexture tex{std::move(vb), width, height};
+    tex.filename = filename;
+    tex.name = resourcename;
+
+    return tex;
 }
 
 RTexture Opal::Resources::loadTexture(const std::string& filename, const std::string& resourcename) {
@@ -390,7 +434,7 @@ RTexture Opal::Resources::loadTexture(const std::string& filename, const std::st
         throw std::runtime_error(filename + " image data couldn't be loaded");
     }
 
-    if(FreeImage_GetBPP(img) != 32) {
+    if(FreeImage_GetBPP(img) != (RES_TEXTURE_BPP * 8)) {
         FIBITMAP* oldImg = img;
         img = FreeImage_ConvertTo32Bits(oldImg);
         FreeImage_Unload(oldImg);
@@ -407,7 +451,7 @@ RTexture Opal::Resources::loadTexture(const std::string& filename, const std::st
         throw std::runtime_error("couldn't load image bytes for " + filename);
     }
 
-    std::vector<char> vb{bytes, bytes + width * height * RES_TEXTURE_BPP};
+    std::vector<unsigned char> vb{bytes, bytes + width * height * RES_TEXTURE_BPP};
     FreeImage_Unload(img);
 
     RTexture tex{std::move(vb), width, height};
@@ -418,12 +462,12 @@ RTexture Opal::Resources::loadTexture(const std::string& filename, const std::st
 
 RTexture Opal::Resources::loadTexture(std::istream& stream) {
     RTexture texture{};
-    auto size = read<Util::size_t>(stream);
+    /* auto size = */ read<Util::size_t>(stream);
     texture.name = readString(stream);
     texture.width = read<decltype(texture.width)>(stream);
     texture.height = read<decltype(texture.height)>(stream);
     texture.bytes.resize(texture.width * texture.height * RES_TEXTURE_BPP);
-    stream.read(texture.bytes.data(), texture.bytes.size());
+    stream.read(reinterpret_cast<char*>(texture.bytes.data()), texture.bytes.size());
     return texture;
 }
 
@@ -463,7 +507,7 @@ RShader Opal::Resources::loadShader(const json& shader) {
 
     std::vector<std::string> shaderUniforms;
     if(auto iter = shader.find("uniforms"); iter != shader.end()) {
-        const auto& uniforms = iter->get<std::vector<std::string>>();
+    const auto& uniforms = iter->get<std::vector<std::string>>();
         for(const auto& uniform : uniforms) {
             shaderUniforms.push_back(uniform);
             std::cout << "Found uniform " << uniform << " for " << resourcename << '\n';
@@ -476,7 +520,7 @@ RShader Opal::Resources::loadShader(const json& shader) {
     return rshader;
 }
 
-RShader Opal::Resources::loadShader(std::istream& stream) {
+RShader Opal::Resources::loadShader(std::istream&) {
     RShader shader;
 
     return shader;
@@ -485,11 +529,11 @@ RShader Opal::Resources::loadShader(std::istream& stream) {
 RTerrain Opal::Resources::loadTerrain(const json &terrain) {
     auto const resourceName = terrain.at("resourcename").get<std::string>();
 
-    auto texture = loadTexture("Resources/Terrains/" + resourceName + "/heightmap.tga", resourceName + "_heightmap");
-
-    auto const u = glm::vec3{terrain.at("xScale").get<float>(), 0.0f, 0.0f};
-    auto const v = glm::vec3{0.0f, terrain.at("yScale").get<float>(), 0.0f};
-    auto const n = glm::vec3{0.0f, 0.0f, terrain.at("zScale").get<float>()};
-
-    return {resourceName, texture.bytes, texture.width, texture.height, u, v, n};
+    auto texture = loadHeightMap("Resources/Terrains/" + resourceName + "/heightmap.tga", resourceName + "_heightmap");
+    auto const size = glm::vec3{terrain.at("width").get<float>(), terrain.at("height").get<float>(), terrain.at("length").get<float>()};
+    auto const sampleRate = terrain.at("sampleRate").get<unsigned int>();
+    
+    auto const& width = texture.width;
+    auto const& height = texture.height;
+    return {resourceName, std::move(texture.bytes), width, height, sampleRate, size};
 }

@@ -88,8 +88,8 @@ void Opal::Util::saveTextureToFile(const Texture& texture, const std::string& fi
     auto img = FreeImage_Allocate(width, height, 32);
 
     RGBQUAD color;
-    for(int h = 0; h < height; h++) {
-        for(int w = 0; w < width; w++) {
+    for(unsigned int h = 0; h < height; h++) {
+        for(unsigned int w = 0; w < width; w++) {
             int i = h * width + w;
             color.rgbBlue = (data[i] & 0x000000FF) >> 0;
             color.rgbGreen = (data[i] & 0x0000FF00) >> 8;

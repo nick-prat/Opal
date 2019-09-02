@@ -21,7 +21,7 @@ void Opal::ModelRenderSystem::update(Emerald::EntityManager& entMan) {
         glUniform4fv(ambientLightLocation, 1, glm::value_ptr(m_worldLight.getAmbientColor()));
     }
 
-    auto pv = m_display.getProjectionMatrix() * m_display.getCamera().getViewMatrix();
+    auto pv = m_display.getCamera().getProjectionMatrix() * m_display.getCamera().getViewMatrix();
 
     entMan.mapEntities<CRender, CBody>([this, &entMan, &pv] (auto ent) {
         auto [rc, loc] = entMan.getComponents<CRender, CBody>(ent);

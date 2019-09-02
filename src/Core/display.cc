@@ -6,20 +6,17 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-Opal::Display::Display()
-: m_projMatrix(1.0f) {}
-
 Opal::Display::Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string& title)
-: m_width(width)
-, m_height(height)
-, m_projMatrix(1.0f) {
-    if(!glfwInit()) {
-        throw GenericException("Couldn't initialize GLFW3\n");
-    }
-
+: m_camera(width, height, 0.5f, 200.0f)
+, m_width(width)
+, m_height(height) {
     glfwSetErrorCallback([] (int error, const char* desc) {
         Log::getErrorLog<SyncLogger>() << "ERROR: " << "(" << error << ")" << " " << desc << '\n';
     });
+
+    if(!glfwInit()) {
+        throw GenericException("Couldn't initialize GLFW3\n");
+    }
 
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_FOCUSED, GLFW_FALSE);
@@ -38,7 +35,7 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
 
     glfwSetWindowUserPointer(m_window, this);
 
-    glfwSetFramebufferSizeCallback(m_window, [] (GLFWwindow* window, int width, int height) {
+    glfwSetFramebufferSizeCallback(m_window, [] (GLFWwindow*, int width, int height) {
         glViewport(0, 0, width, height);
     });
 
@@ -73,16 +70,13 @@ Opal::Display::Display(unsigned int width, unsigned int height, unsigned int maj
         }
         display->onCursorUpdated({xpos, ypos});
     });
-
-    m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f);
 }
 
 Opal::Display::Display(Display&& display)
-        : m_window(display.m_window)
-        , m_camera(std::move(display.m_camera))
-        , m_width(display.m_width)
-        , m_height(display.m_height)
-        , m_projMatrix(std::move(display.m_projMatrix)) {
+: m_window(display.m_window)
+, m_camera(std::move(display.m_camera))
+, m_width(display.m_width)
+, m_height(display.m_height) {
     display.m_window = nullptr;
     display.m_width = 0;
     display.m_height = 0;
@@ -99,7 +93,6 @@ Opal::Display& Opal::Display::operator=(Display&& display) {
     m_width = display.m_width;
     m_height = display.m_height;
     m_camera = std::move(display.m_camera);
-    m_projMatrix = std::move(display.m_projMatrix);
 
     display.m_window = nullptr;
     display.m_width = 0;
@@ -131,14 +124,6 @@ Opal::Camera& Opal::Display::getCamera() {
 
 const Opal::Camera& Opal::Display::getCamera() const {
     return m_camera;
-}
-
-glm::mat4 Opal::Display::getProjectionMatrix() const {
-    return m_projMatrix;
-}
-
-glm::mat4 Opal::Display::getProjectionViewMatrix() const {
-    return m_projMatrix * m_camera.getViewMatrix();
 }
 
 unsigned int Opal::Display::getWidth() const {
@@ -190,7 +175,7 @@ void Opal::Display::setCursorPosition(const glm::vec2& pos) {
 }
 
 // TODO Implement set cursor visible
-void Opal::Display::setCursorVisible(bool visible) {
+void Opal::Display::setCursorVisible(bool) {
 
 }
 

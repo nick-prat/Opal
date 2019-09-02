@@ -76,11 +76,11 @@ namespace Opal::Resources {
         RTexture() = default;
         RTexture(RTexture&& texture);
         RTexture(std::istream& stream);
-        RTexture(std::vector<char>&& bytes, unsigned int width, unsigned int height);
+        RTexture(std::vector<unsigned char>&& bytes, unsigned int width, unsigned int height);
 
         std::string name;
         std::string filename;
-        std::vector<char> bytes;
+        std::vector<unsigned char> bytes;
         unsigned int width, height;
     };
 
@@ -97,9 +97,10 @@ namespace Opal::Resources {
 
     struct RTerrain {
         std::string name;
-        std::vector<char> bytes;
+        std::vector<unsigned char> bytes;
         unsigned int width, height;
-        glm::vec3 u, v, n;
+        unsigned int sampleRate;
+        glm::vec3 size;
     };
 
     struct RObject {
@@ -132,6 +133,7 @@ namespace Opal::Resources {
     std::pair<RModel3D, std::unordered_set<std::string>> loadModel3D(const std::string& filename, const std::string& resourcename);
     RModel3D loadModel3D(std::istream& stream);
     RMesh loadMesh(std::istream& stream);
+    RTexture loadHeightMap(std::string const& filename, std::string const& resourcename);
     RTexture loadTexture(const std::string& filename, const std::string& resourcename);
     RTexture loadTexture(std::istream& stream);
     RShader loadShader(const nlohmann::json& shader);

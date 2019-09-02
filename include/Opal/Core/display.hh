@@ -28,7 +28,6 @@ namespace Opal {
 
     class Display {
     public:
-        Display();
         Display(unsigned int width, unsigned int height, unsigned int major, unsigned int minor, const std::string& title);
         Display(const Display&) = delete;
         Display(Display&& display);
@@ -42,8 +41,6 @@ namespace Opal {
 
         Camera& getCamera();
         const Camera& getCamera() const;
-        glm::mat4 getProjectionMatrix() const;
-        glm::mat4 getProjectionViewMatrix() const;
         unsigned int getWidth() const;
         unsigned int getHeight() const;
         bool windowShouldClose() const;
@@ -79,7 +76,6 @@ namespace Opal {
         Camera m_camera;
         unsigned int m_width, m_height;
         double m_prevTime, m_timeScale;
-        glm::mat4 m_projMatrix;
         std::unordered_map<InputKey, bool> m_pressedKeys;
         std::unordered_map<InputKey, std::function<void(InputKey)>> m_whileKeyPressed;
         std::unordered_map<InputKey, std::function<void(InputKey)>> m_onKeyPressed;

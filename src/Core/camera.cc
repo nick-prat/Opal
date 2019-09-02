@@ -7,13 +7,16 @@
 // TODO Be able to bind camera position to an entity
 // NOTE Should i be able to make the camera direction bind to an entity as well?
 
-Opal::Camera::Camera()
+Opal::Camera::Camera(unsigned int width, unsigned int height, float near, float far)
 : m_position{0.0f, 0.0f, 5.0f}
 , m_direction{0.0f, 0.0f, -1.0f}
 , m_rotation{0.0f, 0.0f, 0.0f}
 , m_up{0.0f, 1.0f, 0.0f}
 , m_rotationClamp{-0.9f, 0.9f}
-, m_viewMatrix{glm::lookAt(m_position, m_position + m_direction, m_up)} {}
+, m_viewMatrix{glm::lookAt(m_position, m_position + m_direction, m_up)}
+, m_width{width}, m_height{height} {
+    m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(width) / static_cast<float>(height), near, far);
+}
 
 void Opal::Camera::update(const float scale) {
     m_position += m_direction * scale;
@@ -22,6 +25,15 @@ void Opal::Camera::update(const float scale) {
 // NOTE Do i need to build a look at matrix for every object that requests the view matrix?
 glm::mat4 Opal::Camera::getViewMatrix() const {
     return glm::lookAt(m_position, m_position + m_direction, m_up);
+}
+
+
+glm::mat4 Opal::Camera::getProjectionMatrix() const {
+    return m_projMatrix;
+}
+
+glm::mat4 Opal::Camera::getProjectionViewMatrix() const {
+    return m_projMatrix * m_viewMatrix;
 }
 
 // TODO Implement camera rotation
@@ -48,6 +60,22 @@ void Opal::Camera::setRotationClamp(const glm::vec2 clamp) {
     m_rotationClamp = clamp;
 }
 
+void Opal::Camera::setWidth(unsigned int width) {
+    m_width = width;
+    updateProjectionMatrix();
+}
+
+void Opal::Camera::setHeight(unsigned int height) {
+    m_height = height;
+    updateProjectionMatrix();
+}
+
+void Opal::Camera::setWidthHeight(unsigned int width, unsigned int height) {
+    m_width = width;
+    m_height = height;
+    updateProjectionMatrix();
+}
+
 glm::vec3 Opal::Camera::getPosition() const {
     return m_position;
 }
@@ -62,4 +90,8 @@ glm::vec3 Opal::Camera::getDirection() const {
 
 glm::vec3 Opal::Camera::getUpDirection() const {
     return m_up;
+}
+
+void Opal::Camera::updateProjectionMatrix() {
+    m_projMatrix = glm::perspective(glm::radians(60.0f), static_cast<float>(m_width) / static_cast<float>(m_height), m_near, m_far);
 }

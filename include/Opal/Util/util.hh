@@ -14,6 +14,7 @@ namespace Opal::Util {
 
     constexpr char OPLTAG[3]{'\x4F', '\x50', '\x4C'};
     constexpr unsigned char RES_TEXTURE_BPP = 4;
+    constexpr unsigned char RES_HEIGHTMAP_BPP = 1;
     constexpr unsigned short VERSION = 1;
 
     template<typename T, typename U = void, typename... Ts>

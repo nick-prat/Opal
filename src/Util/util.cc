@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <Opal/Util/util.hh>
 #include <Opal/Core/gl.hh>
 #include <Opal/Util/log.hh>

@@ -47,7 +47,6 @@ namespace Opal {
 
     class CRender {
     public:
-        CRender() = default;
         CRender(const Model3D& model);
 
         void bind(unsigned int i) const;
@@ -62,6 +61,8 @@ namespace Opal {
 
     struct CTerrain {
         GLuint vao;
+        unsigned int indexCount;
+        glm::vec3 origin;
     };
 
 }

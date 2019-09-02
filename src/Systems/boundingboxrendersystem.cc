@@ -9,7 +9,7 @@ Opal::BoundingBoxRenderSystem::BoundingBoxRenderSystem(const Shader& shader, con
 
 void Opal::BoundingBoxRenderSystem::update(Emerald::EntityManager& entMan) {
     m_shader.useProgram();
-    auto pv = m_display.getProjectionMatrix() * m_display.getCamera().getViewMatrix();
+    auto pv = m_display.getCamera().getProjectionMatrix() * m_display.getCamera().getViewMatrix();
     entMan.mapEntities<CBody, CRender>([this, &entMan, &pv] (auto ent) {
 
     });

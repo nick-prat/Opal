@@ -1,10 +1,9 @@
 #ifndef _LOG_H
 #define _LOG_H
 
-#include <memory>
 #include <mutex>
-#include <iostream>
-#include <queue>
+#include <memory>
+#include <ostream>
 #include <thread>
 
 namespace Opal {

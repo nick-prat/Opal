@@ -51,6 +51,14 @@ namespace Opal {
         WorldLight& m_worldLight;
     };
 
+    class TerrainRenderSystem : public RenderSystem<TerrainRenderSystem> {
+    public:
+        inline static std::string const shaderName = "shader_terrain";
+
+        TerrainRenderSystem(Shader const& shader, Display const& display);
+        void update(Emerald::EntityManager& entMan) override final;
+    };
+
     class NormalRenderSystem : public RenderSystem<NormalRenderSystem> {
     public:
         inline static std::string const shaderName = "shader_normal";

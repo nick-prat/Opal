@@ -20,6 +20,7 @@ set(SOURCE_FILES
     src/Systems/boundingboxrendersystem.cc
     src/Systems/modelrendersystem.cc
     src/Systems/normalrendersystem.cc
+    src/Systems/terrainrendersystem.cc
 
     # Components
     src/Components/components.cc
@@ -33,6 +34,7 @@ set(SOURCE_FILES
     src/Resources/model3d.cc
     src/Resources/resources.cc
     src/Resources/texture.cc
+    src/Resources/terrain.cc
 
     # Utilities
     src/Util/exceptions.cc
