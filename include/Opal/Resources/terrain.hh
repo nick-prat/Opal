@@ -19,7 +19,7 @@ namespace Opal {
 
     public:
         // TerrainPatch(char const * const bytes, int const width, int const height, float const& u, float const& v, float const& n);
-        TerrainPatch(Resources::RTerrain const& terrain, Resources::RTexture const& texture);
+        TerrainPatch(Resources::RTerrain const& terrain);
         ~TerrainPatch();
 
         GLuint getVAO();

@@ -7,8 +7,8 @@
 
 #include <Opal/Resources/terrain.hh>
 
-Opal::TerrainPatch::TerrainPatch(Resources::RTerrain const& terrain, Resources::RTexture const& texture)
-: m_texture{texture} {
+Opal::TerrainPatch::TerrainPatch(Resources::RTerrain const& terrain)
+: m_texture{terrain.texture} {
     std::vector<Vertex> patch;
     std::vector<unsigned int> indices;
 
