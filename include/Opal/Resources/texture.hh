@@ -33,7 +33,7 @@ namespace Opal {
     private:
         Sampler m_sampler;
         GLuint m_glTexture;
-        unsigned int m_width, m_height;
+        int m_width, m_height;
         GLint m_textureType;
         std::string m_filename;
         mutable int m_textureUnit;

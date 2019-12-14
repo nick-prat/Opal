@@ -1,4 +1,4 @@
--I./include/
+-I./include
 -I/usr/include/lua5.1
 -Wall
 -Wextra

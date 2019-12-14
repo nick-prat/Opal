@@ -59,6 +59,10 @@ namespace {
             meshes.back().matIndex = mesh->mMaterialIndex;
         }
     }
+
+    std::string generateTextureName(std::string const& resourceName, std::string const& textureName) {
+        return resourceName + '_' + textureName;
+    }
 };
 
 Opal::Resources::RFile::RFile(RFile&& file)
@@ -137,7 +141,7 @@ Opal::Resources::RTexture::RTexture(std::istream& stream) {
     stream.read(reinterpret_cast<char*>(bytes.data()), bytes.size());
 }
 
-Opal::Resources::RTexture::RTexture(std::vector<unsigned char>&& bytes, unsigned int width, unsigned int height)
+Opal::Resources::RTexture::RTexture(std::vector<unsigned char>&& bytes, int width, int height)
 : bytes{std::move(bytes)}
 , width{width}
 , height{height} {}
@@ -326,9 +330,9 @@ std::pair<RModel3D, std::unordered_set<std::string>> Opal::Resources::loadModel3
         auto index = mesh.matIndex;
         if(index < scene->mNumMaterials) {
             materials[mesh.matIndex]->Get(AI_MATKEY_NAME, aName);
-            std::string texfilename = aName.C_Str();
-            std::string texresname{resourcename + "_" + texfilename};
-            if(auto iter{textures.find(texfilename)}; iter != textures.end()) {
+            auto texfilename = std::string{aName.C_Str()};
+            auto texresname = generateTextureName(resourcename, texfilename);
+            if(textures.find(texfilename) != textures.end()) {
                 mesh.matName = texresname;
             } else {
                 throw std::runtime_error(resourcename + " doesn't specify texture " + texfilename + " but requires it");
@@ -336,7 +340,7 @@ std::pair<RModel3D, std::unordered_set<std::string>> Opal::Resources::loadModel3
         }
     }
 
-    RModel3D m3d{std::move(meshes)};
+    auto m3d = RModel3D{std::move(meshes)};
     m3d.filename = filename;
     m3d.name = resourcename;
     return {std::move(m3d), std::move(textures)};
@@ -396,7 +400,7 @@ RTexture Opal::Resources::loadHeightMap(std::string const& filename, std::string
         FreeImage_Unload(oldImg);
     }
 
-    unsigned int height, width;
+    int height, width;
     width = FreeImage_GetWidth(img);
     height = FreeImage_GetHeight(img);
 
@@ -440,7 +444,7 @@ RTexture Opal::Resources::loadTexture(const std::string& filename, const std::st
         FreeImage_Unload(oldImg);
     }
 
-    unsigned int height, width;
+    int height, width;
     width = FreeImage_GetWidth(img);
     height = FreeImage_GetHeight(img);
 
@@ -529,11 +533,14 @@ RShader Opal::Resources::loadShader(std::istream&) {
 RTerrain Opal::Resources::loadTerrain(const json &terrain) {
     auto const resourceName = terrain.at("resourcename").get<std::string>();
 
-    auto texture = loadHeightMap("Resources/Terrains/" + resourceName + "/heightmap.tga", resourceName + "_heightmap");
+    auto const heightMapFilename = "Resources/Terrains/" + resourceName + "/heightmap.tga";
+    auto const textureFilename = "Resources/Terrains/" + resourceName + "/texture.tga";
+
+    auto texture = loadHeightMap(heightMapFilename, generateTextureName(resourceName, "heightmap"));
     auto const size = glm::vec3{terrain.at("width").get<float>(), terrain.at("height").get<float>(), terrain.at("length").get<float>()};
-    auto const sampleRate = terrain.at("sampleRate").get<unsigned int>();
+    auto const sampleRate = terrain.at("sampleRate").get<int>();
     
     auto const& width = texture.width;
     auto const& height = texture.height;
-    return {resourceName, std::move(texture.bytes), width, height, sampleRate, size};
+    return {resourceName, std::move(texture.bytes), width, height, sampleRate, size, loadTexture(textureFilename, generateTextureName(resourceName, "texture"))};
 }

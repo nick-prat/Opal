@@ -8,11 +8,11 @@ IndentWidth: 4
 UseTab: Never
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: Empty
+AllowShortFunctionsOnASingleLine: false
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 BreakConstructorInitializersBeforeComma: true
-ConstructorInitializerIndentWidth: 8
+ConstructorInitializerIndentWidth: 0
 ReflowComments: false
 SpaceAfterTemplateKeyword: false
 ...

@@ -1,42 +1,51 @@
-#include <Opal/Resources/terrain.hh>
+#include <cmath>
 #include <random>
-
 #include <iostream>
 
-Opal::TerrainPatch::TerrainPatch(Resources::RTerrain const& terrain) {
+#include "Opal/GL/gl3w.h"
+#include "Opal/Resources/resources.hh"
+
+#include <Opal/Resources/terrain.hh>
+
+Opal::TerrainPatch::TerrainPatch(Resources::RTerrain const& terrain, Resources::RTexture const& texture)
+: m_texture{texture} {
     std::vector<Vertex> patch;
     std::vector<unsigned int> indices;
 
-    int sampleCount = terrain.width / terrain.sampleRate + 1;
+    // TODO Implement sampleRate
+    // auto& const sampleRate = terrain.sampleRate;
+    auto const sampleRate = 1;
 
-    float skip = terrain.size.x / (sampleCount - 1);
+    auto const sampleCount = terrain.width / sampleRate;
+    auto const skip = terrain.size.x / (terrain.width - 1);
+    auto const bytes = terrain.bytes.data();
 
-    auto const& bytes = terrain.bytes.data();
-
-    for(int i = 0; i < sampleCount; ++i) {
-        auto const scanLine = bytes + (i * (sampleCount - 1) * terrain.sampleRate);
-
-        for(int j = 0; j < sampleCount; ++j) {
-            float const height = scanLine[j * terrain.sampleRate] / 256.0f * terrain.size.y;
+    for(int i = 0; i < terrain.width; i += sampleRate) {
+        for(int j = 0; j < terrain.height; j += sampleRate) {
+            float const height = bytes[i * terrain.width + j] / 255.0f * terrain.size.y;
 
             patch.emplace_back(
                 Vertex{
                     glm::vec3{skip * i, height, skip * j},
                     glm::vec3{0.0f},
-                    glm::vec2{static_cast<float>(i) / (sampleCount - 1), static_cast<float>(j) / (sampleCount - 1)}
+                    glm::vec2{static_cast<float>(i) / (terrain.width - 1), static_cast<float>(j) / (terrain.width - 1)}
                 }
             );
 
-            if(i < sampleCount - 1 && j < sampleCount - 1) {
-                indices.push_back(i * sampleCount + j);
-                indices.push_back(i * sampleCount + (j + 1));
-                indices.push_back((i + 1) * sampleCount + (j + 1));
+            if(i < terrain.width - sampleRate && j < terrain.width - sampleRate) {
+                int const indexi = i / sampleRate;
+                int const indexj = j / sampleRate;
 
-                indices.push_back(i * sampleCount + j);
-                indices.push_back((i + 1) * sampleCount + (j + 1));
-                indices.push_back((i + 1) * sampleCount + j);
+                // Top Left Face
+                indices.push_back(indexi * sampleCount + indexj);
+                indices.push_back(indexi * sampleCount + (indexj + 1));
+                indices.push_back((indexi + 1) * sampleCount + (indexj + 1));
+
+                // Bottom Right Face
+                indices.push_back(indexi * sampleCount + indexj);
+                indices.push_back((indexi + 1) * sampleCount + (indexj + 1));
+                indices.push_back((indexi + 1) * sampleCount + indexj);
             }
-
         }
     }
 

@@ -13,7 +13,6 @@ namespace Opal {
 
     class GLCore {
     public:
-        GLCore() = default;
         GLCore(int width, int height, std::string scene);
         GLCore(const GLCore&) = delete;
         GLCore(GLCore&& glCore);
@@ -33,12 +32,6 @@ namespace Opal {
         void loadScene(const std::string& scenename, args_t&&... args) {
             static_assert(std::is_base_of<Scene, scene_t>::value, "Scene type doesn't inherit base Scene");
             m_scene = std::make_unique<scene_t>(m_display, scenename, std::forward<args_t>(args)...);
-        }
-
-        template<typename scene_t = Scene>
-        void loadScene(const std::string& scenename) {
-            static_assert(std::is_base_of<Scene, scene_t>::value || std::is_same<scene_t, Scene>::value, "Scene type doesn't inherit base Scene");
-            m_scene = std::make_unique<scene_t>(m_display, scenename);
         }
 
     private:

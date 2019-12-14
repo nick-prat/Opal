@@ -27,6 +27,11 @@ namespace Opal::Resources {
         ShaderComp
     };
 
+    // enum TerrainSampleMethod : unsigned char {
+    //     Average = 0x01,
+    //     Sample
+    // };
+
     struct RFile {
         RFile() = default;
         RFile(const RFile& file) = default;
@@ -76,12 +81,12 @@ namespace Opal::Resources {
         RTexture() = default;
         RTexture(RTexture&& texture);
         RTexture(std::istream& stream);
-        RTexture(std::vector<unsigned char>&& bytes, unsigned int width, unsigned int height);
+        RTexture(std::vector<unsigned char>&& bytes, int width, int height);
 
         std::string name;
         std::string filename;
         std::vector<unsigned char> bytes;
-        unsigned int width, height;
+        int width, height;
     };
 
     struct RShader {
@@ -98,9 +103,10 @@ namespace Opal::Resources {
     struct RTerrain {
         std::string name;
         std::vector<unsigned char> bytes;
-        unsigned int width, height;
-        unsigned int sampleRate;
+        int width, height;
+        int sampleRate;
         glm::vec3 size;
+        RTexture texture;
     };
 
     struct RObject {

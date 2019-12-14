@@ -83,6 +83,25 @@ namespace Opal::Util {
     std::string readString(std::istream& stream);
     void printMatrix(const glm::mat4x4& matrix);
 
+    template<typename T>
+    void shrinkMatrix(T const * const src, T* const dst, int order, int scale) {
+        for(int i = 0; i < order; i += scale) {
+            for(int j = 0; j < order; j += scale) {
+                T height = 0;
+
+                for(int y = 0; y < scale; y++) {
+                    for(int x = 0; x < scale; x++) {
+                        auto const index = ((i + y) * order) + j + x;
+                        height += src[index];
+                    }
+                }
+
+                auto const dstIndex = ((i / scale) * order) + (j / scale);
+                dst[dstIndex] = height;
+            }
+        }
+    }
+
 }
 
 #endif // _UTILITIES_H

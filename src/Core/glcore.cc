@@ -1,10 +1,9 @@
-#include <Opal/Core/glcore.hh>
-#include <Opal/Scene/scene.hh>
-#include <Opal/Util/exceptions.hh>
-#include <Opal/Util/log.hh>
-
 #include <string>
 #include <iostream>
+
+#include <Opal/Core/glcore.hh>
+#include <Opal/Util/exceptions.hh>
+#include <Opal/Util/log.hh>
 
 // TODO Find a way to list all available scenes (./Resources/Scenes/[These folders are scenes])
 // TODO Implement notification system for entities (entity can post lambda to be called on an event)
@@ -24,8 +23,8 @@ Opal::GLCore::GLCore(int width, int height, std::string title)
         exit(-1);
     }
 
-    glDebugMessageCallback([] (GLenum source, GLenum type, GLuint id,
-            GLenum severity, GLsizei length, const GLchar* message, const void* userParam)
+    glDebugMessageCallback([] (GLenum source, GLenum type, [[maybe_unused]] GLuint id,
+            GLenum severity, [[maybe_unused]] GLsizei length, const GLchar* message, [[maybe_unused]] const void* userParam)
     {
         auto errorLog = [severity] {
             switch (severity) {
