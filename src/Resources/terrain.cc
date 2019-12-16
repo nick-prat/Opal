@@ -2,8 +2,8 @@
 #include <random>
 #include <iostream>
 
-#include "Opal/GL/gl3w.h"
-#include "Opal/Resources/resources.hh"
+#include <Opal/GL/gl3w.h>
+#include <Opal/Resources/resources.hh>
 
 #include <Opal/Resources/terrain.hh>
 
