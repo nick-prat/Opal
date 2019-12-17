@@ -65,5 +65,5 @@ target_link_libraries(opal
     ${OPENGL_gl_LIBRARY} ${GLFW_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT} ${ASSIMP_LIBRARIES}
 )
 
-install(TARGETS opal DESTINATION /usr/local/lib/Opal)
+install(TARGETS opal DESTINATION /usr/local/lib)
 install(DIRECTORY ${CMAKE_SOURCE_DIR}/include/Opal DESTINATION /usr/local/include)
