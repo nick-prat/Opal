@@ -61,8 +61,8 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
     }
 
     if(auto jresources = scene.find("resources"); jresources != scene.end()) {
-        try {
-            for(auto& resource : *jresources) {
+        for(auto& resource : *jresources) {
+            try {
                 if(resource.find("resourcename") == resource.end()) {
                     throw std::runtime_error("resource missing property \'field\'");
                 }
@@ -125,11 +125,11 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
                 } else {
                     std::cerr << "Unknown resource type " << type << '\n';
                 }
+            } catch(std::runtime_error& error) {
+                std::cerr << "Error loading scene: " << error.what() << '\n';
+            } catch(json::exception const& error) {
+                std::cerr << "Error parsing scene: " << error.what() << '\n';
             }
-        } catch(std::runtime_error& error) {
-            std::cerr << "Error parsing scene.json: " << error.what() << '\n';
-        } catch(json::exception const& error) {
-            std::cerr << "Error parsing scene.json: " << error.what() << '\n';
         }
     }
 }

@@ -6,9 +6,9 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <initializer_list>
 
 Opal::AssetStore::AssetStore(const std::string& scene) {
-
     Resources::SceneHandler sh{scene};
 
     for(auto& [name, texture] : sh.getTextures()) {
@@ -91,7 +91,7 @@ Opal::TerrainPatch& Opal::AssetStore::getTerrainPatch(std::string const& name) {
     if( auto res{m_terrainPatches.find(name)}; res != m_terrainPatches.end()) {
         return res->second;
     } else {
-        throw std::invalid_argument{"Shader " + name + " not found"};
+        throw std::invalid_argument{"Terrain Patch " + name + " not found"};
     }
 }
 
@@ -99,7 +99,7 @@ Opal::TerrainPatch const& Opal::AssetStore::getTerrainPatch(std::string const& n
     if( auto res{m_terrainPatches.find(name)}; res != m_terrainPatches.end()) {
         return res->second;
     } else {
-        throw std::invalid_argument{"Shader " + name + " not found"};
+        throw std::invalid_argument{"Terrain Patch " + name + " not found"};
     } 
 }
 
