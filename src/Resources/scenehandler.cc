@@ -63,23 +63,9 @@ void Opal::Resources::SceneHandler::readJSON(std::istream& stream) {
     if(auto jresources = scene.find("resources"); jresources != scene.end()) {
         for(auto& resource : *jresources) {
             try {
-                if(resource.find("resourcename") == resource.end()) {
-                    throw std::runtime_error("resource missing property \'field\'");
-                }
-
-                const std::string resourcename = resource["resourcename"];
-
-                if(resource.find("filename") == resource.end()) {
-                    throw std::runtime_error("Resource " + resourcename + " missing property \'filename\'");
-                }
-
-                const std::string filename = resource["filename"];
-
-                if(resource.find("type") == resource.end()) {
-                    throw std::runtime_error("Resource " + resourcename + " missing property \'type\'");
-                }
-
-                const std::string type = resource["type"];
+                auto const resourcename = resource.at("resourcename").get<std::string>();
+                auto const filename = resource.at("filename").get<std::string>();
+                auto const type = resource.at("type").get<std::string>();
 
                 if(type == "model3d") {
                     if(m_model3ds.find(resourcename) == m_model3ds.end()) {
