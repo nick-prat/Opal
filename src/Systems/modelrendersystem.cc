@@ -41,4 +41,20 @@ void Opal::ModelRenderSystem::update(Emerald::EntityManager& entMan) {
             glDrawElements(GL_TRIANGLES, (GLsizei)model.getIndexCount(i), GL_UNSIGNED_INT, nullptr);
         }
     });
+
+    entMan.mapEntities<CTerrain>([this, &entMan, &pv] (auto ent) {
+        auto const& [terr] = entMan.getComponents<CTerrain>(ent);
+        auto const& terrain = terr.terrain;
+
+        auto const mvp = pv;
+
+        glUniformMatrix4fv(m_shader.getUniformLocation("gMVP"), 1, GL_FALSE, glm::value_ptr(mvp));
+
+        auto const samplerLoc = m_shader.getUniformLocation("gSampler");
+        terrain.getTexture().bind(0);
+        glUniform1i(samplerLoc, terrain.getTexture().getTextureUnit());
+
+        glBindVertexArray(terrain.getVAO());
+        glDrawElements(GL_TRIANGLES, (GLsizei)terrain.getIndexCount(), GL_UNSIGNED_INT, nullptr);
+    });
 }

@@ -1,6 +1,7 @@
 #ifndef __TERRAIN_H
 #define __TERRAIN_H
 
+#include "Opal/Resources/texture.hh"
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -22,11 +23,12 @@ namespace Opal {
         TerrainPatch(Resources::RTerrain const& terrain);
         ~TerrainPatch();
 
-        GLuint getVAO();
+        GLuint getVAO() const;
         unsigned int getIndexCount() const;
+        Texture const& getTexture() const;
 
     private:
-        Resources::RTexture const& m_texture;
+        Texture const m_texture;
         std::array<GLuint, 2> m_buffers;
         unsigned int m_indexCount;
         GLuint m_vao;

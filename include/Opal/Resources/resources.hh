@@ -13,7 +13,7 @@
 namespace Opal::Resources {
 
     enum ResType : unsigned char {
-        Model3D = 0x01,
+        Model3D,
         Texture2D,
         Texture3D,
         TextureCube,

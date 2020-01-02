@@ -1,8 +1,10 @@
 #ifndef _COMPONENTS_H
 #define _COMPONENTS_H
 
+#include "Opal/Resources/resources.hh"
 #include <Opal/Core/gl.hh>
 #include <Opal/Resources/model3d.hh>
+#include <Opal/Resources/terrain.hh>
 
 #include <vector>
 #include <glm/glm.hpp>
@@ -60,8 +62,9 @@ namespace Opal {
     };
 
     struct CTerrain {
-        GLuint vao;
-        unsigned int indexCount;
+        // GLuint vao;
+        // unsigned int indexCount;
+        TerrainPatch const& terrain;
         glm::vec3 origin;
     };
 

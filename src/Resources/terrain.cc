@@ -1,4 +1,6 @@
+#include "Opal/Resources/texture.hh"
 #include <cmath>
+#include <glm/geometric.hpp>
 #include <random>
 #include <iostream>
 
@@ -49,6 +51,17 @@ Opal::TerrainPatch::TerrainPatch(Resources::RTerrain const& terrain)
         }
     }
 
+    for(int i = 0; i < sampleCount; i++) {
+        for(int j = 0; j < sampleCount; j++) {
+            auto l = patch[i * sampleCount + std::max(0, j - 1)].pos.y;
+            auto r = patch[i * sampleCount + std::min(sampleCount - 1, j + 1)].pos.y;
+            auto t = patch[std::max(0, i - 1) * sampleCount + j].pos.y;
+            auto b = patch[std::min(sampleCount - 1, i + 1) * sampleCount + j].pos.y;
+
+            patch[i * sampleCount + j].normal = glm::normalize(glm::vec3{2 * (r - l), -4.0f, 2 * (b - t)});
+        }
+    }
+
     m_indexCount = indices.size();
 
     glCreateBuffers(2, m_buffers.data());
@@ -76,10 +89,14 @@ Opal::TerrainPatch::~TerrainPatch() {
     glDeleteBuffers(2, m_buffers.data());
 }
 
-GLuint Opal::TerrainPatch::getVAO() {
+GLuint Opal::TerrainPatch::getVAO() const {
     return m_vao;
 }
 
 unsigned int Opal::TerrainPatch::getIndexCount() const {
     return m_indexCount;
+}
+
+Opal::Texture const& Opal::TerrainPatch::getTexture() const {
+    return m_texture;
 }

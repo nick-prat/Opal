@@ -36,7 +36,6 @@ Opal::AssetStore::AssetStore(const std::string& scene) {
     }
 
     // TODO Create Entities from SceneHandler to ResourceHandler
-
 }
 
 Opal::Model3D& Opal::AssetStore::getModel3D(const std::string& name) {

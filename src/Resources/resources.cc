@@ -170,6 +170,8 @@ Opal::Resources::RShader::RShader(std::istream& stream) {
 Opal::Resources::RShader::RShader(std::unordered_map<char, RFile>&& files)
 : files{std::move(files)} {}
 
+
+// TODO: Implement this
 Opal::Resources::RObject::RObject(std::istream&) {
 
 }
@@ -524,6 +526,7 @@ RShader Opal::Resources::loadShader(const json& shader) {
     return rshader;
 }
 
+// TODO: implement this
 RShader Opal::Resources::loadShader(std::istream&) {
     RShader shader;
 
